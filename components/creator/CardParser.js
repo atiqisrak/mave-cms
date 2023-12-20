@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, memo } from "react";
 import instance from "../../axios";
 import { Select } from "antd";
 
@@ -8,6 +8,7 @@ const CardParser = ({ item, editMode, onCardSelect }) => {
   const [loading, setLoading] = useState(false);
   const [cards, setCards] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
+  const [cardsFetched, setCardsFetched] = useState(false);
 
   const fetchCards = async () => {
     try {
@@ -17,6 +18,7 @@ const CardParser = ({ item, editMode, onCardSelect }) => {
       if (response.data) {
         setCards(response.data);
         console.log("Cards: ", response.data);
+        setCardsFetched(true);
         setLoading(false);
       } else {
         console.error("Error fetching card assets nn:", response.data.message);
@@ -27,14 +29,16 @@ const CardParser = ({ item, editMode, onCardSelect }) => {
   };
 
   useEffect(() => {
-    if (editMode) {
+    if (editMode && !cardsFetched) {
       fetchCards();
     }
-  }, [editMode]);
+  }, [editMode, cardsFetched]);
 
-  const handleCardChange = (value) => {
-    setSelectedCard(value);
-    onCardSelect(value);
+  const memoizedCards = useMemo(() => cards, [cards]);
+
+  const handleCardChange = (values) => {
+    onCardSelect(values);
+    setSelectedCard(values);
   };
 
   return (
@@ -49,8 +53,10 @@ const CardParser = ({ item, editMode, onCardSelect }) => {
             optionFilterProp="children"
             onChange={handleCardChange}
           >
-            {cards?.map((card) => (
-              <Option value={card?.id}>{card?.title_en}</Option>
+            {memoizedCards?.map((card, index) => (
+              <Option key={index} value={JSON.stringify(card)}>
+                {card?.title_en}
+              </Option>
             ))}
           </Select>
         </div>
