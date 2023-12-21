@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, memo } from "react";
 import instance from "../../axios";
 import { Select } from "antd";
 
-const CardParser = ({ item, editMode, onCardSelect }) => {
+const CardParser = ({ item, editMode, onCardSelect, onUpdateComponent }) => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
   const { Option } = Select;
   const [loading, setLoading] = useState(false);
@@ -17,7 +17,7 @@ const CardParser = ({ item, editMode, onCardSelect }) => {
       const response = await instance("/cards");
       if (response.data) {
         setCards(response.data);
-        console.log("Cards: ", response.data);
+        // console.log("Cards: ", response.data);
         setCardsFetched(true);
         setLoading(false);
       } else {
@@ -39,6 +39,13 @@ const CardParser = ({ item, editMode, onCardSelect }) => {
   const handleCardChange = (values) => {
     onCardSelect(values);
     setSelectedCard(values);
+    const updatedCardSection = {
+      type: "card",
+      _mave: {
+        card_ids: values,
+      },
+    };
+    onUpdateComponent(updatedCardSection);
   };
 
   return (
