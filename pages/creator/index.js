@@ -69,6 +69,11 @@ const Creator = () => {
   const [selectionMode, setSelectionMode] = useState(false);
   const [updateResponse, setUpdateResponse] = useState();
 
+  const [navbarComponents, setNavbarComponents] = useState([]);
+  const [cardComponents, setCardComponents] = useState([]);
+
+  const [searchDefault, setSearchDefault] = useState();
+
   const handleCollapse = () => {
     setCollapsed(!collapsed);
   };
@@ -76,12 +81,12 @@ const Creator = () => {
     const localCreatormode = localStorage.getItem("creatorMode");
     localCreatormode ? setCreatorMode(localCreatormode) : setCreatorMode(false);
   }, []);
-
+  console.log("some", newSectionComponents);
   const componentgallery = new Map([
     [
       "Title",
       {
-        type: "Title",
+        type: "title",
         icon: FontSizeOutlined,
         iconpath: "/images/icons/Text.svg",
         slug: "title",
@@ -90,7 +95,7 @@ const Creator = () => {
     [
       "Paragraph",
       {
-        type: "Paragraph",
+        type: "paragraph",
         icon: AlignLeftOutlined,
         iconpath: "/images/icons/Paragraph.svg",
         slug: "paragraph",
@@ -99,7 +104,7 @@ const Creator = () => {
     [
       "Inner Section",
       {
-        type: "Inner Section",
+        type: "inner-section",
         icon: SettingOutlined,
         iconpath: "/images/icons/InnerSection.svg",
         slug: "inner_sections",
@@ -111,7 +116,7 @@ const Creator = () => {
         type: "media",
         icon: FileImageFilled,
         iconpath: "/images/icons/Image.svg",
-        slug: "medias",
+        slug: "media",
       },
     ],
     [
@@ -191,9 +196,11 @@ const Creator = () => {
   const fetchComponents = async (data) => {
     try {
       setLoading(true);
-      const responses = await instance.get(`/${data.toLowerCase()}`);
-      if (responses?.status === 200) {
-        setFetchedComponent(responses?.data);
+      if (data !== "title") {
+        const responses = await instance.get(`/${data.toLowerCase()}`);
+        if (responses?.status === 200) {
+          setFetchedComponent(responses?.data);
+        }
       }
     } catch (error) {
       message.error("Error fetching components");
@@ -204,34 +211,178 @@ const Creator = () => {
 
   //   Fetching page data
   const pid = router.query.id;
-  const handleFormChange = (fieldName, value, type) => {
+  const handleFormChange = (fieldName, value, selectedType) => {
     const filteredArray = fetchedComponent?.filter((item) =>
       value.includes(item.id)
     );
-    const resultArray = filteredArray.map(
-      ({
-        id,
-        media_files,
-        description_bn,
-        description_en,
-        link_url,
-        title_bn,
-        title_en,
-      }) => ({
-        id,
-        _mave: {
+
+    console.log("amar jibon", fetchedComponent);
+    if (selectedType === "title") {
+      const title = {
+        type: "title",
+        value,
+      };
+      console.log("amar nam", title);
+      /* const resultArray = filteredArray.map(
+        ({
+          id,
+          media_files,
           description_bn,
           description_en,
           link_url,
           title_bn,
           title_en,
-          media_files: media_files,
-        },
-        type,
-      })
-    );
-    setNewSectionComponent([...resultArray]);
+        }) => ({
+          id,
+          _mave: {
+            description_bn,
+            description_en,
+            link_url,
+            title_bn,
+            title_en,
+            media_files: media_files,
+          },
+          type,
+        })
+      ); */
+      if (!selectionMode) {
+        setNewSectionComponent((prev) => [...prev, title]);
+        console.log("amar nam", newSectionComponents);
+      }
+      setSearchDefault(null);
+    }
+    if (selectedType === "media") {
+      const resultArray = filteredArray.map(
+        ({ id, file_name, file_path, file_type, tags, type }) => ({
+          id,
+          _mave: {
+            file_name,
+            file_path,
+            file_type,
+            tags,
+          },
+          type: `${type ? type : selectedType}`,
+        })
+      );
+      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      setSearchDefault(null);
+    }
+    if (selectedType === "menu") {
+      const resultArray = filteredArray.map(({ id, type, ...resMenu }) => ({
+        id,
+        _mave: resMenu,
+        type: `${type ? type : selectedType}`,
+      }));
+      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      setSearchDefault(null);
+    }
+    if (selectedType === "navbar") {
+      const resultArray = filteredArray.map(
+        ({ id, logo, logo_id, menu, menu_id, type }) => ({
+          id,
+          _mave: {
+            logo,
+            logo_id,
+            menu,
+            menu_id,
+          },
+          type: `${type ? type : selectedType}`,
+        })
+      );
+      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      setSearchDefault(null);
+    }
+    if (selectedType === "slider") {
+      // console.log('amar jibon',resultArray)
+      const resultArray = filteredArray.map(
+        ({ id, media_ids, medias, status, title_bn, title_en, type }) => ({
+          id,
+          _mave: {
+            media_ids,
+            medias,
+            status,
+            title_bn,
+            title_en,
+          },
+          type: `${type ? type : selectedType}`,
+        })
+      );
+      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      setSearchDefault(null);
+    }
+    if (selectedType === "card") {
+      const resultArray = filteredArray.map(
+        ({
+          id,
+          media_files,
+          description_bn,
+          description_en,
+          link_url,
+          title_bn,
+          title_en,
+          type,
+        }) => ({
+          id,
+          _mave: {
+            description_bn,
+            description_en,
+            link_url,
+            title_bn,
+            title_en,
+            media_files: media_files,
+          },
+          type: `${type ? type : selectedType}`,
+        })
+      );
+      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      setSearchDefault(null);
+    }
+    if (selectedType === "form") {
+      const resultArray = filteredArray.map(({ id, type, ...footerRest }) => ({
+        id,
+        _mave: footerRest,
+        type: `${type ? type : selectedType}`,
+      }));
+      console.log("amar jibon", resultArray);
+      console.log("amar jibon", showPageData);
+      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      setSearchDefault(null);
+    }
+    if (selectedType === "footer") {
+      const resultArray = filteredArray.map(({ id, type, ...footerRest }) => ({
+        id,
+        _mave: footerRest,
+        type: `${type ? type : selectedType}`,
+      }));
+      console.log("amar jibon", resultArray);
+      console.log("amar jibon", showPageData);
+      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      setSearchDefault(null);
+    }
+    if (selectedType === "press_release") {
+      const resultArray = filteredArray.map(({ id, type, ...pressRest }) => ({
+        id,
+        _mave: pressRest,
+        type: `${type ? type : selectedType}`,
+      }));
+      console.log("resultArray", resultArray);
+      console.log("amar jibon", showPageData);
+      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      setSearchDefault(null);
+    }
+    if (selectedType === "event") {
+      const resultArray = filteredArray.map(({ id, type, ...eventRest }) => ({
+        id,
+        _mave: eventRest,
+        type: `${type ? type : selectedType}`,
+      }));
+      console.log("resultArray", resultArray);
+      console.log("amar jibon", showPageData);
+      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      setSearchDefault(null);
+    }
   };
+  console.log("kashfee", newSectionComponents);
   const sectionData = {
     _id: `${(Math.random() * 10).toFixed(5)}`,
     type: "",
@@ -331,6 +482,9 @@ const Creator = () => {
   const handleMediaSelect = (selectedMediaId) => {
     console.log("selectedMediaId", selectedMediaId);
   };
+  const handleEventSelect = (selectedEventId) => {
+    console.log("selectedEventId", selectedEventId);
+  };
 
   const handleMenuSelect = (selectedMenuId) => {
     console.log("selectedMenuId", selectedMenuId);
@@ -380,6 +534,7 @@ const Creator = () => {
                 Edit Mode
               </Button>
             </center>
+            {console.log("showPageData", showPageData)}
             <div>
               {showPageData?.map((section, index) => (
                 <section
@@ -411,6 +566,7 @@ const Creator = () => {
                     onNavbarSelect={handleNavbarSelect}
                     onCardSelect={handleCardSelect}
                     onMediaSelect={handleMediaSelect}
+                    onEventSelect={handleEventSelect}
                     onMenuSelect={handleMenuSelect}
                     onTitleChange={handleTitleChange}
                     onDescriptionChange={handleDescriptionChange}
@@ -448,7 +604,7 @@ const Creator = () => {
                 </section>
               )}
             </div>
-
+            {console.log("fetchedComponent", fetchedComponent)}
             <center>
               {canvas && (
                 <div
@@ -462,37 +618,471 @@ const Creator = () => {
                 >
                   {selectionMode ? (
                     <div>
-                      {fetchedComponent && selectedComponentType === "card" && (
-                        <div style={{ width: "40vw" }}>
-                          <Select
-                            mode="multiple"
-                            allowClear
-                            showSearch
-                            filterOption={(input, option) =>
-                              option.children
-                                .toLowerCase()
-                                .indexOf(input.toLowerCase()) >= 0
+                      {fetchedComponent && selectedComponentType && (
+                        <>
+                          {(() => {
+                            switch (selectedComponentType) {
+                              case "title":
+                                return (
+                                  <div style={{ width: "40vw" }}>
+                                    <Input
+                                      onChange={(e) =>
+                                        handleFormChange(
+                                          "hero_title_en",
+                                          e.target.value,
+                                          selectedComponentType
+                                        )
+                                      }
+                                    />
+                                    <Button
+                                      onClick={() => setSelectionMode(false)}
+                                    >
+                                      Ok
+                                    </Button>
+                                  </div>
+                                );
+                              case "description":
+                                return (
+                                  <div style={{ width: "40vw" }}>
+                                    <Select
+                                      value={searchDefault}
+                                      mode="multiple"
+                                      allowClear
+                                      showSearch
+                                      filterOption={(input, option) =>
+                                        option.children
+                                          .toLowerCase()
+                                          .indexOf(input.toLowerCase()) >= 0
+                                      }
+                                      style={{ width: "100%" }}
+                                      placeholder="Select Tabs"
+                                      onChange={(value) =>
+                                        handleFormChange(
+                                          "card_ids",
+                                          value,
+                                          selectedComponentType
+                                        )
+                                      }
+                                    >
+                                      {fetchedComponent?.map((card, index) => (
+                                        <Select.Option
+                                          key={index}
+                                          value={card.id}
+                                        >
+                                          {card.id}
+                                        </Select.Option>
+                                      ))}
+                                    </Select>
+                                    <Button
+                                      onClick={() => setSelectionMode(false)}
+                                    >
+                                      Ok
+                                    </Button>
+                                  </div>
+                                );
+                              case "inner-section":
+                                return (
+                                  <InnerSectionParser
+                                    item={item}
+                                    editMode={editMode}
+                                  />
+                                );
+                              case "media":
+                                return (
+                                  <div style={{ width: "40vw" }}>
+                                    <Select
+                                      value={searchDefault}
+                                      mode="multiple"
+                                      allowClear
+                                      showSearch
+                                      filterOption={(input, option) =>
+                                        option.children
+                                          .toLowerCase()
+                                          .indexOf(input.toLowerCase()) >= 0
+                                      }
+                                      style={{ width: "100%" }}
+                                      placeholder="Select Tabs"
+                                      onChange={(value) =>
+                                        handleFormChange(
+                                          "card_ids",
+                                          value,
+                                          selectedComponentType
+                                        )
+                                      }
+                                    >
+                                      {fetchedComponent?.map((card, index) => (
+                                        <Select.Option
+                                          key={index}
+                                          value={card.id}
+                                        >
+                                          {card.id}
+                                        </Select.Option>
+                                      ))}
+                                    </Select>
+                                    <Button
+                                      onClick={() => setSelectionMode(false)}
+                                    >
+                                      Ok
+                                    </Button>
+                                  </div>
+                                );
+                              case "menu":
+                                return (
+                                  <div style={{ width: "40vw" }}>
+                                    <Select
+                                      value={searchDefault}
+                                      mode="multiple"
+                                      allowClear
+                                      showSearch
+                                      filterOption={(input, option) =>
+                                        option.children
+                                          .toLowerCase()
+                                          .indexOf(input.toLowerCase()) >= 0
+                                      }
+                                      style={{ width: "100%" }}
+                                      placeholder="Select Tabs"
+                                      onChange={(value) =>
+                                        handleFormChange(
+                                          "card_ids",
+                                          value,
+                                          selectedComponentType
+                                        )
+                                      }
+                                    >
+                                      {fetchedComponent?.map((card, index) => (
+                                        <Select.Option
+                                          key={index}
+                                          value={card.id}
+                                        >
+                                          {card.id}
+                                        </Select.Option>
+                                      ))}
+                                    </Select>
+                                    <Button
+                                      onClick={() => setSelectionMode(false)}
+                                    >
+                                      Ok
+                                    </Button>
+                                  </div>
+                                );
+                              case "navbar":
+                                return (
+                                  <div style={{ width: "40vw" }}>
+                                    <Select
+                                      value={searchDefault}
+                                      mode="multiple"
+                                      allowClear
+                                      showSearch
+                                      filterOption={(input, option) =>
+                                        option.children
+                                          .toLowerCase()
+                                          .indexOf(input.toLowerCase()) >= 0
+                                      }
+                                      style={{ width: "100%" }}
+                                      placeholder="Select Tabs"
+                                      onChange={(value) =>
+                                        handleFormChange(
+                                          "card_ids",
+                                          value,
+                                          selectedComponentType
+                                        )
+                                      }
+                                    >
+                                      {fetchedComponent?.map((card, index) => (
+                                        <Select.Option
+                                          key={index}
+                                          value={card.id}
+                                        >
+                                          {card.title_en}
+                                        </Select.Option>
+                                      ))}
+                                    </Select>
+                                    <Button
+                                      onClick={() => setSelectionMode(false)}
+                                    >
+                                      Ok
+                                    </Button>
+                                  </div>
+                                );
+                              case "slider":
+                                return (
+                                  <div style={{ width: "40vw" }}>
+                                    <Select
+                                      value={searchDefault}
+                                      mode="multiple"
+                                      allowClear
+                                      showSearch
+                                      filterOption={(input, option) =>
+                                        option.children
+                                          .toLowerCase()
+                                          .indexOf(input.toLowerCase()) >= 0
+                                      }
+                                      style={{ width: "100%" }}
+                                      placeholder="Select Tabs"
+                                      onChange={(value) =>
+                                        handleFormChange(
+                                          "card_ids",
+                                          value,
+                                          selectedComponentType
+                                        )
+                                      }
+                                    >
+                                      {fetchedComponent?.map((card, index) => (
+                                        <Select.Option
+                                          key={index}
+                                          value={card.id}
+                                        >
+                                          {card.id}
+                                        </Select.Option>
+                                      ))}
+                                    </Select>
+                                    <Button
+                                      onClick={() => setSelectionMode(false)}
+                                    >
+                                      Ok
+                                    </Button>
+                                  </div>
+                                );
+                              case "card":
+                                return (
+                                  <div style={{ width: "40vw" }}>
+                                    <Select
+                                      value={searchDefault}
+                                      mode="multiple"
+                                      allowClear
+                                      showSearch
+                                      filterOption={(input, option) =>
+                                        option.children
+                                          .toLowerCase()
+                                          .indexOf(input.toLowerCase()) >= 0
+                                      }
+                                      style={{ width: "100%" }}
+                                      placeholder="Select Tabs"
+                                      onChange={(value) =>
+                                        handleFormChange(
+                                          "card_ids",
+                                          value,
+                                          selectedComponentType
+                                        )
+                                      }
+                                    >
+                                      {fetchedComponent?.map((card, index) => (
+                                        <Select.Option
+                                          key={index}
+                                          value={card.id}
+                                        >
+                                          {card.title_en}
+                                        </Select.Option>
+                                      ))}
+                                    </Select>
+                                    <Button
+                                      onClick={() => setSelectionMode(false)}
+                                    >
+                                      Ok
+                                    </Button>
+                                  </div>
+                                );
+                              case "form":
+                                return (
+                                  <div style={{ width: "40vw" }}>
+                                    <Select
+                                      value={searchDefault}
+                                      mode="multiple"
+                                      allowClear
+                                      showSearch
+                                      filterOption={(input, option) =>
+                                        option.children
+                                          .toLowerCase()
+                                          .indexOf(input.toLowerCase()) >= 0
+                                      }
+                                      style={{ width: "100%" }}
+                                      placeholder="Select Tabs"
+                                      onChange={(value) =>
+                                        handleFormChange(
+                                          "card_ids",
+                                          value,
+                                          selectedComponentType
+                                        )
+                                      }
+                                    >
+                                      {fetchedComponent?.map((card, index) => (
+                                        <Select.Option
+                                          key={index}
+                                          value={card.id}
+                                        >
+                                          {card.id}
+                                        </Select.Option>
+                                      ))}
+                                    </Select>
+                                    <Button
+                                      onClick={() => setSelectionMode(false)}
+                                    >
+                                      Ok
+                                    </Button>
+                                  </div>
+                                );
+                              case "footer":
+                                return (
+                                  <div style={{ width: "40vw" }}>
+                                    <Select
+                                      value={searchDefault}
+                                      mode="multiple"
+                                      allowClear
+                                      showSearch
+                                      filterOption={(input, option) =>
+                                        option.children
+                                          .toLowerCase()
+                                          .indexOf(input.toLowerCase()) >= 0
+                                      }
+                                      style={{ width: "100%" }}
+                                      placeholder="Select Tabs"
+                                      onChange={(value) =>
+                                        handleFormChange(
+                                          "card_ids",
+                                          value,
+                                          selectedComponentType
+                                        )
+                                      }
+                                    >
+                                      {fetchedComponent?.map((card, index) => (
+                                        <Select.Option
+                                          key={index}
+                                          value={card.id}
+                                        >
+                                          {card.id}
+                                        </Select.Option>
+                                      ))}
+                                    </Select>
+                                    <Button
+                                      onClick={() => setSelectionMode(false)}
+                                    >
+                                      Ok
+                                    </Button>
+                                  </div>
+                                );
+                              case "press_release":
+                                return (
+                                  <div style={{ width: "40vw" }}>
+                                    <Select
+                                      value={searchDefault}
+                                      mode="multiple"
+                                      allowClear
+                                      showSearch
+                                      filterOption={(input, option) =>
+                                        option.children
+                                          .toLowerCase()
+                                          .indexOf(input.toLowerCase()) >= 0
+                                      }
+                                      style={{ width: "100%" }}
+                                      placeholder="Select Tabs"
+                                      onChange={(value) =>
+                                        handleFormChange(
+                                          "card_ids",
+                                          value,
+                                          selectedComponentType
+                                        )
+                                      }
+                                    >
+                                      {fetchedComponent?.map((card, index) => (
+                                        <Select.Option
+                                          key={index}
+                                          value={card.id}
+                                        >
+                                          {card.id}
+                                        </Select.Option>
+                                      ))}
+                                    </Select>
+                                    <Button
+                                      onClick={() => setSelectionMode(false)}
+                                    >
+                                      Ok
+                                    </Button>
+                                  </div>
+                                );
+                              case "event":
+                                return (
+                                  <div style={{ width: "40vw" }}>
+                                    <Select
+                                      value={searchDefault}
+                                      mode="multiple"
+                                      allowClear
+                                      showSearch
+                                      filterOption={(input, option) =>
+                                        option.children
+                                          .toLowerCase()
+                                          .indexOf(input.toLowerCase()) >= 0
+                                      }
+                                      style={{ width: "100%" }}
+                                      placeholder="Select Tabs"
+                                      onChange={(value) =>
+                                        handleFormChange(
+                                          "card_ids",
+                                          value,
+                                          selectedComponentType
+                                        )
+                                      }
+                                    >
+                                      {fetchedComponent?.map((card, index) => (
+                                        <Select.Option
+                                          key={index}
+                                          value={card.id}
+                                        >
+                                          {card.id}
+                                        </Select.Option>
+                                      ))}
+                                    </Select>
+                                    <Button
+                                      onClick={() => setSelectionMode(false)}
+                                    >
+                                      Ok
+                                    </Button>
+                                  </div>
+                                );
+                              case "gas":
+                                return (
+                                  <div style={{ width: "40vw" }}>
+                                    <Select
+                                      value={searchDefault}
+                                      mode="multiple"
+                                      allowClear
+                                      showSearch
+                                      filterOption={(input, option) =>
+                                        option.children
+                                          .toLowerCase()
+                                          .indexOf(input.toLowerCase()) >= 0
+                                      }
+                                      style={{ width: "100%" }}
+                                      placeholder="Select Tabs"
+                                      onChange={(value) =>
+                                        handleFormChange(
+                                          "card_ids",
+                                          value,
+                                          selectedComponentType
+                                        )
+                                      }
+                                    >
+                                      {fetchedComponent?.map((card, index) => (
+                                        <Select.Option
+                                          key={index}
+                                          value={card.id}
+                                        >
+                                          {card.id}
+                                        </Select.Option>
+                                      ))}
+                                    </Select>
+                                    <Button
+                                      onClick={() => setSelectionMode(false)}
+                                    >
+                                      Ok
+                                    </Button>
+                                  </div>
+                                );
+
+                              default:
+                                return <h1>Some</h1>;
                             }
-                            style={{ width: "100%" }}
-                            placeholder="Select Tabs"
-                            onChange={(value) =>
-                              handleFormChange(
-                                "card_ids",
-                                value,
-                                selectedComponentType
-                              )
-                            }
-                          >
-                            {fetchedComponent?.map((card, index) => (
-                              <Select.Option key={index} value={card.id}>
-                                {card.title_en}
-                              </Select.Option>
-                            ))}
-                          </Select>
-                          <Button onClick={() => setSelectionMode(false)}>
-                            Ok
-                          </Button>
-                        </div>
+                          })()}
+                        </>
                       )}
                     </div>
                   ) : (

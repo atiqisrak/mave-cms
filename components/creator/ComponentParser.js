@@ -11,6 +11,7 @@ import GasParser from "./GasParser";
 import FooterParser from "./FooterParser";
 import MenuParser from "./MenuParser";
 import { Button } from "antd";
+import EventParser from "./EventParser";
 
 const ComponentParse = ({
   section,
@@ -18,6 +19,7 @@ const ComponentParse = ({
   onNavbarSelect,
   onCardSelect,
   onMediaSelect,
+  onEventSelect,
   onMenuSelect,
   onTitleChange,
   onDescriptionChange,
@@ -75,6 +77,14 @@ const ComponentParse = ({
               case "media":
                 return (
                   <MediaParser
+                    item={item}
+                    editMode={editMode}
+                    onMediaSelect={onMediaSelect}
+                  />
+                );
+              case "event":
+                return (
+                  <EventParser
                     item={item}
                     editMode={editMode}
                     onMediaSelect={onMediaSelect}

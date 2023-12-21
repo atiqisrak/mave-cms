@@ -57,7 +57,14 @@ const MenuParser = ({ item, editMode, onMenuSelect }) => {
             </Select>
           </div>
         ) : (
-          <div>
+          <div
+            style={{
+              margin: "2em 1em",
+              border: "2px solid var(--theme)",
+              borderRadius: 10,
+              padding: "2em 1em",
+            }}
+          >
             {item?._mave
               ? item._mave.menu_items?.map((menuItem) => (
                   <div key={menuItem.id}>
