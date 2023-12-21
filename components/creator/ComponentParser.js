@@ -25,13 +25,21 @@ const ComponentParse = ({
   onDescriptionChange,
   onSliderSelect,
   onPressReleaseSelect,
+  onUpdateSectionData,
 }) => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
+
+  // Callback function to update section data
+  const handleComponentChange = (index, updatedComponent) => {
+    if (onUpdateSectionData) {
+      onUpdateSectionData(index, updatedComponent);
+    }
+  };
 
   return (
     <div>
       {section?.map((item, index) => (
-        <section>
+        <section key={index}>
           {(() => {
             switch (item?.type) {
               case "navbar":
@@ -40,6 +48,9 @@ const ComponentParse = ({
                     item={item}
                     editMode={editMode}
                     onNavbarSelect={onNavbarSelect}
+                    onUpdateComponent={(updatedComponent) =>
+                      handleComponentChange(index, updatedComponent)
+                    }
                   />
                 );
               case "card":
@@ -48,6 +59,9 @@ const ComponentParse = ({
                     item={item}
                     editMode={editMode}
                     onCardSelect={onCardSelect}
+                    onUpdateComponent={(updatedComponent) =>
+                      handleComponentChange(index, updatedComponent)
+                    }
                   />
                 );
               case "title":
@@ -56,6 +70,9 @@ const ComponentParse = ({
                     item={item}
                     editMode={editMode}
                     onTitleChange={onTitleChange}
+                    onUpdateComponent={(updatedComponent) =>
+                      handleComponentChange(index, updatedComponent)
+                    }
                   />
                 );
               case "description":
@@ -64,6 +81,9 @@ const ComponentParse = ({
                     item={item}
                     editMode={editMode}
                     onDescriptionChange={onDescriptionChange}
+                    onUpdateComponent={(updatedComponent) =>
+                      handleComponentChange(index, updatedComponent)
+                    }
                   />
                 );
               case "press_release":
@@ -72,6 +92,9 @@ const ComponentParse = ({
                     item={item}
                     editMode={editMode}
                     onPressReleaseSelect={onPressReleaseSelect}
+                    onUpdateComponent={(updatedComponent) =>
+                      handleComponentChange(index, updatedComponent)
+                    }
                   />
                 );
               case "media":
@@ -80,6 +103,9 @@ const ComponentParse = ({
                     item={item}
                     editMode={editMode}
                     onMediaSelect={onMediaSelect}
+                    onUpdateComponent={(updatedComponent) =>
+                      handleComponentChange(index, updatedComponent)
+                    }
                   />
                 );
               case "event":
@@ -91,17 +117,44 @@ const ComponentParse = ({
                   />
                 );
               case "inner-section":
-                return <InnerSectionParser item={item} editMode={editMode} />;
+                return (
+                  <InnerSectionParser
+                    item={item}
+                    editMode={editMode}
+                    onUpdateComponent={(updatedComponent) =>
+                      handleComponentChange(index, updatedComponent)
+                    }
+                  />
+                );
               case "footer":
-                return <FooterParser item={item} editMode={editMode} />;
+                return (
+                  <FooterParser
+                    item={item}
+                    editMode={editMode}
+                    onUpdateComponent={(updatedComponent) =>
+                      handleComponentChange(index, updatedComponent)
+                    }
+                  />
+                );
               case "gas":
-                return <GasParser item={item} editMode={editMode} />;
+                return (
+                  <GasParser
+                    item={item}
+                    editMode={editMode}
+                    onUpdateComponent={(updatedComponent) =>
+                      handleComponentChange(index, updatedComponent)
+                    }
+                  />
+                );
               case "slider":
                 return (
                   <SliderParser
                     item={item}
                     editMode={editMode}
                     onSliderSelect={onSliderSelect}
+                    onUpdateComponent={(updatedComponent) =>
+                      handleComponentChange(index, updatedComponent)
+                    }
                   />
                 );
               case "menu":
@@ -110,6 +163,9 @@ const ComponentParse = ({
                     item={item}
                     editMode={editMode}
                     onMenuSelect={onMenuSelect}
+                    onUpdateComponent={(updatedComponent) =>
+                      handleComponentChange(index, updatedComponent)
+                    }
                   />
                 );
               default:

@@ -36,6 +36,7 @@ import RichTextEditor from "../../components/RichTextEditor";
 import instance from "../../axios";
 import bodyParser from "../../utils/sectionperser";
 import ComponentParse from "../../components/creator/ComponentParser";
+import ScrollToButton from "../../components/ScrollToBottomButton";
 const Creator = () => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
   const [collapsed, setCollapsed] = useState(false);
@@ -60,6 +61,7 @@ const Creator = () => {
 
   const [canvas, setCanvas] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [editedSectionId, setEditedSectionId] = useState(null);
   const [selectedComponent, setSelectedComponent] = useState(null);
   // New members
   const [selectedComponentType, setSelectedComponentType] = useState(null);
@@ -383,14 +385,39 @@ const Creator = () => {
     }
   };
   console.log("kashfee", newSectionComponents);
+  function generateRandomId(length) {
+    const characters =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let randomId = "";
+
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      randomId += characters.charAt(randomIndex);
+    }
+
+    return randomId;
+  }
+
   const sectionData = {
-    _id: `${(Math.random() * 10).toFixed(5)}`,
+    _id: generateRandomId(16),
     type: "",
     _category: "root",
     data: newSectionComponents,
   };
 
-  //   const postData = [...showPageData, `${newSection?...newSection:""}`];
+  const updateSectionData = (index, updatedComponent) => {
+    // Clone the existing sectionData
+    const updatedData = { ...sectionData };
+
+    // Update the data array at the specified index
+    updatedData.data[index] = updatedComponent;
+
+    // If you need to perform additional actions or updates, you can do them here
+
+    // Assign the updated data back to sectionData
+    sectionData = updatedData;
+  };
+
   let postDataBody;
   if (!newSectionComponents.length) {
     postDataBody = showPageData;
@@ -399,19 +426,18 @@ const Creator = () => {
   }
   const postData = {
     slug: "home",
-    type: "Page", // Page , Post
+    type: "Page",
     favicon_id: 10,
     page_name_en: "Home",
     page_name_bn: "হোম",
     head: {
-      // Head Data for SEO
       meta_title: "Home Page",
       meta_description: "This is a home page of the MAVE CMS",
       meta_keywords: ["home", "Page", "CMS", "Builder"],
     },
     body: postDataBody,
   };
-  // console.log("postData", postDataBody);
+
   const handleSubmit = async () => {
     try {
       const response = await instance.put(`/pages/${pid}`, postData);
@@ -447,7 +473,7 @@ const Creator = () => {
   useEffect(() => {
     setShowPageData(convertedSectionData);
   }, [pageData]);
-  console.log("showPageData", showPageData);
+  // console.log("showPageData", showPageData);
 
   const handleCloseSectionModal = () => {
     const updatedSection = showPageData.pop();
@@ -471,12 +497,26 @@ const Creator = () => {
     }
   };
 
+  const handleEditClick = (sectionId) => {
+    setEditedSectionId(sectionId);
+    setEditMode(!editMode);
+  };
+
+  const handleUpdateSectionData = (index, updatedComponent) => {
+    console.log("Updated Section Data:", updatedComponent);
+    const updatedData = { ...sectionData };
+    updatedData.data[index] = updatedComponent;
+    sectionData = updatedData;
+  };
+
+  // Parsers
+
   const handleNavbarSelect = (selectedNavbarId) => {
     console.log("selectedNavbarId", selectedNavbarId);
   };
-
-  const handleCardSelect = (selectedCardId) => {
-    console.log("selectedCardId", selectedCardId);
+  const handleCardSelect = (selectedCardIds) => {
+    const selectedCardDetails = selectedCardIds.map((id) => JSON.parse(id));
+    console.log("selectedCardDetails", selectedCardDetails);
   };
 
   const handleMediaSelect = (selectedMediaId) => {
@@ -516,25 +556,6 @@ const Creator = () => {
               position: "relative",
             }}
           >
-            <center>
-              <Button
-                style={{
-                  margin: "10px",
-                  backgroundColor: "var(--themes",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "5px",
-                  fontSize: "1.2rem",
-                  padding: "0.6rem 1rem",
-                  marginBottom: "3rem",
-                  height: "auto",
-                }}
-                onClick={() => setEditMode(!editMode)}
-              >
-                Edit Mode
-              </Button>
-            </center>
-            {console.log("showPageData", showPageData)}
             <div>
               {showPageData?.map((section, index) => (
                 <section
@@ -544,6 +565,7 @@ const Creator = () => {
                     padding: "20px 30px",
                     border: "1px solid var(--themes)",
                   }}
+                  key={section?._id}
                 >
                   <div
                     style={{
@@ -558,11 +580,27 @@ const Creator = () => {
                     }}
                   >
                     <h1>Section {index + 1}</h1>
+                    <Button
+                      style={{
+                        margin: "10px",
+                        backgroundColor: "var(--themes",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "5px",
+                        fontSize: "1.2rem",
+                        padding: "0.6rem 1rem",
+                        height: "auto",
+                      }}
+                      onClick={() => handleEditClick(section?._id)}
+                    >
+                      Edit Mode
+                    </Button>
                   </div>
+                  {/* {console.log("Section ID: ", section?._id)} */}
 
                   <ComponentParse
                     section={section?.data}
-                    editMode={editMode}
+                    editMode={editMode && editedSectionId == section?._id}
                     onNavbarSelect={handleNavbarSelect}
                     onCardSelect={handleCardSelect}
                     onMediaSelect={handleMediaSelect}
@@ -573,10 +611,35 @@ const Creator = () => {
                     onSliderSelect={handleSliderSelect}
                     onPressReleaseSelect={handleSliderSelect}
                   />
+                  {editMode && (
+                    <center>
+                      <Button
+                        style={{
+                          margin: "10px",
+                          backgroundColor: "var(--theme",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "5px",
+                          fontSize: "1.2rem",
+                          padding: "0.6rem 1rem",
+                          marginBottom: "3rem",
+                          height: "auto",
+                        }}
+                        onClick={() => {
+                          setEditMode(false);
+                          setEditedSectionId(null);
+                          console.log("Sending: ", sectionData);
+                          handleUpdateSectionData(index, sectionData);
+                        }}
+                      >
+                        Save
+                      </Button>
+                    </center>
+                  )}
                 </section>
               ))}
             </div>
-            {console.log("newSectionComponents", sectionData)}
+            {/* {console.log("newSectionComponents", sectionData)} */}
             <div>
               {newSectionComponents.length > 0 && (
                 <section
@@ -599,6 +662,22 @@ const Creator = () => {
                   >
                     Section {showPageData.length + 1}
                   </h1>
+                  <Button
+                    style={{
+                      margin: "10px",
+                      backgroundColor: "var(--themes",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "5px",
+                      fontSize: "1.2rem",
+                      padding: "0.6rem 1rem",
+                      marginBottom: "3rem",
+                      height: "auto",
+                    }}
+                    onClick={() => setEditMode(!editMode)}
+                  >
+                    Edit Mode
+                  </Button>
 
                   <ComponentParse section={sectionData?.data} />
                 </section>
@@ -1256,6 +1335,7 @@ const Creator = () => {
               </Select>
             </Modal>
           </div>
+          <ScrollToButton />
         </div>
       </div>
     </>
