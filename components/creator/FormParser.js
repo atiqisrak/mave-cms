@@ -69,90 +69,75 @@ const FormParser = ({ item, editMode, onFormSelect, onUpdateComponent }) => {
           </Select>
         </div>
       ) : (
-        <div className="formContainer">
-          <div
-            className="formShowcase"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gridGap: "1em",
-            }}
-          >
-            {console.log("Form Data NN", item)}
-            {
-              <div
-                className="formContainer"
-                style={{
-                  display: "grid",
-                  padding: "2em",
-                  border: "1px solid #e8e8e8",
-                  marginBottom: "2em",
-                  borderRadius: "5px",
-                }}
+        <div
+          className="formContainer"
+          style={{
+            display: "grid",
+            padding: "2em",
+            border: "1px solid #e8e8e8",
+            marginBottom: "2em",
+            borderRadius: "5px",
+          }}
+        >
+          <Form name="basic">
+            <Form.Item label="Title (English)">
+              <Input
+                name="title_en"
+                initialValue={item?.title_en}
+                disabled={!editMode}
+                placeholder={item?.title_en}
+              />
+            </Form.Item>
+            <Form.Item label="Title (Bengali)">
+              <Input
+                name="title_bn"
+                initialValue={item?.title_bn}
+                disabled={!editMode}
+                placeholder={item?.title_bn}
+              />
+            </Form.Item>
+            <Form.Item label="Description (English)">
+              <Input.TextArea
+                name="description_en"
+                initialValue={item?.description_en}
+                disabled={!editMode}
+                placeholder={item?.description_en}
+              />
+            </Form.Item>
+            <Form.Item label="Description (Bengali)">
+              <Input.TextArea
+                name="description_bn"
+                initialValue={item?.description_bn}
+                disabled={!editMode}
+                placeholder={item?.description_bn}
+              />
+            </Form.Item>
+            <Form.Item label="Submit Direction">
+              <Input
+                name="submit_direction"
+                initialValue={item?.submit_direction}
+                disabled={!editMode}
+                placeholder={item?.submit_direction}
+              />
+            </Form.Item>
+            <Form.Item label="Status">
+              <Select
+                showSearch
+                style={{ width: "100%" }}
+                placeholder="Select a status"
+                optionFilterProp="children"
+                onChange={handleFormChange}
+                value={selectedForm}
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                  0
+                }
               >
-                <Form name="basic">
-                  <Form.Item label="Title (English)">
-                    <Input
-                      name="title_en"
-                      initialValue={item?.title_en}
-                      disabled={!editMode}
-                      placeholder={item?.title_en}
-                    />
-                  </Form.Item>
-                  <Form.Item label="Title (Bengali)">
-                    <Input
-                      name="title_bn"
-                      initialValue={item?.title_bn}
-                      disabled={!editMode}
-                      placeholder={item?.title_bn}
-                    />
-                  </Form.Item>
-                  <Form.Item label="Description (English)">
-                    <Input.TextArea
-                      name="description_en"
-                      initialValue={item?.description_en}
-                      disabled={!editMode}
-                      placeholder={item?.description_en}
-                    />
-                  </Form.Item>
-                  <Form.Item label="Description (Bengali)">
-                    <Input.TextArea
-                      name="description_bn"
-                      initialValue={item?.description_bn}
-                      disabled={!editMode}
-                      placeholder={item?.description_bn}
-                    />
-                  </Form.Item>
-                  <Form.Item label="Submit Direction">
-                    <Input
-                      name="submit_direction"
-                      initialValue={item?.submit_direction}
-                      disabled={!editMode}
-                      placeholder={item?.submit_direction}
-                    />
-                  </Form.Item>
-                  <Form.Item label="Status">
-                    <Select
-                      showSearch
-                      style={{ width: "100%" }}
-                      placeholder="Select a status"
-                      optionFilterProp="children"
-                      onChange={handleFormChange}
-                      value={selectedForm}
-                      filterOption={(input, option) =>
-                        option.children
-                          .toLowerCase()
-                          .indexOf(input.toLowerCase()) >= 0
-                      }
-                    >
-                      {/* <Option value="active">Active</Option>
+                {/* <Option value="active">Active</Option>
                       <Option value="inactive">Inactive</Option> */}
-                    </Select>
-                  </Form.Item>
-                </Form>
-              </div>
-            }
-          </div>
+              </Select>
+            </Form.Item>
+          </Form>
         </div>
       )}
     </>

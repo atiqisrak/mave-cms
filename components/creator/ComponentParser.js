@@ -180,14 +180,16 @@ const ComponentParse = ({
 
               case "form":
                 return (
-                  <FormParser
-                    item={item}
-                    editMode={editMode}
-                    onFormSelect={onFormSelect}
-                    onUpdateComponent={(updatedComponent) =>
-                      handleComponentChange(index, updatedComponent)
-                    }
-                  />
+                  <div style={{ display: "flex" }}>
+                    <FormParser
+                      item={item}
+                      editMode={editMode}
+                      onFormSelect={onFormSelect}
+                      onUpdateComponent={(updatedComponent) =>
+                        handleComponentChange(index, updatedComponent)
+                      }
+                    />
+                  </div>
                 );
               default:
                 return <h1>{item.type}</h1>;

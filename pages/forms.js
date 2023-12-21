@@ -103,6 +103,7 @@ function Forms() {
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
               gridGap: "1em",
+              border:"1px solid black"
             }}
           >
             {forms?.map((formData) => (
