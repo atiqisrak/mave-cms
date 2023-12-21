@@ -212,8 +212,8 @@ const Creator = () => {
     setLoading(false);
   };
 
-  //   Fetching page data
   const pid = router.query.id;
+
   const handleFormChange = (fieldName, value, selectedType) => {
     const filteredArray = fetchedComponent?.filter((item) =>
       value.includes(item.id)
@@ -273,6 +273,7 @@ const Creator = () => {
       setNewSectionComponent((prev) => [...prev, ...resultArray]);
       setSearchDefault(null);
     }
+
     if (selectedType === "slider") {
       // console.log('amar jibon',resultArray)
       const resultArray = filteredArray.map(
@@ -291,6 +292,7 @@ const Creator = () => {
       setNewSectionComponent((prev) => [...prev, ...resultArray]);
       setSearchDefault(null);
     }
+
     if (selectedType === "card") {
       const resultArray = filteredArray.map(
         ({
@@ -318,14 +320,13 @@ const Creator = () => {
       setNewSectionComponent((prev) => [...prev, ...resultArray]);
       setSearchDefault(null);
     }
+
     if (selectedType === "form") {
-      const resultArray = filteredArray.map(({ id, type, ...footerRest }) => ({
+      const resultArray = filteredArray.map(({ id, type, ...formRest }) => ({
         id,
-        _mave: footerRest,
+        _mave: formRest,
         type: `${type ? type : selectedType}`,
       }));
-      console.log("amar jibon", resultArray);
-      console.log("amar jibon", showPageData);
       setNewSectionComponent((prev) => [...prev, ...resultArray]);
       setSearchDefault(null);
     }
@@ -335,8 +336,6 @@ const Creator = () => {
         _mave: footerRest,
         type: `${type ? type : selectedType}`,
       }));
-      console.log("amar jibon", resultArray);
-      console.log("amar jibon", showPageData);
       setNewSectionComponent((prev) => [...prev, ...resultArray]);
       setSearchDefault(null);
     }
@@ -396,15 +395,8 @@ const Creator = () => {
   };
 
   const updateSectionData = (index, updatedComponent) => {
-    // Clone the existing sectionData
     const updatedData = { ...sectionData };
-
-    // Update the data array at the specified index
     updatedData.data[index] = updatedComponent;
-
-    // If you need to perform additional actions or updates, you can do them here
-
-    // Assign the updated data back to sectionData
     sectionData = updatedData;
   };
 
@@ -463,7 +455,6 @@ const Creator = () => {
   useEffect(() => {
     setShowPageData(convertedSectionData);
   }, [pageData]);
-  console.log("showPageData", showPageData);
 
   const handleCloseSectionModal = () => {
     const updatedSection = showPageData.pop();
@@ -536,6 +527,10 @@ const Creator = () => {
     console.log("selectedPressReleaseId", selectedPressReleaseId);
   };
 
+  const handleFormSelect = (selectedFormId) => {
+    console.log("selectedFormId", selectedFormId);
+  };
+
   return (
     <>
       <div className="ViewContainer">
@@ -600,6 +595,7 @@ const Creator = () => {
                     onDescriptionChange={handleDescriptionChange}
                     onSliderSelect={handleSliderSelect}
                     onPressReleaseSelect={handleSliderSelect}
+                    onFormSelect={handleFormSelect}
                   />
                   {editMode && (
                     <center>

@@ -12,6 +12,7 @@ import FooterParser from "./FooterParser";
 import MenuParser from "./MenuParser";
 import { Button } from "antd";
 import EventParser from "./EventParser";
+import FormParser from "./FormParser";
 
 const ComponentParse = ({
   section,
@@ -26,13 +27,15 @@ const ComponentParse = ({
   onSliderSelect,
   onPressReleaseSelect,
   onUpdateSectionData,
+  onFormSelect,
 }) => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
 
   // Callback function to update section data
-  const handleComponentChange = (index, updatedComponent) => {
+  const handleComponentChange = (index, updatedComponent, sectionId) => {
     if (onUpdateSectionData) {
-      onUpdateSectionData(index, updatedComponent);
+      console.log("updatedComponent", updatedComponent);
+      onUpdateSectionData(index, updatedComponent, sectionId);
     }
   };
 
@@ -56,12 +59,18 @@ const ComponentParse = ({
               case "card":
                 return (
                   <CardParser
+                    sectionId={section?._id}
                     item={item}
                     editMode={editMode}
                     onCardSelect={onCardSelect}
                     onUpdateComponent={(updatedComponent) =>
-                      handleComponentChange(index, updatedComponent)
+                      handleComponentChange(
+                        index,
+                        updatedComponent,
+                        section?._id
+                      )
                     }
+                    type="card"
                   />
                 );
               case "title":
@@ -167,6 +176,20 @@ const ComponentParse = ({
                       handleComponentChange(index, updatedComponent)
                     }
                   />
+                );
+
+              case "form":
+                return (
+                  <div style={{ display: "flex" }}>
+                    <FormParser
+                      item={item}
+                      editMode={editMode}
+                      onFormSelect={onFormSelect}
+                      onUpdateComponent={(updatedComponent) =>
+                        handleComponentChange(index, updatedComponent)
+                      }
+                    />
+                  </div>
                 );
               default:
                 return <h1>{item.type}</h1>;
