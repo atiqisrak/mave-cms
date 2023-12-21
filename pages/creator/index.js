@@ -253,6 +253,20 @@ const Creator = () => {
     _category: "root",
     data: newSectionComponents,
   };
+
+  const updateSectionData = (index, updatedComponent) => {
+    // Clone the existing sectionData
+    const updatedData = { ...sectionData };
+
+    // Update the data array at the specified index
+    updatedData.data[index] = updatedComponent;
+
+    // If you need to perform additional actions or updates, you can do them here
+
+    // Assign the updated data back to sectionData
+    sectionData = updatedData;
+  };
+
   let postDataBody;
   if (!newSectionComponents.length) {
     postDataBody = showPageData;
@@ -337,6 +351,15 @@ const Creator = () => {
     setEditMode(!editMode);
   };
 
+  const handleUpdateSectionData = (index, updatedComponent) => {
+    console.log("Updated Section Data:", updatedComponent);
+    const updatedData = { ...sectionData };
+    updatedData.data[index] = updatedComponent;
+    sectionData = updatedData;
+  };
+
+  // Parsers
+
   const handleNavbarSelect = (selectedNavbarId) => {
     console.log("selectedNavbarId", selectedNavbarId);
   };
@@ -419,11 +442,10 @@ const Creator = () => {
                       Edit Mode
                     </Button>
                   </div>
-                  {console.log("Section ID: ", section?._id)}
+                  {/* {console.log("Section ID: ", section?._id)} */}
 
                   <ComponentParse
                     section={section?.data}
-                    // editMode={editMode}
                     editMode={editMode && editedSectionId == section?._id}
                     onNavbarSelect={handleNavbarSelect}
                     onCardSelect={handleCardSelect}
@@ -451,7 +473,8 @@ const Creator = () => {
                         onClick={() => {
                           setEditMode(false);
                           setEditedSectionId(null);
-                          console.log("sectionData", sectionData);
+                          console.log("Sending: ", sectionData);
+                          handleUpdateSectionData(index, sectionData);
                         }}
                       >
                         Save
