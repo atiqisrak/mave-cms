@@ -380,7 +380,7 @@ const Creator = () => {
     let randomId = "";
 
     for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
+      const randomIndex = Math.floor(Math.random() * characters?.length);
       randomId += characters.charAt(randomIndex);
     }
 
@@ -401,8 +401,11 @@ const Creator = () => {
   };
 
   let postDataBody;
-  if (!newSectionComponents.length) {
+  if (!newSectionComponents?.length) {
     postDataBody = showPageData;
+  }
+  if (!showPageData?.length) {
+    postDataBody = [sectionData];
   } else {
     postDataBody = [...showPageData, sectionData];
   }
@@ -627,7 +630,7 @@ const Creator = () => {
             </div>
             {/* {console.log("newSectionComponents", sectionData)} */}
             <div>
-              {newSectionComponents.length > 0 && (
+              {newSectionComponents?.length > 0 && (
                 <section
                   className=""
                   style={{
@@ -646,7 +649,8 @@ const Creator = () => {
                       marginBottom: 20,
                     }}
                   >
-                    Section {showPageData.length + 1}
+                    Section{" "}
+                    {showPageData?.length ? showPageData?.length + 1 : 1}
                   </h1>
                   <Button
                     style={{
