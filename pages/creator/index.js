@@ -70,11 +70,11 @@ const Creator = () => {
   const [fetchedComponent, setFetchedComponent] = useState([]);
   const [selectionMode, setSelectionMode] = useState(false);
   const [updateResponse, setUpdateResponse] = useState();
-
   const [navbarComponents, setNavbarComponents] = useState([]);
   const [cardComponents, setCardComponents] = useState([]);
-
   const [searchDefault, setSearchDefault] = useState();
+  const [title, setTitle] = useState();
+  const [description, setDescription] = useState();
 
   const handleCollapse = () => {
     setCollapsed(!collapsed);
@@ -97,13 +97,13 @@ const Creator = () => {
     [
       "Paragraph",
       {
-        type: "paragraph",
+        type: "description",
         icon: AlignLeftOutlined,
         iconpath: "/images/icons/Paragraph.svg",
-        slug: "paragraph",
+        slug: "description",
       },
     ],
-    [
+    /* [
       "Inner Section",
       {
         type: "inner-section",
@@ -111,7 +111,7 @@ const Creator = () => {
         iconpath: "/images/icons/InnerSection.svg",
         slug: "inner_sections",
       },
-    ],
+    ], */
     [
       "Media",
       {
@@ -196,9 +196,10 @@ const Creator = () => {
   ]);
 
   const fetchComponents = async (data) => {
+    console.log("description", data);
     try {
       setLoading(true);
-      if (data !== "title") {
+      if (data !== "title" && data !== "description") {
         const responses = await instance.get(`/${data.toLowerCase()}`);
         if (responses?.status === 200) {
           setFetchedComponent(responses?.data);
@@ -217,41 +218,19 @@ const Creator = () => {
     const filteredArray = fetchedComponent?.filter((item) =>
       value.includes(item.id)
     );
-
-    console.log("amar jibon", fetchedComponent);
     if (selectedType === "title") {
-      const title = {
+      const takenTitle = {
         type: "title",
         value,
       };
-      console.log("amar nam", title);
-      /* const resultArray = filteredArray.map(
-        ({
-          id,
-          media_files,
-          description_bn,
-          description_en,
-          link_url,
-          title_bn,
-          title_en,
-        }) => ({
-          id,
-          _mave: {
-            description_bn,
-            description_en,
-            link_url,
-            title_bn,
-            title_en,
-            media_files: media_files,
-          },
-          type,
-        })
-      ); */
-      if (!selectionMode) {
-        setNewSectionComponent((prev) => [...prev, title]);
-        console.log("amar nam", newSectionComponents);
-      }
-      setSearchDefault(null);
+      setTitle(takenTitle);
+    }
+    if (selectedType === "description") {
+      const takenDescription = {
+        type: "description",
+        value,
+      };
+      setDescription(takenDescription);
     }
     if (selectedType === "media") {
       const resultArray = filteredArray.map(
@@ -384,7 +363,18 @@ const Creator = () => {
       setSearchDefault(null);
     }
   };
-  console.log("kashfee", newSectionComponents);
+
+  const handleClickOfText = (selectedType) => {
+    if (selectedType === "title") {
+      setNewSectionComponent((prev) => [...prev, title]);
+      setSearchDefault(null);
+    }
+    if (selectedType === "description") {
+      setNewSectionComponent((prev) => [...prev, description]);
+      setSearchDefault(null);
+    }
+  };
+
   function generateRandomId(length) {
     const characters =
       "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -397,7 +387,7 @@ const Creator = () => {
 
     return randomId;
   }
-
+  console.log("kashfee", newSectionComponents);
   const sectionData = {
     _id: generateRandomId(16),
     type: "",
@@ -473,7 +463,7 @@ const Creator = () => {
   useEffect(() => {
     setShowPageData(convertedSectionData);
   }, [pageData]);
-  // console.log("showPageData", showPageData);
+  console.log("showPageData", showPageData);
 
   const handleCloseSectionModal = () => {
     const updatedSection = showPageData.pop();
@@ -714,7 +704,12 @@ const Creator = () => {
                                       }
                                     />
                                     <Button
-                                      onClick={() => setSelectionMode(false)}
+                                      onClick={() => {
+                                        handleClickOfText(
+                                          selectedComponentType
+                                        );
+                                        setSelectionMode(false);
+                                      }}
                                     >
                                       Ok
                                     </Button>
@@ -723,37 +718,23 @@ const Creator = () => {
                               case "description":
                                 return (
                                   <div style={{ width: "40vw" }}>
-                                    <Select
-                                      value={searchDefault}
-                                      mode="multiple"
-                                      allowClear
-                                      showSearch
-                                      filterOption={(input, option) =>
-                                        option.children
-                                          .toLowerCase()
-                                          .indexOf(input.toLowerCase()) >= 0
-                                      }
-                                      style={{ width: "100%" }}
-                                      placeholder="Select Tabs"
-                                      onChange={(value) =>
+                                    <Input
+                                      placeholder="Enter Description"
+                                      onChange={(e) =>
                                         handleFormChange(
-                                          "card_ids",
-                                          value,
+                                          "hero_title_en",
+                                          e.target.value,
                                           selectedComponentType
                                         )
                                       }
-                                    >
-                                      {fetchedComponent?.map((card, index) => (
-                                        <Select.Option
-                                          key={index}
-                                          value={card.id}
-                                        >
-                                          {card.id}
-                                        </Select.Option>
-                                      ))}
-                                    </Select>
+                                    />
                                     <Button
-                                      onClick={() => setSelectionMode(false)}
+                                      onClick={() => {
+                                        handleClickOfText(
+                                          selectedComponentType
+                                        );
+                                        setSelectionMode(false);
+                                      }}
                                     >
                                       Ok
                                     </Button>
