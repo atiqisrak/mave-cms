@@ -40,7 +40,7 @@ const ComponentParse = ({
   };
 
   return (
-    <div>
+    <div className="chuchu">
       {section?.map((item, index) => (
         <section key={index}>
           {(() => {
