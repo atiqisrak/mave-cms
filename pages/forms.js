@@ -27,7 +27,7 @@ function Forms() {
       const response = await instance("/forms");
       if (response.data) {
         setForms(response.data);
-        // console.log("Forms: ", response.data);
+        console.log("Forms: ", response.data);
         setLoading(false);
       } else {
         console.error("Error fetching forms:", response.data.message);
@@ -40,7 +40,6 @@ function Forms() {
   useEffect(() => {
     fetchForms();
   }, []);
-
 
   if (loading) return <Loader />;
 
