@@ -43,20 +43,11 @@ const Creator = () => {
   const [creatorMode, setCreatorMode] = useState(null);
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
-  const [media, setMedia] = useState([]);
-  const [menus, setMenus] = useState([]);
-  const [navbars, setNavbars] = useState([]);
-  const [sliders, setSliders] = useState([]);
   const [cards, setCards] = useState([]);
-  const [forms, setForms] = useState([]);
-  const [footers, setFooters] = useState([]);
-  const [pressReleases, setPressReleases] = useState([]);
-  const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const Option = Select.Option;
   const [pageData, setPageData] = useState();
   const [showPageData, setShowPageData] = useState([]);
-  const [newSection, setNewSection] = useState();
   const [newSectionComponents, setNewSectionComponent] = useState([]);
 
   const [canvas, setCanvas] = useState(false);
@@ -65,17 +56,14 @@ const Creator = () => {
   const [selectedComponent, setSelectedComponent] = useState(null);
   // New members
   const [selectedComponentType, setSelectedComponentType] = useState(null);
-  const [existingData, setExistingData] = useState([]);
   const [selectedExistingData, setSelectedExistingData] = useState(null);
   const [fetchedComponent, setFetchedComponent] = useState([]);
   const [selectionMode, setSelectionMode] = useState(false);
   const [updateResponse, setUpdateResponse] = useState();
-  const [navbarComponents, setNavbarComponents] = useState([]);
-  const [cardComponents, setCardComponents] = useState([]);
   const [searchDefault, setSearchDefault] = useState();
   const [title, setTitle] = useState();
+  const [newData, setNewData] = useState(null);
   const [description, setDescription] = useState();
-  const [updatedData, setUpdatedData] = useState([]);
   const [sectionData, setSectionData] = useState({
     _id: generateRandomId(16),
     type: "",
@@ -427,6 +415,7 @@ const Creator = () => {
       console.log("Error updating press release", error);
     }
   };
+
   const fetchPageData = async () => {
     try {
       setLoading(true);
@@ -470,6 +459,50 @@ const Creator = () => {
   const handleUpdateSectionData = (updatedSectionData) => {
     console.log("Updated Section Data: ", updatedSectionData);
     setSectionData(updatedSectionData);
+  };
+  const handleSave = async () => {
+    const updatedPageData = showPageData.map((section) => {
+      if (section?._id === editedSectionId) {
+        return {
+          ...section,
+          data: sectionData,
+        };
+      }
+      console.log("Section: ", section);
+      return section;
+    });
+
+    setShowPageData(updatedPageData);
+
+    const modifiedData = {
+      slug: "home",
+      type: "Page",
+      favicon_id: 10,
+      page_name_en: "Home",
+      page_name_bn: "হোম",
+      head: {
+        meta_title: "Home Page",
+        meta_description: "This is a home page of the MAVE CMS",
+        meta_keywords: ["home", "Page", "CMS", "Builder"],
+      },
+      body: updatedPageData,
+    };
+    console.log("Sending: ", modifiedData);
+
+    // put request
+    setLoading(true);
+    try {
+      const response = await instance.put(`/pages/${pid}`, modifiedData);
+      if (response?.status === 200) {
+        setUpdateResponse(response.data);
+        message.success("Page updated successfully");
+      }
+    } catch (error) {
+      message.error(error.message);
+      console.log("Error updating press release", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -527,19 +560,6 @@ const Creator = () => {
 
   const handleFormSelect = (selectedFormId) => {
     console.log("selectedFormId", selectedFormId);
-  };
-
-  // handleSave function to make put request with onUpdateSectionData
-  const handleSave = async () => {
-    try {
-      const response = await instance.put(`/pages/${pid}`, postData);
-      if (response?.status === 200) {
-        setUpdateResponse(response.data);
-      }
-    } catch (error) {
-      message.error(error.message);
-      console.log("Error updating press release", error);
-    }
   };
 
   return (
@@ -614,6 +634,7 @@ const Creator = () => {
                     onUpdateSectionData={handleUpdateSectionData}
                     sectionData={sectionData}
                     setSectionData={setSectionData}
+                    setNewData={setNewData}
                   />
                   {editedSectionId === section?._id && (
                     <center>
