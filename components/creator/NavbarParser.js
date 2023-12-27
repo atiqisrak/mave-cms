@@ -2,7 +2,12 @@ import { Select } from "antd";
 import React, { useState, useEffect } from "react";
 import instance from "../../axios";
 
-const NavbarParser = ({ item, editMode, onNavbarSelect }) => {
+const NavbarParser = ({
+  item,
+  editMode,
+  onNavbarSelect,
+  onUpdateComponent,
+}) => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
   const { Option } = Select;
   const [loading, setLoading] = useState(false);
@@ -32,13 +37,16 @@ const NavbarParser = ({ item, editMode, onNavbarSelect }) => {
     }
   }, [editMode]);
 
-  // if (editMode) {
-  //   fetchNavbars();
-  // }
-
   const handleNavbarChange = (value) => {
     setSelectedNavbar(value);
     onNavbarSelect(value);
+
+    // Call the function to update the section data in the parent component
+    onUpdateComponent({
+      ...item,
+      type: "navbar",
+      id: value,
+    });
   };
 
   return (
@@ -48,13 +56,53 @@ const NavbarParser = ({ item, editMode, onNavbarSelect }) => {
           <div className="navbar">
             <Select
               showSearch
-              style={{ width: 200 }}
+              style={{ width: "100%" }}
               placeholder="Select a navbar"
               optionFilterProp="children"
               onChange={handleNavbarChange}
             >
               {navbars?.map((navbar) => (
-                <Option value={navbar?.id}>{navbar?.title}</Option>
+                <Option value={navbar?.id}>
+                  {
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "4em",
+                        padding: "1em 0",
+                        border: "1px solid var(--themes)",
+                        borderRadius: 10,
+                      }}
+                    >
+                      <img
+                        src={`${MEDIA_URL}/${navbar?.logo?.file_path}`}
+                        alt={navbar?.logo?.file_path}
+                        style={{
+                          width: "100px",
+                          height: "50px",
+                          objectFit: "contain",
+                        }}
+                      />
+                      <div>
+                        <ul
+                          style={{
+                            display: "flex",
+                            gap: "3em",
+                            justifyContent: "center",
+                            listStyle: "none",
+                          }}
+                        >
+                          {navbar?.menu?.menu_items?.map((menuItem) => (
+                            <li key={menuItem.id}>
+                              <p>{menuItem.title}</p>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  }
+                </Option>
               ))}
             </Select>
           </div>

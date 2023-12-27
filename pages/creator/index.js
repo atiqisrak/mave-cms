@@ -75,6 +75,13 @@ const Creator = () => {
   const [searchDefault, setSearchDefault] = useState();
   const [title, setTitle] = useState();
   const [description, setDescription] = useState();
+  const [updatedData, setUpdatedData] = useState([]);
+  const [sectionData, setSectionData] = useState({
+    _id: generateRandomId(16),
+    type: "",
+    _category: "root",
+    data: newSectionComponents,
+  });
 
   const handleCollapse = () => {
     setCollapsed(!collapsed);
@@ -380,22 +387,18 @@ const Creator = () => {
     let randomId = "";
 
     for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
+      const randomIndex = Math.floor(Math.random() * characters?.length);
       randomId += characters.charAt(randomIndex);
     }
 
     return randomId;
   }
-  const sectionData = {
-    _id: generateRandomId(16),
-    type: "",
-    _category: "root",
-    data: newSectionComponents,
-  };
-
   let postDataBody;
-  if (!newSectionComponents.length) {
+  if (!newSectionComponents?.length) {
     postDataBody = showPageData;
+  }
+  if (!showPageData?.length) {
+    postDataBody = [sectionData];
   } else {
     postDataBody = [...showPageData, sectionData];
   }
@@ -454,43 +457,45 @@ const Creator = () => {
     setCanvas(false);
     setShowPageData(showPageData);
   };
-  const handleSave = async () => {
-    try {
-      setLoading(true);
-      const response = await instance.put(`/pages/${pid}`, pageData);
-      if (response.status === 200) {
-        message.success("Page saved successfully");
-      } else {
-        message.error("Error saving page");
-      }
-      setLoading(false);
-    } catch (error) {
-      message.error("Error saving page");
-      console.log(error);
-      setLoading(false);
-    }
-  };
 
   const handleEditClick = (sectionId) => {
+    console.log("Section ID from index: ", sectionId);
+    console.log("Current (showPageData/Page Data): ", showPageData);
+    const updatedSection = showPageData.find((item) => item._id === sectionId);
+    console.log("Section to update: ", updatedSection);
     setEditedSectionId(sectionId);
     setEditMode(!editMode);
   };
 
-  const handleUpdateSectionData = (index, updatedComponent, sectionId) => {
-    console.log("Updated Section Data:", updatedComponent);
-    const updatedData = { ...sectionData };
-    updatedData.data[sectionId] = updatedComponent;
-    sectionData = updatedData;
+  const handleUpdateSectionData = (updatedSectionData) => {
+    console.log("Updated Section Data: ", updatedSectionData);
+    setSectionData(updatedSectionData);
   };
+
+  useEffect(() => {
+    if (editMode) {
+      setCanvas(true);
+    } else {
+      setCanvas(false);
+      setEditedSectionId(null); // Reset the edited section ID when exiting edit mode
+    }
+  }, [editMode]);
+
+  useEffect(() => {
+    if (selectedComponent) {
+      setSelectionMode(true);
+    }
+  }, [selectedComponent]);
 
   // Parsers
 
+  const handleCardSelect = (selectedCardId) => {
+    const selectedCardDetails = JSON.parse(selectedCardId);
+    console.log("selectedCardDetails", selectedCardDetails);
+  };
+
   const handleNavbarSelect = (selectedNavbarId) => {
     console.log("selectedNavbarId", selectedNavbarId);
-  };
-  const handleCardSelect = (selectedCardIds) => {
-    const selectedCardDetails = selectedCardIds.map((id) => JSON.parse(id));
-    console.log("selectedCardDetails", selectedCardDetails);
   };
 
   const handleMediaSelect = (selectedMediaId) => {
@@ -522,6 +527,19 @@ const Creator = () => {
 
   const handleFormSelect = (selectedFormId) => {
     console.log("selectedFormId", selectedFormId);
+  };
+
+  // handleSave function to make put request with onUpdateSectionData
+  const handleSave = async () => {
+    try {
+      const response = await instance.put(`/pages/${pid}`, postData);
+      if (response?.status === 200) {
+        setUpdateResponse(response.data);
+      }
+    } catch (error) {
+      message.error(error.message);
+      console.log("Error updating press release", error);
+    }
   };
 
   return (
@@ -558,39 +576,46 @@ const Creator = () => {
                     }}
                   >
                     <h1>Section {index + 1}</h1>
-                    <Button
-                      style={{
-                        margin: "10px",
-                        backgroundColor: "var(--themes",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "5px",
-                        fontSize: "1.2rem",
-                        padding: "0.6rem 1rem",
-                        height: "auto",
-                      }}
-                      onClick={() => handleEditClick(section?._id)}
-                    >
-                      Edit Mode
-                    </Button>
+
+                    {!editMode && (
+                      <Button
+                        style={{
+                          margin: "10px",
+                          backgroundColor: "var(--themes",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "5px",
+                          fontSize: "1.2rem",
+                          padding: "0.6rem 1rem",
+                          height: "auto",
+                        }}
+                        onClick={() => handleEditClick(section?._id)}
+                      >
+                        Edit Mode
+                      </Button>
+                    )}
                   </div>
                   {/* {console.log("Section ID: ", section?._id)} */}
 
                   <ComponentParse
                     section={section?.data}
-                    editMode={editMode && editedSectionId == section?._id}
+                    editMode={editMode}
                     onNavbarSelect={handleNavbarSelect}
                     onCardSelect={handleCardSelect}
                     onMediaSelect={handleMediaSelect}
-                    onEventSelect={handleEventSelect}
                     onMenuSelect={handleMenuSelect}
                     onTitleChange={handleTitleChange}
                     onDescriptionChange={handleDescriptionChange}
                     onSliderSelect={handleSliderSelect}
-                    onPressReleaseSelect={handleSliderSelect}
+                    onPressReleaseSelect={handlePressReleaseSelect}
                     onFormSelect={handleFormSelect}
+                    onEventSelect={handleEventSelect}
+                    // data
+                    onUpdateSectionData={handleUpdateSectionData}
+                    sectionData={sectionData}
+                    setSectionData={setSectionData}
                   />
-                  {editMode && (
+                  {editedSectionId === section?._id && (
                     <center>
                       <Button
                         style={{
@@ -607,8 +632,7 @@ const Creator = () => {
                         onClick={() => {
                           setEditMode(false);
                           setEditedSectionId(null);
-                          // console.log("Sending: ", sectionData);
-                          handleUpdateSectionData(index, sectionData);
+                          handleSave();
                         }}
                       >
                         Save
@@ -620,7 +644,7 @@ const Creator = () => {
             </div>
             {/* {console.log("newSectionComponents", sectionData)} */}
             <div>
-              {newSectionComponents.length > 0 && (
+              {newSectionComponents?.length > 0 && (
                 <section
                   className=""
                   style={{
@@ -639,7 +663,8 @@ const Creator = () => {
                       marginBottom: 20,
                     }}
                   >
-                    Section {showPageData.length + 1}
+                    Section{" "}
+                    {showPageData?.length ? showPageData?.length + 1 : 1}
                   </h1>
                   <Button
                     style={{
@@ -658,7 +683,19 @@ const Creator = () => {
                     Edit Mode
                   </Button>
 
-                  <ComponentParse section={sectionData?.data} />
+                  <ComponentParse
+                    section={sectionData?.data}
+                    editMode={editMode}
+                    onNavbarSelect={handleNavbarSelect}
+                    onCardSelect={handleCardSelect}
+                    onMediaSelect={handleMediaSelect}
+                    onMenuSelect={handleMenuSelect}
+                    onTitleChange={handleTitleChange}
+                    onDescriptionChange={handleDescriptionChange}
+                    onSliderSelect={handleSliderSelect}
+                    onPressReleaseSelect={handleSliderSelect}
+                    onUpdateSectionData={handleUpdateSectionData}
+                  />
                 </section>
               )}
             </div>
