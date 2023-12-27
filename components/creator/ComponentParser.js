@@ -28,16 +28,19 @@ const ComponentParse = ({
   onPressReleaseSelect,
   onUpdateSectionData,
   onFormSelect,
+  setNewData,
 }) => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
 
   const handleComponentChange = (index, updatedComponent) => {
     console.log("Current Section data: ", section || "No Section");
     console.log("Updated Component: ", updatedComponent);
+
     const updatedSection = [updatedComponent];
     updatedSection[index] = updatedComponent;
     console.log("Updated Section: ", updatedSection);
     onUpdateSectionData(updatedSection);
+    setNewData(updatedSection);
   };
 
   return (
