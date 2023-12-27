@@ -36,16 +36,15 @@ const CardParser = ({ item, editMode, onCardSelect, onUpdateComponent }) => {
 
   const memoizedCards = useMemo(() => cards, [cards]);
 
-  const handleCardChange = (values) => {
-    onCardSelect(values);
-    setSelectedCard(values);
-    const updatedCardSection = {
-      type: "card",
-      _mave: {
-        card_ids: values,
-      },
-    };
-    onUpdateComponent(updatedCardSection);
+  const handleCardChange = (value) => {
+    setSelectedCard(JSON.parse(value));
+    console.log("Selected Card: ", JSON.parse(value));
+
+    // Call the function to update the section data in the parent component
+    onUpdateComponent({
+      ...item,
+      selectedCard: JSON.parse(value),
+    });
   };
 
   return (
@@ -53,7 +52,6 @@ const CardParser = ({ item, editMode, onCardSelect, onUpdateComponent }) => {
       {editMode ? (
         <div className="cardContainer">
           <Select
-            mode="multiple"
             showSearch
             style={{ width: "100%" }}
             placeholder="Select a card"

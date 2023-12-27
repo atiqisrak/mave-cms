@@ -31,12 +31,13 @@ const ComponentParse = ({
 }) => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
 
-  // Callback function to update section data
-  const handleComponentChange = (index, updatedComponent, sectionId) => {
-    if (onUpdateSectionData) {
-      console.log("updatedComponent", updatedComponent);
-      onUpdateSectionData(index, updatedComponent, sectionId);
-    }
+  const handleComponentChange = (index, updatedComponent) => {
+    console.log("Current Section data: ", section || "No Section");
+    console.log("Updated Component: ", updatedComponent);
+    const updatedSection = [updatedComponent];
+    updatedSection[index] = updatedComponent;
+    console.log("Updated Section: ", updatedSection);
+    onUpdateSectionData(updatedSection);
   };
 
   return (
@@ -51,28 +52,27 @@ const ComponentParse = ({
                     item={item}
                     editMode={editMode}
                     onNavbarSelect={onNavbarSelect}
+                    sectionId={section?._id}
                     onUpdateComponent={(updatedComponent) =>
                       handleComponentChange(index, updatedComponent)
                     }
                   />
                 );
+
               case "card":
                 return (
                   <CardParser
                     sectionId={section?._id}
                     item={item}
                     editMode={editMode}
+                    type="card"
                     onCardSelect={onCardSelect}
                     onUpdateComponent={(updatedComponent) =>
-                      handleComponentChange(
-                        index,
-                        updatedComponent,
-                        section?._id
-                      )
+                      handleComponentChange(index, updatedComponent)
                     }
-                    type="card"
                   />
                 );
+
               case "title":
                 return (
                   <TitleParser
