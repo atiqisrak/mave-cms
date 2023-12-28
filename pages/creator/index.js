@@ -64,21 +64,6 @@ const Creator = () => {
   const [title, setTitle] = useState();
   const [newData, setNewData] = useState(null);
   const [description, setDescription] = useState();
-  const [sectionData, setSectionData] = useState({
-    _id: generateRandomId(16),
-    type: "",
-    _category: "root",
-    data: newSectionComponents,
-  });
-
-  const handleCollapse = () => {
-    setCollapsed(!collapsed);
-  };
-  useEffect(() => {
-    const localCreatormode = localStorage.getItem("creatorMode");
-    localCreatormode ? setCreatorMode(localCreatormode) : setCreatorMode(false);
-  }, []);
-  // console.log("some", newSectionComponents);
   const componentgallery = new Map([
     [
       "Title",
@@ -189,6 +174,22 @@ const Creator = () => {
       },
     ],
   ]);
+
+  const [sectionData, setSectionData] = useState({
+    _id: generateRandomId(16),
+    type: "",
+    _category: "root",
+    data: newSectionComponents,
+  });
+
+  const handleCollapse = () => {
+    setCollapsed(!collapsed);
+  };
+  useEffect(() => {
+    const localCreatormode = localStorage.getItem("creatorMode");
+    localCreatormode ? setCreatorMode(localCreatormode) : setCreatorMode(false);
+  }, []);
+  // console.log("some", newSectionComponents);
 
   const fetchComponents = async (data) => {
     console.log("description", data);
@@ -490,19 +491,20 @@ const Creator = () => {
     console.log("Sending: ", modifiedData);
 
     // put request
-    setLoading(true);
-    try {
-      const response = await instance.put(`/pages/${pid}`, modifiedData);
-      if (response?.status === 200) {
-        setUpdateResponse(response.data);
-        message.success("Page updated successfully");
-      }
-    } catch (error) {
-      message.error(error.message);
-      console.log("Error updating press release", error);
-    } finally {
-      setLoading(false);
-    }
+    // setLoading(true);
+    // try {
+    //   const response = await instance.put(`/pages/${pid}`, modifiedData);
+    //   if (response?.status === 200) {
+    //     setUpdateResponse(response.data);
+    //     message.success("Page updated successfully");
+    //     fetchPageData();
+    //   }
+    // } catch (error) {
+    //   message.error(error.message);
+    //   console.log("Error updating press release", error);
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   useEffect(() => {
@@ -657,6 +659,15 @@ const Creator = () => {
                         }}
                       >
                         Save
+                      </Button>
+                      <Button
+                        danger
+                        onClick={() => {
+                          setEditMode(false);
+                          setEditedSectionId(null);
+                        }}
+                      >
+                        Cancel Edit
                       </Button>
                     </center>
                   )}

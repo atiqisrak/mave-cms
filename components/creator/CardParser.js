@@ -9,7 +9,7 @@ const CardParser = ({ item, editMode, onCardSelect, onUpdateComponent }) => {
   const [cards, setCards] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
   const [cardsFetched, setCardsFetched] = useState(false);
-
+  const [localSelectedCards, setLocalSelectedCards] = useState([]);
   const fetchCards = async () => {
     try {
       setLoading(true);
@@ -17,7 +17,6 @@ const CardParser = ({ item, editMode, onCardSelect, onUpdateComponent }) => {
       const response = await instance("/cards");
       if (response.data) {
         setCards(response.data);
-        // console.log("Cards: ", response.data);
         setCardsFetched(true);
         setLoading(false);
       } else {
@@ -37,15 +36,20 @@ const CardParser = ({ item, editMode, onCardSelect, onUpdateComponent }) => {
   const memoizedCards = useMemo(() => cards, [cards]);
 
   const handleCardChange = (value) => {
-    setSelectedCard(JSON.parse(value));
-    console.log("Selected Card: ", JSON.parse(value));
+    onCardSelect(value);
 
-    // Call the function to update the section data in the parent component
     onUpdateComponent({
       ...item,
-      selectedCard: JSON.parse(value),
+      type: "card",
+      id: JSON.parse(value)?.id,
     });
   };
+
+  useEffect(() => {
+    if (editMode) {
+      handleCardChange(localSelectedCards);
+    }
+  }, [localSelectedCards]);
 
   return (
     <>

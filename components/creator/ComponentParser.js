@@ -29,6 +29,7 @@ const ComponentParse = ({
   onUpdateSectionData,
   onFormSelect,
   setNewData,
+  setSectionData,
 }) => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
 
@@ -36,11 +37,13 @@ const ComponentParse = ({
     console.log("Current Section data: ", section || "No Section");
     console.log("Updated Component: ", updatedComponent);
 
-    const updatedSection = [updatedComponent];
+    const updatedSection = section ? [...section] : [];
     updatedSection[index] = updatedComponent;
+
     console.log("Updated Section: ", updatedSection);
     onUpdateSectionData(updatedSection);
     setNewData(updatedSection);
+    setSectionData(updatedSection);
   };
 
   return (
@@ -68,7 +71,6 @@ const ComponentParse = ({
                     sectionId={section?._id}
                     item={item}
                     editMode={editMode}
-                    type="card"
                     onCardSelect={onCardSelect}
                     onUpdateComponent={(updatedComponent) =>
                       handleComponentChange(index, updatedComponent)
