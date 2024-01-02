@@ -1027,6 +1027,7 @@ const Home = () => {
                                               ) ? (
                                               <video
                                                 controls
+                                                muted
                                                 width="100%"
                                                 height="200"
                                                 objectFit="cover"
@@ -1261,6 +1262,7 @@ const Home = () => {
                                               {/* {video.file_name} */}
                                               <video
                                                 autoPlay
+                                                muted
                                                 width="100%"
                                                 height="200"
                                                 objectFit="cover"
@@ -1288,6 +1290,7 @@ const Home = () => {
                                       >
                                         <video
                                           controls
+                                          muted
                                           width="100%"
                                           height="600"
                                           objectFit="cover"
@@ -1379,6 +1382,7 @@ const Home = () => {
                                             ) ? (
                                             <video
                                               controls
+                                              muted
                                               width="100%"
                                               height="200"
                                               objectFit="cover"

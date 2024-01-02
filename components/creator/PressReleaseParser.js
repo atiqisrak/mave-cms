@@ -98,6 +98,7 @@ const PressReleaseParser = ({ item, editMode, onPressReleaseSelect }) => {
                         src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
                         alt={card?.media_files?.file_path}
                         style={{ width: "10vw", height: "auto" }}
+                        muted
                       />
                     ))}
                 </div>

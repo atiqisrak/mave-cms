@@ -4,9 +4,11 @@ import {
   CloseCircleOutlined,
   DeleteOutlined,
   EditOutlined,
+  MenuFoldOutlined,
+  MenuOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
-import { Button, Popconfirm, Select } from "antd";
+import { Button, Input, Modal, Popconfirm, Select } from "antd";
 
 import instance from "../axios";
 import SingleMediaSelect from "../components/SingleMediaSelect";
@@ -29,6 +31,8 @@ const Navbars = () => {
   const [editedNavbar, setEditedNavbar] = useState(null);
   const [editedNavbarId, setEditedNavbarId] = useState(null);
   const [selectedLogo, setSelectedLogo] = useState(null);
+  const [navbarTitleEn, setNavbarTitleEn] = useState(null);
+  const [unfolded, setUnfolded] = useState(false);
   const [formData, setFormData] = useState({
     // logo_id: null,
     menu_id: null,
@@ -108,6 +112,7 @@ const Navbars = () => {
 
   const handleUpdateNavbar = (navbar) => {
     const updatedData = {
+      title_en: navbarTitleEn,
       logo_id: formData.logo_id,
       menu_id: formData.menu_id,
     };
@@ -165,6 +170,7 @@ const Navbars = () => {
     // e.preventDefault();
     try {
       const newNavbar = {
+        title_en: navbarTitleEn,
         logo_id: selectedMediaId,
         menu_id: selectedMenuId,
       };
@@ -271,9 +277,18 @@ const Navbars = () => {
                     border: "2px solid var(--theme)",
                     borderRadius: "10px",
                     marginBottom: "1em",
-                    backgroundColor: "#0d0d0d20",
                   }}
                 >
+                  <div>
+                    <Input
+                      allowClear
+                      type="text"
+                      name="title_en"
+                      placeholder="Enter Navbar Title"
+                      value={navbarTitleEn}
+                      onChange={(e) => setNavbarTitleEn(e.target.value)}
+                    />
+                  </div>
                   <div
                     style={{
                       display: "flex",
@@ -388,17 +403,80 @@ const Navbars = () => {
               </div>
             )}
 
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 5fr",
+                gap: "1em",
+                marginBottom: "1em",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "var(--theme)",
+                color: "white",
+                padding: "1em",
+                borderRadius: "10px",
+              }}
+            >
+              <h3>Navbar Names</h3>
+              <h3
+                style={{
+                  textAlign: "center",
+                  borderLeft: "1px solid white",
+                }}
+              >
+                Navbars
+              </h3>
+            </div>
             {loading ? (
               <Loader />
             ) : (
               <>
                 {navbars?.map((navbar) => (
-                  <div className="navbarContainer" key={navbar.id}>
+                  <div
+                    className="navbarContainer"
+                    key={navbar.id}
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 5fr",
+                      gap: "1em",
+                      marginBottom: "1em",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div>
+                      {editMode && editedNavbar?.id === navbar.id ? (
+                        <div className="editModeForm">
+                          <form>
+                            <div
+                              style={{
+                                display: "flex",
+                                gap: "1em",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Input
+                                type="text"
+                                name="title_en"
+                                value={navbarTitleEn}
+                                onChange={(e) =>
+                                  setNavbarTitleEn(e.target.value)
+                                }
+                              />
+                            </div>
+                          </form>
+                        </div>
+                      ) : (
+                        <div>
+                          <h3>{navbar.title_en}</h3>
+                        </div>
+                      )}
+                    </div>
                     <div
                       className="column"
                       style={{
                         display: "grid",
-                        gridTemplateColumns: "2fr 5fr 3fr",
+                        gridTemplateColumns: "2fr 3fr 3fr",
                         padding: "1em 2em",
                         marginBottom: "1em",
                         border: "1px solid var(--themes)",
@@ -423,6 +501,7 @@ const Navbars = () => {
                                     media[0].file_path.endsWith(".mp4") ? (
                                       <video
                                         controls
+                                        muted
                                         style={{
                                           height: "200px",
                                           width: "15vw",
@@ -550,12 +629,77 @@ const Navbars = () => {
                               justifyContent: "center",
                             }}
                           >
-                            {/* Render the menu items */}
-                            {navbar.menu.menu_items?.map((menuItem) => (
-                              <div key={menuItem.id}>
-                                <p>{menuItem.title}</p>
-                              </div>
-                            ))}{" "}
+                            {/* show menu items if more than 3 items, put dropdown */}
+                            {navbar.menu.menu_items.length > 4 ? (
+                              <>
+                                <Button
+                                  icon={<MenuOutlined />}
+                                  style={{
+                                    backgroundColor: "var(--themes)",
+                                    borderColor: "var(--themes)",
+                                    color: "white",
+                                    borderRadius: "10px",
+                                    fontSize: "1.2em",
+                                    padding: "1em 3em",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                  }}
+                                  onClick={() => {
+                                    setUnfolded(!unfolded);
+                                  }}
+                                />
+                                {unfolded && (
+                                  <div
+                                    style={{
+                                      position: "absolute",
+                                      backgroundColor: "var(--themes)",
+                                      color: "white",
+                                      borderRadius: "10px",
+                                      fontSize: "1.2em",
+                                      padding: "1em 3em",
+                                      zIndex: 1,
+                                      marginTop: "3em",
+                                    }}
+                                  >
+                                    {/* arrow triangle on top */}
+                                    <div
+                                      style={{
+                                        position: "absolute",
+                                        top: "-1em",
+                                        left: "5.5em",
+                                        width: 0,
+                                        height: 0,
+                                        borderLeft: "1em solid transparent",
+                                        borderRight: "1em solid transparent",
+                                        borderBottom: "1em solid var(--themes)",
+                                      }}
+                                    />
+
+                                    {navbar.menu.menu_items?.map((menuItem) => (
+                                      <div
+                                        key={menuItem.id}
+                                        style={{
+                                          display: "flex",
+                                          justifyContent: "center",
+                                          alignItems: "center",
+                                          borderBottom: "1px solid white",
+                                          padding: "1em 0",
+                                        }}
+                                      >
+                                        <p>{menuItem.title}</p>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </>
+                            ) : (
+                              navbar.menu.menu_items?.map((menuItem) => (
+                                <div key={menuItem.id}>
+                                  <p>{menuItem.title}</p>
+                                </div>
+                              ))
+                            )}
                           </div>
                         )}{" "}
                       </div>
@@ -586,6 +730,10 @@ const Navbars = () => {
                             type="primary"
                             icon={<EditOutlined />}
                             onClick={() => handleEditClick(navbar)}
+                            style={{
+                              marginRight: "1em",
+                              backgroundColor: "var(--theme)",
+                            }}
                           >
                             Edit
                           </Button>
@@ -606,7 +754,7 @@ const Navbars = () => {
                             okText="Yes"
                             cancelText="No"
                           >
-                            <Button type="danger" icon={<DeleteOutlined />}>
+                            <Button danger icon={<DeleteOutlined />}>
                               Delete
                             </Button>
                           </Popconfirm>

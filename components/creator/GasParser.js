@@ -70,6 +70,7 @@ const GasParser = ({ item }) => {
               />
             ) : (
               <video
+                muted
                 src={`${MEDIA_URL}/${gas?.media_mave?.file_path}`}
                 alt={gas?.media_mave?.file_name}
                 style={{ width: "15vw", height: "auto" }}

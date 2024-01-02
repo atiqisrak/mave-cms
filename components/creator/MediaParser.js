@@ -119,6 +119,7 @@ const MediaParser = ({ item, editMode, onMediaSelect }) => {
               style={{ width: "15vw", height: "auto" }}
               autoPlay
               loop
+              muted
             />
           )}
         </div>

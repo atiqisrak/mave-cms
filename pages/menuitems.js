@@ -36,7 +36,8 @@ export default function MenuItems() {
   const [deleteConfirmationVisible, setDeleteConfirmationVisible] =
     useState(false);
   const [deleteItemId, setDeleteItemId] = useState(null);
-  const [editedTitle, setEditedTitle] = useState("");
+  const [editedTitleEn, setEditedTitleEn] = useState("");
+  const [editedTitleBn, setEditedTitleBn] = useState("");
   const [editedLink, setEditedLink] = useState("");
   const [editedMenuItem, setEditedMenuItem] = useState(null);
   const [originalMenuItem, setOriginalMenuItem] = useState(null);
@@ -79,8 +80,8 @@ export default function MenuItems() {
       ...menuItemToEdit,
     });
 
-    // Initialize editedTitle and editedLink with current values
-    setEditedTitle(menuItemToEdit.title);
+    // Initialize editedTitleEn and editedLink with current values
+    setEditedTitleEn(menuItemToEdit.title);
     setEditedLink(menuItemToEdit.link);
   };
 
@@ -94,13 +95,17 @@ export default function MenuItems() {
 
     // Check if there are changes in the edited values
     if (
-      editedTitle !== originalMenuItem.title ||
-      editedLink !== originalMenuItem.link
+      // editedTitleEn !== originalMenuItem.title ||
+      // editedLink !== originalMenuItem.link
+      editedTitleEn !== menuItemToEdit.title ||
+      editedTitleBn !== menuItemToEdit.title_bn ||
+      editedLink !== menuItemToEdit.link
     ) {
       try {
         const updatedMenuItem = {
           ...menuItemToEdit,
-          title: editedTitle,
+          title: editedTitleEn,
+          title_bn: editedTitleBn,
           link: editedLink,
         };
 
@@ -252,7 +257,7 @@ export default function MenuItems() {
               className="buttonHolder"
               style={{
                 display: "grid",
-                gridTemplateColumns: "1fr 1fr",
+                gridTemplateColumns: "1fr",
                 gap: "1em",
               }}
             >
@@ -272,7 +277,7 @@ export default function MenuItems() {
                 Show Menus
               </Button>
 
-              <Button
+              {/* <Button
                 type="primary"
                 style={{
                   backgroundColor: "var(--themes)",
@@ -286,7 +291,7 @@ export default function MenuItems() {
                 icon={<PlusCircleOutlined />}
               >
                 Add New Menu Item
-              </Button>
+              </Button> */}
             </div>
           </div>
           {console.log("Menu Items: ", menuItems)}
@@ -358,7 +363,10 @@ export default function MenuItems() {
                 onChange={(checked) =>
                   checked ? setSortType("asc") : setSortType("desc")
                 }
-                style={{ marginLeft: "1em" }}
+                style={{
+                  marginLeft: "1em",
+                  backgroundColor: "var(--theme)",
+                }}
               />
             </Col>
           </Row>
@@ -366,13 +374,13 @@ export default function MenuItems() {
             <Col span={4}>
               <h3 style={{ fontSize: "1.4em" }}>Item ID</h3>
             </Col>
-            <Col span={6}>
+            <Col span={8}>
               <h3 style={{ fontSize: "1.4em" }}>Item Name</h3>
             </Col>
             <Col span={6}>
               <h3 style={{ fontSize: "1.4em" }}>Item Link</h3>
             </Col>
-            <Col span={8}>
+            <Col span={6}>
               <h3
                 style={{
                   fontSize: "1.4em",
@@ -473,8 +481,8 @@ export default function MenuItems() {
                       allowClear
                       showSearch
                       name="title"
-                      value={editedTitle}
-                      onChange={(e) => setEditedTitle(e.target.value)}
+                      value={editedTitleEn}
+                      onChange={(e) => setEditedTitleEn(e.target.value)}
                     />
                   ) : (
                     <p style={{ fontSize: "1.2em" }}>{menuItem.title} </p>
@@ -487,8 +495,8 @@ export default function MenuItems() {
                       allowClear
                       showSearch
                       name="title_bn"
-                      value={editedTitle}
-                      onChange={(e) => setEditedTitle(e.target.value)}
+                      value={editedTitleBn}
+                      onChange={(e) => setEditedTitleBn(e.target.value)}
                     />
                   ) : (
                     <p style={{ fontSize: "1.2em" }}>
