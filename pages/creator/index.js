@@ -584,7 +584,6 @@ const Creator = () => {
                       Edit Mode
                     </Button>
                   </div>
-                  {/* {console.log("Section ID: ", section?._id)} */}
 
                   <ComponentParse
                     section={section?.data}
@@ -673,7 +672,6 @@ const Creator = () => {
                 </section>
               )}
             </div>
-            {console.log("fetchedComponent", fetchedComponent)}
             <center>
               {canvas && (
                 <div
