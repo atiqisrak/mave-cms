@@ -98,6 +98,7 @@ const CardParser = ({ item, editMode, onCardSelect, onUpdateComponent }) => {
                 />
               ) : (
                 <video
+                  muted
                   src={`${MEDIA_URL}/${item?._mave?.media_files?.file_path}`}
                   alt={item?._mave?.media_files?.file_path}
                   style={{ width: "15vw", height: "auto" }}

@@ -110,6 +110,7 @@ const EventParser = ({ item, editMode, onPressReleaseSelect }) => {
                         />
                       ) : (
                         <video
+                          muted
                           src={`${MEDIA_URL}/${event?.file_path}`}
                           alt={event?.file_path}
                           style={{ width: "10vw", height: "auto" }}
