@@ -12,7 +12,11 @@ import {
   Space,
 } from "antd";
 import instance from "../axios";
-import { UploadOutlined } from "@ant-design/icons";
+import {
+  CloseCircleOutlined,
+  ExportOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import MediaSelectionModal from "./MediaSelectionModal";
 const CreateSliderComponent = ({
   loading,
@@ -90,9 +94,43 @@ const CreateSliderComponent = ({
               </Button>
             </Form.Item>
             <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: "1rem",
+                }}
+              >
+                <Button
+                  icon={<ExportOutlined />}
+                  type="primary"
+                  htmlType="submit"
+                  style={{
+                    backgroundColor: "var(--theme)",
+                    borderColor: "var(--theme)",
+                    color: "var(--white)",
+                    borderRadius: "5px",
+                    fontSize: "1.2rem",
+                    padding: "0.5rem 2rem",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  Submit
+                </Button>
+                <Button
+                  danger
+                  icon={<CloseCircleOutlined />}
+                  onClick={() => {
+                    setShowCreateSliderForm(false);
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+
               <Modal
                 width="60vw"
                 title="Upload Media"

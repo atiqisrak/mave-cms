@@ -126,7 +126,7 @@ const CreateSlider = () => {
       const response = await instance.post("/sliders", postData);
       if (response.status === 201) {
         // Handle successful response (e.g., show a success message)
-        
+
         setLoading(false);
       } else {
         // Handle error response
@@ -168,7 +168,11 @@ const CreateSlider = () => {
               <Collapse accordion ghost items={items}></Collapse>
             </Form.Item>
             <Form.Item>
-              <Button type="primary" htmlType="submit">
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ width: "100%", backgroundColor: "#1890ff" }}
+              >
                 Submit
               </Button>
             </Form.Item>
