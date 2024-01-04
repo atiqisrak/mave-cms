@@ -37,17 +37,27 @@ import instance from "../../axios";
 import bodyParser from "../../utils/sectionperser";
 import ComponentParse from "../../components/creator/ComponentParser";
 import ScrollToButton from "../../components/ScrollToBottomButton";
+import DescriptionParser from "../../components/creator/DescriptionParser";
 const Creator = () => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
   const [collapsed, setCollapsed] = useState(false);
   const [creatorMode, setCreatorMode] = useState(null);
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
+  const [media, setMedia] = useState([]);
+  const [menus, setMenus] = useState([]);
+  const [navbars, setNavbars] = useState([]);
+  const [sliders, setSliders] = useState([]);
   const [cards, setCards] = useState([]);
+  const [forms, setForms] = useState([]);
+  const [footers, setFooters] = useState([]);
+  const [pressReleases, setPressReleases] = useState([]);
+  const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const Option = Select.Option;
   const [pageData, setPageData] = useState();
   const [showPageData, setShowPageData] = useState([]);
+  const [newSection, setNewSection] = useState();
   const [newSectionComponents, setNewSectionComponent] = useState([]);
 
   const [canvas, setCanvas] = useState(false);
@@ -56,14 +66,25 @@ const Creator = () => {
   const [selectedComponent, setSelectedComponent] = useState(null);
   // New members
   const [selectedComponentType, setSelectedComponentType] = useState(null);
+  const [existingData, setExistingData] = useState([]);
   const [selectedExistingData, setSelectedExistingData] = useState(null);
   const [fetchedComponent, setFetchedComponent] = useState([]);
   const [selectionMode, setSelectionMode] = useState(false);
   const [updateResponse, setUpdateResponse] = useState();
+  const [navbarComponents, setNavbarComponents] = useState([]);
+  const [cardComponents, setCardComponents] = useState([]);
   const [searchDefault, setSearchDefault] = useState();
   const [title, setTitle] = useState();
-  const [newData, setNewData] = useState(null);
   const [description, setDescription] = useState();
+
+  const handleCollapse = () => {
+    setCollapsed(!collapsed);
+  };
+  useEffect(() => {
+    const localCreatormode = localStorage.getItem("creatorMode");
+    localCreatormode ? setCreatorMode(localCreatormode) : setCreatorMode(false);
+  }, []);
+  console.log("some", newSectionComponents);
   const componentgallery = new Map([
     [
       "Title",
@@ -174,22 +195,6 @@ const Creator = () => {
       },
     ],
   ]);
-
-  const [sectionData, setSectionData] = useState({
-    _id: generateRandomId(16),
-    type: "",
-    _category: "root",
-    data: newSectionComponents,
-  });
-
-  const handleCollapse = () => {
-    setCollapsed(!collapsed);
-  };
-  useEffect(() => {
-    const localCreatormode = localStorage.getItem("creatorMode");
-    localCreatormode ? setCreatorMode(localCreatormode) : setCreatorMode(false);
-  }, []);
-  // console.log("some", newSectionComponents);
 
   const fetchComponents = async (data) => {
     console.log("description", data);
@@ -382,6 +387,27 @@ const Creator = () => {
 
     return randomId;
   }
+  console.log("kashfee", newSectionComponents);
+  const sectionData = {
+    _id: generateRandomId(16),
+    type: "",
+    _category: "root",
+    data: newSectionComponents,
+  };
+
+  const [sectionDatann, setSectionDatann] = useState({
+    _id: generateRandomId(16),
+    type: "",
+    _category: "root",
+    data: newSectionComponents,
+  });
+
+  const updateSectionData = (index, updatedComponent) => {
+    const updatedData = { ...sectionData };
+    updatedData.data[index] = updatedComponent;
+    sectionData = updatedData;
+  };
+
   let postDataBody;
   if (!newSectionComponents?.length) {
     postDataBody = showPageData;
@@ -416,7 +442,6 @@ const Creator = () => {
       console.log("Error updating press release", error);
     }
   };
-
   const fetchPageData = async () => {
     try {
       setLoading(true);
@@ -447,26 +472,44 @@ const Creator = () => {
     setCanvas(false);
     setShowPageData(showPageData);
   };
+  // const handleSave = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const response = await instance.put(`/pages/${pid}`, pageData);
+  //     if (response.status === 200) {
+  //       message.success("Page saved successfully");
+  //     } else {
+  //       message.error("Error saving page");
+  //     }
+  //     setLoading(false);
+  //   } catch (error) {
+  //     message.error("Error saving page");
+  //     console.log(error);
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleEditClick = (sectionId) => {
-    console.log("Section ID from index: ", sectionId);
-    console.log("Current (showPageData/Page Data): ", showPageData);
-    const updatedSection = showPageData.find((item) => item._id === sectionId);
-    console.log("Section to update: ", updatedSection);
     setEditedSectionId(sectionId);
     setEditMode(!editMode);
   };
 
+  // const handleUpdateSectionData = (index, updatedComponent) => {
+  //   console.log("Updated Section Data:", updatedComponent);
+  //   const updatedData = { ...sectionData };
+  //   updatedData.data[index] = updatedComponent;
+  //   sectionData = updatedData;
+  // };
   const handleUpdateSectionData = (updatedSectionData) => {
     console.log("Updated Section Data: ", updatedSectionData);
-    setSectionData(updatedSectionData);
+    setSectionDatann(updatedSectionData);
   };
   const handleSave = async () => {
     const updatedPageData = showPageData.map((section) => {
       if (section?._id === editedSectionId) {
         return {
           ...section,
-          data: sectionData,
+          data: sectionDatann,
         };
       }
       console.log("Section: ", section);
@@ -524,13 +567,12 @@ const Creator = () => {
 
   // Parsers
 
-  const handleCardSelect = (selectedCardId) => {
-    const selectedCardDetails = JSON.parse(selectedCardId);
-    console.log("selectedCardDetails", selectedCardDetails);
-  };
-
   const handleNavbarSelect = (selectedNavbarId) => {
     console.log("selectedNavbarId", selectedNavbarId);
+  };
+  const handleCardSelect = (selectedCardIds) => {
+    const selectedCardDetails = selectedCardIds.map((id) => JSON.parse(id));
+    console.log("selectedCardDetails", selectedCardDetails);
   };
 
   const handleMediaSelect = (selectedMediaId) => {
@@ -617,28 +659,22 @@ const Creator = () => {
                       </Button>
                     )}
                   </div>
-                  {/* {console.log("Section ID: ", section?._id)} */}
 
                   <ComponentParse
                     section={section?.data}
-                    editMode={editMode}
+                    editMode={editMode && editedSectionId == section?._id}
                     onNavbarSelect={handleNavbarSelect}
                     onCardSelect={handleCardSelect}
                     onMediaSelect={handleMediaSelect}
+                    onEventSelect={handleEventSelect}
                     onMenuSelect={handleMenuSelect}
                     onTitleChange={handleTitleChange}
                     onDescriptionChange={handleDescriptionChange}
                     onSliderSelect={handleSliderSelect}
-                    onPressReleaseSelect={handlePressReleaseSelect}
+                    onPressReleaseSelect={handleSliderSelect}
                     onFormSelect={handleFormSelect}
-                    onEventSelect={handleEventSelect}
-                    // data
-                    onUpdateSectionData={handleUpdateSectionData}
-                    sectionData={sectionData}
-                    setSectionData={setSectionData}
-                    setNewData={setNewData}
                   />
-                  {editedSectionId === section?._id && (
+                  {editMode && editedSectionId == section?._id && (
                     <center>
                       <Button
                         style={{
@@ -655,11 +691,14 @@ const Creator = () => {
                         onClick={() => {
                           setEditMode(false);
                           setEditedSectionId(null);
+                          console.log("Sending: ", sectionDatann);
+                          // handleUpdateSectionData(index, sectionData);
                           handleSave();
                         }}
                       >
                         Save
                       </Button>
+
                       <Button
                         danger
                         onClick={() => {
@@ -716,22 +755,23 @@ const Creator = () => {
                   </Button>
 
                   <ComponentParse
-                    section={sectionData?.data}
+                    section={sectionDatann?.data}
                     editMode={editMode}
                     onNavbarSelect={handleNavbarSelect}
                     onCardSelect={handleCardSelect}
                     onMediaSelect={handleMediaSelect}
+                    onEventSelect={handleEventSelect}
                     onMenuSelect={handleMenuSelect}
                     onTitleChange={handleTitleChange}
                     onDescriptionChange={handleDescriptionChange}
                     onSliderSelect={handleSliderSelect}
                     onPressReleaseSelect={handleSliderSelect}
+                    onFormSelect={handleFormSelect}
                     onUpdateSectionData={handleUpdateSectionData}
                   />
                 </section>
               )}
             </div>
-            {/* {console.log("fetchedComponent", fetchedComponent)} */}
             <center>
               {canvas && (
                 <div
@@ -776,15 +816,29 @@ const Creator = () => {
                               case "description":
                                 return (
                                   <div style={{ width: "40vw" }}>
-                                    <Input
+                                    {/* <RichTextEditor
                                       placeholder="Enter Description"
                                       onChange={(e) =>
                                         handleFormChange(
-                                          "hero_title_en",
+                                          "description",
                                           e.target.value,
                                           selectedComponentType
                                         )
                                       }
+                                    /> */}
+                                    <RichTextEditor
+                                      value={description}
+                                      editMode={true}
+                                      onChange={(value) =>
+                                        handleFormChange(
+                                          "description_en",
+                                          value
+                                        )
+                                      }
+                                      style={{
+                                        minHeight: "500px",
+                                        maxHeight: "900px",
+                                      }}
                                     />
                                     <Button
                                       onClick={() => {
