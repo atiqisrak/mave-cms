@@ -58,7 +58,7 @@ const Creator = () => {
   const [showPageData, setShowPageData] = useState([]);
   const [newSection, setNewSection] = useState();
   const [newSectionComponents, setNewSectionComponent] = useState([]);
-
+  const [newData, setNewData] = useState(null);
   const [canvas, setCanvas] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editedSectionId, setEditedSectionId] = useState(null);
@@ -75,6 +75,8 @@ const Creator = () => {
   const [searchDefault, setSearchDefault] = useState();
   const [title, setTitle] = useState();
   const [description, setDescription] = useState();
+  const [updatedSection, setUpdatedSection] = useState([]);
+  const [save, setSave] = useState(false);
 
   const handleCollapse = () => {
     setCollapsed(!collapsed);
@@ -194,6 +196,12 @@ const Creator = () => {
       },
     ],
   ]);
+  const [sectionUpdatedData, setSectionUpdatedData] = useState({
+    _id: generateRandomId(16),
+    type: "",
+    _category: "root",
+    data: newSectionComponents,
+  });
 
   const fetchComponents = async (data) => {
     console.log("description", data);
@@ -465,18 +473,41 @@ const Creator = () => {
     setShowPageData(showPageData);
   };
   const handleSave = async () => {
+    // console.log("dfgfg", showPageData);
+    // console.log("dfgfg", editedSectionId);
+
+    // console.log('adsdfsdf',updatedPageData)
+
+    // setShowPageData(updatedPageData);
+
+    const modifiedData = {
+      slug: "home",
+      type: "Page",
+      favicon_id: 10,
+      page_name_en: "Home",
+      page_name_bn: "à¦¹à§‹à¦®",
+      head: {
+        meta_title: "Home Page",
+        meta_description: "This is a home page of the MAVE CMS",
+        meta_keywords: ["home", "Page", "CMS", "Builder"],
+      },
+      body: updatedSection,
+    };
+    console.log("Sending: ", modifiedData);
+
+    // put request
+    setLoading(true);
     try {
-      setLoading(true);
-      const response = await instance.put(`/pages/${pid}`, pageData);
-      if (response.status === 200) {
-        message.success("Page saved successfully");
-      } else {
-        message.error("Error saving page");
+      const response = await instance.put(`/pages/${pid}`, modifiedData);
+      if (response?.status === 200) {
+        setUpdateResponse(response.data);
+        message.success("Page updated successfully");
+        fetchPageData();
       }
-      setLoading(false);
     } catch (error) {
-      message.error("Error saving page");
-      console.log(error);
+      message.error(error.message);
+      console.log("Error updating press release", error);
+    } finally {
       setLoading(false);
     }
   };
@@ -496,8 +527,29 @@ const Creator = () => {
   // Parsers
 
   const handleNavbarSelect = (selectedNavbarId) => {
-    console.log("selectedNavbarId", selectedNavbarId);
+    
+    const updatedPageData = showPageData.map((section) => {
+      if (section._id === editedSectionId) {
+        const updatedData = section.data.map((item) => {
+          if (item.type === selectedNavbarId.type) {
+            console.log("selectedNavbarId", selectedNavbarId);
+            return selectedNavbarId; // Replace the item with the selectedNavbarId data
+          }
+          return item;
+        });
+
+        return {
+          ...section,
+          data: updatedData,
+        };
+      }
+      return section;
+    });
+    
+
+    setUpdatedSection(updatedPageData);
   };
+  console.log("updatedSection", updatedSection);
   const handleCardSelect = (selectedCardIds) => {
     const selectedCardDetails = selectedCardIds.map((id) => JSON.parse(id));
     console.log("selectedCardDetails", selectedCardDetails);
@@ -545,87 +597,209 @@ const Creator = () => {
             }}
           >
             <div>
-              {showPageData?.map((section, index) => (
-                <section
-                  className=""
-                  style={{
-                    width: "1170px",
-                    padding: "20px 30px",
-                    border: "1px solid var(--themes)",
-                  }}
-                  key={section?._id}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      padding: "20px 30px",
-                      borderRadius: 10,
-                      color: "white",
-                      background: "var(--theme)",
-                      marginBottom: 20,
-                    }}
-                  >
-                    <h1>Section {index + 1}</h1>
-                    <Button
+              {updatedSection.length > 0 ? (
+                <>
+                  {updatedSection?.map((section, index) => (
+                    <section
+                      className=""
                       style={{
-                        margin: "10px",
-                        backgroundColor: "var(--themes",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "5px",
-                        fontSize: "1.2rem",
-                        padding: "0.6rem 1rem",
-                        height: "auto",
+                        width: "1170px",
+                        padding: "20px 30px",
+                        border: "1px solid var(--themes)",
                       }}
-                      onClick={() => handleEditClick(section?._id)}
+                      key={section?._id}
                     >
-                      Edit Mode
-                    </Button>
-                  </div>
-
-                  <ComponentParse
-                    section={section?.data}
-                    editMode={editMode && editedSectionId == section?._id}
-                    onNavbarSelect={handleNavbarSelect}
-                    onCardSelect={handleCardSelect}
-                    onMediaSelect={handleMediaSelect}
-                    onEventSelect={handleEventSelect}
-                    onMenuSelect={handleMenuSelect}
-                    onTitleChange={handleTitleChange}
-                    onDescriptionChange={handleDescriptionChange}
-                    onSliderSelect={handleSliderSelect}
-                    onPressReleaseSelect={handleSliderSelect}
-                    onFormSelect={handleFormSelect}
-                  />
-                  {editMode && (
-                    <center>
-                      <Button
+                      <div
                         style={{
-                          margin: "10px",
-                          backgroundColor: "var(--theme",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: "5px",
-                          fontSize: "1.2rem",
-                          padding: "0.6rem 1rem",
-                          marginBottom: "3rem",
-                          height: "auto",
-                        }}
-                        onClick={() => {
-                          setEditMode(false);
-                          setEditedSectionId(null);
-                          console.log("Sending: ", sectionData);
-                          handleUpdateSectionData(index, sectionData);
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          padding: "20px 30px",
+                          borderRadius: 10,
+                          color: "white",
+                          background: "var(--theme)",
+                          marginBottom: 20,
                         }}
                       >
-                        Save
-                      </Button>
-                    </center>
-                  )}
-                </section>
-              ))}
+                        <h1>Section {index + 1}</h1>
+                        {editedSectionId !== section?._id && (
+                          <Button
+                            style={{
+                              margin: "10px",
+                              backgroundColor: "var(--themes",
+                              color: "#fff",
+                              border: "none",
+                              borderRadius: "5px",
+                              fontSize: "1.2rem",
+                              padding: "0.6rem 1rem",
+                              height: "auto",
+                            }}
+                            onClick={() => handleEditClick(section?._id)}
+                          >
+                            Edit Mode
+                          </Button>
+                        )}
+                      </div>
+
+                      <ComponentParse
+                        section={section?.data}
+                        editMode={editMode && editedSectionId == section?._id}
+                        onNavbarSelect={handleNavbarSelect}
+                        onCardSelect={handleCardSelect}
+                        onMediaSelect={handleMediaSelect}
+                        onEventSelect={handleEventSelect}
+                        onMenuSelect={handleMenuSelect}
+                        onTitleChange={handleTitleChange}
+                        onDescriptionChange={handleDescriptionChange}
+                        onSliderSelect={handleSliderSelect}
+                        onPressReleaseSelect={handleSliderSelect}
+                        onFormSelect={handleFormSelect}
+                        onUpdateSectionData={handleUpdateSectionData}
+                        sectionData={sectionUpdatedData}
+                        setSectionData={setSectionUpdatedData}
+                        setNewData={setNewData}
+                      />
+                      {editedSectionId === section?._id && (
+                        <center>
+                          <Button
+                            style={{
+                              margin: "10px",
+                              backgroundColor: "var(--theme",
+                              color: "#fff",
+                              border: "none",
+                              borderRadius: "5px",
+                              fontSize: "1.2rem",
+                              padding: "0.6rem 1rem",
+                              marginBottom: "3rem",
+                              height: "auto",
+                            }}
+                            onClick={() => {
+                              setEditMode(false);
+                              setSave(true);
+                              setEditedSectionId(null);
+                              console.log("Sending: ", sectionData);
+                              handleUpdateSectionData(index, sectionData);
+                              handleSave();
+                            }}
+                          >
+                            Save
+                          </Button>
+                          <Button
+                            danger
+                            onClick={() => {
+                              setUpdatedSection([]);
+                              setEditMode(false);
+                              setEditedSectionId(null);
+                            }}
+                          >
+                            Cancel Edit
+                          </Button>
+                        </center>
+                      )}
+                    </section>
+                  ))}
+                </>
+              ) : (
+                <>
+                  {showPageData?.map((section, index) => (
+                    <section
+                      className=""
+                      style={{
+                        width: "1170px",
+                        padding: "20px 30px",
+                        border: "1px solid var(--themes)",
+                      }}
+                      key={section?._id}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          padding: "20px 30px",
+                          borderRadius: 10,
+                          color: "white",
+                          background: "var(--theme)",
+                          marginBottom: 20,
+                        }}
+                      >
+                        <h1>Section {index + 1}</h1>
+                        {editedSectionId !== section?._id && (
+                          <Button
+                            style={{
+                              margin: "10px",
+                              backgroundColor: "var(--themes",
+                              color: "#fff",
+                              border: "none",
+                              borderRadius: "5px",
+                              fontSize: "1.2rem",
+                              padding: "0.6rem 1rem",
+                              height: "auto",
+                            }}
+                            onClick={() => handleEditClick(section?._id)}
+                          >
+                            Edit Mode
+                          </Button>
+                        )}
+                      </div>
+
+                      <ComponentParse
+                        section={section?.data}
+                        editMode={editMode && editedSectionId == section?._id}
+                        onNavbarSelect={handleNavbarSelect}
+                        onCardSelect={handleCardSelect}
+                        onMediaSelect={handleMediaSelect}
+                        onEventSelect={handleEventSelect}
+                        onMenuSelect={handleMenuSelect}
+                        onTitleChange={handleTitleChange}
+                        onDescriptionChange={handleDescriptionChange}
+                        onSliderSelect={handleSliderSelect}
+                        onPressReleaseSelect={handleSliderSelect}
+                        onFormSelect={handleFormSelect}
+                        onUpdateSectionData={handleUpdateSectionData}
+                        sectionData={sectionUpdatedData}
+                        setSectionData={setSectionUpdatedData}
+                        setNewData={setNewData}
+                      />
+                      {editedSectionId === section?._id && (
+                        <center>
+                          <Button
+                            style={{
+                              margin: "10px",
+                              backgroundColor: "var(--theme",
+                              color: "#fff",
+                              border: "none",
+                              borderRadius: "5px",
+                              fontSize: "1.2rem",
+                              padding: "0.6rem 1rem",
+                              marginBottom: "3rem",
+                              height: "auto",
+                            }}
+                            onClick={() => {
+                              setEditMode(false);
+                              setEditedSectionId(null);
+                              console.log("Sending: ", sectionData);
+                              handleUpdateSectionData(index, sectionData);
+                              handleSave();
+                            }}
+                          >
+                            Save
+                          </Button>
+                          <Button
+                            danger
+                            onClick={() => {
+                              setEditMode(false);
+                              setEditedSectionId(null);
+                            }}
+                          >
+                            Cancel Edit
+                          </Button>
+                        </center>
+                      )}
+                    </section>
+                  ))}
+                </>
+              )}
             </div>
             {/* {console.log("newSectionComponents", sectionData)} */}
             <div>
@@ -651,7 +825,7 @@ const Creator = () => {
                     Section{" "}
                     {showPageData?.length ? showPageData?.length + 1 : 1}
                   </h1>
-                  <Button
+                  {/* <Button
                     style={{
                       margin: "10px",
                       backgroundColor: "var(--themes",
@@ -666,7 +840,7 @@ const Creator = () => {
                     onClick={() => setEditMode(!editMode)}
                   >
                     Edit Mode
-                  </Button>
+                  </Button> */}
 
                   <ComponentParse section={sectionData?.data} />
                 </section>
