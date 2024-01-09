@@ -123,6 +123,7 @@ const Cards = () => {
 
   const [viewCardId, setViewCardId] = useState(null);
 
+  // List View
   const SingleColumnContent = ({
     displayCards,
     editMode,
@@ -152,74 +153,233 @@ const Cards = () => {
                 style={{
                   borderRadius: "10px",
                   boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
-                  padding: "1rem",
+                  gap: "1rem",
                 }}
               >
                 <center>
-                  <h2>{card.title_en}</h2>
+                  <h2>
+                    {card.title_en} ({card?.title_bn})
+                  </h2>
                 </center>
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "6fr 9fr 1fr",
-                    gap: "1rem",
-                  }}
-                >
-                  {card?.media_files ? (
-                    card?.media_files?.file_type == "image/jpeg" ||
-                    "image/png" ||
-                    "image/jpg" ||
-                    "image/svg" ? (
-                      <Image
-                        src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
-                        height={150}
-                        width={150}
-                        style={{
-                          objectFit: "cover",
-                          borderRadius: 10,
-                        }}
-                      />
-                    ) : (
-                      <video
-                        src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
-                        height={150}
-                        width={150}
-                        style={{
-                          objectFit: "cover",
-                          borderRadius: 10,
-                        }}
-                        muted
-                        loop
-                        autoPlay
-                      />
-                    )
-                  ) : (
-                    <img
-                      src="/images/Image_Placeholder.png"
-                      height={150}
-                      width={150}
-                      style={{
-                        objectFit: "cover",
-                        borderRadius: 10,
-                      }}
-                    />
-                  )}
+                {editMode && editedCardId === card.id ? (
                   <div
                     style={{
-                      paddingTop: "1rem",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "2rem",
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
                     }}
                   >
+                    <div>
+                      {/* single media selector */}
+                      <SingleMediaSelect
+                        visible={mediaSelectionVisible}
+                        onCancel={() => setMediaSelectionVisible(false)}
+                        onMediaSelect={handleAddMediaToCard}
+                        media={media}
+                      />
+                      <div>
+                        <center>
+                          <Button
+                            type="primary"
+                            style={{
+                              marginRight: "1rem",
+                              backgroundColor: "var(--theme)",
+                              display:
+                                editMode && editedCardId === card.id
+                                  ? "inline-block"
+                                  : "none",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                            onClick={() =>
+                              handleOpenMediaSelectionModal(card.id)
+                            }
+                          >
+                            Change Media
+                          </Button>
+                        </center>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "1rem",
+                            marginTop: "1rem",
+                          }}
+                        >
+                          {card?.media_files ? (
+                            card?.media_files?.file_type == "image/jpeg" ||
+                            "image/png" ||
+                            "image/jpg" ||
+                            "image/svg" ? (
+                              <Image
+                                src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
+                                height={150}
+                                width={450}
+                                style={{
+                                  objectFit: "cover",
+                                  borderRadius: 10,
+                                  // filter: "blur(1.2px)",
+                                }}
+                              />
+                            ) : (
+                              <video
+                                src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
+                                height={150}
+                                width={150}
+                                style={{
+                                  objectFit: "cover",
+                                  borderRadius: 10,
+                                }}
+                                muted
+                                loop
+                                autoPlay
+                              />
+                            )
+                          ) : (
+                            <img
+                              src="/images/Image_Placeholder.png"
+                              height={150}
+                              width={150}
+                              style={{
+                                objectFit: "cover",
+                                borderRadius: 10,
+                              }}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      {/* Description editor */}
+                      <h3>Page:</h3>
+                      <Select
+                        showSearch
+                        id="pageName"
+                        style={{ width: 120 }}
+                        onChange={(e) => handleFieldChange("page_name", e)}
+                        value={editedCard?.page_name}
+                      >
+                        {pageNames.map((page) => (
+                          <Option value={page.value}>{page.name}</Option>
+                        ))}
+                      </Select>
+                      <br />
+                      <br />
+                      <h3>Description English:</h3>
+                      <RichTextEditor
+                        defaultValue={editedCard.description_en}
+                        editMode={editMode}
+                        onChange={(value) =>
+                          (editedCard.description_en = value)
+                        }
+                      />
+                      <br />
+                      <h3>Description Bangla:</h3>
+                      <RichTextEditor
+                        defaultValue={editedCard.description_bn}
+                        editMode={editMode}
+                        onChange={(value) =>
+                          (editedCard.description_bn = value)
+                        }
+                      />
+                      <br />
+                      <Button
+                        type="primary"
+                        style={{
+                          marginRight: "1rem",
+                          backgroundColor: "var(--theme)",
+                          display:
+                            editMode && editedCardId === card.id
+                              ? "inline-block"
+                              : "none",
+                        }}
+                        onClick={() => toggleEditMode(card)}
+                      >
+                        Save
+                      </Button>
+                      <Button
+                        type="primary"
+                        style={{
+                          backgroundColor: "transparent",
+                          color: "red",
+                          borderRadius: "10px",
+                          fontSize: "1.2em",
+                          paddingBottom: "1.8em",
+                        }}
+                        icon={<CloseCircleOutlined />}
+                        onClick={() => toggleEditMode(card)}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "6fr 5fr 1fr",
+                      gap: "1rem",
+                      paddingTop: "1rem",
+                    }}
+                  >
+                    {card?.media_files ? (
+                      card?.media_files?.file_type == "image/jpeg" ||
+                      "image/png" ||
+                      "image/jpg" ||
+                      "image/svg" ? (
+                        <Image
+                          src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
+                          height={150}
+                          width={450}
+                          style={{
+                            objectFit: "cover",
+                            borderRadius: 10,
+                          }}
+                        />
+                      ) : (
+                        <video
+                          src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
+                          height={150}
+                          width={150}
+                          style={{
+                            objectFit: "cover",
+                            borderRadius: 10,
+                          }}
+                          muted
+                          loop
+                          autoPlay
+                        />
+                      )
+                    ) : (
+                      <img
+                        src="/images/Image_Placeholder.png"
+                        height={150}
+                        width={150}
+                        style={{
+                          objectFit: "cover",
+                          borderRadius: 10,
+                        }}
+                      />
+                    )}
                     <div
                       style={{
+                        paddingTop: "1rem",
                         display: "flex",
-                        gap: "1rem",
+                        flexDirection: "column",
+                        justifyContent: "flex-start",
+                        // alignItems: "center",
+                        gap: "2rem",
                       }}
                     >
-                      <h4 htmlFor="pageName">Page: </h4>
-                      {editMode && editedCardId === card.id ? (
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "1rem",
+                          fontSize: "1.8em",
+                        }}
+                      >
+                        <h4 htmlFor="pageName">Page: </h4>
+                        {/* {editMode && editedCardId === card.id ? (
                         <Select
                           showSearch
                           id="pageName"
@@ -231,7 +391,7 @@ const Cards = () => {
                             <Option value={page.value}>{page.name}</Option>
                           ))}
                         </Select>
-                      ) : (
+                      ) : ( */}
                         <h4>
                           {card?.page_name
                             ? pageNames.find(
@@ -239,16 +399,125 @@ const Cards = () => {
                               )?.name
                             : "N/A"}
                         </h4>
-                      )}
+                        {/* )} */}
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "0.5rem",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <p
+                          style={{
+                            // text limit
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 1,
+                            WebkitBoxOrient: "vertical",
+                          }}
+                          dangerouslySetInnerHTML={{
+                            __html: card?.description_en,
+                          }}
+                        />
+                        <p
+                          style={{
+                            // text limit
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 1,
+                            WebkitBoxOrient: "vertical",
+                          }}
+                          dangerouslySetInnerHTML={{
+                            __html: card?.description_bn,
+                          }}
+                        />
+                        {/* display card details only of which is clicked */}
+                        {viewDetails && viewCardId == card?.id && (
+                          // <CardViewer
+                          //   card={card}
+                          //   editMode={editMode}
+                          //   viewDetails={viewDetails}
+                          //   setViewDetails={setViewDetails}
+                          // />
+                          <Modal
+                            title={card?.title_en + " Card Details"}
+                            open={viewDetails}
+                            onCancel={() => setViewDetails(false)}
+                            footer={null}
+                            width={700}
+                          >
+                            <center>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    textAlign: "left",
+                                  }}
+                                >
+                                  <h2>Desctiption:</h2>
+                                  <p
+                                    style={{
+                                      textAlign: "left",
+                                    }}
+                                    dangerouslySetInnerHTML={{
+                                      __html: card?.description_en,
+                                    }}
+                                  />
+                                </div>
+
+                                <div
+                                  style={{
+                                    textAlign: "right",
+                                  }}
+                                >
+                                  <h2>Bornona: </h2>
+                                  <p
+                                    dangerouslySetInnerHTML={{
+                                      __html: card?.description_bn,
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            </center>
+                          </Modal>
+                        )}
+                      </div>
                     </div>
                     <div
                       style={{
                         display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        flexDirection: "column",
                         gap: "1rem",
                       }}
                     >
+                      <Button
+                        type="primary"
+                        style={{
+                          backgroundColor: "transparent",
+                          color: editMode ? "green" : "var(--theme)",
+                          borderRadius: "10px",
+                          fontSize: "1.2em",
+                          paddingBottom: "1.8em",
+                        }}
+                        icon={editMode ? <SelectOutlined /> : <EditFilled />}
+                        onClick={() => toggleEditMode(card)}
+                      >
+                        {/* {editMode && editedCardId === card.id ? "Save" : "Edit"} */}
+                      </Button>
                       {card?.description_en && (
                         <Button
+                          style={{
+                            color: "green",
+                          }}
                           icon={
                             viewDetails ? (
                               <CloseCircleOutlined />
@@ -263,63 +532,467 @@ const Cards = () => {
                             setViewCardId(card?.id);
                           }}
                         >
-                          {viewDetails ? "Close" : "View"}
+                          {/* {viewDetails ? "Close" : "View"} */}
                         </Button>
                       )}
-                      {/* display card details only of which is clicked */}
-                      {viewDetails && viewCardId == card?.id && (
-                        <CardViewer
-                          card={card}
-                          editMode={editMode}
-                          viewDetails={viewDetails}
-                          setViewDetails={setViewDetails}
-                        />
-                      )}
+                      <Button
+                        type="primary"
+                        style={{
+                          backgroundColor: "transparent",
+                          color: "red",
+                          borderRadius: "10px",
+                          fontSize: "1.2em",
+                          paddingBottom: "1.8em",
+                        }}
+                        icon={
+                          editMode ? (
+                            <CloseCircleOutlined />
+                          ) : (
+                            <DeleteOutlined />
+                          )
+                        }
+                        onClick={() => {
+                          editMode ? toggleEditMode(card) : deleteCard(card.id);
+                        }}
+                      >
+                        {/* {editMode ? "Cancel" : "Delete"} */}
+                      </Button>
                     </div>
                   </div>
+                )}
+              </Card>
+            </Col>
+          );
+        })}
+      </>
+    );
+  };
+
+  // Grid View
+  const GridContent = ({
+    displayCards,
+    editMode,
+    editedCardId,
+    editedCard,
+    handleOpenMediaSelectionModal,
+    handleFieldChange,
+    toggleEditMode,
+    deleteCard,
+    media,
+    setMediaSelectionVisible,
+    handleAddMediaToCard,
+  }) => {
+    return (
+      <>
+        {displayCards?.map((card) => {
+          const mediaIds = card.media_ids
+            ? card.media_ids.split(",")?.map(Number)
+            : [];
+          const mediaItems = media.filter((mediaItem) =>
+            mediaIds.includes(mediaItem.id)
+          );
+
+          return (
+            <Col span={8} key={card.id}>
+              <Card
+                style={{
+                  borderRadius: "10px",
+                  boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+                  gap: "1rem",
+                }}
+              >
+                <center>
+                  <h2>
+                    {card.title_en} ({card?.title_bn})
+                  </h2>
+                </center>
+                {editMode && editedCardId === card.id ? (
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                    }}
+                  >
+                    <div>
+                      {/* single media selector */}
+                      <SingleMediaSelect
+                        visible={mediaSelectionVisible}
+                        onCancel={() => setMediaSelectionVisible(false)}
+                        onMediaSelect={handleAddMediaToCard}
+                        media={media}
+                      />
+                      <div>
+                        <center>
+                          <Button
+                            type="primary"
+                            style={{
+                              marginRight: "1rem",
+                              backgroundColor: "var(--theme)",
+                              display:
+                                editMode && editedCardId === card.id
+                                  ? "inline-block"
+                                  : "none",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                            onClick={() =>
+                              handleOpenMediaSelectionModal(card.id)
+                            }
+                          >
+                            Change Media
+                          </Button>
+                        </center>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "1rem",
+                            marginTop: "1rem",
+                          }}
+                        >
+                          {card?.media_files ? (
+                            card?.media_files?.file_type == "image/jpeg" ||
+                            "image/png" ||
+                            "image/jpg" ||
+                            "image/svg" ? (
+                              <Image
+                                src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
+                                height={150}
+                                width={450}
+                                style={{
+                                  objectFit: "cover",
+                                  borderRadius: 10,
+                                  // filter: "blur(1.2px)",
+                                }}
+                              />
+                            ) : (
+                              <video
+                                src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
+                                height={150}
+                                width={150}
+                                style={{
+                                  objectFit: "cover",
+                                  borderRadius: 10,
+                                }}
+                                muted
+                                loop
+                                autoPlay
+                              />
+                            )
+                          ) : (
+                            <img
+                              src="/images/Image_Placeholder.png"
+                              height={150}
+                              width={150}
+                              style={{
+                                objectFit: "cover",
+                                borderRadius: 10,
+                              }}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      {/* Description editor */}
+                      <h3>Page:</h3>
+                      <Select
+                        showSearch
+                        id="pageName"
+                        style={{ width: 120 }}
+                        onChange={(e) => handleFieldChange("page_name", e)}
+                        value={editedCard?.page_name}
+                      >
+                        {pageNames.map((page) => (
+                          <Option value={page.value}>{page.name}</Option>
+                        ))}
+                      </Select>
+                      <br />
+                      <br />
+                      <h3>Description English:</h3>
+                      <RichTextEditor
+                        defaultValue={editedCard.description_en}
+                        editMode={editMode}
+                        onChange={(value) =>
+                          (editedCard.description_en = value)
+                        }
+                      />
+                      <br />
+                      <h3>Description Bangla:</h3>
+                      <RichTextEditor
+                        defaultValue={editedCard.description_bn}
+                        editMode={editMode}
+                        onChange={(value) =>
+                          (editedCard.description_bn = value)
+                        }
+                      />
+                      <br />
+                      <Button
+                        type="primary"
+                        style={{
+                          marginRight: "1rem",
+                          backgroundColor: "var(--theme)",
+                          display:
+                            editMode && editedCardId === card.id
+                              ? "inline-block"
+                              : "none",
+                        }}
+                        onClick={() => toggleEditMode(card)}
+                      >
+                        Save
+                      </Button>
+                      <Button
+                        type="primary"
+                        style={{
+                          backgroundColor: "transparent",
+                          color: "red",
+                          borderRadius: "10px",
+                          fontSize: "1.2em",
+                          paddingBottom: "1.8em",
+                        }}
+                        icon={<CloseCircleOutlined />}
+                        onClick={() => toggleEditMode(card)}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
                   <div
                     style={{
                       display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
                       flexDirection: "column",
                       gap: "1rem",
+                      paddingTop: "1rem",
                     }}
                   >
-                    <Button
-                      type="primary"
+                    {card?.media_files ? (
+                      card?.media_files?.file_type == "image/jpeg" ||
+                      "image/png" ||
+                      "image/jpg" ||
+                      "image/svg" ? (
+                        <Image
+                          src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
+                          height={250}
+                          width={350}
+                          style={{
+                            objectFit: "cover",
+                            borderRadius: 10,
+                          }}
+                        />
+                      ) : (
+                        <video
+                          src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
+                          height={150}
+                          width={150}
+                          style={{
+                            objectFit: "cover",
+                            borderRadius: 10,
+                          }}
+                          muted
+                          loop
+                          autoPlay
+                        />
+                      )
+                    ) : (
+                      <img
+                        src="/images/Image_Placeholder.png"
+                        height={150}
+                        width={150}
+                        style={{
+                          objectFit: "cover",
+                          borderRadius: 10,
+                        }}
+                      />
+                    )}
+                    <div
                       style={{
-                        backgroundColor: "transparent",
-                        color: editMode ? "green" : "var(--theme)",
-                        borderRadius: "10px",
-                        fontSize: "1.2em",
-                        paddingBottom: "1.8em",
+                        paddingTop: "1rem",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "flex-start",
+                        // alignItems: "center",
+                        gap: "2rem",
                       }}
-                      icon={editMode ? <SelectOutlined /> : <EditFilled />}
-                      onClick={() => toggleEditMode(card)}
                     >
-                      {/* {editMode && editedCardId === card.id ? "Save" : "Edit"} */}
-                    </Button>
-                    <Button
-                      type="primary"
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "1rem",
+                          fontSize: "1.8em",
+                        }}
+                      >
+                        <h4 htmlFor="pageName">Page: </h4>
+                        <h4>
+                          {card?.page_name
+                            ? pageNames.find(
+                                (page) => page.value === card.page_name
+                              )?.name
+                            : "N/A"}
+                        </h4>
+                        {/* )} */}
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "0.5rem",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <p
+                          style={{
+                            // text limit
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 1,
+                            WebkitBoxOrient: "vertical",
+                          }}
+                          dangerouslySetInnerHTML={{
+                            __html: card?.description_en,
+                          }}
+                        />
+                        <p
+                          style={{
+                            // text limit
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 1,
+                            WebkitBoxOrient: "vertical",
+                          }}
+                          dangerouslySetInnerHTML={{
+                            __html: card?.description_bn,
+                          }}
+                        />
+                        {/* display card details only of which is clicked */}
+                        {viewDetails && viewCardId == card?.id && (
+                          // <CardViewer
+                          //   card={card}
+                          //   editMode={editMode}
+                          //   viewDetails={viewDetails}
+                          //   setViewDetails={setViewDetails}
+
+                          // />
+                          <Modal
+                            title={card?.title_en + " Card Details"}
+                            open={viewDetails}
+                            onCancel={() => setViewDetails(false)}
+                            footer={null}
+                            width={700}
+                          >
+                            <center>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    textAlign: "left",
+                                  }}
+                                >
+                                  <h2>Desctiption:</h2>
+                                  <p
+                                    style={{
+                                      textAlign: "left",
+                                    }}
+                                    dangerouslySetInnerHTML={{
+                                      __html: card?.description_en,
+                                    }}
+                                  />
+                                </div>
+
+                                <div
+                                  style={{
+                                    textAlign: "right",
+                                  }}
+                                >
+                                  <h2>Bornona: </h2>
+                                  <p
+                                    dangerouslySetInnerHTML={{
+                                      __html: card?.description_bn,
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            </center>
+                          </Modal>
+                        )}
+                      </div>
+                    </div>
+                    <div
                       style={{
-                        backgroundColor: "transparent",
-                        color: "red",
-                        borderRadius: "10px",
-                        fontSize: "1.2em",
-                        paddingBottom: "1.8em",
-                      }}
-                      icon={
-                        editMode ? <CloseCircleOutlined /> : <DeleteOutlined />
-                      }
-                      onClick={() => {
-                        editMode ? toggleEditMode(card) : deleteCard(card.id);
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        // flexDirection: "column",
+                        gap: "1rem",
                       }}
                     >
-                      {/* {editMode ? "Cancel" : "Delete"} */}
-                    </Button>
+                      <Button
+                        type="primary"
+                        style={{
+                          backgroundColor: "transparent",
+                          color: editMode ? "green" : "var(--theme)",
+                          borderRadius: "10px",
+                          fontSize: "1.2em",
+                          paddingBottom: "1.8em",
+                        }}
+                        icon={editMode ? <SelectOutlined /> : <EditFilled />}
+                        onClick={() => toggleEditMode(card)}
+                      >
+                        {/* {editMode && editedCardId === card.id ? "Save" : "Edit"} */}
+                      </Button>
+                      {card?.description_en && (
+                        <Button
+                          style={{
+                            color: "green",
+                          }}
+                          icon={
+                            viewDetails ? (
+                              <CloseCircleOutlined />
+                            ) : (
+                              <EyeFilled />
+                            )
+                          }
+                          onClick={() => {
+                            setViewDetails(!viewDetails);
+                            // detailsViewer(card?.id, card);
+                            console.log("Card Clicked: ", card?.id);
+                            setViewCardId(card?.id);
+                          }}
+                        >
+                          {/* {viewDetails ? "Close" : "View"} */}
+                        </Button>
+                      )}
+                      <Button
+                        type="primary"
+                        style={{
+                          backgroundColor: "transparent",
+                          color: "red",
+                          borderRadius: "10px",
+                          fontSize: "1.2em",
+                          paddingBottom: "1.8em",
+                        }}
+                        icon={
+                          editMode ? (
+                            <CloseCircleOutlined />
+                          ) : (
+                            <DeleteOutlined />
+                          )
+                        }
+                        onClick={() => {
+                          editMode ? toggleEditMode(card) : deleteCard(card.id);
+                        }}
+                      >
+                        {/* {editMode ? "Cancel" : "Delete"} */}
+                      </Button>
+                    </div>
                   </div>
-                </div>
+                )}
               </Card>
             </Col>
           );
@@ -473,22 +1146,50 @@ const Cards = () => {
 
   return (
     <>
-      <div className="ViewContainer">
-        <div className="ViewContentContainer">
+      <div className="ViewContainer ViewContentContainer">
+        <div
+          className="TopbarContainer"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+          }}
+        >
+          <h1 style={{ paddingBottom: "2em" }}>These are Cards</h1>
+
           <div
-            className="TopbarContainer"
+            className="buttonHolder"
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 1fr",
+              gridTemplateColumns: "1fr",
             }}
           >
-            <h1 style={{ paddingBottom: "2em" }}>These are Cards</h1>
-
-            <div
-              className="buttonHolder"
+            <Button
+              type="primary"
               style={{
-                display: "grid",
-                gridTemplateColumns: "1fr",
+                backgroundColor: "var(--themes)",
+                borderColor: "var(--themes)",
+                color: "white",
+                borderRadius: "10px",
+                fontSize: "1.2em",
+                paddingBottom: "1.8em",
+              }}
+              icon={<PlusCircleOutlined />}
+              onClick={toggleCreateCardForm}
+            >
+              Add New Card
+            </Button>
+          </div>
+        </div>
+        <div className="tableContainer">
+          {isLoading && <Loader />}
+
+          {/* Settings */}
+          <div className="settingsContainer">
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
               }}
             >
               <Button
@@ -500,158 +1201,154 @@ const Cards = () => {
                   borderRadius: "10px",
                   fontSize: "1.2em",
                   paddingBottom: "1.8em",
+                  marginBottom: "2em",
                 }}
-                icon={<PlusCircleOutlined />}
-                onClick={toggleCreateCardForm}
+                icon={<FilterOutlined />}
+                onClick={() => setSettingsVisible(!settingsVisible)}
               >
-                Add New Card
+                Filter
               </Button>
-            </div>
-          </div>
-          <div className="tableContainer">
-            {isLoading && <Loader />}
-
-            {/* Settings */}
-            <div className="settingsContainer">
+              {/* Toggler for grid view and list view */}
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
+                  gap: "1rem",
                 }}
               >
-                <Button
-                  type="primary"
+                {/* <label htmlFor="displayMode">Display Mode</label> */}
+                <Switch
+                  id="displayMode"
+                  checkedChildren={<UnorderedListOutlined />}
+                  unCheckedChildren={<AppstoreOutlined />}
+                  defaultChecked={displayMode}
+                  onChange={toggleDisplayMode}
+                  size="large"
                   style={{
-                    backgroundColor: "var(--themes)",
-                    borderColor: "var(--themes)",
-                    color: "white",
-                    borderRadius: "10px",
-                    fontSize: "1.2em",
-                    paddingBottom: "1.8em",
-                    marginBottom: "2em",
+                    fontSize: "3.2em",
                   }}
-                  icon={<FilterOutlined />}
-                  onClick={() => setSettingsVisible(!settingsVisible)}
-                >
-                  Filter
-                </Button>
-                {/* Toggler for grid view and list view */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: "1rem",
-                  }}
-                >
-                  {/* <label htmlFor="displayMode">Display Mode</label> */}
-                  <Switch
-                    id="displayMode"
-                    checkedChildren={<UnorderedListOutlined />}
-                    unCheckedChildren={<AppstoreOutlined />}
-                    defaultChecked
-                    size="large"
-                    style={{
-                      fontSize: "3.2em",
-                    }}
-                  />
-                </div>
+                />
               </div>
+            </div>
 
+            <div
+              className="settings"
+              style={{
+                display: settingsVisible ? "block" : "none",
+              }}
+            >
               <div
-                className="settings"
                 style={{
-                  display: settingsVisible ? "block" : "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "1rem",
                 }}
               >
                 <div
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "space-between",
                     gap: "1rem",
                   }}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "1rem",
-                    }}
+                  <label htmlFor="sortBy">Sort by time</label>
+                  <Select
+                    showSearch
+                    id="sortBy"
+                    defaultValue={sortBy}
+                    style={{ width: 120 }}
+                    onChange={(e) => handleSortBy(e)}
+                    value={sortBy}
                   >
-                    <label htmlFor="sortBy">Sort by time</label>
-                    <Select
-                      showSearch
-                      id="sortBy"
-                      defaultValue={sortBy}
-                      style={{ width: 120 }}
-                      onChange={(e) => handleSortBy(e)}
-                      value={sortBy}
-                    >
-                      <Option value="desc">Descending</Option>
-                      <Option value="asc">Ascending</Option>
-                    </Select>
-                  </div>
-                  {/* Filter by page name */}
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "1rem",
-                    }}
+                    <Option value="desc">Descending</Option>
+                    <Option value="asc">Ascending</Option>
+                  </Select>
+                </div>
+                {/* Filter by page name */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "1rem",
+                  }}
+                >
+                  <label htmlFor="pageName">Filter by page name</label>
+                  <Select
+                    showSearch
+                    id="pageName"
+                    style={{ width: 120 }}
+                    onChange={(e) => handleFilterByPageName(e)}
                   >
-                    <label htmlFor="pageName">Filter by page name</label>
-                    <Select
-                      showSearch
-                      id="pageName"
-                      style={{ width: 120 }}
-                      onChange={(e) => handleFilterByPageName(e)}
-                    >
-                      {pageNames.map((page) => (
-                        <Option value={page.value}>{page.name}</Option>
-                      ))}
-                    </Select>
-                  </div>
+                    {pageNames.map((page) => (
+                      <Option value={page.value}>{page.name}</Option>
+                    ))}
+                  </Select>
+                </div>
 
-                  {/* {console.log(cardData)} */}
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "1rem",
-                    }}
+                {/* {console.log(cardData)} */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "1rem",
+                  }}
+                >
+                  <label htmlFor="search">Search</label>
+                  {/* Search with ant design */}
+                  <Search
+                    id="search"
+                    placeholder="Search by title"
+                    onChange={(e) => handleSearch(e.target.value)}
+                    enterButton
+                    allowClear
+                  />
+                  <Button
+                    type="primary"
+                    onClick={handleClear}
+                    // disabled={isEmptyInput}
+                    danger
+                    icon={<RestOutlined />}
                   >
-                    <label htmlFor="search">Search</label>
-                    {/* Search with ant design */}
-                    <Search
-                      id="search"
-                      placeholder="Search by title"
-                      onChange={(e) => handleSearch(e.target.value)}
-                      enterButton
-                      allowClear
-                    />
-                    <Button
-                      type="primary"
-                      onClick={handleClear}
-                      // disabled={isEmptyInput}
-                      danger
-                      icon={<RestOutlined />}
-                    >
-                      Reset
-                    </Button>
-                  </div>
+                    Reset
+                  </Button>
                 </div>
               </div>
             </div>
-            {/* Display mode UI */}
-            <div
-              className="displayModeContainer"
-              style={{
-                display: displayMode ? "block" : "none",
-              }}
-            >
-              <Row gutter={[16, 16]}>
+          </div>
+          {/* Display mode UI */}
+          <div
+            className="displayModeContainer"
+            style={{
+              display: displayMode ? "block" : "none",
+              paddingTop: "2rem",
+            }}
+          >
+            <Row gutter={[16, 16]}>
+              {isCreateCardFormVisible && (
+                <Col span={24}>
+                  <CreateCardForm
+                    handleCreateCard={handleCreateCard}
+                    toggleCreateCardForm={toggleCreateCardForm}
+                  />
+                </Col>
+              )}
+              {displayMode ? (
+                <GridContent
+                  displayCards={displayCards}
+                  editMode={editMode}
+                  editedCardId={editedCardId}
+                  editedCard={editedCard}
+                  handleOpenMediaSelectionModal={handleOpenMediaSelectionModal}
+                  handleFieldChange={handleFieldChange}
+                  toggleEditMode={toggleEditMode}
+                  deleteCard={deleteCard}
+                  media={media}
+                  setMediaSelectionVisible={setMediaSelectionVisible}
+                  handleAddMediaToCard={handleAddMediaToCard}
+                />
+              ) : (
                 <SingleColumnContent
                   displayCards={displayCards}
                   editMode={editMode}
@@ -665,24 +1362,24 @@ const Cards = () => {
                   setMediaSelectionVisible={setMediaSelectionVisible}
                   handleAddMediaToCard={handleAddMediaToCard}
                 />
-              </Row>
-            </div>
-
-            <Pagination
-              current={currentPage}
-              total={cardData.length}
-              pageSize={numberOfCardsPerPage}
-              onChange={(page, pageSize) => {
-                setCurrentPage(page);
-              }}
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: "2rem",
-              }}
-            />
+              )}
+            </Row>
           </div>
+
+          <Pagination
+            current={currentPage}
+            total={cardData.length}
+            pageSize={numberOfCardsPerPage}
+            onChange={(page, pageSize) => {
+              setCurrentPage(page);
+            }}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: "2rem",
+            }}
+          />
         </div>
       </div>
     </>
