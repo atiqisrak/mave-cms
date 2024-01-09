@@ -28,14 +28,23 @@ const ComponentParse = ({
   onPressReleaseSelect,
   onUpdateSectionData,
   onFormSelect,
+  setNewData,
+  setSectionData,
 }) => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
 
   // Callback function to update section data
-  const handleComponentChange = (index, updatedComponent, sectionId) => {
+  const handleComponentChange = (index, updatedComponent) => {
     if (onUpdateSectionData) {
       console.log("updatedComponent", updatedComponent);
-      onUpdateSectionData(index, updatedComponent, sectionId);
+      // onUpdateSectionData(index, updatedComponent, sectionId);
+      const updatedSection = section ? [...section] : [];
+    updatedSection[index] = updatedComponent;
+
+    console.log("Updated Section: ", updatedSection);
+    onUpdateSectionData(updatedSection);
+    setNewData(updatedSection);
+    setSectionData(updatedSection);
     }
   };
 

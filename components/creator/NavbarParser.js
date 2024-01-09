@@ -37,8 +37,9 @@ const NavbarParser = ({ item, editMode, onNavbarSelect }) => {
   // }
 
   const handleNavbarChange = (value) => {
+    const selectedNavbar = navbars.find((navbar) => navbar.id === value);
     setSelectedNavbar(value);
-    onNavbarSelect(value);
+    onNavbarSelect({_mave:selectedNavbar,type:"navbar",id:value});
   };
 
   return (
