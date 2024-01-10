@@ -60,7 +60,7 @@ const MenuParser = ({ item, editMode, onMenuSelect }) => {
           <div
             style={{
               margin: "2em 1em",
-              border: "2px solid var(--theme)",
+              // border: "2px solid var(--theme)",
               borderRadius: 10,
               padding: "2em 1em",
             }}
