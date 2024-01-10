@@ -2,12 +2,7 @@ import { Select } from "antd";
 import React, { useState, useEffect } from "react";
 import instance from "../../axios";
 
-const NavbarParser = ({
-  item,
-  editMode,
-  onNavbarSelect,
-  onUpdateComponent,
-}) => {
+const NavbarParser = ({ item, editMode, onNavbarSelect }) => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
   const { Option } = Select;
   const [loading, setLoading] = useState(false);
@@ -37,16 +32,14 @@ const NavbarParser = ({
     }
   }, [editMode]);
 
-  const handleNavbarChange = (value) => {
-    setSelectedNavbar(value);
-    onNavbarSelect(value);
+  // if (editMode) {
+  //   fetchNavbars();
+  // }
 
-    // Call the function to update the section data in the parent component
-    onUpdateComponent({
-      ...item,
-      type: "navbar",
-      id: value,
-    });
+  const handleNavbarChange = (value) => {
+    const selectedNavbar = navbars.find((navbar) => navbar.id === value);
+    setSelectedNavbar(value);
+    onNavbarSelect({ _mave: selectedNavbar, type: "navbar", id: value });
   };
 
   return (
@@ -56,7 +49,7 @@ const NavbarParser = ({
           <div className="navbar">
             <Select
               showSearch
-              style={{ width: "100%" }}
+              style={{ width: "100%", height: "100px", margin: "1em 0" }}
               placeholder="Select a navbar"
               optionFilterProp="children"
               onChange={handleNavbarChange}

@@ -33,21 +33,23 @@ const ComponentParse = ({
 }) => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
 
+  // Callback function to update section data
   const handleComponentChange = (index, updatedComponent) => {
-    console.log("Current Section data: ", section || "No Section");
-    console.log("Updated Component: ", updatedComponent);
+    if (onUpdateSectionData) {
+      console.log("updatedComponent", updatedComponent);
+      // onUpdateSectionData(index, updatedComponent, sectionId);
+      const updatedSection = section ? [...section] : [];
+      updatedSection[index] = updatedComponent;
 
-    const updatedSection = section ? [...section] : [];
-    updatedSection[index] = updatedComponent;
-
-    console.log("Updated Section: ", updatedSection);
-    onUpdateSectionData(updatedSection);
-    setNewData(updatedSection);
-    setSectionData(updatedSection);
+      console.log("Updated Section: ", updatedSection);
+      onUpdateSectionData(updatedSection);
+      setNewData(updatedSection);
+      setSectionData(updatedSection);
+    }
   };
 
   return (
-    <div className="chuchu">
+    <div>
       {section?.map((item, index) => (
         <section key={index}>
           {(() => {
@@ -58,13 +60,11 @@ const ComponentParse = ({
                     item={item}
                     editMode={editMode}
                     onNavbarSelect={onNavbarSelect}
-                    sectionId={section?._id}
                     onUpdateComponent={(updatedComponent) =>
                       handleComponentChange(index, updatedComponent)
                     }
                   />
                 );
-
               case "card":
                 return (
                   <CardParser
@@ -73,11 +73,15 @@ const ComponentParse = ({
                     editMode={editMode}
                     onCardSelect={onCardSelect}
                     onUpdateComponent={(updatedComponent) =>
-                      handleComponentChange(index, updatedComponent)
+                      handleComponentChange(
+                        index,
+                        updatedComponent,
+                        section?._id
+                      )
                     }
+                    type="card"
                   />
                 );
-
               case "title":
                 return (
                   <TitleParser
