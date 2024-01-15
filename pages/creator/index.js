@@ -9,6 +9,7 @@ import {
   Input,
   message,
   Modal,
+  Popconfirm,
 } from "antd";
 import { useRouter } from "next/router";
 import {
@@ -85,7 +86,7 @@ const Creator = () => {
     const localCreatormode = localStorage.getItem("creatorMode");
     localCreatormode ? setCreatorMode(localCreatormode) : setCreatorMode(false);
   }, []);
-  console.log("some", newSectionComponents);
+  // console.log("newSectionComponents", newSectionComponents);
   const componentgallery = new Map([
     [
       "Title",
@@ -394,7 +395,7 @@ const Creator = () => {
 
     return randomId;
   }
-  console.log("kashfee", newSectionComponents);
+  // console.log("newSectionComponents", newSectionComponents);
   const sectionData = {
     _id: generateRandomId(16),
     type: "",
@@ -547,41 +548,215 @@ const Creator = () => {
 
     setUpdatedSection(updatedPageData);
   };
-  console.log("updatedSection", updatedSection);
-  const handleCardSelect = (selectedCardIds) => {
-    const selectedCardDetails = selectedCardIds.map((id) => JSON.parse(id));
-    console.log("selectedCardDetails", selectedCardDetails);
+
+  const handleCardSelect = (selectedCardId) => {
+    console.log("Index of the changed card: ", selectedCardId?.niloy);
+    // change card data of only the index of the component in the section
+    const updatedPageData = showPageData.map((section) => {
+      if (section._id === editedSectionId) {
+        const updatedData = section.data.map((item, index) => {
+          if (index === selectedCardId?.niloy) {
+            console.log("selectedCardId", selectedCardId);
+            return selectedCardId;
+          }
+          return item;
+        });
+
+        return {
+          ...section,
+          data: updatedData,
+        };
+      }
+      return section;
+    });
+    setUpdatedSection(updatedPageData);
   };
+  console.log("updatedSection (Cards)", updatedSection);
 
   const handleMediaSelect = (selectedMediaId) => {
-    console.log("selectedMediaId", selectedMediaId);
+    const updatedPageData = showPageData.map((section) => {
+      if (section._id === editedSectionId) {
+        const updatedData = section.data.map((item) => {
+          if (item.type === selectedMediaId.type) {
+            console.log("selectedMediaId", selectedMediaId);
+            return selectedMediaId; // Replace the item with the selectedMediaId data
+          }
+          return item;
+        });
+
+        return {
+          ...section,
+          data: updatedData,
+        };
+      }
+      return section;
+    });
+    setUpdatedSection(updatedPageData);
   };
+  // console.log("updatedSection", updatedSection);
+
   const handleEventSelect = (selectedEventId) => {
     console.log("selectedEventId", selectedEventId);
   };
 
   const handleMenuSelect = (selectedMenuId) => {
-    console.log("selectedMenuId", selectedMenuId);
+    const updatedPageData = showPageData.map((section) => {
+      if (section._id === editedSectionId) {
+        const updatedData = section.data.map((item) => {
+          if (item.type === selectedMenuId.type) {
+            console.log("selectedMenuId", selectedMenuId);
+            return selectedMenuId; // Replace the item with the selectedMenuId data
+          }
+          return item;
+        });
+
+        return {
+          ...section,
+          data: updatedData,
+        };
+      }
+      return section;
+    });
+    setUpdatedSection(updatedPageData);
   };
+  // console.log("updatedSection", updatedSection);
 
   const handleTitleChange = (value) => {
-    console.log("Title changed", value);
+    const updatedPageData = showPageData.map((section) => {
+      if (section._id === editedSectionId) {
+        const updatedData = section.data.map((item) => {
+          if (item.type === "title") {
+            return value; // Replace the item with the selectedTitleId data
+          }
+          return item;
+        });
+
+        return {
+          ...section,
+          data: updatedData,
+        };
+      }
+      return section;
+    });
+    setUpdatedSection(updatedPageData);
   };
+  // console.log("updatedSection", updatedSection);
 
   const handleDescriptionChange = (value) => {
-    console.log("Description changed", value);
+    const updatedPageData = showPageData.map((section) => {
+      if (section._id === editedSectionId) {
+        const updatedData = section.data.map((item) => {
+          if (item.type === "description") {
+            return value; // Replace the item with the selectedDescriptionId data
+          }
+          return item;
+        });
+
+        return {
+          ...section,
+          data: updatedData,
+        };
+      }
+      return section;
+    });
+    setUpdatedSection(updatedPageData);
   };
+  // console.log("updatedSection", updatedSection);
 
   const handleSliderSelect = (selectedSliderId) => {
-    console.log("selectedSliderId", selectedSliderId);
+    const updatedPageData = showPageData.map((section) => {
+      if (section._id === editedSectionId) {
+        const updatedData = section.data.map((item) => {
+          if (item.type === selectedSliderId.type) {
+            console.log("selectedSliderId", selectedSliderId);
+            return selectedSliderId; // Replace the item with the selectedSliderId data
+          }
+          return item;
+        });
+
+        return {
+          ...section,
+          data: updatedData,
+        };
+      }
+      return section;
+    });
+    setUpdatedSection(updatedPageData);
   };
+  // console.log("updatedSection", updatedSection);
 
   const handlePressReleaseSelect = (selectedPressReleaseId) => {
-    console.log("selectedPressReleaseId", selectedPressReleaseId);
+    const updatedPageData = showPageData.map((section) => {
+      if (section._id === editedSectionId) {
+        const updatedData = section.data.map((item) => {
+          if (item.type === selectedPressReleaseId.type) {
+            console.log("selectedPressReleaseId", selectedPressReleaseId);
+            return selectedPressReleaseId; // Replace the item with the selectedPressReleaseId data
+          }
+          return item;
+        });
+
+        return {
+          ...section,
+          data: updatedData,
+        };
+      }
+      return section;
+    });
+    setUpdatedSection(updatedPageData);
   };
+
+  const handleGasSelect = (selectedGasId) => {
+    const updatedPageData = showPageData.map((section) => {
+      if (section._id === editedSectionId) {
+        const updatedData = section.data.map((item) => {
+          if (item.type === selectedGasId.type) {
+            console.log("selectedGasId", selectedGasId);
+            return selectedGasId; // Replace the item with the selectedGasId data
+          }
+          return item;
+        });
+
+        return {
+          ...section,
+          data: updatedData,
+        };
+      }
+      return section;
+    });
+
+    setUpdatedSection(updatedPageData);
+  };
+  // console.log("updatedSection", updatedSection);
 
   const handleFormSelect = (selectedFormId) => {
     console.log("selectedFormId", selectedFormId);
+  };
+
+  // delete section and make a put request with updated data
+  const handleDeleteSection = async (sectionId) => {
+    const updatedPageData = showPageData.filter(
+      (section) => section._id !== sectionId
+    );
+    setUpdatedSection(updatedPageData);
+    // put request with updated page data
+    setLoading(true);
+    try {
+      const response = await instance.put(`/pages/${pid}`, {
+        ...pageData,
+        body: updatedPageData,
+      });
+      if (response?.status === 200) {
+        setUpdateResponse(response.data);
+        message.success("Page updated successfully");
+        fetchPageData();
+      }
+    } catch (error) {
+      message.error(error.message);
+      console.log("Error updating press release", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -621,21 +796,23 @@ const Creator = () => {
                       >
                         <h1>Section {index + 1}</h1>
                         {editedSectionId !== section?._id && (
-                          <Button
-                            style={{
-                              margin: "10px",
-                              backgroundColor: "var(--themes",
-                              color: "#fff",
-                              border: "none",
-                              borderRadius: "5px",
-                              fontSize: "1.2rem",
-                              padding: "0.6rem 1rem",
-                              height: "auto",
-                            }}
-                            onClick={() => handleEditClick(section?._id)}
-                          >
-                            Edit Mode
-                          </Button>
+                          <>
+                            <Button
+                              style={{
+                                margin: "10px",
+                                backgroundColor: "var(--themes",
+                                color: "#fff",
+                                border: "none",
+                                borderRadius: "5px",
+                                fontSize: "1.2rem",
+                                padding: "0.6rem 1rem",
+                                height: "auto",
+                              }}
+                              onClick={() => handleEditClick(section?._id)}
+                            >
+                              Edit Mode
+                            </Button>
+                          </>
                         )}
                       </div>
 
@@ -650,7 +827,7 @@ const Creator = () => {
                         onTitleChange={handleTitleChange}
                         onDescriptionChange={handleDescriptionChange}
                         onSliderSelect={handleSliderSelect}
-                        onPressReleaseSelect={handleSliderSelect}
+                        onPressReleaseSelect={handlePressReleaseSelect}
                         onFormSelect={handleFormSelect}
                         onUpdateSectionData={handleUpdateSectionData}
                         sectionData={sectionUpdatedData}
@@ -723,21 +900,47 @@ const Creator = () => {
                       >
                         <h1>Section {index + 1}</h1>
                         {editedSectionId !== section?._id && (
-                          <Button
-                            style={{
-                              margin: "10px",
-                              backgroundColor: "var(--themes",
-                              color: "#fff",
-                              border: "none",
-                              borderRadius: "5px",
-                              fontSize: "1.2rem",
-                              padding: "0.6rem 1rem",
-                              height: "auto",
-                            }}
-                            onClick={() => handleEditClick(section?._id)}
-                          >
-                            Edit Mode
-                          </Button>
+                          <>
+                            <Button
+                              style={{
+                                margin: "10px",
+                                backgroundColor: "var(--themes",
+                                color: "#fff",
+                                border: "none",
+                                borderRadius: "5px",
+                                fontSize: "1.2rem",
+                                padding: "0.6rem 1rem",
+                                height: "auto",
+                              }}
+                              onClick={() => handleEditClick(section?._id)}
+                            >
+                              Edit Mode
+                            </Button>
+                            <Popconfirm
+                              title="Are you sure to delete this section?"
+                              onConfirm={() =>
+                                handleDeleteSection(section?._id)
+                              }
+                              okText="Yes"
+                              cancelText="No"
+                            >
+                              <Button
+                                danger
+                                style={{
+                                  margin: "10px",
+                                  backgroundColor: "var(--themes",
+                                  color: "#fff",
+                                  border: "none",
+                                  borderRadius: "5px",
+                                  fontSize: "1.2rem",
+                                  padding: "0.6rem 1rem",
+                                  height: "auto",
+                                }}
+                              >
+                                Delete Section
+                              </Button>
+                            </Popconfirm>
+                          </>
                         )}
                       </div>
 

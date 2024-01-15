@@ -2,7 +2,14 @@ import React, { useState, useEffect, useMemo, memo } from "react";
 import instance from "../../axios";
 import { Select } from "antd";
 
-const CardParser = ({ item, editMode, onCardSelect, onUpdateComponent }) => {
+const CardParser = ({
+  item,
+  editMode,
+  onCardSelect,
+  onUpdateComponent,
+  niloy,
+}) => {
+  // niloy = index of the component in the section
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
   const { Option } = Select;
   const [loading, setLoading] = useState(false);
@@ -14,6 +21,7 @@ const CardParser = ({ item, editMode, onCardSelect, onUpdateComponent }) => {
     try {
       setLoading(true);
       console.log("Item: ", item);
+      console.log("Niloy: ", niloy);
       const response = await instance("/cards");
       if (response.data) {
         setCards(response.data);
@@ -35,14 +43,20 @@ const CardParser = ({ item, editMode, onCardSelect, onUpdateComponent }) => {
 
   const memoizedCards = useMemo(() => cards, [cards]);
 
+  // Change card data of only the index of the component in the section
   const handleCardChange = (value) => {
-    onCardSelect(value);
-
-    onUpdateComponent({
-      ...item,
+    // const parsedValue = JSON.parse(value);
+    console.log("value: ", value);
+    const selectedCard = cards.find((card) => card.id == JSON.parse(value)?.id);
+    setSelectedCard(value);
+    onCardSelect({
+      _mave: selectedCard,
       type: "card",
-      id: JSON.parse(value)?.id,
+      id: value?.id,
+      niloy: niloy,
     });
+    setLocalSelectedCards(value);
+    onUpdateComponent(niloy, selectedCard);
   };
 
   useEffect(() => {
@@ -56,6 +70,7 @@ const CardParser = ({ item, editMode, onCardSelect, onUpdateComponent }) => {
       {editMode ? (
         <div className="cardContainer">
           <Select
+            // mode="multiple"
             showSearch
             style={{ width: "100%" }}
             placeholder="Select a card"

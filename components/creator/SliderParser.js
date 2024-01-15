@@ -7,6 +7,7 @@ import {
   Popconfirm,
   Carousel,
   Select,
+  message,
 } from "antd";
 import {
   EditOutlined,
@@ -16,6 +17,7 @@ import {
   LeftOutlined,
   RightOutlined,
 } from "@ant-design/icons";
+import instance from "../../axios";
 
 const SliderParser = ({ item, editMode, onSliderSelect }) => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
@@ -23,14 +25,19 @@ const SliderParser = ({ item, editMode, onSliderSelect }) => {
   const { Option } = Select;
   const [sliders, setSliders] = useState([]);
   const [selectedSlider, setSelectedSlider] = useState(null);
+  const [loading, setLoading] = useState(false);
 
+  // get Sliders
   const fetchSliders = async () => {
     try {
+      setLoading(true);
       const response = await instance("/sliders");
       if (response.data) {
         setSliders(response.data);
         console.log("Sliders: ", response.data);
+        setLoading(false);
       } else {
+        message.error("Error fetching sliders");
         console.error("Error fetching sliders:", response.data.message);
       }
     } catch (error) {
@@ -38,17 +45,16 @@ const SliderParser = ({ item, editMode, onSliderSelect }) => {
     }
   };
 
-  // useEffect(() => {
-  //   fetchSliders();
-  // }, []);
-
-  // if (editMode) {
-  //   fetchSliders();
-  // }
+  useEffect(() => {
+    if (editMode) {
+      fetchSliders();
+    }
+  }, [editMode]);
 
   const handleSliderChange = (value) => {
+    const selectedSlider = sliders.find((slider) => slider.id === value);
     setSelectedSlider(value);
-    onSliderSelect(value);
+    onSliderSelect({ _mave: selectedSlider, type: "slider", id: value });
   };
 
   const CustomPrevArrow = ({ onClick }) => (
@@ -95,7 +101,7 @@ const SliderParser = ({ item, editMode, onSliderSelect }) => {
             onChange={handleSliderChange}
           >
             {sliders?.map((slider) => (
-              <Option value={slider?.id}>{slider?.title}</Option>
+              <Option value={slider?.id}>{slider?.title_en}</Option>
             ))}
           </Select>
         </div>

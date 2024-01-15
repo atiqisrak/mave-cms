@@ -37,8 +37,15 @@ const PressReleaseParser = ({ item, editMode, onPressReleaseSelect }) => {
   // }
 
   const handlePressReleaseChange = (value) => {
+    const selectedPressRelease = pressReleases.find(
+      (pressRelease) => pressRelease.id === value
+    );
     setSelectedPressRelease(value);
-    onPressReleaseSelect(value);
+    onPressReleaseSelect({
+      _mave: selectedPressRelease,
+      type: "pressRelease",
+      id: value,
+    });
   };
 
   return (

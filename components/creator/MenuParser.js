@@ -34,9 +34,15 @@ const MenuParser = ({ item, editMode, onMenuSelect }) => {
   //   fetchMenus();
   // }
 
+  // const handleMenuChange = (value) => {
+  //   setSelectedMenu(value);
+  //   onMenuSelect(value);
+  // };
+
   const handleMenuChange = (value) => {
+    const selectedMenu = menus.find((menu) => menu.id === value);
     setSelectedMenu(value);
-    onMenuSelect(value);
+    onMenuSelect({ _mave: selectedMenu, type: "menu", id: value });
   };
 
   return (

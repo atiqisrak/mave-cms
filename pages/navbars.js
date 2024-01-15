@@ -357,7 +357,7 @@ const Navbars = () => {
                       {menus?.map((menu) => (
                         <>
                           {" "}
-                          {console.log(formData, "kashfee")}
+                          {console.log(formData, "formData")}
                           <Option key={menu.id} value={menu?.id}>
                             {menu.name}{" "}
                           </Option>

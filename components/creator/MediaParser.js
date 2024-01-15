@@ -47,9 +47,15 @@ const MediaParser = ({ item, editMode, onMediaSelect }) => {
     }
   };
 
+  // const handleMediaChange = (value) => {
+  //   setSelectedMedia(value);
+  //   onMediaSelect(value);
+  // };
+
   const handleMediaChange = (value) => {
+    const selectedMedia = medias.find((media) => media.id === value);
     setSelectedMedia(value);
-    onMediaSelect(value);
+    onMediaSelect({ _mave: selectedMedia, type: "media", id: value });
   };
 
   const handlePaginationChange = (page) => {

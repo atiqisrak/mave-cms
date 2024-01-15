@@ -68,18 +68,14 @@ const ComponentParse = ({
               case "card":
                 return (
                   <CardParser
+                    niloy={index}
                     sectionId={section?._id}
                     item={item}
                     editMode={editMode}
                     onCardSelect={onCardSelect}
                     onUpdateComponent={(updatedComponent) =>
-                      handleComponentChange(
-                        index,
-                        updatedComponent,
-                        section?._id
-                      )
+                      handleComponentChange(index, updatedComponent)
                     }
-                    type="card"
                   />
                 );
               case "title":
@@ -131,7 +127,10 @@ const ComponentParse = ({
                   <EventParser
                     item={item}
                     editMode={editMode}
-                    onMediaSelect={onMediaSelect}
+                    onEventSelect={onEventSelect}
+                    onUpdateComponent={(updatedComponent) =>
+                      handleComponentChange(index, updatedComponent)
+                    }
                   />
                 );
               case "inner-section":

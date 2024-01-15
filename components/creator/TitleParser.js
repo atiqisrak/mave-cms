@@ -4,7 +4,7 @@ import { Form, Input } from "antd";
 
 const TitleParser = ({ item, editMode, onTitleChange }) => {
   const handleTitleChange = (e) => {
-    onTitleChange(e.target.value);
+    onTitleChange({ value: e.target.value, type: "title" });
   };
 
   return (
