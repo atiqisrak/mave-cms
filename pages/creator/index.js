@@ -205,7 +205,6 @@ const Creator = () => {
   });
 
   const fetchComponents = async (data) => {
-    console.log("description", data);
     try {
       setLoading(true);
       if (data !== "title" && data !== "description") {
@@ -284,7 +283,6 @@ const Creator = () => {
     }
 
     if (selectedType === "slider") {
-      // console.log('amar jibon',resultArray)
       const resultArray = filteredArray.map(
         ({ id, media_ids, medias, status, title_bn, title_en, type }) => ({
           id,
@@ -354,8 +352,6 @@ const Creator = () => {
         _mave: pressRest,
         type: `${type ? type : selectedType}`,
       }));
-      console.log("resultArray", resultArray);
-      console.log("amar jibon", showPageData);
       setNewSectionComponent((prev) => [...prev, ...resultArray]);
       setSearchDefault(null);
     }
@@ -365,8 +361,6 @@ const Creator = () => {
         _mave: eventRest,
         type: `${type ? type : selectedType}`,
       }));
-      console.log("resultArray", resultArray);
-      console.log("amar jibon", showPageData);
       setNewSectionComponent((prev) => [...prev, ...resultArray]);
       setSearchDefault(null);
     }
@@ -596,8 +590,26 @@ const Creator = () => {
   // console.log("updatedSection", updatedSection);
 
   const handleEventSelect = (selectedEventId) => {
-    console.log("selectedEventId", selectedEventId);
+    const updatedPageData = showPageData.map((section) => {
+      if (section._id === editedSectionId) {
+        const updatedData = section.data.map((item) => {
+          if (item.type === selectedEventId.type) {
+            console.log("selectedEventId", selectedEventId);
+            return selectedEventId; // Replace the item with the selectedEventId data
+          }
+          return item;
+        });
+
+        return {
+          ...section,
+          data: updatedData,
+        };
+      }
+      return section;
+    });
+    setUpdatedSection(updatedPageData);
   };
+  console.log("updatedSection (Events): ", updatedSection);
 
   const handleMenuSelect = (selectedMenuId) => {
     const updatedPageData = showPageData.map((section) => {
@@ -705,7 +717,7 @@ const Creator = () => {
     });
     setUpdatedSection(updatedPageData);
   };
-  console.log("updatedSection (Press)", updatedSection);
+  // console.log("updatedSection (Press)", updatedSection);
 
   const handleGasSelect = (selectedGasId) => {
     const updatedPageData = showPageData.map((section) => {
