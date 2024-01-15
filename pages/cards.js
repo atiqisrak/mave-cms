@@ -55,6 +55,8 @@ const Cards = () => {
   const [isCreateCardFormVisible, setIsCreateCardFormVisible] = useState(false);
   const { Search } = Input;
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   const [searchText, setSearchText] = useState("");
   const [isEmptyInput, setIsEmptyInput] = useState(true);
   const [originalCardData, setOriginalCardData] = useState([]);
@@ -1378,8 +1380,9 @@ const Cards = () => {
               {isCreateCardFormVisible && (
                 <Col span={24}>
                   <CreateCardForm
-                    handleCreateCard={handleCreateCard}
-                    toggleCreateCardForm={toggleCreateCardForm}
+                    onCreateCard={handleCreateCard}
+                    onCancel={toggleCreateCardForm}
+                    media={media}
                     pages={pages}
                   />
                 </Col>

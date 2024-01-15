@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import RichTextEditor from "../RichTextEditor";
 
 const DescriptionParser = ({ item, editMode, onDescriptionChange }) => {
-  const handleDescriptionChange = (e) => {
-    onDescriptionChange(e.target.value);
+  const handleDescriptionChange = (value) => {
+    onDescriptionChange({ value, type: "description" });
   };
 
   return (
@@ -11,6 +11,7 @@ const DescriptionParser = ({ item, editMode, onDescriptionChange }) => {
       {editMode ? (
         <div className="descriptionContainer">
           <RichTextEditor
+            editMode={true}
             value={item?.value}
             onChange={handleDescriptionChange}
           />

@@ -6,7 +6,7 @@ import RichTextEditor from "./RichTextEditor";
 const { TextArea } = Input;
 const { Option } = Select;
 
-const CreateCardForm = ({ onCreateCard, media, pages }) => {
+const CreateCardForm = ({ onCreateCard, onCancel, media, pages }) => {
   const [formData, setFormData] = useState({
     title_en: "",
     title_bn: "",
@@ -17,6 +17,7 @@ const CreateCardForm = ({ onCreateCard, media, pages }) => {
     status: true,
     media_ids: null,
   });
+
   const [mediaSelectionVisible, setMediaSelectionVisible] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState(null);
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
@@ -35,11 +36,6 @@ const CreateCardForm = ({ onCreateCard, media, pages }) => {
     });
     setMediaSelectionVisible(false);
   };
-
-  const pageNames = pages.map((page) => ({
-    name: page?.page_name_en,
-    value: page?.slug ? page?.slug : page?.page_name_en,
-  }));
 
   const handleCreateCard = () => {
     instance.post("/cards", formData).then((response) => {
@@ -70,13 +66,10 @@ const CreateCardForm = ({ onCreateCard, media, pages }) => {
     });
   };
 
-  // const handleAddMediaToCard = (selectedMediaId) => {
-  //   setFormData({
-  //     ...formData,
-  //     media_ids: selectedMediaId,
-  //   });
-  //   setMediaSelectionVisible(false);
-  // };
+  const pageNames = pages.map((page) => ({
+    name: page?.page_name_en,
+    value: page?.slug ? page?.slug : page?.page_name_en,
+  }));
 
   const [selectedMediaId, setSelectedMediaId] = useState(null);
   const handleAddMediaToCard = (selectedMediaId) => {
@@ -85,21 +78,6 @@ const CreateCardForm = ({ onCreateCard, media, pages }) => {
       ...formData,
       media_ids: selectedMediaId,
     });
-    setMediaSelectionVisible(false);
-  };
-
-  const onCancel = () => {
-    setFormData({
-      title_en: "",
-      title_bn: "",
-      description_en: "",
-      description_bn: "",
-      page_name: "",
-      link_url: "",
-      status: true,
-      media_ids: null,
-    });
-    setSelectedMediaId(null);
     setMediaSelectionVisible(false);
   };
 
@@ -188,17 +166,15 @@ const CreateCardForm = ({ onCreateCard, media, pages }) => {
       >
         Page Name
       </h2>
-      {/* Select page from options where options will be mapped from pages props */}
       <Select
         showSearch
-        id="pageName"
-        style={{ width: 120 }}
+        style={{ width: "100%", height: "100px", margin: "1em 0" }}
         placeholder="Select a page"
         optionFilterProp="children"
         onChange={(value) => handleFieldChange("page_name", value)}
       >
-        {pageNames.map((page) => (
-          <Option value={page.value}>{page.name}</Option>
+        {pageNames?.map((page) => (
+          <Option value={page?.value}>{page?.name}</Option>
         ))}
       </Select>
       <h2
@@ -229,55 +205,17 @@ const CreateCardForm = ({ onCreateCard, media, pages }) => {
         onClick={() => setMediaSelectionVisible(true)}
       >
         {selectedMediaId ? (
-          // <img
-          //   src={`${MEDIA_URL}/${
-          //     media?.find((item) => item.id === selectedMediaId).file_path
-          //   }`}
-          //   height={150}
-          //   width={150}
-          //   style={{
-          //     objectFit: "cover",
-          //     borderRadius: 10,
-          //   }}
-          // />
-          media
-            ?.find((item) => item.id === selectedMediaId)
-            .file_type.startsWith("image") ? (
-            <img
-              src={`${MEDIA_URL}/${
-                media?.find((item) => item.id === selectedMediaId).file_path
-              }`}
-              height={150}
-              width={150}
-              style={{
-                objectFit: "cover",
-                borderRadius: 10,
-              }}
-            />
-          ) : media
-              ?.find((item) => item.id === selectedMediaId)
-              .file_type.startsWith("video") ? (
-            <video
-              controls
-              muted
-              width="100%"
-              height={100}
-              objectFit="cover"
-              src={`${MEDIA_URL}/${
-                media?.find((item) => item.id === selectedMediaId).file_path
-              }`}
-            />
-          ) : (
-            <img
-              src="/images/Image_Placeholder.png"
-              height={150}
-              width={150}
-              style={{
-                objectFit: "cover",
-                borderRadius: 10,
-              }}
-            />
-          )
+          <img
+            src={`${MEDIA_URL}/${
+              media.find((item) => item.id === selectedMediaId).file_path
+            }`}
+            height={150}
+            width={150}
+            style={{
+              objectFit: "cover",
+              borderRadius: 10,
+            }}
+          />
         ) : (
           <img
             src="/images/Image_Placeholder.png"
