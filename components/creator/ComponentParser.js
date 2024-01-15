@@ -28,6 +28,7 @@ const ComponentParse = ({
   onPressReleaseSelect,
   onUpdateSectionData,
   onFormSelect,
+  onFooterSelect,
   setNewData,
   setSectionData,
 }) => {
@@ -111,6 +112,17 @@ const ComponentParse = ({
                     }
                   />
                 );
+              case "footer":
+                return (
+                  <FooterParser
+                    item={item}
+                    editMode={editMode}
+                    onFooterSelect={onFooterSelect}
+                    onUpdateComponent={(updatedComponent) =>
+                      handleComponentChange(index, updatedComponent)
+                    }
+                  />
+                );
               case "media":
                 return (
                   <MediaParser
@@ -136,16 +148,6 @@ const ComponentParse = ({
               case "inner-section":
                 return (
                   <InnerSectionParser
-                    item={item}
-                    editMode={editMode}
-                    onUpdateComponent={(updatedComponent) =>
-                      handleComponentChange(index, updatedComponent)
-                    }
-                  />
-                );
-              case "footer":
-                return (
-                  <FooterParser
                     item={item}
                     editMode={editMode}
                     onUpdateComponent={(updatedComponent) =>
