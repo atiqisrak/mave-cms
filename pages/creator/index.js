@@ -571,7 +571,7 @@ const Creator = () => {
     });
     setUpdatedSection(updatedPageData);
   };
-  console.log("updatedSection (Cards)", updatedSection);
+  // console.log("updatedSection (Cards)", updatedSection);
 
   const handleMediaSelect = (selectedMediaId) => {
     const updatedPageData = showPageData.map((section) => {
@@ -691,7 +691,7 @@ const Creator = () => {
         const updatedData = section.data.map((item) => {
           if (item.type === selectedPressReleaseId.type) {
             console.log("selectedPressReleaseId", selectedPressReleaseId);
-            return selectedPressReleaseId; // Replace the item with the selectedPressReleaseId data
+            return selectedPressReleaseId;
           }
           return item;
         });
@@ -705,6 +705,7 @@ const Creator = () => {
     });
     setUpdatedSection(updatedPageData);
   };
+  console.log("updatedSection (Press)", updatedSection);
 
   const handleGasSelect = (selectedGasId) => {
     const updatedPageData = showPageData.map((section) => {
