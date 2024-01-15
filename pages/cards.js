@@ -103,23 +103,36 @@ const Cards = () => {
     fetchData();
   }, [setCardData]);
 
+  const [pages, setPages] = useState([]);
+  useEffect(() => {
+    // get pages
+    instance.get("/pages").then((res) => {
+      setPages(res.data);
+      console.log("Pages: ", res.data);
+    });
+  }, []);
+
   // List options for page name Home : home
-  const pageNames = [
-    { name: "Home", value: "home" },
-    { name: "Corporate", value: "corporate" },
-    { name: "Cylinder Gas", value: "cylindergas" },
-    { name: "Autogas", value: "autogas" },
-    { name: "Bulk Gas", value: "bulkgas" },
-    { name: "News & Media", value: "newsmedia" },
-    { name: "Health & Safety", value: "healthandsafety" },
-    { name: "Career", value: "career" },
-    { name: "Contact Us", value: "contactus" },
-    { name: "F.A.Q", value: "faq" },
-    { name: "Terms & Conditions", value: "termsandconditions" },
-    { name: "Privacy Policy", value: "privacypolicy" },
-    { name: "Cookies Policy", value: "cookiespolicy" },
-    { name: "Sitemap", value: "sitemap" },
-  ];
+  // const pageNames = [
+  //   { name: "Home", value: "home" },
+  //   { name: "Corporate", value: "corporate" },
+  //   { name: "Cylinder Gas", value: "cylindergas" },
+  //   { name: "Autogas", value: "autogas" },
+  //   { name: "Bulk Gas", value: "bulkgas" },
+  //   { name: "News & Media", value: "newsmedia" },
+  //   { name: "Health & Safety", value: "healthandsafety" },
+  //   { name: "Career", value: "career" },
+  //   { name: "Contact Us", value: "contactus" },
+  //   { name: "F.A.Q", value: "faq" },
+  //   { name: "Terms & Conditions", value: "termsandconditions" },
+  //   { name: "Privacy Policy", value: "privacypolicy" },
+  //   { name: "Cookies Policy", value: "cookiespolicy" },
+  //   { name: "Sitemap", value: "sitemap" },
+  // ];
+  const pageNames = pages.map((page) => ({
+    name: page?.page_name_en,
+    value: page?.slug ? page?.slug : page?.page_name_en,
+  }));
 
   const [viewCardId, setViewCardId] = useState(null);
 
@@ -599,22 +612,32 @@ const Cards = () => {
                   borderRadius: "10px",
                   boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
                   gap: "1rem",
+                  //editmode conditional height
+                  height:
+                    editMode && editedCardId === card.id ? "auto" : "560px",
                 }}
               >
                 <center>
-                  <h2>
+                  <h2
+                    style={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 1,
+                      WebkitBoxOrient: "vertical",
+                    }}
+                  >
                     {card.title_en} ({card?.title_bn})
                   </h2>
                 </center>
                 {editMode && editedCardId === card.id ? (
                   <div
                     style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 1fr",
+                      display: "flex",
+                      flexDirection: "column",
                     }}
                   >
                     <div>
-                      {/* single media selector */}
                       <SingleMediaSelect
                         visible={mediaSelectionVisible}
                         onCancel={() => setMediaSelectionVisible(false)}
@@ -623,6 +646,59 @@ const Cards = () => {
                       />
                       <div>
                         <center>
+                          {/* Current Media and realtime show changed media */}
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              gap: "1rem",
+                              margin: "1rem 0",
+                            }}
+                          >
+                            {card?.media_files ? (
+                              card?.media_files?.file_type == "image/jpeg" ||
+                              "image/png" ||
+                              "image/jpg" ||
+                              "image/svg" ? (
+                                <Image
+                                  src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
+                                  style={{
+                                    objectFit: "cover",
+                                    borderRadius: 10,
+                                    border: "2px solid var(--theme)",
+                                    width: "100%",
+                                    height: "250px",
+                                    maxWidth: "350px",
+                                    maxHeight: "250px",
+                                  }}
+                                />
+                              ) : (
+                                <video
+                                  src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
+                                  height={150}
+                                  width={150}
+                                  style={{
+                                    objectFit: "cover",
+                                    borderRadius: 10,
+                                  }}
+                                  muted
+                                  loop
+                                  autoPlay
+                                />
+                              )
+                            ) : (
+                              <img
+                                src="/images/Image_Placeholder.png"
+                                height={150}
+                                width={150}
+                                style={{
+                                  objectFit: "cover",
+                                  borderRadius: 10,
+                                }}
+                              />
+                            )}
+                          </div>
                           <Button
                             type="primary"
                             style={{
@@ -643,55 +719,6 @@ const Cards = () => {
                             Change Media
                           </Button>
                         </center>
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "1rem",
-                            marginTop: "1rem",
-                          }}
-                        >
-                          {card?.media_files ? (
-                            card?.media_files?.file_type == "image/jpeg" ||
-                            "image/png" ||
-                            "image/jpg" ||
-                            "image/svg" ? (
-                              <Image
-                                src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
-                                height={150}
-                                width={450}
-                                style={{
-                                  objectFit: "cover",
-                                  borderRadius: 10,
-                                  // filter: "blur(1.2px)",
-                                }}
-                              />
-                            ) : (
-                              <video
-                                src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
-                                height={150}
-                                width={150}
-                                style={{
-                                  objectFit: "cover",
-                                  borderRadius: 10,
-                                }}
-                                muted
-                                loop
-                                autoPlay
-                              />
-                            )
-                          ) : (
-                            <img
-                              src="/images/Image_Placeholder.png"
-                              height={150}
-                              width={150}
-                              style={{
-                                objectFit: "cover",
-                                borderRadius: 10,
-                              }}
-                            />
-                          )}
-                        </div>
                       </div>
                     </div>
                     <div>
@@ -728,34 +755,42 @@ const Cards = () => {
                         }
                       />
                       <br />
-                      <Button
-                        type="primary"
+                      <div
                         style={{
-                          marginRight: "1rem",
-                          backgroundColor: "var(--theme)",
-                          display:
-                            editMode && editedCardId === card.id
-                              ? "inline-block"
-                              : "none",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
                         }}
-                        onClick={() => toggleEditMode(card)}
                       >
-                        Save
-                      </Button>
-                      <Button
-                        type="primary"
-                        style={{
-                          backgroundColor: "transparent",
-                          color: "red",
-                          borderRadius: "10px",
-                          fontSize: "1.2em",
-                          paddingBottom: "1.8em",
-                        }}
-                        icon={<CloseCircleOutlined />}
-                        onClick={() => toggleEditMode(card)}
-                      >
-                        Cancel
-                      </Button>
+                        <Button
+                          type="primary"
+                          style={{
+                            marginRight: "1rem",
+                            backgroundColor: "var(--theme)",
+                            display:
+                              editMode && editedCardId === card.id
+                                ? "inline-block"
+                                : "none",
+                          }}
+                          onClick={() => toggleEditMode(card)}
+                        >
+                          Save
+                        </Button>
+                        <Button
+                          type="primary"
+                          style={{
+                            backgroundColor: "transparent",
+                            color: "red",
+                            borderRadius: "10px",
+                            fontSize: "1.2em",
+                            paddingBottom: "1.8em",
+                          }}
+                          icon={<CloseCircleOutlined />}
+                          onClick={() => toggleEditMode(card)}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ) : (
@@ -764,163 +799,168 @@ const Cards = () => {
                       display: "flex",
                       flexDirection: "column",
                       gap: "1rem",
-                      paddingTop: "1rem",
+                      padding: "2rem 0",
                     }}
                   >
-                    {card?.media_files ? (
-                      card?.media_files?.file_type == "image/jpeg" ||
-                      "image/png" ||
-                      "image/jpg" ||
-                      "image/svg" ? (
-                        <Image
-                          src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
-                          height={250}
-                          width={350}
-                          style={{
-                            objectFit: "cover",
-                            borderRadius: 10,
-                          }}
-                        />
+                    <div>
+                      {card?.media_files ? (
+                        card?.media_files?.file_type == "image/jpeg" ||
+                        "image/png" ||
+                        "image/jpg" ||
+                        "image/svg" ? (
+                          <Image
+                            src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
+                            style={{
+                              objectFit: "cover",
+                              borderRadius: 10,
+                              width: "100%",
+                              height: "250px",
+                              maxWidth: "350px",
+                              maxHeight: "250px",
+                            }}
+                          />
+                        ) : (
+                          <video
+                            src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
+                            height={150}
+                            width={150}
+                            style={{
+                              objectFit: "cover",
+                              borderRadius: 10,
+                            }}
+                            muted
+                            loop
+                            autoPlay
+                          />
+                        )
                       ) : (
-                        <video
-                          src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
+                        <img
+                          src="/images/Image_Placeholder.png"
                           height={150}
                           width={150}
                           style={{
                             objectFit: "cover",
                             borderRadius: 10,
                           }}
-                          muted
-                          loop
-                          autoPlay
                         />
-                      )
-                    ) : (
-                      <img
-                        src="/images/Image_Placeholder.png"
-                        height={150}
-                        width={150}
-                        style={{
-                          objectFit: "cover",
-                          borderRadius: 10,
-                        }}
-                      />
-                    )}
-                    <div
-                      style={{
-                        paddingTop: "1rem",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "flex-start",
-                        // alignItems: "center",
-                        gap: "2rem",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: "1rem",
-                          fontSize: "1.8em",
-                        }}
-                      >
-                        <h4 htmlFor="pageName">Page: </h4>
-                        <h4>
-                          {card?.page_name
-                            ? pageNames.find(
-                                (page) => page.value === card.page_name
-                              )?.name
-                            : "N/A"}
-                        </h4>
-                        {/* )} */}
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: "0.5rem",
-                          flexDirection: "column",
-                        }}
-                      >
-                        <p
-                          style={{
-                            // text limit
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            display: "-webkit-box",
-                            WebkitLineClamp: 1,
-                            WebkitBoxOrient: "vertical",
-                          }}
-                          dangerouslySetInnerHTML={{
-                            __html: card?.description_en,
-                          }}
-                        />
-                        <p
-                          style={{
-                            // text limit
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            display: "-webkit-box",
-                            WebkitLineClamp: 1,
-                            WebkitBoxOrient: "vertical",
-                          }}
-                          dangerouslySetInnerHTML={{
-                            __html: card?.description_bn,
-                          }}
-                        />
-                        {/* display card details only of which is clicked */}
-                        {viewDetails && viewCardId == card?.id && (
-                          // <CardViewer
-                          //   card={card}
-                          //   editMode={editMode}
-                          //   viewDetails={viewDetails}
-                          //   setViewDetails={setViewDetails}
+                      )}
 
-                          // />
-                          <Modal
-                            title={card?.title_en + " Card Details"}
-                            open={viewDetails}
-                            onCancel={() => setViewDetails(false)}
-                            footer={null}
-                            width={700}
-                          >
-                            <center>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                }}
-                              >
+                      <div
+                        style={{
+                          paddingTop: "1rem",
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "flex-start",
+                          // alignItems: "center",
+                          gap: "2rem",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "1rem",
+                            fontSize: "1.8em",
+                          }}
+                        >
+                          <h4 htmlFor="pageName">Page: </h4>
+                          <h4>
+                            {card?.page_name
+                              ? pageNames.find(
+                                  (page) => page.value === card.page_name
+                                )?.name
+                              : "N/A"}
+                          </h4>
+                          {/* )} */}
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "0.5rem",
+                            flexDirection: "column",
+                          }}
+                        >
+                          <p
+                            style={{
+                              // text limit
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              display: "-webkit-box",
+                              WebkitLineClamp: 1,
+                              WebkitBoxOrient: "vertical",
+                            }}
+                            dangerouslySetInnerHTML={{
+                              __html: card?.description_en,
+                            }}
+                          />
+                          <p
+                            style={{
+                              // text limit
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              display: "-webkit-box",
+                              WebkitLineClamp: 1,
+                              WebkitBoxOrient: "vertical",
+                            }}
+                            dangerouslySetInnerHTML={{
+                              __html: card?.description_bn,
+                            }}
+                          />
+                          {/* display card details only of which is clicked */}
+                          {viewDetails && viewCardId == card?.id && (
+                            // <CardViewer
+                            //   card={card}
+                            //   editMode={editMode}
+                            //   viewDetails={viewDetails}
+                            //   setViewDetails={setViewDetails}
+
+                            // />
+                            <Modal
+                              title={card?.title_en + " Card Details"}
+                              open={viewDetails}
+                              onCancel={() => setViewDetails(false)}
+                              footer={null}
+                              width={700}
+                            >
+                              <center>
                                 <div
                                   style={{
-                                    textAlign: "left",
+                                    display: "flex",
+                                    flexDirection: "column",
                                   }}
                                 >
-                                  <h2>Desctiption:</h2>
-                                  <p
+                                  <div
                                     style={{
                                       textAlign: "left",
                                     }}
-                                    dangerouslySetInnerHTML={{
-                                      __html: card?.description_en,
-                                    }}
-                                  />
-                                </div>
+                                  >
+                                    <h2>Desctiption:</h2>
+                                    <p
+                                      style={{
+                                        textAlign: "left",
+                                      }}
+                                      dangerouslySetInnerHTML={{
+                                        __html: card?.description_en,
+                                      }}
+                                    />
+                                  </div>
 
-                                <div
-                                  style={{
-                                    textAlign: "right",
-                                  }}
-                                >
-                                  <h2>Bornona: </h2>
-                                  <p
-                                    dangerouslySetInnerHTML={{
-                                      __html: card?.description_bn,
+                                  <div
+                                    style={{
+                                      textAlign: "right",
                                     }}
-                                  />
+                                  >
+                                    <h2>Bornona: </h2>
+                                    <p
+                                      dangerouslySetInnerHTML={{
+                                        __html: card?.description_bn,
+                                      }}
+                                    />
+                                  </div>
                                 </div>
-                              </div>
-                            </center>
-                          </Modal>
-                        )}
+                              </center>
+                            </Modal>
+                          )}
+                        </div>
                       </div>
                     </div>
                     <div
@@ -928,10 +968,10 @@ const Cards = () => {
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
-                        // flexDirection: "column",
                         gap: "1rem",
                       }}
                     >
+                      {/* Edit Button */}
                       <Button
                         type="primary"
                         style={{
@@ -941,11 +981,18 @@ const Cards = () => {
                           fontSize: "1.2em",
                           paddingBottom: "1.8em",
                         }}
-                        icon={editMode ? <SelectOutlined /> : <EditFilled />}
+                        icon={
+                          editMode && editedCardId === card.id ? (
+                            <SelectOutlined />
+                          ) : (
+                            <EditFilled />
+                          )
+                        }
                         onClick={() => toggleEditMode(card)}
                       >
                         {/* {editMode && editedCardId === card.id ? "Save" : "Edit"} */}
                       </Button>
+                      {/* Description Button */}
                       {card?.description_en && (
                         <Button
                           style={{
@@ -968,6 +1015,7 @@ const Cards = () => {
                           {/* {viewDetails ? "Close" : "View"} */}
                         </Button>
                       )}
+                      {/* Delete Button */}
                       <Button
                         type="primary"
                         style={{
@@ -978,7 +1026,7 @@ const Cards = () => {
                           paddingBottom: "1.8em",
                         }}
                         icon={
-                          editMode ? (
+                          editMode && editedCardId === card.id ? (
                             <CloseCircleOutlined />
                           ) : (
                             <DeleteOutlined />
@@ -1017,7 +1065,9 @@ const Cards = () => {
             setIsLoading(false);
           } catch (error) {}
         };
-        getData();
+        // getData();
+        // refresh page
+        window.location.reload();
       });
     } else {
       setEditedCard(card);
@@ -1209,7 +1259,7 @@ const Cards = () => {
                 Filter
               </Button>
               {/* Toggler for grid view and list view */}
-              <div
+              {/* <div
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -1217,7 +1267,6 @@ const Cards = () => {
                   gap: "1rem",
                 }}
               >
-                {/* <label htmlFor="displayMode">Display Mode</label> */}
                 <Switch
                   id="displayMode"
                   checkedChildren={<UnorderedListOutlined />}
@@ -1229,7 +1278,7 @@ const Cards = () => {
                     fontSize: "3.2em",
                   }}
                 />
-              </div>
+              </div> */}
             </div>
 
             <div
@@ -1331,6 +1380,7 @@ const Cards = () => {
                   <CreateCardForm
                     handleCreateCard={handleCreateCard}
                     toggleCreateCardForm={toggleCreateCardForm}
+                    pages={pages}
                   />
                 </Col>
               )}
