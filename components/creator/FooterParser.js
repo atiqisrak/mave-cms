@@ -7,19 +7,64 @@ import {
   CloseCircleOutlined,
 } from "@ant-design/icons";
 import MenuParser from "./MenuParser";
+import instance from "../../axios";
 
-const FooterParser = ({ item }) => {
+const FooterParser = ({ item, editMode, onFooterSelect }) => {
   const { Option } = Select;
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
   const [isCollapsed, setIsCollapsed] = useState(true);
-  const [id, setId] = useState(null);
+  // const [id, setId] = useState(null);
+  const [setectedFooter, setSelectedFooter] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [footers, setFooters] = useState([]);
+
+  const fetchFooter = async () => {
+    try {
+      setLoading(true);
+      const response = await instance("/footers");
+      if (response.data) {
+        setFooters(response.data);
+        console.log("Footers: ", response.data);
+        setLoading(false);
+      } else {
+        message.error("Error fetching footers");
+        console.error("Error fetching footers:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching footers:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (editMode) {
+      fetchFooter();
+    }
+  }, [editMode]);
 
   const [deleteConfirmationVisible, setDeleteConfirmationVisible] =
     useState(false);
 
+  const handleFooterChange = (value) => {
+    const selectedFooter = footers.find((footer) => footer.id === value);
+    setSelectedFooter(value);
+    onFooterSelect({ _mave: selectedFooter, type: "footer", id: value });
+  };
+
   return (
     <>
-      {item && (
+      {item && editMode ? (
+        <Select
+          showSearch
+          style={{ width: 200 }}
+          placeholder="Select a footer"
+          optionFilterProp="children"
+          onChange={handleFooterChange}
+        >
+          {footers?.map((footer) => (
+            <Option value={footer?.id}>{footer?.title_en}</Option>
+          ))}
+        </Select>
+      ) : (
         <>
           <div
             key={item.id}

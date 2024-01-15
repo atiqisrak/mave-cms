@@ -734,6 +734,26 @@ const Creator = () => {
     console.log("selectedFormId", selectedFormId);
   };
 
+  const handleFooterSelect = (selectedFooterId) => {
+    const updatedPageData = showPageData.map((section) => {
+      if (section._id === editedSectionId) {
+        console.log("selectedFooter Id: ", selectedFooterId);
+        const updatedData = section.data.map((item) => {
+          if (item.type === selectedFooterId.type) {
+            return selectedFooterId;
+          }
+          return item;
+        });
+
+        return {
+          ...section,
+          data: updatedData,
+        };
+      }
+      return section;
+    });
+    setUpdatedSection(updatedPageData);
+  };
   // delete section and make a put request with updated data
   const handleDeleteSection = async (sectionId) => {
     const updatedPageData = showPageData.filter(
@@ -817,6 +837,7 @@ const Creator = () => {
                         )}
                       </div>
 
+                      {/* Edit Section */}
                       <ComponentParse
                         section={section?.data}
                         editMode={editMode && editedSectionId == section?._id}
@@ -830,6 +851,8 @@ const Creator = () => {
                         onSliderSelect={handleSliderSelect}
                         onPressReleaseSelect={handlePressReleaseSelect}
                         onFormSelect={handleFormSelect}
+                        onFooterSelect={handleFooterSelect}
+                        // dummy
                         onUpdateSectionData={handleUpdateSectionData}
                         sectionData={sectionUpdatedData}
                         setSectionData={setSectionUpdatedData}
@@ -957,6 +980,7 @@ const Creator = () => {
                         onDescriptionChange={handleDescriptionChange}
                         onSliderSelect={handleSliderSelect}
                         onPressReleaseSelect={handleSliderSelect}
+                        onFooterSelect={handleFooterSelect}
                         onFormSelect={handleFormSelect}
                         onUpdateSectionData={handleUpdateSectionData}
                         sectionData={sectionUpdatedData}
@@ -965,37 +989,67 @@ const Creator = () => {
                       />
                       {editedSectionId === section?._id && (
                         <center>
-                          <Button
+                          <div
                             style={{
-                              margin: "10px",
-                              backgroundColor: "var(--theme",
-                              color: "#fff",
-                              border: "none",
-                              borderRadius: "5px",
-                              fontSize: "1.2rem",
-                              padding: "0.6rem 1rem",
-                              marginBottom: "3rem",
-                              height: "auto",
-                            }}
-                            onClick={() => {
-                              setEditMode(false);
-                              setEditedSectionId(null);
-                              console.log("Sending: ", sectionData);
-                              handleUpdateSectionData(index, sectionData);
-                              handleSave();
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              flexDirection: "column",
                             }}
                           >
-                            Save
-                          </Button>
-                          <Button
-                            danger
-                            onClick={() => {
-                              setEditMode(false);
-                              setEditedSectionId(null);
-                            }}
-                          >
-                            Cancel Edit
-                          </Button>
+                            <Button
+                              style={{
+                                margin: "10px",
+                                backgroundColor: "var(--theme",
+                                color: "#fff",
+                                border: "none",
+                                borderRadius: "5px",
+                                fontSize: "1.2rem",
+                                padding: "0.6rem 1rem",
+                                marginBottom: "3rem",
+                                height: "auto",
+                              }}
+                              onClick={() => {
+                                setCanvas(true);
+                              }}
+                            >
+                              Add Component
+                            </Button>
+                            <div>
+                              <Button
+                                style={{
+                                  margin: "10px",
+                                  backgroundColor: "var(--theme",
+                                  color: "#fff",
+                                  border: "none",
+                                  borderRadius: "5px",
+                                  fontSize: "1.2rem",
+                                  padding: "0.6rem 1rem",
+                                  marginBottom: "3rem",
+                                  height: "auto",
+                                }}
+                                onClick={() => {
+                                  setEditMode(false);
+                                  setEditedSectionId(null);
+                                  console.log("Sending: ", sectionData);
+                                  handleUpdateSectionData(index, sectionData);
+                                  handleSave();
+                                }}
+                              >
+                                Save
+                              </Button>
+
+                              <Button
+                                danger
+                                onClick={() => {
+                                  setEditMode(false);
+                                  setEditedSectionId(null);
+                                }}
+                              >
+                                Cancel Edit
+                              </Button>
+                            </div>
+                          </div>
                         </center>
                       )}
                     </section>

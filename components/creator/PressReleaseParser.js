@@ -41,8 +41,6 @@ const PressReleaseParser = ({ item, editMode, onPressReleaseSelect }) => {
       (pressRelease) => pressRelease.id === value
     );
     setSelectedPressRelease(value);
-    console.log("Selected Press Release: ", selectedPressRelease);
-    console.log("Value: ", value);
     onPressReleaseSelect({
       _mave: selectedPressRelease,
       type: "press_release",
