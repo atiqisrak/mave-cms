@@ -144,8 +144,8 @@ const EventParser = ({ item, editMode, onEventSelect }) => {
                           src={`${MEDIA_URL}/${event?.file_path}`}
                           alt={event?.file_path}
                           style={{
-                            width: "100%",
-                            height: "auto",
+                            width: "250px",
+                            height: "200px",
                             objectFit: "cover",
                           }}
                         />
@@ -155,8 +155,8 @@ const EventParser = ({ item, editMode, onEventSelect }) => {
                           src={`${MEDIA_URL}/${event?.file_path}`}
                           alt={event?.file_path}
                           style={{
-                            width: "100%",
-                            height: "auto",
+                            width: "250px",
+                            height: "200px",
                             objectFit: "cover",
                           }}
                         />

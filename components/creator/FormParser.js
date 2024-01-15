@@ -35,15 +35,14 @@ const FormParser = ({ item, editMode, onFormSelect, onUpdateComponent }) => {
   }, [editMode, formsFetched]);
 
   const handleFormChange = (values) => {
-    onFormSelect(values);
+    const selectedForm = forms.find((form) => form.id === values);
     setSelectedForm(values);
-    const updatedFormSection = {
+    onFormSelect({
+      _mave: selectedForm,
       type: "form",
-      _mave: {
-        form_ids: values,
-      },
-    };
-    onUpdateComponent(updatedFormSection);
+      id: values,
+    });
+    onUpdateComponent(selectedForm);
   };
 
   return (

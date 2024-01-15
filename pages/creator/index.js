@@ -215,7 +215,7 @@ const Creator = () => {
       }
     } catch (error) {
       message.error("Error fetching components");
-      console.log(error);
+      // console.log(error);
     }
     setLoading(false);
   };
@@ -431,10 +431,11 @@ const Creator = () => {
       const response = await instance.put(`/pages/${pid}`, postData);
       if (response?.status === 200) {
         setUpdateResponse(response.data);
+        message.success("Page updated successfully");
       }
     } catch (error) {
       message.error(error.message);
-      console.log("Error updating press release", error);
+      // console.log("Error updating press release", error);
     }
   };
   const fetchPageData = async () => {
@@ -448,7 +449,7 @@ const Creator = () => {
       }
     } catch (error) {
       message.error("Error fetching page data");
-      console.log(error);
+      // console.log(error);
     } finally {
       setLoading(false);
     }
@@ -488,7 +489,7 @@ const Creator = () => {
       },
       body: updatedSection,
     };
-    console.log("Sending: ", modifiedData);
+    // console.log("Sending: ", modifiedData);
 
     // put request
     setLoading(true);
@@ -501,7 +502,7 @@ const Creator = () => {
       }
     } catch (error) {
       message.error(error.message);
-      console.log("Error updating press release", error);
+      // console.log("Error updating press release", error);
     } finally {
       setLoading(false);
     }
@@ -513,7 +514,7 @@ const Creator = () => {
   };
 
   const handleUpdateSectionData = (index, updatedComponent) => {
-    console.log("Updated Section Data:", updatedComponent);
+    // console.log("Updated Section Data:", updatedComponent);
     const updatedData = { ...sectionData };
     updatedData.data[index] = updatedComponent;
     sectionData = updatedData;
@@ -526,7 +527,7 @@ const Creator = () => {
       if (section._id === editedSectionId) {
         const updatedData = section.data.map((item) => {
           if (item.type === selectedNavbarId.type) {
-            console.log("selectedNavbarId", selectedNavbarId);
+            // console.log("selectedNavbarId", selectedNavbarId);
             return selectedNavbarId; // Replace the item with the selectedNavbarId data
           }
           return item;
@@ -544,13 +545,13 @@ const Creator = () => {
   };
 
   const handleCardSelect = (selectedCardId) => {
-    console.log("Index of the changed card: ", selectedCardId?.niloy);
+    // console.log("Index of the changed card: ", selectedCardId?.niloy);
     // change card data of only the index of the component in the section
     const updatedPageData = showPageData.map((section) => {
       if (section._id === editedSectionId) {
         const updatedData = section.data.map((item, index) => {
           if (index === selectedCardId?.niloy) {
-            console.log("selectedCardId", selectedCardId);
+            // console.log("selectedCardId", selectedCardId);
             return selectedCardId;
           }
           return item;
@@ -572,7 +573,7 @@ const Creator = () => {
       if (section._id === editedSectionId) {
         const updatedData = section.data.map((item) => {
           if (item.type === selectedMediaId.type) {
-            console.log("selectedMediaId", selectedMediaId);
+            // console.log("selectedMediaId", selectedMediaId);
             return selectedMediaId; // Replace the item with the selectedMediaId data
           }
           return item;
@@ -594,7 +595,7 @@ const Creator = () => {
       if (section._id === editedSectionId) {
         const updatedData = section.data.map((item) => {
           if (item.type === selectedEventId.type) {
-            console.log("selectedEventId", selectedEventId);
+            // console.log("selectedEventId", selectedEventId);
             return selectedEventId; // Replace the item with the selectedEventId data
           }
           return item;
@@ -609,14 +610,14 @@ const Creator = () => {
     });
     setUpdatedSection(updatedPageData);
   };
-  console.log("updatedSection (Events): ", updatedSection);
+  // console.log("updatedSection (Events): ", updatedSection);
 
   const handleMenuSelect = (selectedMenuId) => {
     const updatedPageData = showPageData.map((section) => {
       if (section._id === editedSectionId) {
         const updatedData = section.data.map((item) => {
           if (item.type === selectedMenuId.type) {
-            console.log("selectedMenuId", selectedMenuId);
+            // console.log("selectedMenuId", selectedMenuId);
             return selectedMenuId; // Replace the item with the selectedMenuId data
           }
           return item;
@@ -680,7 +681,7 @@ const Creator = () => {
       if (section._id === editedSectionId) {
         const updatedData = section.data.map((item) => {
           if (item.type === selectedSliderId.type) {
-            console.log("selectedSliderId", selectedSliderId);
+            // console.log("selectedSliderId", selectedSliderId);
             return selectedSliderId; // Replace the item with the selectedSliderId data
           }
           return item;
@@ -702,7 +703,7 @@ const Creator = () => {
       if (section._id === editedSectionId) {
         const updatedData = section.data.map((item) => {
           if (item.type === selectedPressReleaseId.type) {
-            console.log("selectedPressReleaseId", selectedPressReleaseId);
+            // console.log("selectedPressReleaseId", selectedPressReleaseId);
             return selectedPressReleaseId;
           }
           return item;
@@ -724,7 +725,7 @@ const Creator = () => {
       if (section._id === editedSectionId) {
         const updatedData = section.data.map((item) => {
           if (item.type === selectedGasId.type) {
-            console.log("selectedGasId", selectedGasId);
+            // console.log("selectedGasId", selectedGasId);
             return selectedGasId; // Replace the item with the selectedGasId data
           }
           return item;
@@ -743,13 +744,32 @@ const Creator = () => {
   // console.log("updatedSection", updatedSection);
 
   const handleFormSelect = (selectedFormId) => {
-    console.log("selectedFormId", selectedFormId);
+    const updatedPageData = showPageData.map((section) => {
+      if (section._id === editedSectionId) {
+        // console.log("selectedFormId", selectedFormId);
+        const updatedData = section.data.map((item) => {
+          if (item.type === selectedFormId.type) {
+            // console.log("selectedFormId", selectedFormId);
+            return selectedFormId; // Replace the item with the selectedFormId data
+          }
+          return item;
+        });
+
+        return {
+          ...section,
+          data: updatedData,
+        };
+      }
+      return section;
+    });
+
+    setUpdatedSection(updatedPageData);
   };
 
   const handleFooterSelect = (selectedFooterId) => {
     const updatedPageData = showPageData.map((section) => {
       if (section._id === editedSectionId) {
-        console.log("selectedFooter Id: ", selectedFooterId);
+        // console.log("selectedFooter Id: ", selectedFooterId);
         const updatedData = section.data.map((item) => {
           if (item.type === selectedFooterId.type) {
             return selectedFooterId;
@@ -786,7 +806,7 @@ const Creator = () => {
       }
     } catch (error) {
       message.error(error.message);
-      console.log("Error updating press release", error);
+      // console.log("Error updating press release", error);
     } finally {
       setLoading(false);
     }
@@ -888,7 +908,7 @@ const Creator = () => {
                               setEditMode(false);
                               setSave(true);
                               setEditedSectionId(null);
-                              console.log("Sending: ", sectionData);
+                              // console.log("Sending: ", sectionData);
                               handleUpdateSectionData(index, sectionData);
                               handleSave();
                             }}
@@ -1043,7 +1063,7 @@ const Creator = () => {
                                 onClick={() => {
                                   setEditMode(false);
                                   setEditedSectionId(null);
-                                  console.log("Sending: ", sectionData);
+                                  // console.log("Sending: ", sectionData);
                                   handleUpdateSectionData(index, sectionData);
                                   handleSave();
                                 }}
@@ -1069,7 +1089,7 @@ const Creator = () => {
                 </>
               )}
             </div>
-            {/* {console.log("newSectionComponents", sectionData)} */}
+            {/* {// console.log("newSectionComponents", sectionData)} */}
             <div>
               {newSectionComponents?.length > 0 && (
                 <section
@@ -1600,7 +1620,10 @@ const Creator = () => {
                           height: "auto",
                         }}
                         icon={<PlusSquareOutlined />}
-                        onClick={() => handleSubmit()}
+                        onClick={() => {
+                          handleSubmit();
+                          setCanvas(false);
+                        }}
                       >
                         Submit
                       </Button>
