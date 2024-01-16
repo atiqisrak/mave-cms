@@ -114,23 +114,6 @@ const Cards = () => {
     });
   }, []);
 
-  // List options for page name Home : home
-  // const pageNames = [
-  //   { name: "Home", value: "home" },
-  //   { name: "Corporate", value: "corporate" },
-  //   { name: "Cylinder Gas", value: "cylindergas" },
-  //   { name: "Autogas", value: "autogas" },
-  //   { name: "Bulk Gas", value: "bulkgas" },
-  //   { name: "News & Media", value: "newsmedia" },
-  //   { name: "Health & Safety", value: "healthandsafety" },
-  //   { name: "Career", value: "career" },
-  //   { name: "Contact Us", value: "contactus" },
-  //   { name: "F.A.Q", value: "faq" },
-  //   { name: "Terms & Conditions", value: "termsandconditions" },
-  //   { name: "Privacy Policy", value: "privacypolicy" },
-  //   { name: "Cookies Policy", value: "cookiespolicy" },
-  //   { name: "Sitemap", value: "sitemap" },
-  // ];
   const pageNames = pages.map((page) => ({
     name: page?.page_name_en,
     value: page?.slug ? page?.slug : page?.page_name_en,
