@@ -277,7 +277,7 @@ export default function MenuItems() {
                 Show Menus
               </Button>
 
-              <Button
+              {/* <Button
                 type="primary"
                 style={{
                   backgroundColor: "var(--themes)",
@@ -291,7 +291,7 @@ export default function MenuItems() {
                 icon={<PlusCircleOutlined />}
               >
                 Add New Menu Item
-              </Button>
+              </Button> */}
             </div>
           </div>
           {console.log("Menu Items: ", menuItems)}
