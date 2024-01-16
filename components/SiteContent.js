@@ -166,13 +166,13 @@ export default function SiteContent({ children }) {
                     >
                       Dashboard
                     </Menu.Item>
-                    <Menu.Item
+                    {/* <Menu.Item
                       key="95"
                       icon={<FormatPainterOutlined />}
                       onClick={() => GoCreatorMode()}
                     >
                       Creator Mode
-                    </Menu.Item>
+                    </Menu.Item> */}
                     <Menu.Item
                       key="96"
                       icon={<SettingOutlined />}
@@ -249,11 +249,11 @@ export default function SiteContent({ children }) {
                     color: "var(--gray)",
                   }}
                 >
-                  v 0.1.16
+                  v 0.1.88
                 </h3>
 
                 {/* Slider Switch Toggle for creator mode */}
-                <Button
+                {/* <Button
                   style={{
                     borderRadius: 10,
                     width: 200,
@@ -269,7 +269,7 @@ export default function SiteContent({ children }) {
                   onClick={() => GoCreatorMode()}
                 >
                   Creator Mode
-                </Button>
+                </Button> */}
 
                 <Link href="/dashboard" className="sitelogo">
                   {collapsed ? (
