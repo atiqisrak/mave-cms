@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -p 9000",
-    "lint": "next lint"
+    "start": "NODE_ENV=production node server.js",
+    "lint": "next lint",
+    "export": "next build && next export"
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",

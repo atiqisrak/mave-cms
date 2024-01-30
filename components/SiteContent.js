@@ -249,7 +249,7 @@ export default function SiteContent({ children }) {
                     color: "var(--gray)",
                   }}
                 >
-                  v 0.1.88
+                  v 0.1.92
                 </h3>
 
                 {/* Slider Switch Toggle for creator mode */}
