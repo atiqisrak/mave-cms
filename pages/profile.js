@@ -26,6 +26,19 @@ const Profile = () => {
     { id: 5, u_id: "c66aaozpxq", name: "Guest" },
   ]);
 
+  const [roles2, setRoles2] = useState([
+    { id: 1, u_id: "y8wewowlhl", name: "Admin" },
+    { id: 2, u_id: "btrq7wcnsv", name: "Editor" },
+    { id: 3, u_id: "lf0kaur5u4", name: "User" },
+    { id: 4, u_id: "c66aaozpxq", name: "Guest" },
+  ]);
+
+  const isSuperAdmin = userData?.role_id === 1;
+  const isAdmin = userData?.role_id === 2;
+
+  // Function to check if the logged-in user can modify users
+  const canModifyUsers = isSuperAdmin || isAdmin;
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -305,7 +318,7 @@ const Profile = () => {
                           {userData?.role_id == "null"
                             ? "Guest"
                             : roles.find((role) => role.id == userData?.role_id)
-                                ?.name}
+                              ?.name}
                         </p>
                       )}
                     </div>
@@ -338,35 +351,39 @@ const Profile = () => {
                     marginTop: "1rem",
                   }}
                 >
-                  <Button
-                    type="primary"
-                    style={{
-                      marginRight: "1rem",
-                      backgroundColor: "var(--theme)",
-                      color: "white",
-                      padding: "0.5rem 1rem",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                    onClick={handleUpdateProfile}
-                  >
-                    <CheckOutlined /> Save
-                  </Button>
-                  <Button
-                    type="primary"
-                    danger
-                    style={{
-                      marginLeft: "1rem",
-                      padding: "0.5rem 1rem",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                    onClick={() => setModifyMode(false)}
-                  >
-                    <CloseOutlined /> Cancel
-                  </Button>
+                  {canModifyUsers && (
+                    <>
+                      <Button
+                        type="primary"
+                        style={{
+                          marginRight: "1rem",
+                          backgroundColor: "var(--theme)",
+                          color: "white",
+                          padding: "0.5rem 1rem",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                        onClick={handleUpdateProfile}
+                      >
+                        <CheckOutlined /> Save
+                      </Button>
+                      <Button
+                        type="primary"
+                        danger
+                        style={{
+                          marginLeft: "1rem",
+                          padding: "0.5rem 1rem",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                        onClick={() => setModifyMode(false)}
+                      >
+                        <CloseOutlined /> Cancel
+                      </Button>
+                    </>
+                  )}
                 </div>
               ) : (
                 <div
@@ -376,21 +393,23 @@ const Profile = () => {
                     alignItems: "center",
                   }}
                 >
-                  <Button
-                    type="primary"
-                    style={{
-                      marginTop: "1rem",
-                      backgroundColor: "var(--theme)",
-                      color: "white",
-                      padding: "0.5rem 1rem",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                    onClick={() => setModifyMode(true)}
-                  >
-                    <EditOutlined /> Edit
-                  </Button>
+                  {canModifyUsers && (
+                    <Button
+                      type="primary"
+                      style={{
+                        marginTop: "1rem",
+                        backgroundColor: "var(--theme)",
+                        color: "white",
+                        padding: "0.5rem 1rem",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                      onClick={() => setModifyMode(true)}
+                    >
+                      <EditOutlined /> Edit
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
@@ -473,21 +492,21 @@ const Profile = () => {
                           <Select
                             defaultValue={
                               //  Find role name by id
-                              roles.find((role) => role.id == user?.role_id)?.id
+                              roles2.find((role) => role.id == user?.role_id)?.id
                             }
                             onChange={(value) =>
                               handleUserInputChange("role_id", value)
                             }
                             style={{ width: "100%" }}
                           >
-                            {roles.map((role) => (
+                            {roles2.map((role) => (
                               <Select.Option value={role.id}>
                                 {role.name}
                               </Select.Option>
                             ))}
                           </Select>
                         ) : user?.role_id ? (
-                          roles.find((role) => role.id == user?.role_id)?.name
+                          roles2.find((role) => role.id == user?.role_id)?.name
                         ) : (
                           "Guest"
                         )}
@@ -530,29 +549,34 @@ const Profile = () => {
                             >
                               <EditOutlined />
                             </Button>
-                            <Popconfirm
-                              title="Are you sure to delete this user?"
-                              onConfirm={() => {
-                                console.log("Clicked User Id: ", user?.id);
-                                handleDeleteUser(user?.id);
-                              }}
-                              onCancel={() => console.log("Canceled")}
-                              okText="Yes"
-                              cancelText="No"
-                            >
-                              <Button
-                                danger
-                                type="primary"
-                                style={{
-                                  padding: "0.5rem 1rem",
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  alignItems: "center",
+                            {
+                              // Only Super Admin can delete users
+                              userData?.role_id == 1 &&
+                              (<Popconfirm
+                                title="Are you sure to delete this user?"
+                                onConfirm={() => {
+                                  console.log("Clicked User Id: ", user?.id);
+                                  handleDeleteUser(user?.id);
                                 }}
+                                onCancel={() => console.log("Canceled")}
+                                okText="Yes"
+                                cancelText="No"
                               >
-                                <DeleteOutlined />
-                              </Button>
-                            </Popconfirm>
+                                <Button
+                                  danger
+                                  type="primary"
+                                  style={{
+                                    padding: "0.5rem 1rem",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <DeleteOutlined />
+                                </Button>
+                              </Popconfirm>)
+                            }
+
                           </div>
                         )}
                       </Col>
