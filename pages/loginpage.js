@@ -150,7 +150,11 @@ const Loginpage = ({ open, setOpen, response, setResponse }) => {
           <div className="createAccout">
             <p>
               New to Mave?{" "}
-              <span onClick={handleChangeState}>Create an Account</span>{" "}
+              {/* <span onClick={handleChangeState}>Create an Account</span>{" "} */}
+              <span onClick={() => {
+                // popup notification saying contact admin
+                message.info("Contact Admin");
+              }}>Create an Account</span>{" "}
             </p>
           </div>
         </div>
