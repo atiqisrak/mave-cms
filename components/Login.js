@@ -73,7 +73,7 @@ const Login = ({ open, setOpen, response,
         message.success("Login successfully");
 
       }
-      
+
     } catch (error) {
       // Handle errors, e.g., display an error message or log the error
       if (error?.response?.status === 401) {
@@ -116,7 +116,13 @@ const Login = ({ open, setOpen, response,
           <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" alt="" style={{ marginRight: "1rem" }} /> Sign up with Google
         </Button> */}
         <div className="createAccout">
-          <p>New to Mave? <span onClick={handleChangeState}>Create an Account</span> </p>
+          <p>New to Mave?
+            {/* <span onClick={handleChangeState}>Create an Account</span>  */}
+            <span onClick={() => {
+              // popup notification saying contact admin
+              message.info("Contact Admin");
+            }}>Create an Account</span>{" "}
+          </p>
         </div>
       </Modal>
       <Signup open={signupModalOpen} setOpen={setSignupModalOpen} setOpen1={setOpen} />
