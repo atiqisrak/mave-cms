@@ -9,7 +9,7 @@ const instance = axios.create({
     Accept: 'application/json',
     "Access-Control-Allow-Origin": "*"
   },
-  
+
 });
 
 export default instance;
