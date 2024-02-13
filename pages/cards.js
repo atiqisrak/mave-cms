@@ -1,5 +1,5 @@
 import { AppstoreOutlined, ClockCircleOutlined, FilterOutlined, FontColorsOutlined, PlusCircleOutlined, SortAscendingOutlined, UnorderedListOutlined } from "@ant-design/icons";
-import { Alert, Button, Col, Input, Row, Select, message } from "antd";
+import { Alert, Button, Col, Input, Modal, Pagination, Row, Select, message } from "antd";
 import React, { useEffect, useState } from "react";
 import instance from "../axios";
 import Loader from "../components/Loader";
@@ -12,7 +12,6 @@ const Cards = () => {
   const [loading, setLoading] = useState(false);
   const [cardsData, setCardsData] = useState([]);
   const [media, setMedia] = useState([]);
-  const [editMode, setEditMode] = useState(false);
   const [viewType, setViewType] = useState("grid");
   const [isCreateCardFormVisible, setIsCreateCardFormVisible] = useState(false);
   const [pages, setPages] = useState([]);
@@ -64,28 +63,6 @@ const Cards = () => {
   const handleCreateCard = (createdCard) => {
     setCardsData([...cardsData, createdCard]);
     setIsCreateCardFormVisible(false);
-  };
-
-  // Delete Card
-  const handleDeleteCard = async (cardId) => {
-    try {
-      setLoading(true);
-      const response = await instance.delete(`/cards/${cardId}`);
-      if (response.status === 200) {
-        const updatedCards = cardsData.filter((card) => card.id !== cardId);
-        setCardsData(updatedCards);
-        setLoading(false);
-        message.success("Card deleted successfully");
-      }
-      else {
-        message.error("Failed to delete card");
-        setLoading(false);
-      }
-    }
-    catch (error) {
-      message.error("Failed to delete card");
-      setLoading(false);
-    }
   };
 
   // Sort Cards
@@ -142,160 +119,201 @@ const Cards = () => {
     setFilteredCards(filteredCards);
   };
 
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [numberOfCardsPerPage, setNumberOfCardsPerPage] = useState(12);
+  const totalNumberOfCards = filteredCards.length;
+  const [displayedCards, setDisplayedCards] = useState([]);
 
-  // Render
+  const onPageSizeOptionsChange = (current, pageSize) => {
+    setCurrentPage(current);
+    setNumberOfCardsPerPage(pageSize);
+  }
+
+  useEffect(() => {
+    const start = (currentPage - 1) * numberOfCardsPerPage;
+    const end = start + numberOfCardsPerPage;
+    setDisplayedCards(filteredCards.slice(start, end));
+  }, [currentPage, filteredCards, numberOfCardsPerPage]);
 
 
-  // Loading
   return (
     <div className="ViewContainer">
       <div className="ViewContentContainer">
         {
           loading ? <Loader /> : (
-            <div>
-              {/* Top Header */}
-              <Row justify="space-between" align="middle" gutter={16}
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr 3fr 2fr 1fr",
-                  gap: "1rem",
-                  marginBottom: "1rem",
-                }}>
-                <Button
-                  type="primary"
-                  icon={<PlusCircleOutlined />}
-                  style={{ backgroundColor: "var(--themes)" }}
-                  onClick={toggleCreateCardForm}
-                >
-                  Add Card
-                </Button>
-                <Button
-                  type="primary"
-                  icon={<FilterOutlined />}
-                  style={{ backgroundColor: "var(--themes)" }}
-                  onClick={() => setSortMode(!sortMode)}
-                >
-                  Sort
-                </Button>
-                <Input
-                  allowClear
-                  placeholder="Search Cards"
-                  onChange={(e) => handleSearchCards(e.target.value)}
-                />
-                <Select
-                  allowClear
-                  placeholder="Filter by page"
-                  onChange={handleFilterByPage}
-                >
-                  {pageNames?.map((page) => (
-                    <Select.Option key={page.value} value={page.value}>
-                      {page.name}
-                    </Select.Option>
-                  ))}
-                </Select>
-                <Button
-                  type="primary"
-                  icon={<UnorderedListOutlined />}
-                  style={{
-                    backgroundColor: "var(--themes)",
-                    display: viewType === "list" ? "none" : "block",
-                  }}
-                  onClick={() => setViewType("list")}
-                >
-                  List View
-                </Button>
-                <Button
-                  type="primary"
-                  icon={<AppstoreOutlined />}
-                  style={{
-                    backgroundColor: "var(--themes)",
-                    display: viewType === "grid" ? "none" : "block",
-                  }}
-                  onClick={() => setViewType("grid")}
-                >
-                  Grid View
-                </Button>
-              </Row>
+            <>
 
-              {/* Filter */}
-              <Row style={{ display: sortMode ? "block" : "none", marginBottom: "2em" }}>
-                <center style={{
+              <div>
+                {/* Top Header */}
+                <Row justify="space-between" align="middle" gutter={16}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr 3fr 2fr 1fr",
+                    gap: "1rem",
+                    marginBottom: "1rem",
+                  }}>
+                  <Button
+                    type="primary"
+                    icon={<PlusCircleOutlined />}
+                    style={{ backgroundColor: "var(--themes)" }}
+                    onClick={toggleCreateCardForm}
+                  >
+                    Add Card
+                  </Button>
+                  <Button
+                    type="primary"
+                    icon={<FilterOutlined />}
+                    style={{ backgroundColor: "var(--themes)" }}
+                    onClick={() => setSortMode(!sortMode)}
+                  >
+                    Sort
+                  </Button>
+                  <Input
+                    allowClear
+                    placeholder="Search Cards"
+                    onChange={(e) => handleSearchCards(e.target.value)}
+                  />
+                  <Select
+                    allowClear
+                    placeholder="Filter by page"
+                    onChange={handleFilterByPage}
+                  >
+                    {pageNames?.map((page) => (
+                      <Select.Option key={page.value} value={page.value}>
+                        {page.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <Button
+                    type="primary"
+                    icon={<UnorderedListOutlined />}
+                    style={{
+                      backgroundColor: "var(--themes)",
+                      display: viewType === "list" ? "none" : "block",
+                    }}
+                    onClick={() => setViewType("list")}
+                  >
+                    List View
+                  </Button>
+                  <Button
+                    type="primary"
+                    icon={<AppstoreOutlined />}
+                    style={{
+                      backgroundColor: "var(--themes)",
+                      display: viewType === "grid" ? "none" : "block",
+                    }}
+                    onClick={() => setViewType("grid")}
+                  >
+                    Grid View
+                  </Button>
+                </Row>
+
+                {/* Filter */}
+                <Row style={{ display: sortMode ? "block" : "none", marginBottom: "2em" }}>
+                  <center style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}>
+                    <Select
+                      placeholder="Sort by"
+                      style={{ width: "30%", marginRight: "1rem" }}
+                      onChange={handleSortCards}
+                    >
+                      <Select.Option value="name">
+                        <FontColorsOutlined style={{
+                          paddingRight: "1rem",
+                        }} />
+                        Name</Select.Option>
+                      <Select.Option value="date">
+                        <ClockCircleOutlined style={{
+                          paddingRight: "1rem",
+                        }} />
+                        Date</Select.Option>
+                    </Select>
+                    <Select
+                      placeholder="Order"
+                      style={{
+                        width: "30%",
+                        marginRight: "1rem",
+                        display: sortActivated ? "block" : "none",
+                      }}
+                      onChange={handleOrderCards}
+                    >
+                      <Select.Option value="asc">
+                        <SortAscendingOutlined style={{
+                          paddingRight: "1rem",
+                        }} />
+                        Added First
+                      </Select.Option>
+                      <Select.Option value="desc">
+                        <SortAscendingOutlined style={{
+                          paddingLeft: "1rem",
+                          transform: "rotate(180deg)",
+                        }} />
+                        Added Last
+                      </Select.Option>
+                    </Select>
+                  </center>
+                </Row>
+
+                {/* Create Card */}
+                {isCreateCardFormVisible && (
+                  <Col span={24}>
+                    <CreateCardForm
+                      onCreateCard={handleCreateCard}
+                      onCancel={toggleCreateCardForm}
+                      media={media}
+                      pages={pageNames}
+                    />
+                  </Col>
+                )}
+                {/* Cards Gallary */}
+                {
+                  filteredCards?.length > 0 ? (
+                    <div>
+                      {viewType === "grid" ? (
+                        <CardGridView
+                          cardData={displayedCards}
+                          media={media}
+                          fetchCards={fetchCards}
+                        />
+                      ) : (
+                        <CardListView
+                          cardData={filteredCards}
+                          media={media}
+                          fetchCards={fetchCards}
+                        />
+                      )}
+                    </div>
+                  ) : (
+                    <h2>No cards found</h2>
+                  )
+                }
+              </div>
+              {console.log("filteredCards size: ", filteredCards.length)}
+              {/* Pagination */}
+              <Pagination
+                defaultCurrent={1}
+                current={currentPage}
+                defaultPageSize={numberOfCardsPerPage}
+                hideOnSinglePage={true}
+                pageSizeOptions={["12", "24", "36", "48"]}
+                responsive={true}
+                showPrevNextJumpers={true}
+                showQuickJumper={true}
+                showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+                onChange={onPageSizeOptionsChange}
+                total={totalNumberOfCards}
+                style={{
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                }}>
-                  <Select
-                    placeholder="Sort by"
-                    style={{ width: "30%", marginRight: "1rem" }}
-                    onChange={handleSortCards}
-                  >
-                    <Select.Option value="name">
-                      <FontColorsOutlined style={{
-                        paddingRight: "1rem",
-                      }} />
-                      Name</Select.Option>
-                    <Select.Option value="date">
-                      <ClockCircleOutlined style={{
-                        paddingRight: "1rem",
-                      }} />
-                      Date</Select.Option>
-                  </Select>
-                  <Select
-                    placeholder="Order"
-                    style={{
-                      width: "30%",
-                      marginRight: "1rem",
-                      display: sortActivated ? "block" : "none",
-                    }}
-                    onChange={handleOrderCards}
-                  >
-                    <Select.Option value="asc">
-                      <SortAscendingOutlined style={{
-                        paddingRight: "1rem",
-                      }} />
-                      Added First
-                    </Select.Option>
-                    <Select.Option value="desc">
-                      <SortAscendingOutlined style={{
-                        paddingLeft: "1rem",
-                        transform: "rotate(180deg)",
-                      }} />
-                      Added Last
-                    </Select.Option>
-                  </Select>
-                </center>
-              </Row>
-
-              {/* Create Card */}
-              {isCreateCardFormVisible && (
-                <Col span={24}>
-                  <CreateCardForm
-                    onCreateCard={handleCreateCard}
-                    onCancel={toggleCreateCardForm}
-                    media={media}
-                    pages={pageNames}
-                  />
-                </Col>
-              )}
-              {/* Cards Gallary */}
-              {
-                cardsData?.length > 0 ? (
-                  <div>
-                    {viewType === "grid" ? (
-                      < CardGridView
-                        cardData={filteredCards}
-                        editMode={editMode} />
-                    ) : (
-                      <CardListView
-                        cardData={filteredCards}
-                        editMode={editMode} />
-                    )}
-                  </div>
-                ) : (
-                  <h2>No cards found</h2>
-                )
-              }
-            </div>
+                  marginTop: "2rem",
+                }}
+              />
+            </>
           )
         }
       </div>
