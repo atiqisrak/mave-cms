@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Col, Image, Row } from "antd";
+import MediaRenderEngine from "./MediaRenderEngine";
 const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
 
 const CardListView = ({
@@ -23,13 +24,17 @@ const CardListView = ({
                                 display: "flex",
                                 alignItems: "center"
                             }}>
-                                <Image
-                                    preview={false}
-                                    src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
-                                    alt={card.title_en}
-                                    width={200}
-                                    height={200}
-                                />
+                                {card?.media_files ? (
+                                    <MediaRenderEngine item={card?.media_files} />
+                                ) : (
+                                    <Image
+                                        preview={false}
+                                        src="/images/Image_Placeholder.png"
+                                        alt={card.title_en}
+                                        width={200}
+                                        height={200}
+                                    />
+                                )}
                             </Col>
                             <Col span={6} style={{
                                 display: "flex",
