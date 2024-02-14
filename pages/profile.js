@@ -419,22 +419,26 @@ const Profile = () => {
           {loading ? (
             <Loader />
           ) : userData?.role_id == 1 || userData?.role_id == 2 ? (
-            <div className="" style={{ marginTop: "1rem" }}>
+            <div className="" style={{ marginTop: "4rem" }}>
               {/* Users table with name, email, role and permissions */}
               <div>
                 <Col
                   style={{
                     marginBottom: "1rem",
-                    padding: "1rem 1rem",
+                    padding: "2rem",
                     borderRadius: "5px",
                   }}
                 >
+                  <center><h1>
+                    User Management
+                  </h1></center>
                   <Row
                     gutter={16}
                     style={{
                       backgroundColor: "#ceedff",
                       padding: "1rem 1em",
                       borderRadius: "5px",
+                      marginTop: "2rem",
                     }}
                   >
                     <Col span={6}>

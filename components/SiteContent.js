@@ -415,7 +415,7 @@ export default function SiteContent({ children }) {
                     </Menu.Item>
 
 
-                    {/* Creator */}
+                    {/* only admin can see this */}
                     <SubMenu
                       key="creatortools"
                       icon={<FormatPainterOutlined />}
