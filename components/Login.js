@@ -112,12 +112,9 @@ const Login = ({ open, setOpen, response,
         </Space>
 
         <Divider>Or</Divider>
-        {/* <Button block style={{ height: "40px", fontSize: "18px", fontWeight: 700, display: "flex", justifyContent: "center", alignItems: "center", rowGap: "1rem" }}>
-          <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" alt="" style={{ marginRight: "1rem" }} /> Sign up with Google
-        </Button> */}
         <div className="createAccout">
           <p>New to Mave?
-            {/* <span onClick={handleChangeState}>Create an Account</span>  */}
+            <span onClick={handleChangeState}>Create an Account</span>
             <span onClick={() => {
               // popup notification saying contact admin
               message.info("Contact Admin");

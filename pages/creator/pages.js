@@ -169,6 +169,7 @@ const Pages = () => {
                       borderRadius: 10,
                       backgroundColor: "#f0f0f0",
                       padding: "4em 1em",
+                      marginTop: "2em",
                     }}
                   >
                     <h1>Create Mode on</h1>
