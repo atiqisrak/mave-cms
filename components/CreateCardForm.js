@@ -56,7 +56,7 @@ const CreateCardForm = ({ onCreateCard, onCancel, media, pages }) => {
             const res = await instance.get("/cards");
             setCardData(res.data);
             setIsLoading(false);
-          } catch (error) {}
+          } catch (error) { }
         };
         getData();
       } else {
@@ -65,11 +65,6 @@ const CreateCardForm = ({ onCreateCard, onCancel, media, pages }) => {
       onCancel();
     });
   };
-
-  const pageNames = pages.map((page) => ({
-    name: page?.page_name_en,
-    value: page?.slug ? page?.slug : page?.page_name_en,
-  }));
 
   const [selectedMediaId, setSelectedMediaId] = useState(null);
   const handleAddMediaToCard = (selectedMediaId) => {
@@ -94,8 +89,9 @@ const CreateCardForm = ({ onCreateCard, onCancel, media, pages }) => {
           Create Card
         </Button>,
       ]}
-      width={800}
+      width={1200}
     >
+      {console.log("Pages getting from create card modal: ", pages)}
       <h2
         style={{
           fontSize: "1.5rem",
@@ -131,7 +127,7 @@ const CreateCardForm = ({ onCreateCard, onCancel, media, pages }) => {
           fontSize: "1.5rem",
           fontWeight: "bold",
           color: "var(--themes)",
-          marginTop: "1rem",
+          marginTop: "4rem",
         }}
       >
         Description
@@ -146,7 +142,7 @@ const CreateCardForm = ({ onCreateCard, onCancel, media, pages }) => {
           fontSize: "1.5rem",
           fontWeight: "bold",
           color: "var(--themes)",
-          marginTop: "1rem",
+          marginTop: "4rem",
         }}
       >
         বর্ণনা
@@ -161,19 +157,19 @@ const CreateCardForm = ({ onCreateCard, onCancel, media, pages }) => {
           fontSize: "1.5rem",
           fontWeight: "bold",
           color: "var(--themes)",
-          marginTop: "1rem",
+          marginTop: "5rem",
         }}
       >
-        Page Name
+        Page
       </h2>
       <Select
         showSearch
-        style={{ width: "100%", height: "100px", margin: "1em 0" }}
+        style={{ width: "100%", margin: "1em 0" }}
         placeholder="Select a page"
         optionFilterProp="children"
         onChange={(value) => handleFieldChange("page_name", value)}
       >
-        {pageNames?.map((page) => (
+        {pages?.map((page) => (
           <Option value={page?.value}>{page?.name}</Option>
         ))}
       </Select>
@@ -188,7 +184,8 @@ const CreateCardForm = ({ onCreateCard, onCancel, media, pages }) => {
         Link URL
       </h2>
       <Input
-        placeholder="Link URL"
+        defaultValue="/"
+        placeholder="/home"
         value={formData.link_url}
         onChange={(e) => handleFieldChange("link_url", e.target.value)}
       />
@@ -206,9 +203,8 @@ const CreateCardForm = ({ onCreateCard, onCancel, media, pages }) => {
       >
         {selectedMediaId ? (
           <img
-            src={`${MEDIA_URL}/${
-              media.find((item) => item.id === selectedMediaId).file_path
-            }`}
+            src={`${MEDIA_URL}/${media.find((item) => item.id === selectedMediaId).file_path
+              }`}
             height={150}
             width={150}
             style={{
