@@ -35,6 +35,7 @@ import {
   SwitcherOutlined,
   FormatPainterOutlined,
   DollarCircleOutlined,
+  AlignLeftOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -166,24 +167,6 @@ export default function SiteContent({ children }) {
                     >
                       Dashboard
                     </Menu.Item>
-                    {/* <Menu.Item
-                      key="95"
-                      icon={<FormatPainterOutlined />}
-                      onClick={() => GoCreatorMode()}
-                    >
-                      Creator Mode
-                    </Menu.Item> */}
-                    <Menu.Item
-                      key="96"
-                      icon={<SettingOutlined />}
-                      onClick={() => {
-                        setCreatorMode(false);
-                        localStorage.setItem("creatorMode", false);
-                        router.push("/dashboard");
-                      }}
-                    >
-                      Admin Mode
-                    </Menu.Item>
                   </>
                 ) : (
                   <Menu.Item
@@ -249,28 +232,8 @@ export default function SiteContent({ children }) {
                     color: "var(--gray)",
                   }}
                 >
-                  v 0.1.92
+                  v 0.1.94
                 </h3>
-
-                {/* Slider Switch Toggle for creator mode */}
-                {/* <Button
-                  style={{
-                    borderRadius: 10,
-                    width: 200,
-                    height: 40,
-                    fontSize: 16,
-                    fontWeight: 600,
-                    letterSpacing: 1,
-                    border: "none",
-                    boxShadow: "0 0 10px rgba(0,0,0,.2)",
-                    cursor: "pointer",
-                  }}
-                  icon={<FormatPainterOutlined />}
-                  onClick={() => GoCreatorMode()}
-                >
-                  Creator Mode
-                </Button> */}
-
                 <Link href="/dashboard" className="sitelogo">
                   {collapsed ? (
                     <Image
@@ -437,102 +400,6 @@ export default function SiteContent({ children }) {
                       </Menu.Item>
                     </SubMenu>
 
-                    {/* Pages */}
-                    <SubMenu
-                      key="pages"
-                      icon={<DesktopOutlined />}
-                      title="Pages"
-                      style={{
-                        marginTop: "10%",
-                        fontSize: "1.1em",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      <Menu.Item
-                        key="20"
-                        icon={<FontSizeOutlined />}
-                        onClick={() => router.push("/home")}
-                      >
-                        Home
-                      </Menu.Item>
-                      <Menu.Item
-                        key="15"
-                        icon={<FontSizeOutlined />}
-                        onClick={() => router.push("/about")}
-                      >
-                        About
-                      </Menu.Item>
-                      <Menu.Item
-                        key="16"
-                        icon={<BoxPlotOutlined />}
-                        onClick={() => router.push("/cylindergas")}
-                      >
-                        Cylinder Gas
-                      </Menu.Item>
-                      <Menu.Item
-                        key="17"
-                        icon={<BoxPlotOutlined />}
-                        onClick={() => router.push("/autogas")}
-                      >
-                        Auto Gas
-                      </Menu.Item>
-                      <Menu.Item
-                        key="18"
-                        icon={<BoxPlotOutlined />}
-                        onClick={() => router.push("/bulkgas")}
-                      >
-                        Bulk Gas
-                      </Menu.Item>
-                      <Menu.Item
-                        key="21"
-                        icon={<BoxPlotOutlined />}
-                        onClick={() => router.push("/healthandsafety")}
-                      >
-                        Health & Safety
-                      </Menu.Item>
-                      <Menu.Item
-                        key="22"
-                        icon={<BoxPlotOutlined />}
-                        onClick={() => router.push("/news")}
-                      >
-                        News & Media
-                      </Menu.Item>
-                    </SubMenu>
-
-                    {/* Orders */}
-                    <SubMenu
-                      key="orders"
-                      icon={<AppstoreOutlined />}
-                      title="Order Management"
-                      style={{
-                        marginTop: "10%",
-                        fontSize: "1.1em",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      <Menu.Item
-                        key="25"
-                        icon={<AppstoreOutlined />}
-                        onClick={() => router.push("/orders")}
-                      >
-                        All Orders
-                      </Menu.Item>
-                      <Menu.Item
-                        key="26"
-                        icon={<AppstoreOutlined />}
-                        onClick={() => router.push("/gases")}
-                      >
-                        Gases
-                      </Menu.Item>
-                      <Menu.Item
-                        key="27"
-                        icon={<AppstoreOutlined />}
-                        onClick={() => router.push("/dealership")}
-                      >
-                        Dealership Opportunities
-                      </Menu.Item>
-                    </SubMenu>
-
                     {/* Form Responses */}
                     <Menu.Item
                       key="28"
@@ -546,18 +413,54 @@ export default function SiteContent({ children }) {
                     >
                       Form Responses
                     </Menu.Item>
-                    <Menu.Item
-                      key="29"
-                      icon={<DollarCircleOutlined />}
-                      onClick={() => router.push("/creator/pages")}
+
+
+                    {/* Creator */}
+                    <SubMenu
+                      key="creatortools"
+                      icon={<FormatPainterOutlined />}
+                      title="Creator Studio"
                       style={{
                         marginTop: "10%",
                         fontSize: "1.1em",
                         fontWeight: "bold",
                       }}
                     >
-                      Pages
-                    </Menu.Item>
+                      <Menu.Item
+                        key="29"
+                        icon={<DollarCircleOutlined />}
+                        onClick={() => router.push("/creator/pages")}
+                        style={{
+                          marginTop: "10%",
+                          fontSize: "1.1em",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        Pages
+                      </Menu.Item>
+                      <Menu.Item
+                        key="30"
+                        icon={<AlignLeftOutlined />}
+                        style={{
+                          marginTop: "10%",
+                          fontSize: "1.1em",
+                          fontWeight: "bold",
+                        }}>
+                        Blogs
+                      </Menu.Item>
+                      {/* Tools */}
+                      <Menu.Item
+                        key="15"
+                        icon={<SettingOutlined />}
+                        style={{
+                          marginTop: "10%",
+                          fontSize: "1.1em",
+                          fontWeight: "bold",
+                        }}>
+                        Tools
+                      </Menu.Item>
+                    </SubMenu>
+
                   </>
                 ) : (
                   ""

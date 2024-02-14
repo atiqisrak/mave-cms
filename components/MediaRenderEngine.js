@@ -28,13 +28,12 @@ const MediaRenderEngine = ({ item }) => {
 
     return (
         <div>
-            {console.log("Received item: ", item?.id)}
             {
                 mediaType === "image" && (
                     <Image
                         preview={false}
                         src={mediaUrl}
-                        alt={item.title_en}
+                        alt="MAVE Media"
                         width={250}
                         height={200}
                         style={{
