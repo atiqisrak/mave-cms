@@ -456,7 +456,9 @@ export default function SiteContent({ children }) {
                           marginTop: "10%",
                           fontSize: "1.1em",
                           fontWeight: "bold",
-                        }}>
+                        }}
+                        onClick={() => router.push("/tools")}
+                      >
                         Tools
                       </Menu.Item>
                     </SubMenu>
