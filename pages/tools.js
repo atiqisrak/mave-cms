@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import ImageConverter from "../components/tools/ImageConverter";
 import { LockOutlined } from "@ant-design/icons";
-import ImageOptimizer from "../components/tools/ImageOptimizer";
+// import ImageOptimizer from "../components/tools/ImageOptimizer";
 
 
 const Tools = () => {
@@ -23,8 +23,8 @@ const Tools = () => {
             title: "Image Optimizer",
             description: "Optimize images",
             image: "/images/mave_logo.png",
-            onClick: () => setShowImageOptimizer(true),
-            // onClick: () => message.info("Please purchase premium to use this tool"),
+            // onClick: () => setShowImageOptimizer(true),
+            onClick: () => message.info("Please purchase premium to use this tool"),
             premium: 1
         },
         {
@@ -113,6 +113,7 @@ const Tools = () => {
                                     width={100}
                                     height={100}
                                     objectFit="cover"
+                                    preview={false}
                                 />
                                 <div style={{ margin: "1em 0" }}>
                                     <h3>{tool.title}</h3>
@@ -146,9 +147,9 @@ const Tools = () => {
                 )}
 
                 {/* Image optimizer */}
-                {showImageOptimizer && (
+                {/* {showImageOptimizer && (
                     <ImageOptimizer />
-                )}
+                )} */}
             </div>
         </div>
     );

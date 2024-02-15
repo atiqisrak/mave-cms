@@ -1,18 +1,30 @@
 import React, { useState, useEffect } from "react";
 import RichTextEditor from "../RichTextEditor";
+import { Button } from "antd";
 
-const DescriptionParser = ({ item, editMode, onDescriptionChange }) => {
+const DescriptionParser = ({ item, editMode, setEditMode, onDescriptionChange }) => {
+  const [description, setDescription] = useState(item?.value || "Description");
+
   const handleDescriptionChange = (value) => {
-    onDescriptionChange({ value, type: "description" });
+    setDescription(value);
+    onDescriptionChange(value, item.type);
   };
 
   return (
     <>
       {editMode ? (
         <div className="descriptionContainer">
+          {/* <Button
+            style={{ marginBottom: "1em" }}
+            onClick={() => {
+              setEditMode(false);
+              onDescriptionChange(description, item.type);
+            }}
+          >Save</Button> */}
           <RichTextEditor
+            defaultValue={item?.value}
             editMode={true}
-            value={item?.value}
+            value={description}
             onChange={handleDescriptionChange}
           />
         </div>
@@ -30,7 +42,6 @@ const DescriptionParser = ({ item, editMode, onDescriptionChange }) => {
           }}
         >
           <div dangerouslySetInnerHTML={{ __html: item?.value }}></div>
-          {/* <p>{item?.value}</p> */}
         </div>
       )}
     </>

@@ -17,6 +17,7 @@ import FormParser from "./FormParser";
 const ComponentParse = ({
   section,
   editMode,
+  setEditMode,
   onNavbarSelect,
   onCardSelect,
   onMediaSelect,
@@ -33,12 +34,9 @@ const ComponentParse = ({
   setSectionData,
 }) => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
-
-  // Callback function to update section data
   const handleComponentChange = (index, updatedComponent) => {
     if (onUpdateSectionData) {
       console.log("updatedComponent", updatedComponent);
-      // onUpdateSectionData(index, updatedComponent, sectionId);
       const updatedSection = section ? [...section] : [];
       updatedSection[index] = updatedComponent;
 
@@ -51,6 +49,7 @@ const ComponentParse = ({
 
   return (
     <div>
+      {console.log("Section data niloy: ", section)}
       {section?.map((item, index) => (
         <section key={index}>
           {(() => {
@@ -82,20 +81,24 @@ const ComponentParse = ({
               case "title":
                 return (
                   <TitleParser
+                    key={index}
                     item={item}
                     editMode={editMode}
-                    onTitleChange={onTitleChange}
+                    onTitleChange={(value, type) => onTitleChange(index, value, type)}
                     onUpdateComponent={(updatedComponent) =>
                       handleComponentChange(index, updatedComponent)
                     }
                   />
+
                 );
               case "description":
                 return (
                   <DescriptionParser
+                    key={index}
                     item={item}
                     editMode={editMode}
-                    onDescriptionChange={onDescriptionChange}
+                    setEditMode={setEditMode}
+                    onDescriptionChange={(value, type) => onDescriptionChange(index, value, type)}
                     onUpdateComponent={(updatedComponent) =>
                       handleComponentChange(index, updatedComponent)
                     }

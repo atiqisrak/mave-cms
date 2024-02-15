@@ -10,6 +10,7 @@ import {
   message,
   Modal,
   Popconfirm,
+  Carousel,
 } from "antd";
 import { useRouter } from "next/router";
 import {
@@ -38,6 +39,9 @@ import instance from "../../axios";
 import bodyParser from "../../utils/sectionperser";
 import ComponentParse from "../../components/creator/ComponentParser";
 import ScrollToButton from "../../components/ScrollToBottomButton";
+import SingleMediaSelect from "../../components/SingleMediaSelect";
+import MultipleMediaSelectModal from "../../components/MultipleMediaSelectModal";
+import MediaSelectionModal from "../../components/MediaSelectionModal";
 const Creator = () => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
   const [collapsed, setCollapsed] = useState(false);
@@ -228,6 +232,7 @@ const Creator = () => {
     );
     if (selectedType === "title") {
       const takenTitle = {
+        _id: generateRandomId(16),
         type: "title",
         value,
       };
@@ -235,11 +240,14 @@ const Creator = () => {
     }
     if (selectedType === "description") {
       const takenDescription = {
+        _id: generateRandomId(16),
         type: "description",
         value,
       };
       setDescription(takenDescription);
     }
+
+    console.log("description", description);
     if (selectedType === "media") {
       const resultArray = filteredArray.map(
         ({ id, file_name, file_path, file_type, tags, type }) => ({
@@ -634,12 +642,15 @@ const Creator = () => {
   };
   // console.log("updatedSection", updatedSection);
 
-  const handleTitleChange = (value) => {
+  const handleTitleChange = (index, value, type) => {
     const updatedPageData = showPageData.map((section) => {
       if (section._id === editedSectionId) {
-        const updatedData = section.data.map((item) => {
-          if (item.type === "title") {
-            return value; // Replace the item with the selectedTitleId data
+        const updatedData = section.data.map((item, i) => {
+          if (i === index) {
+            return {
+              type: type,
+              value: value,
+            };
           }
           return item;
         });
@@ -650,17 +661,43 @@ const Creator = () => {
         };
       }
       return section;
-    });
+    }
+    );
     setUpdatedSection(updatedPageData);
   };
+
+
   // console.log("updatedSection", updatedSection);
 
-  const handleDescriptionChange = (value) => {
+  // const handleDescriptionChange = (value) => {
+  //   const updatedPageData = showPageData.map((section) => {
+  //     if (section._id === editedSectionId) {
+  //       const updatedData = section.data.map((item) => {
+  //         if (item.type === "description") {
+  //           return value; // Replace the item with the selectedDescriptionId data
+  //         }
+  //         return item;
+  //       });
+
+  //       return {
+  //         ...section,
+  //         data: updatedData,
+  //       };
+  //     }
+  //     return section;
+  //   });
+  //   setUpdatedSection(updatedPageData);
+  // };
+
+  const handleDescriptionChange = (index, value, type) => {
     const updatedPageData = showPageData.map((section) => {
       if (section._id === editedSectionId) {
-        const updatedData = section.data.map((item) => {
-          if (item.type === "description") {
-            return value; // Replace the item with the selectedDescriptionId data
+        const updatedData = section.data.map((item, i) => {
+          if (i === index) {
+            return {
+              type: type,
+              value: value,
+            };
           }
           return item;
         });
@@ -671,9 +708,12 @@ const Creator = () => {
         };
       }
       return section;
-    });
+    }
+    );
     setUpdatedSection(updatedPageData);
-  };
+  }
+
+
   // console.log("updatedSection", updatedSection);
 
   const handleSliderSelect = (selectedSliderId) => {
@@ -873,6 +913,7 @@ const Creator = () => {
                       <ComponentParse
                         section={section?.data}
                         editMode={editMode && editedSectionId == section?._id}
+                        setEditMode={setEditMode}
                         onNavbarSelect={handleNavbarSelect}
                         onCardSelect={handleCardSelect}
                         onMediaSelect={handleMediaSelect}
@@ -1155,6 +1196,14 @@ const Creator = () => {
                                 return (
                                   <div style={{ width: "40vw" }}>
                                     <Input
+                                      style={{
+                                        padding: "1em 2em",
+                                        marginBottom: "1em",
+                                        borderRadius: 10,
+                                        fontSize: "1.6rem",
+                                        fontWeight: "bold",
+                                      }}
+                                      placeholder="Enter Title"
                                       onChange={(e) =>
                                         handleFormChange(
                                           "hero_title_en",
@@ -1163,31 +1212,61 @@ const Creator = () => {
                                         )
                                       }
                                     />
-                                    <Button
-                                      onClick={() => {
-                                        handleClickOfText(
-                                          selectedComponentType
-                                        );
-                                        setSelectionMode(false);
-                                      }}
-                                    >
-                                      Ok
-                                    </Button>
+                                    <div style={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      alignItems: "center",
+                                      padding: "1em 2em",
+                                      width: "30%",
+                                    }}>
+                                      <Button
+                                        style={{
+                                          backgroundColor: "var(--theme)",
+                                          color: "#fff",
+                                        }}
+                                        onClick={() => {
+                                          handleClickOfText(
+                                            selectedComponentType
+                                          );
+                                          setSelectionMode(false);
+                                        }}
+                                      >
+                                        Add
+                                      </Button>
+                                      <Button
+                                        danger
+                                        onClick={() => setSelectionMode(false)}
+                                      >
+                                        Cancel
+                                      </Button>
+                                    </div>
                                   </div>
                                 );
                               case "description":
                                 return (
                                   <div style={{ width: "40vw" }}>
-                                    <Input
+                                    {/* <RichTextEditor
+                                      editMode="true"
                                       placeholder="Enter Description"
                                       onChange={(e) =>
                                         handleFormChange(
-                                          "hero_title_en",
                                           e.target.value,
                                           selectedComponentType
                                         )
                                       }
+                                    /> */}
+                                    <RichTextEditor
+                                      editMode="true"
+                                      placeholder="Enter Description"
+                                      onChange={(e) =>
+                                        handleFormChange(
+                                          "hero_description_en",
+                                          e,
+                                          selectedComponentType
+                                        )
+                                      }
                                     />
+
                                     <Button
                                       onClick={() => {
                                         handleClickOfText(
@@ -1235,15 +1314,51 @@ const Creator = () => {
                                           key={index}
                                           value={card.id}
                                         >
-                                          {card.id}
+                                          {/* {card.id} */}
+                                          <Image
+                                            preview={false}
+                                            src={`${MEDIA_URL}/${card?.file_path}`}
+                                            alt={card?.file_path}
+                                            width={300}
+                                            height={200}
+                                            objectFit="cover"
+                                          />
                                         </Select.Option>
                                       ))}
                                     </Select>
-                                    <Button
+
+                                    {/* <Button
                                       onClick={() => setSelectionMode(false)}
                                     >
                                       Ok
-                                    </Button>
+                                    </Button> */}
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        padding: "1em 2em",
+                                        width: "30%",
+                                      }}
+                                    >
+                                      <Button
+                                        style={{
+                                          backgroundColor: "var(--theme)",
+                                          color: "#fff",
+                                        }}
+                                        onClick={() => {
+                                          setSelectionMode(false);
+                                        }}
+                                      >
+                                        Add
+                                      </Button>
+                                      <Button
+                                        danger
+                                        onClick={() => setSelectionMode(false)}
+                                      >
+                                        Cancel
+                                      </Button>
+                                    </div>
                                   </div>
                                 );
                               case "menu":
@@ -1327,6 +1442,7 @@ const Creator = () => {
                               case "slider":
                                 return (
                                   <div style={{ width: "40vw" }}>
+                                    {console.log("Got sliders", fetchedComponent)}
                                     <Select
                                       value={searchDefault}
                                       mode="multiple"
@@ -1338,7 +1454,7 @@ const Creator = () => {
                                           .indexOf(input.toLowerCase()) >= 0
                                       }
                                       style={{ width: "100%" }}
-                                      placeholder="Select Tabs"
+                                      placeholder="Select Slider"
                                       onChange={(value) =>
                                         handleFormChange(
                                           "card_ids",
@@ -1352,15 +1468,57 @@ const Creator = () => {
                                           key={index}
                                           value={card.id}
                                         >
-                                          {card.id}
+                                          {/* {card.id} */}
+                                          {
+                                            card && (
+                                              <div>
+                                                <Carousel
+                                                  autoplay
+                                                  style={{
+                                                    width: "100%",
+                                                    height: "100%",
+                                                  }}
+                                                >
+                                                  {
+                                                    card?.medias?.map((media, index) => (
+                                                      <div key={index}>
+                                                        <Image
+                                                          preview={false}
+                                                          src={`${MEDIA_URL}/${media?.file_path}`}
+                                                          alt={media?.file_path}
+                                                          width={"100%"}
+                                                          height={200}
+                                                          style={{ objectFit: "cover", borderRadius: 10 }}
+                                                        />
+                                                      </div>
+                                                    ))
+                                                  }
+                                                </Carousel>
+                                              </div>
+                                            )
+                                          }
                                         </Select.Option>
                                       ))}
                                     </Select>
-                                    <Button
+                                    <div style={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      alignItems: "center",
+                                      padding: "1em 2em",
+                                      width: "30%",
+                                    }}><Button
                                       onClick={() => setSelectionMode(false)}
                                     >
-                                      Ok
-                                    </Button>
+                                        Add
+                                      </Button>
+                                      <Button
+                                        danger
+                                        onClick={() => setSelectionMode(false)}
+                                      >
+                                        Cancel
+                                      </Button>
+                                    </div>
+
                                   </div>
                                 );
                               case "card":
@@ -1623,6 +1781,7 @@ const Creator = () => {
                         onClick={() => {
                           handleSubmit();
                           setCanvas(false);
+                          fetchPageData();
                         }}
                       >
                         Submit
