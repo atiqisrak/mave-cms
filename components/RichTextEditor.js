@@ -64,7 +64,7 @@ const RichTextEditor = ({ defaultValue, onChange, editMode }) => {
         <ReactQuill
           style={{
             height: "200px",
-            marginBottom: "1rem",
+            marginBottom: "3rem",
             padding: "1rem",
             backgroundColor: "var(--bg)",
             color: "var(--textNormal)",

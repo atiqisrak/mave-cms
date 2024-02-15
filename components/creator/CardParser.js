@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, memo } from "react";
 import instance from "../../axios";
-import { Select } from "antd";
+import { Image, Select } from "antd";
 
 const CardParser = ({
   item,
@@ -70,16 +70,41 @@ const CardParser = ({
       {editMode ? (
         <div className="cardContainer">
           <Select
-            // mode="multiple"
             showSearch
-            style={{ width: "100%" }}
+            style={{ width: "100%", height: "100px" }}
             placeholder="Select a card"
             optionFilterProp="children"
             onChange={handleCardChange}
           >
             {memoizedCards?.map((card, index) => (
               <Option key={index} value={JSON.stringify(card)}>
-                {card?.title_en}
+                {/* {card?.title_en} */}
+                <div style={{
+                  display: "flex",
+                  gap: "1em",
+                  alignItems: "center",
+                }}>
+                  {
+                    card?.media_files && card?.media_files?.file_type.startsWith("image") ? (
+                      <Image
+                        width={100}
+                        height={60}
+                        src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
+                        alt={card?.media_files?.file_path}
+                        style={{ objectFit: "contain" }}
+                      />
+                    ) : (
+                      <video
+                        width={100}
+                        height={60}
+                        src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
+                        alt={card?.media_files?.file_path}
+                        style={{ objectFit: "contain" }}
+                      />
+                    )
+                  }
+                  <h3>{card?.title_en}</h3>
+                </div>
               </Option>
             ))}
           </Select>
@@ -94,6 +119,7 @@ const CardParser = ({
             marginBottom: "1em",
             border: "1px solid var(--themes)",
             borderRadius: 10,
+            gap: "3em",
           }}
         >
           <div
@@ -120,9 +146,15 @@ const CardParser = ({
                 />
               ))}
           </div>
-          <div className="contentContainer">
-            <h3>{item?._mave?.title_en}</h3>
-            <h3>{item?._mave?.title_bn}</h3>
+          <div className="contentContainer" style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "1em",
+          }}>
+            <center>
+              <h3>{item?._mave?.title_en} ( {item?._mave?.title_bn} )</h3>
+            </center>
+
             <div
               dangerouslySetInnerHTML={{ __html: item?._mave?.description_en }}
               style={{ textAlign: "left", fontSize: "1em" }}

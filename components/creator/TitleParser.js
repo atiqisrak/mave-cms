@@ -3,15 +3,31 @@ import instance from "../../axios";
 import { Form, Input } from "antd";
 
 const TitleParser = ({ item, editMode, onTitleChange }) => {
+  const [title, setTitle] = useState(item?.value || "Title");
+
   const handleTitleChange = (e) => {
-    onTitleChange({ value: e.target.value, type: "title" });
-  };
+    const newValue = e.target.value;
+    setTitle(newValue);
+    onTitleChange(newValue, item.type);
+  }
 
   return (
     <>
       {editMode ? (
         <div className="titleContainer">
-          <Input placeholder={item?.value} onChange={handleTitleChange} />
+          <h1>Title</h1>
+          {console.log("Getting Title: ", item)}
+          <Input
+            defaultValue={item?.value}
+            value={title}
+            style={{
+              padding: "1em 2em",
+              marginBottom: "1em",
+              border: "1px solid var(--themes)",
+              borderRadius: 10,
+            }}
+            placeholder={item?.value ? item?.value : "Title"}
+            onChange={handleTitleChange} />
         </div>
       ) : (
         <div

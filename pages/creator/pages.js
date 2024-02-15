@@ -186,7 +186,10 @@ const Pages = () => {
                             alignItems: "center",
                           }}
                         >
-                          <Col span={16} style={{ marginRight: "0em" }}>
+                          <Col span={16} style={{
+                            display: "flex",
+                            gap: "1em"
+                          }}>
                             <Input
                               placeholder="Page Title En"
                               value={newPageTitleEn}
