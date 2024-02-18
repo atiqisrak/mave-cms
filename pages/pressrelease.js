@@ -128,7 +128,7 @@ const PressRelease = () => {
         setCreateMode(false);
 
         const selectedPressRelease = pressReleases.find(pressRelease => pressRelease.id === pressReleaseId);
-        
+
         if (selectedPressRelease) {
             setFormData({
                 card_ids: selectedPressRelease?.card_ids,
@@ -250,44 +250,44 @@ const PressRelease = () => {
                             <div className="pageContainer">
                                 <div className="pageContainerHeader">
                                     <h2>Create New Press Release</h2>
-                                        <div className="formGroup">
-                                            <label>Card IDs</label>
-                                            <Select
-                                                mode="multiple"
-                                                allowClear
-                                                showSearch
-                                                filterOption={(input, option) =>
-                                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                                }
-                                                style={{ width: '100%' }}
-                                                placeholder="Select Tabs"
-                                                value={formData?.card_ids}
-                                                onChange={(value) => handleFormChange('card_ids', value)}
-                                            >
-                                                {
-                                                    cards?.map((card) => (
-                                                        <Select.Option key={card.id} value={card.id}>
-                                                            {card.title_en}
-                                                        </Select.Option>
-                                                    ))
-                                                }
-                                            </Select>
-                                        </div>
-                                        <Button type="primary"
-                                            style={{
-                                                backgroundColor: "var(--theme)",
-                                                borderColor: "var(--theme)",
-                                                color: "white",
-                                                borderRadius: "10px",
-                                                fontSize: "1.2em",
-                                                marginRight: "1em",
-                                                paddingBottom: "1.8em",
-                                            }}
-                                            onClick={handleCreatePressRelease}
+                                    <div className="formGroup">
+                                        <label>Card IDs</label>
+                                        <Select
+                                            mode="multiple"
+                                            allowClear
+                                            showSearch
+                                            filterOption={(input, option) =>
+                                                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                            }
+                                            style={{ width: '100%' }}
+                                            placeholder="Select Cards"
+                                            value={formData?.card_ids}
+                                            onChange={(value) => handleFormChange('card_ids', value)}
                                         >
-                                            Create
-                                        </Button>
-                            </div>
+                                            {
+                                                cards?.map((card) => (
+                                                    <Select.Option key={card.id} value={card.id}>
+                                                        {card.title_en}
+                                                    </Select.Option>
+                                                ))
+                                            }
+                                        </Select>
+                                    </div>
+                                    <Button type="primary"
+                                        style={{
+                                            backgroundColor: "var(--theme)",
+                                            borderColor: "var(--theme)",
+                                            color: "white",
+                                            borderRadius: "10px",
+                                            fontSize: "1.2em",
+                                            marginRight: "1em",
+                                            paddingBottom: "1.8em",
+                                        }}
+                                        onClick={handleCreatePressRelease}
+                                    >
+                                        Create
+                                    </Button>
+                                </div>
                             </div>
                         ) : null
                     }
@@ -391,10 +391,10 @@ const PressRelease = () => {
                                                                         filterOption={(input, option) =>
                                                                             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                                                         }
-                                                                        style={{ 
+                                                                        style={{
                                                                             width: '100%',
                                                                             borderRadius: 10,
-                                                                         }}
+                                                                        }}
                                                                         placeholder="Select Tabs"
                                                                         defaultValue={formData?.card_ids}
                                                                         value={formData?.card_ids}
@@ -445,46 +445,46 @@ const PressRelease = () => {
                                                                                     </Button>
                                                                                 </div>
                                                                                 {
-                                                                                    typeof card.media_ids === 'string' ? 
-                                                                                    renderMedia(card.media_ids)
-                                                                                        : 
+                                                                                    typeof card.media_ids === 'string' ?
+                                                                                        renderMedia(card.media_ids)
+                                                                                        :
                                                                                         (
                                                                                             <>
-                                                                                            {
-                                                                                            card?.media_mave?.file_type.startsWith('image') ? (
-                                                                                                <Image
-                                                                                                    src={`${MEDIA_URL}/${card?.media_mave?.file_path}`}
-                                                                                                    alt="Hero Image"
-                                                                                                    style={{
-                                                                                                        height: '200px',
-                                                                                                        width: '18vw',
-                                                                                                        objectFit: 'contain',
-                                                                                                        borderRadius: 10,
-                                                                                                    }}
-                                                                                                />
-                                                                                            ) : card?.media_mave?.file_type.startsWith('video') ? (
-                                                                                                <video
-                                                                                                    autoPlay
-                                                                                                    muted
-                                                                                                    width="30%"
-                                                                                                    height="auto"
-                                                                                                    objectFit="contain"
-                                                                                                    src={`${MEDIA_URL}/${card?.media_mave?.file_path}`}
-                                                                                                >
-                                                                                                    Your browser does not support the video tag.
-                                                                                                </video>
-                                                                                            ) : (
-                                                                                                <img
-                                                                                                    src="/images/Image_Placeholder.png"
-                                                                                                    style={{
-                                                                                                        height: "200px",
-                                                                                                        width: "18vw",
-                                                                                                        objectFit: 'cover',
-                                                                                                        borderRadius: 10,
-                                                                                                    }}
-                                                                                                />
-                                                                                            )
-                                                                                        }
+                                                                                                {
+                                                                                                    card?.media_mave?.file_type.startsWith('image') ? (
+                                                                                                        <Image
+                                                                                                            src={`${MEDIA_URL}/${card?.media_mave?.file_path}`}
+                                                                                                            alt="Hero Image"
+                                                                                                            style={{
+                                                                                                                height: '200px',
+                                                                                                                width: '18vw',
+                                                                                                                objectFit: 'contain',
+                                                                                                                borderRadius: 10,
+                                                                                                            }}
+                                                                                                        />
+                                                                                                    ) : card?.media_mave?.file_type.startsWith('video') ? (
+                                                                                                        <video
+                                                                                                            autoPlay
+                                                                                                            muted
+                                                                                                            width="30%"
+                                                                                                            height="auto"
+                                                                                                            objectFit="contain"
+                                                                                                            src={`${MEDIA_URL}/${card?.media_mave?.file_path}`}
+                                                                                                        >
+                                                                                                            Your browser does not support the video tag.
+                                                                                                        </video>
+                                                                                                    ) : (
+                                                                                                        <img
+                                                                                                            src="/images/Image_Placeholder.png"
+                                                                                                            style={{
+                                                                                                                height: "200px",
+                                                                                                                width: "18vw",
+                                                                                                                objectFit: 'cover',
+                                                                                                                borderRadius: 10,
+                                                                                                            }}
+                                                                                                        />
+                                                                                                    )
+                                                                                                }
                                                                                             </>
                                                                                         )
 

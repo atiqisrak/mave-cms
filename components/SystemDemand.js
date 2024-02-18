@@ -112,135 +112,135 @@ const SystemDemand = () => {
     }
 
 
-        
+
 
 
 
 
     return (
         <div className="">
-                <h1>Contact Us</h1>
-                <div style={{
-                    paddingTop: "3em",
-                }}>
-                            <div className="TableContainer">
-                                    <div className="TableHeaderActions">
-                                        <Button type="primary" icon={<FilterOutlined />}>Filter</Button>
-                                        <Button type="primary" icon={<OrderedListOutlined />} onClick={() => {
-                                            downloadCSV(messages);
-                                        }
-                                        }>Export</Button>
-                                    </div>
-                                <div className="TableBody">
-                                    <Row gutter={[16, 16]} style={{
+            <h1>Contact Us</h1>
+            <div style={{
+                paddingTop: "3em",
+            }}>
+                <div className="TableContainer">
+                    <div className="TableHeaderActions">
+                        <Button type="primary" icon={<FilterOutlined />}>Filter</Button>
+                        <Button type="primary" icon={<OrderedListOutlined />} onClick={() => {
+                            downloadCSV(messages);
+                        }
+                        }>Export</Button>
+                    </div>
+                    <div className="TableBody">
+                        <Row gutter={[16, 16]} style={{
+                            padding: "1em 0",
+                        }}>
+                            <Col span={6}>
+                                <h2>Name</h2>
+                            </Col>
+                            <Col span={4}>
+                                <h2>Phone</h2>
+                            </Col>
+                            <Col span={5}>
+                                <h2>Date</h2>
+                            </Col>
+                            <Col span={2}>
+                                <h2>View</h2>
+                            </Col>
+                            <Col span={7}>
+                                <h2>Satus</h2>
+                            </Col>
+                        </Row>
+                        {
+                            messages?.map((message, index) => {
+                                return (
+                                    <Row gutter={[16, 16]} key={index} style={{
+
                                         padding: "1em 0",
+                                        borderBottom: "1px solid #ddd",
                                     }}>
                                         <Col span={6}>
-                                            <h2>Name</h2>
+                                            <p style={{
+                                                wordWrap: "break-word",
+                                            }}>{message?.customer_mave?.full_name}</p>
                                         </Col>
                                         <Col span={4}>
-                                            <h2>Phone</h2>
+                                            <p>{message?.customer_mave?.phone}</p>
                                         </Col>
                                         <Col span={5}>
-                                            <h2>Date</h2>
+                                            <p>{moment(message.created_at).format("DD-MM-YYYY")}</p>
                                         </Col>
                                         <Col span={2}>
-                                        <h2>View</h2>
+                                            <EyeOutlined onClick={() => {
+                                                setModalVisible(true);
+                                                setSelectedMessage(message);
+                                            }} />
                                         </Col>
                                         <Col span={7}>
-                                            <h2>Satus</h2>
+                                            {
+                                                editMode ? (
+                                                    <div style={{
+                                                        display: "flex",
+                                                        gap: "1em",
+                                                        alignItems: "center",
+                                                    }}>
+                                                        <Select
+                                                            defaultValue={message?.status}
+                                                            style={{ width: 120 }}
+                                                            onChange={handleStatusChange}
+                                                        >
+                                                            <Select.Option value="1">Unread</Select.Option>
+                                                            <Select.Option value="0">Read</Select.Option>
+                                                        </Select>
+                                                        <Button
+                                                            danger
+                                                            onClick={() => {
+                                                                setEditMode(false);
+                                                            }}
+                                                            style={{
+                                                                marginLeft: "1em",
+                                                            }}
+                                                        >
+                                                            <CloseCircleFilled /> Cancel
+                                                        </Button>
+                                                    </div>
+                                                ) : (
+                                                    <div style={{
+                                                        display: "flex",
+                                                        gap: "1em",
+                                                        alignItems: "center",
+                                                        justifyContent: "space-between",
+                                                    }}>
+                                                        <h3 style={{
+                                                            color: message?.status == 0 ? "green" : "orange",
+                                                            backgroundColor: message?.status == 0 ? "#e6ffe6" : "#fff2e6",
+                                                            padding: "0.5em 1em",
+                                                            borderRadius: "1em",
+                                                            width: "fit-content",
+                                                        }}>{message?.status == 0 ? "Read" : "Unread"}</h3>
+
+                                                        <Button
+                                                            type="primary"
+                                                            onClick={() => {
+                                                                setEditMode(true);
+                                                                setSelectedMessage(message);
+                                                            }}
+                                                            style={{
+                                                                marginRight: "1em",
+                                                            }}
+                                                        >
+                                                            <CheckOutlined /> Change Status
+                                                        </Button>
+                                                    </div>
+                                                )
+                                            }
                                         </Col>
                                     </Row>
-                                    {
-                                        messages?.map((message, index) => {
-                                            return (
-                                                <Row gutter={[16, 16]} key={index} style={{
-
-                                                    padding: "1em 0",
-                                                    borderBottom: "1px solid #ddd",
-                                                }}>
-                                                    <Col span={6}>
-                                                        <p style={{
-                                                            wordWrap: "break-word",
-                                                        }}>{message?.customer_mave?.full_name}</p>
-                                                    </Col>
-                                                    <Col span={4}>
-                                                        <p>{message?.customer_mave?.phone}</p>
-                                                    </Col>
-                                                    <Col span={5}>
-                                                        <p>{moment(message.created_at).format("DD-MM-YYYY")}</p>
-                                                    </Col>
-                                                    <Col span={2}>
-                                                        <EyeOutlined onClick={() => {
-                                                            setModalVisible(true);
-                                                            setSelectedMessage(message);
-                                                        }} />
-                                                    </Col>
-                                                    <Col span={7}>
-                                                        {
-                                                            editMode ? (
-                                                                <div style={{
-                                                                    display: "flex",
-                                                                    gap: "1em",
-                                                                    alignItems: "center",
-                                                                }}>
-                                                                    <Select
-                                                                        defaultValue={message?.status}
-                                                                        style={{ width: 120 }}
-                                                                        onChange={handleStatusChange}
-                                                                    >
-                                                                        <Select.Option value="1">Unread</Select.Option>
-                                                                        <Select.Option value="0">Read</Select.Option>
-                                                                    </Select>
-                                                                    <Button
-                                                                        danger
-                                                                        onClick={() => {
-                                                                            setEditMode(false);
-                                                                        }}
-                                                                        style={{
-                                                                            marginLeft: "1em",
-                                                                        }}
-                                                                    >
-                                                                        <CloseCircleFilled /> Cancel
-                                                                    </Button>
-                                                                </div>
-                                                            ):(
-                                                                <div style={{
-                                                                    display: "flex",
-                                                                    gap: "1em",
-                                                                    alignItems: "center",
-                                                                    justifyContent: "space-between",
-                                                                }}>
-                                                                    <h3 style={{
-                                                                        color: message?.status == 0 ? "green" : "orange",
-                                                                        backgroundColor: message?.status == 0 ? "#e6ffe6" : "#fff2e6",
-                                                                        padding: "0.5em 1em",
-                                                                        borderRadius: "1em",
-                                                                        width: "fit-content",
-                                                                    }}>{message?.status == 0 ? "Read" : "Unread"}</h3>
-                                                                    
-                                                                    <Button
-                                                                        type="primary"
-                                                                        onClick={() => {
-                                                                            setEditMode(true);
-                                                                            setSelectedMessage(message);
-                                                                        }}
-                                                                        style={{
-                                                                            marginRight: "1em",
-                                                                        }}
-                                                                    >
-                                                                        <CheckOutlined /> Change Status
-                                                                    </Button>
-                                                                </div>
-                                                            )
-                                                        }
-                                                    </Col>
-                                                </Row>
-                                            );
-                                        })
-                                    }
-                                </div>
-                            </div>
+                                );
+                            })
+                        }
+                    </div>
+                </div>
             </div>
             <Modal
                 title="Message Details"
@@ -258,7 +258,7 @@ const SystemDemand = () => {
                     }}>
                         Ok
                     </Button>,
-                    
+
                 ]}
                 width={1000}
             >
@@ -290,7 +290,7 @@ const SystemDemand = () => {
                         <h2>Date</h2>
                         <p>{moment(selectedMessage?.created_at).format("DD-MM-YYYY")}</p>
                     </div>
-                    
+
                     <div style={{
                         width: "50%",
                         height: "100%",

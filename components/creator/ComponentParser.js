@@ -49,7 +49,6 @@ const ComponentParse = ({
 
   return (
     <div>
-      {console.log("Section data niloy: ", section)}
       {section?.map((item, index) => (
         <section key={index}>
           {(() => {

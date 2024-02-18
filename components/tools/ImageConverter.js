@@ -127,7 +127,10 @@ const ImageConverter = () => {
     return (
         <div className="ViewContainer ViewContentContainer">
             <h1>Image Converter</h1>
-            <Upload.Dragger multiple={true} onChange={handleUpload}>
+            <Upload.Dragger
+                showUploadList={false}
+                multiple={true}
+                onChange={handleUpload}>
                 <p className="ant-upload-drag-icon">Click or drag images to upload</p>
             </Upload.Dragger>
             <Table

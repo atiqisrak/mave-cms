@@ -3,7 +3,6 @@ import dayjs from 'dayjs';
 import dayLocaleData from 'dayjs/plugin/localeData';
 import React, { useState, useEffect } from "react";
 import RichTextEditor from "../RichTextEditor";
-import { set } from "mongoose";
 
 const MeetingScheduler = () => {
     const [meetingDate, setMeetingDate] = useState(null);
@@ -77,11 +76,12 @@ const MeetingScheduler = () => {
             justifyContent: "center",
             alignItems: "center",
             marginTop: "2em",
+            padding: "1em",
         }}>
             <Calendar
                 style={{
                     width: "100%",
-                    maxWidth: "80vw",
+                    // maxWidth: "80vw",
                     border: "1px solid #f0f0f0",
                     borderRadius: "15px",
                     backgroundColor: "var(--themes)",
@@ -134,12 +134,11 @@ const MeetingScheduler = () => {
                                     allowClear
                                     placeholder="Enter the meeting name"
                                     style={{
-                                        width: "60vw",
+                                        width: "40vw",
                                         height: "3em",
                                     }}
                                 />
                             </Form.Item>
-
                             <div style={{
                                 marginTop: "1em",
                                 display: "flex",
@@ -282,7 +281,7 @@ const MeetingScheduler = () => {
                                     },
                                 ]}
                                 style={{
-                                    width: "70vw",
+                                    width: "50vw",
                                     marginTop: "2em",
                                     marginBottom: "2em",
                                 }}
@@ -321,7 +320,7 @@ const MeetingScheduler = () => {
                             <Col>
                                 <Table
                                     style={{
-                                        width: "60vw",
+                                        // width: "60vw",
                                         marginTop: "2em",
                                     }}
                                     pagination={false}
