@@ -225,7 +225,7 @@ const Footer = () => {
         const res = await instance.get("/footers");
         setFooterData(res.data);
         setIsLoading(false);
-      } catch (error) {}
+      } catch (error) { }
     };
     getData();
   }, []);
@@ -237,7 +237,7 @@ const Footer = () => {
         // const res = await instance.get("/menus");
         setMenuData(res.data);
         setIsLoading(false);
-      } catch (error) {}
+      } catch (error) { }
     };
     getMenu();
   }, []);
@@ -249,7 +249,7 @@ const Footer = () => {
         const res = await instance.get("/media");
         setMediaList(res.data);
         setIsLoading(false);
-      } catch (error) {}
+      } catch (error) { }
     };
     getMenu();
   }, []);
@@ -265,7 +265,7 @@ const Footer = () => {
           const res = await instance.get("/footers");
           setFooterData(res.data);
           setIsLoading(false);
-        } catch (error) {}
+        } catch (error) { }
       };
       getData();
     } catch (error) {
@@ -285,7 +285,7 @@ const Footer = () => {
           const res = await instance.get("/footers");
           setFooterData(res.data);
           setIsLoading(false);
-        } catch (error) {}
+        } catch (error) { }
       };
       getData();
     } catch (error) {
@@ -305,7 +305,7 @@ const Footer = () => {
 
           setFooterData(res.data);
           setIsLoading(false);
-        } catch (error) {}
+        } catch (error) { }
       };
       getData();
     } catch (error) {

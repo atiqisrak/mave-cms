@@ -44,63 +44,63 @@ const MediaSelectionModal = ({ media, selectedMedia, setSelectedMedia }) => {
   return (
     <div className="mediaSelectionModal">
       <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-      {mediaAssets?.map((mediaItem, index) => (
-        <Col key={index} span={6} style={{ marginTop: "1rem" }}>
-          <label>
-            <Checkbox
-              checked={selectedMedia?.includes(mediaItem.id)}
-              onChange={() => handleMediaSelection(mediaItem.id)}
-              style={
-                { 
-                  position: "absolute", 
-                  top: 10, 
-                  left: 30, 
-                  zIndex: 1 
+        {mediaAssets?.map((mediaItem, index) => (
+          <Col key={index} span={6} style={{ marginTop: "1rem" }}>
+            <label>
+              <Checkbox
+                checked={selectedMedia?.includes(mediaItem.id)}
+                onChange={() => handleMediaSelection(mediaItem.id)}
+                style={
+                  {
+                    position: "absolute",
+                    top: 10,
+                    left: 30,
+                    zIndex: 1
+                  }
                 }
-              }
-            />
-            {/* Check if image or video */}
-            {mediaItem.file_type.startsWith("image") ? (
-              <Image
-            className="checkboxmedia"
-              preview={false}
-                src={`${MEDIA_URL}/${mediaItem.file_path}`}
-                alt={mediaItem.file_name}
-                style={{
-                  height: "clamp(150px, 6vw, 200px)",
-                  width: "clamp(150px, 6vw, 200px)",
-                  objectFit: "cover",
-                  borderRadius: 10,
-                }}
               />
-            ) : mediaItem.file_type.startsWith("video") ? (
-              <video
-              className="checkboxmedia"
-                autoPlay
-                loop
-                muted
-                width="200px"
-                height="150px"
-                objectFit="cover"
-                src={`${MEDIA_URL}/${mediaItem.file_path}`}
-              >
-                Your browser does not support the video tag.
-              </video>
-            ) : (
-              <Image
-                src="/images/Image_Placeholder.png"
-                style={{
-                  height: "200px",
-                  width: "18vw",
-                  objectFit: "cover",
-                  borderRadius: 10,
-                }}
-              />
-            )}
-          </label>
-        </Col>
-      ))}
-    </Row>
+              {/* Check if image or video */}
+              {mediaItem.file_type.startsWith("image") ? (
+                <Image
+                  className="checkboxmedia"
+                  preview={false}
+                  src={`${MEDIA_URL}/${mediaItem.file_path}`}
+                  alt={mediaItem.file_name}
+                  style={{
+                    height: "clamp(150px, 6vw, 200px)",
+                    width: "clamp(150px, 6vw, 200px)",
+                    objectFit: "cover",
+                    borderRadius: 10,
+                  }}
+                />
+              ) : mediaItem.file_type.startsWith("video") ? (
+                <video
+                  className="checkboxmedia"
+                  autoPlay
+                  loop
+                  muted
+                  width="200px"
+                  height="150px"
+                  objectFit="cover"
+                  src={`${MEDIA_URL}/${mediaItem.file_path}`}
+                >
+                  Your browser does not support the video tag.
+                </video>
+              ) : (
+                <Image
+                  src="/images/Image_Placeholder.png"
+                  style={{
+                    height: "200px",
+                    width: "18vw",
+                    objectFit: "cover",
+                    borderRadius: 10,
+                  }}
+                />
+              )}
+            </label>
+          </Col>
+        ))}
+      </Row>
     </div>
   );
 };

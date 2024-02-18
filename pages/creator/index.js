@@ -30,6 +30,9 @@ import {
   MenuUnfoldOutlined,
   PlusSquareOutlined,
   CloseCircleFilled,
+  PlusOutlined,
+  CloseOutlined,
+  CloudSyncOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 const { Sider, Content } = Layout;
@@ -39,9 +42,8 @@ import instance from "../../axios";
 import bodyParser from "../../utils/sectionperser";
 import ComponentParse from "../../components/creator/ComponentParser";
 import ScrollToButton from "../../components/ScrollToBottomButton";
-import SingleMediaSelect from "../../components/SingleMediaSelect";
-import MultipleMediaSelectModal from "../../components/MultipleMediaSelectModal";
-import MediaSelectionModal from "../../components/MediaSelectionModal";
+import moment from "moment";
+
 const Creator = () => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
   const [collapsed, setCollapsed] = useState(false);
@@ -207,6 +209,15 @@ const Creator = () => {
     _category: "root",
     data: newSectionComponents,
   });
+
+  // Cancel Button
+
+  const destroy = () => {
+    setNewSectionComponent([]);
+    setNewSection(null);
+    setSelectionMode(false);
+  }
+
 
   const fetchComponents = async (data) => {
     try {
@@ -979,7 +990,9 @@ const Creator = () => {
                       style={{
                         width: "1170px",
                         padding: "20px 30px",
-                        border: "1px solid var(--themes)",
+                        border: "2px solid var(--themes)",
+                        borderRadius: 10,
+                        marginTop: 40,
                       }}
                       key={section?._id}
                     >
@@ -1138,7 +1151,9 @@ const Creator = () => {
                   style={{
                     width: "1170px",
                     padding: "20px 30px",
-                    border: "1px solid var(--black)",
+                    border: "2px solid var(--theme)",
+                    borderRadius: 10,
+                    marginTop: 40,
                   }}
                 >
                   <h1
@@ -1184,6 +1199,7 @@ const Creator = () => {
                     height: "300px",
                     border: "2px dashed var(--black)",
                     borderRadius: "10px",
+                    marginTop: "3rem",
                   }}
                 >
                   {selectionMode ? (
@@ -1230,12 +1246,14 @@ const Creator = () => {
                                           );
                                           setSelectionMode(false);
                                         }}
+                                        icon={<PlusOutlined />}
                                       >
                                         Add
                                       </Button>
                                       <Button
                                         danger
-                                        onClick={() => setSelectionMode(false)}
+                                        onClick={() => destroy()}
+                                        icon={<CloseOutlined />}
                                       >
                                         Cancel
                                       </Button>
@@ -1266,17 +1284,36 @@ const Creator = () => {
                                         )
                                       }
                                     />
-
-                                    <Button
-                                      onClick={() => {
-                                        handleClickOfText(
-                                          selectedComponentType
-                                        );
-                                        setSelectionMode(false);
-                                      }}
-                                    >
-                                      Ok
-                                    </Button>
+                                    <div style={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      alignItems: "center",
+                                      padding: "1em 2em",
+                                      width: "30%",
+                                    }}>
+                                      <Button
+                                        style={{
+                                          backgroundColor: "var(--theme)",
+                                          color: "#fff",
+                                        }}
+                                        onClick={() => {
+                                          handleClickOfText(
+                                            selectedComponentType
+                                          );
+                                          setSelectionMode(false);
+                                        }}
+                                        icon={<PlusOutlined />}
+                                      >
+                                        Add
+                                      </Button>
+                                      <Button
+                                        danger
+                                        onClick={() => destroy()}
+                                        icon={<CloseOutlined />}
+                                      >
+                                        Cancel
+                                      </Button>
+                                    </div>
                                   </div>
                                 );
                               case "inner-section":
@@ -1300,7 +1337,7 @@ const Creator = () => {
                                           .indexOf(input.toLowerCase()) >= 0
                                       }
                                       style={{ width: "100%" }}
-                                      placeholder="Select Tabs"
+                                      placeholder="Select Media"
                                       onChange={(value) =>
                                         handleFormChange(
                                           "card_ids",
@@ -1314,7 +1351,6 @@ const Creator = () => {
                                           key={index}
                                           value={card.id}
                                         >
-                                          {/* {card.id} */}
                                           <Image
                                             preview={false}
                                             src={`${MEDIA_URL}/${card?.file_path}`}
@@ -1326,12 +1362,6 @@ const Creator = () => {
                                         </Select.Option>
                                       ))}
                                     </Select>
-
-                                    {/* <Button
-                                      onClick={() => setSelectionMode(false)}
-                                    >
-                                      Ok
-                                    </Button> */}
                                     <div
                                       style={{
                                         display: "flex",
@@ -1349,12 +1379,14 @@ const Creator = () => {
                                         onClick={() => {
                                           setSelectionMode(false);
                                         }}
+                                        icon={<PlusOutlined />}
                                       >
                                         Add
                                       </Button>
                                       <Button
                                         danger
-                                        onClick={() => setSelectionMode(false)}
+                                        onClick={() => destroy()}
+                                        icon={<CloseOutlined />}
                                       >
                                         Cancel
                                       </Button>
@@ -1375,7 +1407,7 @@ const Creator = () => {
                                           .indexOf(input.toLowerCase()) >= 0
                                       }
                                       style={{ width: "100%" }}
-                                      placeholder="Select Tabs"
+                                      placeholder="Select Menu"
                                       onChange={(value) =>
                                         handleFormChange(
                                           "card_ids",
@@ -1384,20 +1416,38 @@ const Creator = () => {
                                         )
                                       }
                                     >
-                                      {fetchedComponent?.map((card, index) => (
+                                      {fetchedComponent?.map((menu, index) => (
                                         <Select.Option
                                           key={index}
-                                          value={card.id}
+                                          value={menu.id}
                                         >
-                                          {card.id}
+                                          {menu?.name}
                                         </Select.Option>
                                       ))}
                                     </Select>
-                                    <Button
-                                      onClick={() => setSelectionMode(false)}
-                                    >
-                                      Ok
-                                    </Button>
+                                    <div style={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      alignItems: "center",
+                                      padding: "1em 2em",
+                                      width: "40%",
+                                    }}>
+                                      <Button
+                                        style={{
+                                          backgroundColor: "var(--theme)",
+                                          color: "#fff",
+                                        }}
+                                        onClick={() => setSelectionMode(false)}
+                                        icon={<PlusOutlined />}
+                                      >
+                                        Add
+                                      </Button>
+                                      <Button
+                                        danger
+                                        onClick={() => destroy()}
+                                        icon={<CloseOutlined />}
+                                      >Cancel</Button>
+                                    </div>
                                   </div>
                                 );
                               case "navbar":
@@ -1414,7 +1464,7 @@ const Creator = () => {
                                           .indexOf(input.toLowerCase()) >= 0
                                       }
                                       style={{ width: "100%" }}
-                                      placeholder="Select Tabs"
+                                      placeholder="Select Navbar"
                                       onChange={(value) =>
                                         handleFormChange(
                                           "card_ids",
@@ -1432,11 +1482,29 @@ const Creator = () => {
                                         </Select.Option>
                                       ))}
                                     </Select>
-                                    <Button
-                                      onClick={() => setSelectionMode(false)}
-                                    >
-                                      Ok
-                                    </Button>
+                                    <div style={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      alignItems: "center",
+                                      padding: "1em 2em",
+                                      width: "40%",
+                                    }}>
+                                      <Button
+                                        style={{
+                                          backgroundColor: "var(--theme)",
+                                          color: "#fff",
+                                        }}
+                                        onClick={() => setSelectionMode(false)}
+                                        icon={<PlusOutlined />}
+                                      >
+                                        Add
+                                      </Button>
+                                      <Button
+                                        danger
+                                        onClick={() => destroy()}
+                                        icon={<CloseOutlined />}
+                                      >Cancel</Button>
+                                    </div>
                                   </div>
                                 );
                               case "slider":
@@ -1468,7 +1536,6 @@ const Creator = () => {
                                           key={index}
                                           value={card.id}
                                         >
-                                          {/* {card.id} */}
                                           {
                                             card && (
                                               <div>
@@ -1505,15 +1572,22 @@ const Creator = () => {
                                       justifyContent: "space-between",
                                       alignItems: "center",
                                       padding: "1em 2em",
-                                      width: "30%",
-                                    }}><Button
-                                      onClick={() => setSelectionMode(false)}
-                                    >
+                                      width: "40%",
+                                    }}>
+                                      <Button
+                                        onClick={() => setSelectionMode(false)}
+                                        style={{
+                                          backgroundColor: "var(--theme)",
+                                          color: "#fff",
+                                        }}
+                                        icon={<PlusOutlined />}
+                                      >
                                         Add
                                       </Button>
                                       <Button
                                         danger
-                                        onClick={() => setSelectionMode(false)}
+                                        onClick={() => destroy()}
+                                        icon={<CloseOutlined />}
                                       >
                                         Cancel
                                       </Button>
@@ -1535,7 +1609,7 @@ const Creator = () => {
                                           .indexOf(input.toLowerCase()) >= 0
                                       }
                                       style={{ width: "100%" }}
-                                      placeholder="Select Tabs"
+                                      placeholder="Select Cards"
                                       onChange={(value) =>
                                         handleFormChange(
                                           "card_ids",
@@ -1553,11 +1627,31 @@ const Creator = () => {
                                         </Select.Option>
                                       ))}
                                     </Select>
-                                    <Button
-                                      onClick={() => setSelectionMode(false)}
-                                    >
-                                      Ok
-                                    </Button>
+                                    <div style={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      alignItems: "center",
+                                      padding: "1em 2em",
+                                      width: "40%",
+                                    }}>
+                                      <Button
+                                        style={{
+                                          backgroundColor: "var(--theme)",
+                                          color: "#fff",
+                                        }}
+                                        onClick={() => setSelectionMode(false)}
+                                        icon={<PlusOutlined />}
+                                      >
+                                        Add
+                                      </Button>
+                                      <Button
+                                        danger
+                                        onClick={() => destroy()}
+                                        icon={<CloseOutlined />}
+                                      >
+                                        Cancel
+                                      </Button>
+                                    </div>
                                   </div>
                                 );
                               case "form":
@@ -1574,7 +1668,7 @@ const Creator = () => {
                                           .indexOf(input.toLowerCase()) >= 0
                                       }
                                       style={{ width: "100%" }}
-                                      placeholder="Select Tabs"
+                                      placeholder="Select Form"
                                       onChange={(value) =>
                                         handleFormChange(
                                           "card_ids",
@@ -1583,20 +1677,40 @@ const Creator = () => {
                                         )
                                       }
                                     >
-                                      {fetchedComponent?.map((card, index) => (
+                                      {fetchedComponent?.map((form, index) => (
                                         <Select.Option
                                           key={index}
-                                          value={card.id}
+                                          value={form.id}
                                         >
-                                          {card.id}
+                                          {form.title_en}
                                         </Select.Option>
                                       ))}
                                     </Select>
-                                    <Button
-                                      onClick={() => setSelectionMode(false)}
-                                    >
-                                      Ok
-                                    </Button>
+                                    <div style={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      alignItems: "center",
+                                      padding: "1em 2em",
+                                      width: "40%",
+                                    }}>
+                                      <Button
+                                        style={{
+                                          backgroundColor: "var(--theme)",
+                                          color: "#fff",
+                                        }}
+                                        onClick={() => setSelectionMode(false)}
+                                        icon={<PlusOutlined />}
+                                      >
+                                        Add
+                                      </Button>
+                                      <Button
+                                        danger
+                                        onClick={() => destroy()}
+                                        icon={<CloseOutlined />}
+                                      >
+                                        Cancel
+                                      </Button>
+                                    </div>
                                   </div>
                                 );
                               case "footer":
@@ -1613,7 +1727,7 @@ const Creator = () => {
                                           .indexOf(input.toLowerCase()) >= 0
                                       }
                                       style={{ width: "100%" }}
-                                      placeholder="Select Tabs"
+                                      placeholder="Select Footer"
                                       onChange={(value) =>
                                         handleFormChange(
                                           "card_ids",
@@ -1622,20 +1736,40 @@ const Creator = () => {
                                         )
                                       }
                                     >
-                                      {fetchedComponent?.map((card, index) => (
+                                      {fetchedComponent?.map((footer, index) => (
                                         <Select.Option
                                           key={index}
-                                          value={card.id}
+                                          value={footer.id}
                                         >
-                                          {card.id}
+                                          {footer.title_en}
                                         </Select.Option>
                                       ))}
                                     </Select>
-                                    <Button
-                                      onClick={() => setSelectionMode(false)}
-                                    >
-                                      Ok
-                                    </Button>
+                                    <div style={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      alignItems: "center",
+                                      padding: "1em 2em",
+                                      width: "40%",
+                                    }}>
+                                      <Button
+                                        style={{
+                                          backgroundColor: "var(--theme)",
+                                          color: "#fff",
+                                        }}
+                                        onClick={() => setSelectionMode(false)}
+                                        icon={<PlusOutlined />}
+                                      >
+                                        Add
+                                      </Button>
+                                      <Button
+                                        danger
+                                        onClick={() => destroy()}
+                                        icon={<CloseOutlined />}
+                                      >
+                                        Cancel
+                                      </Button>
+                                    </div>
                                   </div>
                                 );
                               case "press_release":
@@ -1652,7 +1786,7 @@ const Creator = () => {
                                           .indexOf(input.toLowerCase()) >= 0
                                       }
                                       style={{ width: "100%" }}
-                                      placeholder="Select Tabs"
+                                      placeholder="Select Press Release"
                                       onChange={(value) =>
                                         handleFormChange(
                                           "card_ids",
@@ -1661,20 +1795,40 @@ const Creator = () => {
                                         )
                                       }
                                     >
-                                      {fetchedComponent?.map((card, index) => (
+                                      {fetchedComponent?.map((press_release, index) => (
                                         <Select.Option
                                           key={index}
-                                          value={card.id}
+                                          value={press_release.id}
                                         >
-                                          {card.id}
+                                          {moment(press_release.created_at).format("Do MMMM YYYY")}
                                         </Select.Option>
                                       ))}
                                     </Select>
-                                    <Button
-                                      onClick={() => setSelectionMode(false)}
-                                    >
-                                      Ok
-                                    </Button>
+                                    <div style={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      alignItems: "center",
+                                      padding: "1em 2em",
+                                      width: "40%",
+                                    }}>
+                                      <Button
+                                        style={{
+                                          backgroundColor: "var(--theme)",
+                                          color: "#fff",
+                                        }}
+                                        onClick={() => setSelectionMode(false)}
+                                        icon={<PlusOutlined />}
+                                      >
+                                        Add
+                                      </Button>
+                                      <Button
+                                        danger
+                                        onClick={() => destroy()}
+                                        icon={<CloseOutlined />}
+                                      >
+                                        Cancel
+                                      </Button>
+                                    </div>
                                   </div>
                                 );
                               case "event":
@@ -1691,7 +1845,7 @@ const Creator = () => {
                                           .indexOf(input.toLowerCase()) >= 0
                                       }
                                       style={{ width: "100%" }}
-                                      placeholder="Select Tabs"
+                                      placeholder="Select Events"
                                       onChange={(value) =>
                                         handleFormChange(
                                           "card_ids",
@@ -1700,20 +1854,41 @@ const Creator = () => {
                                         )
                                       }
                                     >
-                                      {fetchedComponent?.map((card, index) => (
+                                      {fetchedComponent?.map((event, index) => (
                                         <Select.Option
                                           key={index}
-                                          value={card.id}
+                                          value={event.id}
                                         >
-                                          {card.id}
+                                          {console.log("Event", event)}
+                                          {event.title_en}
                                         </Select.Option>
                                       ))}
                                     </Select>
-                                    <Button
-                                      onClick={() => setSelectionMode(false)}
-                                    >
-                                      Ok
-                                    </Button>
+                                    <div style={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      alignItems: "center",
+                                      padding: "1em 2em",
+                                      width: "40%",
+                                    }}>
+                                      <Button
+                                        style={{
+                                          backgroundColor: "var(--theme)",
+                                          color: "#fff",
+                                        }}
+                                        onClick={() => setSelectionMode(false)}
+                                        icon={<PlusOutlined />}
+                                      >
+                                        Add
+                                      </Button>
+                                      <Button
+                                        danger
+                                        onClick={() => destroy()}
+                                        icon={<CloseOutlined />}
+                                      >
+                                        Cancel
+                                      </Button>
+                                    </div>
                                   </div>
                                 );
                               case "gas":
@@ -1748,16 +1923,36 @@ const Creator = () => {
                                         </Select.Option>
                                       ))}
                                     </Select>
-                                    <Button
-                                      onClick={() => setSelectionMode(false)}
-                                    >
-                                      Ok
-                                    </Button>
+                                    <div style={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      alignItems: "center",
+                                      padding: "1em 2em",
+                                      width: "40%",
+                                    }}>
+                                      <Button
+                                        style={{
+                                          backgroundColor: "var(--theme)",
+                                          color: "#fff",
+                                        }}
+                                        onClick={() => setSelectionMode(false)}
+                                        icon={<PlusOutlined />}
+                                      >
+                                        Add
+                                      </Button>
+                                      <Button
+                                        danger
+                                        onClick={() => destroy()}
+                                        icon={<CloseOutlined />}
+                                      >
+                                        Cancel
+                                      </Button>
+                                    </div>
                                   </div>
                                 );
 
                               default:
-                                return <h1>Some</h1>;
+                                return <h1>Contact Admin</h1>;
                             }
                           })()}
                         </>
@@ -1768,31 +1963,31 @@ const Creator = () => {
                       <Button
                         style={{
                           margin: "10px",
-                          backgroundColor: "var(--themes",
+                          backgroundColor: "var(--theme)",
                           color: "#fff",
                           border: "none",
-                          borderRadius: "5px",
+                          borderRadius: "40px",
                           fontSize: "1.2rem",
                           padding: "0.6rem 1rem",
                           marginBottom: "3rem",
                           height: "auto",
                         }}
-                        icon={<PlusSquareOutlined />}
                         onClick={() => {
                           handleSubmit();
                           setCanvas(false);
                           fetchPageData();
                         }}
+                        icon={<CloudSyncOutlined />}
                       >
-                        Submit
+                        Finish Section
                       </Button>
                       <Button
                         style={{
                           margin: "10px",
-                          backgroundColor: "var(--themes",
+                          backgroundColor: "var(--themes)",
                           color: "#fff",
                           border: "none",
-                          borderRadius: "5px",
+                          borderRadius: "40px",
                           fontSize: "1.2rem",
                           padding: "0.6rem 1rem",
                           marginBottom: "3rem",
@@ -1808,7 +2003,7 @@ const Creator = () => {
                         style={{
                           margin: "10px",
                           border: "none",
-                          borderRadius: "5px",
+                          borderRadius: "40px",
                           fontSize: "1.2rem",
                           padding: "0.6rem 1rem",
                           marginBottom: "3rem",
@@ -1826,26 +2021,24 @@ const Creator = () => {
                   )}
                 </div>
               )}
-              {!selectionMode && (
+              {!selectionMode && !canvas && (
                 <Button
                   style={{
-                    margin: "10px",
-                    backgroundColor: "var(--themes",
-                    color: "#fff",
+                    backgroundColor: "var(--theme)",
+                    color: "white",
                     border: "none",
                     borderRadius: "5px",
-                    fontSize: "1.6rem",
-                    padding: "1rem 2rem",
-                    marginBottom: "2rem",
-                    height: "auto",
-                    position: "absolute",
-                    right: 0,
+                    fontSize: "1.2rem",
+                    margin: "3rem 0",
+                    height: "60px",
+                    width: "200px",
+                    boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
                   }}
                   onClick={() => {
                     setCanvas(true);
                   }}
                 >
-                  Add Sections
+                  Add Section
                 </Button>
               )}
             </center>

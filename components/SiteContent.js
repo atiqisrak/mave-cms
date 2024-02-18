@@ -10,6 +10,7 @@ import {
   message,
   Switch,
   Button,
+  Modal,
 } from "antd";
 import {
   UserOutlined,
@@ -36,6 +37,10 @@ import {
   FormatPainterOutlined,
   DollarCircleOutlined,
   AlignLeftOutlined,
+  FileTextOutlined,
+  ClockCircleOutlined,
+  VideoCameraOutlined,
+  MessageOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -232,7 +237,7 @@ export default function SiteContent({ children }) {
                     color: "var(--gray)",
                   }}
                 >
-                  v 0.1.94
+                  v 0.1.95
                 </h3>
                 <Link href="/dashboard" className="sitelogo">
                   {collapsed ? (
@@ -441,6 +446,7 @@ export default function SiteContent({ children }) {
                       <Menu.Item
                         key="30"
                         icon={<AlignLeftOutlined />}
+                        onClick={() => router.push("/blogs")}
                         style={{
                           marginTop: "10%",
                           fontSize: "1.1em",
@@ -463,6 +469,46 @@ export default function SiteContent({ children }) {
                       </Menu.Item>
                     </SubMenu>
 
+                    {/* Manual */}
+                    <SubMenu
+                      key="manual"
+                      icon={<FileTextOutlined />}
+                      title="User Manual"
+                      style={{
+                        marginTop: "10%",
+                        fontSize: "1.1em",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      <Menu.Item
+                        key="16"
+                        icon={<ClockCircleOutlined />}
+                        onClick={() => router.push("/usermanual/changelog")}
+                      >
+                        Changelog
+                      </Menu.Item>
+                      <Menu.Item
+                        key="17"
+                        icon={<FileTextOutlined />}
+                        onClick={() => router.push("/usermanual/documentation")}
+                      >
+                        Documentation
+                      </Menu.Item>
+                      <Menu.Item
+                        key="18"
+                        icon={<VideoCameraOutlined />}
+                        onClick={() => router.push("/usermanual/userguide")}
+                      >
+                        User Guide
+                      </Menu.Item>
+                      <Menu.Item
+                        key="20"
+                        icon={<MessageOutlined />}
+                        onClick={() => router.push("/usermanual/support")}
+                      >
+                        Support
+                      </Menu.Item>
+                    </SubMenu>
                   </>
                 ) : (
                   ""
@@ -470,22 +516,6 @@ export default function SiteContent({ children }) {
               </Menu>
               {children}
             </div>
-            {/* <p style={{
-                        color: "var(--gray)",
-                        fontWeight: 300,
-                        textAlign: 'center',
-                        fontSize: '1em',
-                        marginTop: '20%',
-                        position: 'absolute',
-                        bottom: "30px",
-                        width: '100%',
-                        textOverflow: "clip"
-                      }}>Made with ❤️ by <br />
-                      <a href="https://www.ethertech.ltd/" 
-                      target="_blank" 
-                      style={{ color: 'white', textDecoration: 'underline' }}>
-                        <strong>Ether Technologies</strong></a>
-                      </p> */}
           </Sider>
         ) : (
           ""

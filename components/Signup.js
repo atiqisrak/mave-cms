@@ -16,7 +16,7 @@ const Signup = ({ open, setOpen, setOpen1 }) => {
   const [token, setToken] = useState(null);
   const [isLoading, setIsLoading] = useState(false)
   const [data, setData] = useState({})
- 
+
   useEffect(() => {
     // Check if passwords match and update state
     setPasswordsMatch(password === confirmPassword);
@@ -64,14 +64,14 @@ const Signup = ({ open, setOpen, setOpen1 }) => {
       if (res?.status === 201) {
         setData(res);
         message.success("register successfully");
-       const newToken = res.data.token;
-       setIsLoading(false)
-       setOpen(false)
-       // Store the token in state and localStorage
-       setToken(newToken);
-       localStorage.setItem('token', newToken);
+        const newToken = res.data.token;
+        setIsLoading(false)
+        setOpen(false)
+        // Store the token in state and localStorage
+        setToken(newToken);
+        localStorage.setItem('token', newToken);
       }
-     
+
     } catch (error) {
       // Handle errors, e.g., display an error message or log the error
       console.error("Error deleting data:", error);

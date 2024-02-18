@@ -169,8 +169,8 @@ const DealershipRequests = () => {
     }
 
 
-        
-            
+
+
 
     return (
         <div className="">
@@ -305,7 +305,7 @@ const DealershipRequests = () => {
                     </div>
                 </Col>
                 <Col span={1}
-                ><h3><EyeOutlined/></h3></Col>
+                ><h3><EyeOutlined /></h3></Col>
                 <Col span={6}
                 ><h3>Status</h3></Col>
             </Row>
@@ -333,11 +333,11 @@ const DealershipRequests = () => {
                             >
                                 <div className="flexed-center">
                                     <Button
-                                    style={{
-                                        backgroundColor: "transparent",
-                                        border: "none",
-                                        color: "var(--theme)",
-                                    }}
+                                        style={{
+                                            backgroundColor: "transparent",
+                                            border: "none",
+                                            color: "var(--theme)",
+                                        }}
                                         type="primary"
                                         onClick={() => {
                                             setModalVisible(true);
@@ -380,81 +380,81 @@ const DealershipRequests = () => {
                                             <p><b>Shop Address: </b>{selectedDealer?.dealer_mave?.shop_address}</p>
                                             <p><b>Shop Phone: </b>{selectedDealer?.dealer_mave?.shop_phone}</p> */}
                                             <Row>
-                                            <Col span={12} style={{
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                borderRight: "1px solid #ddd",
-                                                gap: "1em",
-                                            }}>
-                                            <Row style={{
-                                                display: "grid",
-                                                gridTemplateColumns: "1fr 3fr"
-                                            }}><h4>Name: </h4>{selectedDealer?.dealer_mave?.full_name}</Row>
-                                            <Row style={{
-                                                display: "grid",
-                                                gridTemplateColumns: "1fr 3fr"
-                                            }}><h4>Phone: </h4>{selectedDealer?.dealer_mave?.phone}</Row>
-                                            <Row style={{
-                                                display: "grid",
-                                                gridTemplateColumns: "1fr 3fr"
-                                            }}><h4>Contact Person: </h4>{selectedDealer?.dealer_mave?.additionals?.contactPerson}</Row>
-                                            <Row style={{
-                                                display: "grid",
-                                                gridTemplateColumns: "1fr 3fr"
-                                            }}><h4>Address 1: </h4>{selectedDealer?.dealer_mave?.address_line_1}</Row>
-                                            <Row style={{
-                                                display: "grid",
-                                                gridTemplateColumns: "1fr 3fr"
-                                            }}><h4>Address 2: </h4>{selectedDealer?.dealer_mave?.address_line_2}</Row>
-                                                <Row style={{
-                                                    display: "grid",
-                                                    gridTemplateColumns: "1fr 3fr"
-                                                }}><h4>Thana: </h4>{selectedDealer?.dealer_mave?.thana}</Row>
-                                                <Row style={{
-                                                    display: "grid",
-                                                    gridTemplateColumns: "1fr 3fr"
-                                                }}><h4>District: </h4>{selectedDealer?.dealer_mave?.district}</Row>
-                                            </Col>
-                                            <Col span={12} style={{
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                gap: "1em",
-                                                paddingLeft: "2em",
-                                            }}>
-                                                <h3>Order Details</h3>
-                                                <Row style={{
-                                                    display: "grid",
-                                                    gridTemplateColumns: "1fr 3fr"
-                                                }}><h4>Sales Volume: </h4>{
-                                                    // Float to integer
-                                                    Math.round(selectedDealer?.dealer_mave?.monthly_sales_volumn)
-                                                    } Metric Ton/Taka</Row>
-                                                <Row style={{
-                                                    display: "grid",
-                                                    gridTemplateColumns: "1fr 3fr"
-                                                }}><h4>Order Date: </h4>{selectedDealer?.dealer_mave?.created_at}</Row>
-                                                <Row style={{
-                                                    display: "grid",
-                                                    gridTemplateColumns: "1fr 3fr"
-                                                }}><h4>Status: </h4>
-                                                <h4 style={{
-                                                    backgroundColor: selectedDealer?.dealer_mave?.status == 0 ? "green" : "orange",
-                                                    color: "#fff",
-                                                    padding: "0.3em 0.6em",
-                                                    borderRadius: "0.3em",
-                                                    fontWeight: "bold",
-                                                    textAlign: "center",
-                                                
+                                                <Col span={12} style={{
+                                                    display: "flex",
+                                                    flexDirection: "column",
+                                                    borderRight: "1px solid #ddd",
+                                                    gap: "1em",
                                                 }}>
-                                                {
-                                                    selectedDealer?.dealer_mave?.status == 0 ? "Approved" : "Pending"
-                                                }
-                                                </h4>
-                                                </Row>
+                                                    <Row style={{
+                                                        display: "grid",
+                                                        gridTemplateColumns: "1fr 3fr"
+                                                    }}><h4>Name: </h4>{selectedDealer?.dealer_mave?.full_name}</Row>
+                                                    <Row style={{
+                                                        display: "grid",
+                                                        gridTemplateColumns: "1fr 3fr"
+                                                    }}><h4>Phone: </h4>{selectedDealer?.dealer_mave?.phone}</Row>
+                                                    <Row style={{
+                                                        display: "grid",
+                                                        gridTemplateColumns: "1fr 3fr"
+                                                    }}><h4>Contact Person: </h4>{selectedDealer?.dealer_mave?.additionals?.contactPerson}</Row>
+                                                    <Row style={{
+                                                        display: "grid",
+                                                        gridTemplateColumns: "1fr 3fr"
+                                                    }}><h4>Address 1: </h4>{selectedDealer?.dealer_mave?.address_line_1}</Row>
+                                                    <Row style={{
+                                                        display: "grid",
+                                                        gridTemplateColumns: "1fr 3fr"
+                                                    }}><h4>Address 2: </h4>{selectedDealer?.dealer_mave?.address_line_2}</Row>
+                                                    <Row style={{
+                                                        display: "grid",
+                                                        gridTemplateColumns: "1fr 3fr"
+                                                    }}><h4>Thana: </h4>{selectedDealer?.dealer_mave?.thana}</Row>
+                                                    <Row style={{
+                                                        display: "grid",
+                                                        gridTemplateColumns: "1fr 3fr"
+                                                    }}><h4>District: </h4>{selectedDealer?.dealer_mave?.district}</Row>
                                                 </Col>
-                                                </Row>
-                                            </div>
-                                            </Modal>
+                                                <Col span={12} style={{
+                                                    display: "flex",
+                                                    flexDirection: "column",
+                                                    gap: "1em",
+                                                    paddingLeft: "2em",
+                                                }}>
+                                                    <h3>Order Details</h3>
+                                                    <Row style={{
+                                                        display: "grid",
+                                                        gridTemplateColumns: "1fr 3fr"
+                                                    }}><h4>Sales Volume: </h4>{
+                                                            // Float to integer
+                                                            Math.round(selectedDealer?.dealer_mave?.monthly_sales_volumn)
+                                                        } Metric Ton/Taka</Row>
+                                                    <Row style={{
+                                                        display: "grid",
+                                                        gridTemplateColumns: "1fr 3fr"
+                                                    }}><h4>Order Date: </h4>{selectedDealer?.dealer_mave?.created_at}</Row>
+                                                    <Row style={{
+                                                        display: "grid",
+                                                        gridTemplateColumns: "1fr 3fr"
+                                                    }}><h4>Status: </h4>
+                                                        <h4 style={{
+                                                            backgroundColor: selectedDealer?.dealer_mave?.status == 0 ? "green" : "orange",
+                                                            color: "#fff",
+                                                            padding: "0.3em 0.6em",
+                                                            borderRadius: "0.3em",
+                                                            fontWeight: "bold",
+                                                            textAlign: "center",
+
+                                                        }}>
+                                                            {
+                                                                selectedDealer?.dealer_mave?.status == 0 ? "Approved" : "Pending"
+                                                            }
+                                                        </h4>
+                                                    </Row>
+                                                </Col>
+                                            </Row>
+                                        </div>
+                                    </Modal>
                                 </div>
                             </Col>
 
