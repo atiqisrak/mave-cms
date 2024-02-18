@@ -3,12 +3,16 @@ import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import ImageConverter from "../components/tools/ImageConverter";
 import { LockOutlined } from "@ant-design/icons";
+import BackgroundRemover from "../components/tools/BackgroundRemover";
+import MeetingScheduler from "../components/tools/MeetingScheduler";
 // import ImageOptimizer from "../components/tools/ImageOptimizer";
 
 
 const Tools = () => {
     const [showImageToWebPConverter, setShowImageToWebPConverter] = useState(false);
     const [showImageOptimizer, setShowImageOptimizer] = useState(false);
+    const [showBackgroundRemover, setShowBackgroundRemover] = useState(false);
+    const [showMeetingScheduler, setShowMeetingScheduler] = useState(false);
     const router = useRouter();
 
     const tools = [
@@ -45,14 +49,16 @@ const Tools = () => {
             title: "Remove Image Background",
             description: "Remove background from images",
             image: "/images/mave_logo.png",
-            onClick: () => message.info("Please purchase premium to use this tool"),
+            // onClick: () => message.info("Please purchase premium to use this tool"),
+            onClick: () => setShowBackgroundRemover(true),
             premium: 1
         },
         {
             title: "Meeting Scheduler",
             description: "Schedule meetings",
-            image: "/images/mave_logo.png",
-            onClick: () => message.info("Please purchase premium to use this tool"),
+            image: "/images/Google_Meet_icon.svg",
+            // onClick: () => message.info("Please purchase premium to use this tool"),
+            onClick: () => setShowMeetingScheduler(true),
             premium: 1
         },
         {
@@ -76,6 +82,90 @@ const Tools = () => {
             onClick: () => message.info("Please purchase premium to use this tool"),
             premium: 1
         },
+        {
+            title: "Image Resizer",
+            description: "Resize images",
+            image: "/images/mave_logo.png",
+            onClick: () => message.info("Please purchase premium to use this tool"),
+            premium: 1
+        },
+        {
+            title: "Video Converter",
+            description: "Convert videos to different formats",
+            image: "/images/mave_logo.png",
+            onClick: () => message.info("Please purchase premium to use this tool"),
+            premium: 1
+        },
+        {
+            title: "Backup & Restore",
+            description: "Backup and restore data",
+            image: "/images/mave_logo.png",
+            onClick: () => message.info("Please purchase premium to use this tool"),
+            premium: 1
+        },
+        {
+            title: "Password Generator",
+            description: "Generate strong passwords",
+            image: "/images/mave_logo.png",
+            onClick: () => message.info("Please purchase premium to use this tool"),
+            premium: 1
+        },
+        {
+            title: "QR Code Generator",
+            description: "Generate QR codes",
+            image: "/images/mave_logo.png",
+            onClick: () => message.info("Please purchase premium to use this tool"),
+            premium: 1
+        },
+        {
+            title: "SEO Analyzer",
+            description: "Analyze SEO of websites",
+            image: "/images/mave_logo.png",
+            onClick: () => message.info("Please purchase premium to use this tool"),
+            premium: 1
+        },
+        {
+            title: "Social Media Scheduler",
+            description: "Schedule posts on social media",
+            image: "/images/mave_logo.png",
+            onClick: () => message.info("Please purchase premium to use this tool"),
+            premium: 1
+        },
+        {
+            title: "Invoice Generator",
+            description: "Generate invoices",
+            image: "/images/mave_logo.png",
+            onClick: () => message.info("Please purchase premium to use this tool"),
+            premium: 1
+        },
+        {
+            title: "Survey and Poll Creator",
+            description: "Create surveys and polls",
+            image: "/images/mave_logo.png",
+            onClick: () => message.info("Please purchase premium to use this tool"),
+            premium: 1
+        },
+        {
+            title: "Augmented Reality (AR) Product Viewer",
+            description: "View products in AR",
+            image: "/images/mave_logo.png",
+            onClick: () => message.info("Please purchase premium to use this tool"),
+            premium: 1
+        },
+        {
+            title: "Customer Support Chatbot",
+            description: "Chat with AI customer support",
+            image: "/images/mave_logo.png",
+            onClick: () => message.info("Please purchase premium to use this tool"),
+            premium: 1
+        },
+        {
+            title: "",
+            description: "",
+            image: "/images/mave_logo.png",
+            onClick: () => message.info("Please purchase premium to use this tool"),
+            premium: 1
+        }
     ]
 
     return (
@@ -150,6 +240,54 @@ const Tools = () => {
                 {/* {showImageOptimizer && (
                     <ImageOptimizer />
                 )} */}
+
+                {/* Background remover */}
+                {showBackgroundRemover && (
+                    <div>
+                        <BackgroundRemover />
+                        <center>
+                            <Button
+                                style={{
+                                    marginTop: "2em",
+                                    backgroundColor: "transparent",
+                                    borderColor: "red",
+                                    color: "var(--theme)",
+                                    fontSize: "1em",
+                                    fontWeight: "bold",
+                                    padding: "1em 4em 3em 4em",
+                                    height: "3em",
+                                }}
+                                onClick={() => setShowBackgroundRemover(false)}
+                            >
+                                Close
+                            </Button>
+                        </center>
+                    </div>
+                )}
+
+                {/* Meeting scheduler */}
+                {showMeetingScheduler && (
+                    <div>
+                        <MeetingScheduler />
+                        <center>
+                            <Button
+                                style={{
+                                    marginTop: "2em",
+                                    backgroundColor: "transparent",
+                                    borderColor: "red",
+                                    color: "var(--theme)",
+                                    fontSize: "1em",
+                                    fontWeight: "bold",
+                                    padding: "1em 4em 3em 4em",
+                                    height: "3em",
+                                }}
+                                onClick={() => setShowMeetingScheduler(false)}
+                            >
+                                Close
+                            </Button>
+                        </center>
+                    </div>
+                )}
             </div>
         </div>
     );
