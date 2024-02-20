@@ -237,7 +237,7 @@ export default function SiteContent({ children }) {
                     color: "var(--gray)",
                   }}
                 >
-                  v 0.1.95
+                  v 0.1.96
                 </h3>
                 <Link href="/dashboard" className="sitelogo">
                   {collapsed ? (

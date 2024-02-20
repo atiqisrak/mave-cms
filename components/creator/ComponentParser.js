@@ -51,6 +51,7 @@ const ComponentParse = ({
     <div>
       {section?.map((item, index) => (
         <section key={index}>
+          {console.log("Item in component parser: ", item)}
           {(() => {
             switch (item?.type) {
               case "navbar":
