@@ -34,7 +34,6 @@ const SliderParser = ({ item, editMode, onSliderSelect }) => {
       const response = await instance("/sliders");
       if (response.data) {
         setSliders(response.data);
-        console.log("Sliders: ", sliders);
         setLoading(false);
       } else {
         message.error("Error fetching sliders");
@@ -48,6 +47,8 @@ const SliderParser = ({ item, editMode, onSliderSelect }) => {
   useEffect(() => {
     if (editMode) {
       fetchSliders();
+
+      console.log("Sliders: ", sliders);
     }
   }, [editMode]);
 
@@ -101,7 +102,7 @@ const SliderParser = ({ item, editMode, onSliderSelect }) => {
             onChange={handleSliderChange}
           >
             {sliders?.map((slider) => (
-              <Option value={slider?.id}>{slider?._mave?.title_en}</Option>
+              <Option value={slider?.id}>{slider?.title_en}</Option>
             ))}
           </Select>
         </div>

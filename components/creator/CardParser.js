@@ -17,11 +17,11 @@ const CardParser = ({
   const [selectedCard, setSelectedCard] = useState(null);
   const [cardsFetched, setCardsFetched] = useState(false);
   const [localSelectedCards, setLocalSelectedCards] = useState([]);
+
   const fetchCards = async () => {
     try {
       setLoading(true);
       console.log("Item: ", item);
-      console.log("Niloy: ", niloy);
       const response = await instance("/cards");
       if (response.data) {
         setCards(response.data);
@@ -43,27 +43,20 @@ const CardParser = ({
 
   const memoizedCards = useMemo(() => cards, [cards]);
 
-  // Change card data of only the index of the component in the section
   const handleCardChange = (value) => {
-    // const parsedValue = JSON.parse(value);
-    console.log("value: ", value);
-    const selectedCard = cards.find((card) => card.id == JSON.parse(value)?.id);
+    const selectedCard = JSON.parse(value);
+
     setSelectedCard(value);
+    console.log("Selected Card: ", selectedCard);
     onCardSelect({
       _mave: selectedCard,
       type: "card",
-      id: value?.id,
+      id: selectedCard?.id,
       niloy: niloy,
     });
-    setLocalSelectedCards(value);
-    onUpdateComponent(niloy, selectedCard);
+    // setLocalSelectedCards(value);
+    // onUpdateComponent(niloy, selectedCard);
   };
-
-  useEffect(() => {
-    if (editMode) {
-      handleCardChange(localSelectedCards);
-    }
-  }, [localSelectedCards]);
 
   return (
     <>

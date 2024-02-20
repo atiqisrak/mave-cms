@@ -6,7 +6,7 @@ import {
   EditOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
-import { Button, Card, Row, Col, Input } from "antd";
+import { Button, Card, Row, Col, Input, Modal, message } from "antd";
 import React, { useState, useEffect } from "react";
 import instance from "../../axios";
 import { useRouter } from "next/router";
@@ -68,8 +68,10 @@ const Pages = () => {
       if (response.status === 201) {
         const newPage = response.data;
         setPages((prevPages) => [...prevPages, newPage]);
-
+        message.success("New page added successfully");
         closeAddNewPageCard();
+        fetchPages();
+        setCreateMode(false);
       } else {
         console.error("Error adding New page:", response.data.message);
       }
@@ -78,16 +80,29 @@ const Pages = () => {
     }
   };
 
-  const handleDeletePage = async () => {
+  const handleDeletePage = async (deletePageId) => {
     try {
-      const response = await instance.delete(`/pages/${deletePageId}`);
-      if (response.status === 200) {
-        const updatedPage = pages.filter((page) => page.id !== deletePageId);
-        setPages(updatedPage);
-        setDeleteConfirmationVisible(false);
-      } else {
-        console.error("Error deleting menu item:", response.data.message);
-      }
+      Modal.confirm({
+        title: "Are you sure you want to delete this page?",
+        content: "This action cannot be undone.",
+        okText: "Yes",
+        cancelText: "No",
+        onOk: () => {
+          instance.delete(`/pages/${deletePageId}`).then((response) => {
+            if (response.status === 204) {
+              setPages((prevPages) =>
+                prevPages.filter((page) => page.id !== deletePageId)
+              );
+            } else {
+              console.error("Error deleting page:", response.data.message);
+            }
+
+            message.success("Page deleted successfully");
+            fetchPages();
+          }
+          );
+        }
+      });
     } catch (error) {
       console.error("Error deleting menu item:", error);
     }
@@ -235,10 +250,11 @@ const Pages = () => {
                               }}
                               icon={<PlusCircleOutlined />}
                             >
-                              Add
+                              Create Page
                             </Button>
                             <Button
-                              onClick={closeAddNewPageCard}
+                              // onClick={closeAddNewPageCard}
+                              onClick={() => setCreateMode(false)}
                               style={{
                                 backgroundColor: "var(--themes)",
                                 borderColor: "var(--themes)",

@@ -11,6 +11,7 @@ import {
   Modal,
   Popconfirm,
   Carousel,
+  Spin,
 } from "antd";
 import { useRouter } from "next/router";
 import {
@@ -213,7 +214,8 @@ const Creator = () => {
   // Cancel Button
 
   const destroy = () => {
-    setNewSectionComponent([]);
+    // pop last element from newSectionComponent array
+    newSectionComponents.pop();
     setNewSection(null);
     setSelectionMode(false);
   }
@@ -451,7 +453,13 @@ const Creator = () => {
       if (response?.status === 200) {
         setUpdateResponse(response.data);
         message.success("Page updated successfully");
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 2000);
       }
+
+      fetchPageData();
+      setNewSectionComponent([]);
     } catch (error) {
       message.error(error.message);
       // console.log("Error updating press release", error);
@@ -483,24 +491,18 @@ const Creator = () => {
   }, [pageData]);
 
   const handleCloseSectionModal = () => {
-    const updatedSection = showPageData.pop();
+    setNewSectionComponent([]);
     setCanvas(false);
     setShowPageData(showPageData);
   };
   const handleSave = async () => {
-    // console.log("dfgfg", showPageData);
-    // console.log("dfgfg", editedSectionId);
-
-    // console.log('adsdfsdf',updatedPageData)
-
-    // setShowPageData(updatedPageData);
 
     const modifiedData = {
       slug: "home",
       type: "Page",
       favicon_id: 10,
       page_name_en: "Home",
-      page_name_bn: "à¦¹à§‹à¦®",
+      page_name_bn: "Home Bangla",
       head: {
         meta_title: "Home Page",
         meta_description: "This is a home page of the MAVE CMS",
@@ -724,16 +726,12 @@ const Creator = () => {
     setUpdatedSection(updatedPageData);
   }
 
-
-  // console.log("updatedSection", updatedSection);
-
   const handleSliderSelect = (selectedSliderId) => {
     const updatedPageData = showPageData.map((section) => {
       if (section._id === editedSectionId) {
         const updatedData = section.data.map((item) => {
           if (item.type === selectedSliderId.type) {
-            // console.log("selectedSliderId", selectedSliderId);
-            return selectedSliderId; // Replace the item with the selectedSliderId data
+            return selectedSliderId;
           }
           return item;
         });
@@ -769,15 +767,13 @@ const Creator = () => {
     });
     setUpdatedSection(updatedPageData);
   };
-  // console.log("updatedSection (Press)", updatedSection);
 
   const handleGasSelect = (selectedGasId) => {
     const updatedPageData = showPageData.map((section) => {
       if (section._id === editedSectionId) {
         const updatedData = section.data.map((item) => {
           if (item.type === selectedGasId.type) {
-            // console.log("selectedGasId", selectedGasId);
-            return selectedGasId; // Replace the item with the selectedGasId data
+            return selectedGasId;
           }
           return item;
         });
@@ -857,7 +853,6 @@ const Creator = () => {
       }
     } catch (error) {
       message.error(error.message);
-      // console.log("Error updating press release", error);
     } finally {
       setLoading(false);
     }
@@ -960,9 +955,10 @@ const Creator = () => {
                               setEditMode(false);
                               setSave(true);
                               setEditedSectionId(null);
-                              // console.log("Sending: ", sectionData);
                               handleUpdateSectionData(index, sectionData);
                               handleSave();
+                              // here
+                              setNewSectionComponent([]);
                             }}
                           >
                             Save
@@ -1054,25 +1050,43 @@ const Creator = () => {
                         )}
                       </div>
 
-                      <ComponentParse
-                        section={section?.data}
-                        editMode={editMode && editedSectionId == section?._id}
-                        onNavbarSelect={handleNavbarSelect}
-                        onCardSelect={handleCardSelect}
-                        onMediaSelect={handleMediaSelect}
-                        onEventSelect={handleEventSelect}
-                        onMenuSelect={handleMenuSelect}
-                        onTitleChange={handleTitleChange}
-                        onDescriptionChange={handleDescriptionChange}
-                        onSliderSelect={handleSliderSelect}
-                        onPressReleaseSelect={handleSliderSelect}
-                        onFooterSelect={handleFooterSelect}
-                        onFormSelect={handleFormSelect}
-                        onUpdateSectionData={handleUpdateSectionData}
-                        sectionData={sectionUpdatedData}
-                        setSectionData={setSectionUpdatedData}
-                        setNewData={setNewData}
-                      />
+                      {/* Loading */}
+                      {
+                        loading ? (
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              flexDirection: "column",
+                            }}
+                          >
+                            <Spin spinning={loading} />
+                          </div>
+                        ) :
+                          (
+                            <ComponentParse
+                              section={section?.data}
+                              editMode={editMode && editedSectionId == section?._id}
+                              onNavbarSelect={handleNavbarSelect}
+                              onCardSelect={handleCardSelect}
+                              onMediaSelect={handleMediaSelect}
+                              onEventSelect={handleEventSelect}
+                              onMenuSelect={handleMenuSelect}
+                              onTitleChange={handleTitleChange}
+                              onDescriptionChange={handleDescriptionChange}
+                              onSliderSelect={handleSliderSelect}
+                              onPressReleaseSelect={handleSliderSelect}
+                              onFooterSelect={handleFooterSelect}
+                              onFormSelect={handleFormSelect}
+                              onUpdateSectionData={handleUpdateSectionData}
+                              sectionData={sectionUpdatedData}
+                              setSectionData={setSectionUpdatedData}
+                              setNewData={setNewData}
+                            />
+                          )
+                      }
+
                       {editedSectionId === section?._id && (
                         <center>
                           <div
@@ -1169,22 +1183,6 @@ const Creator = () => {
                     Section{" "}
                     {showPageData?.length ? showPageData?.length + 1 : 1}
                   </h1>
-                  {/* <Button
-                    style={{
-                      margin: "10px",
-                      backgroundColor: "var(--themes",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: "5px",
-                      fontSize: "1.2rem",
-                      padding: "0.6rem 1rem",
-                      marginBottom: "3rem",
-                      height: "auto",
-                    }}
-                    onClick={() => setEditMode(!editMode)}
-                  >
-                    Edit Mode
-                  </Button> */}
 
                   <ComponentParse section={sectionData?.data} />
                 </section>
@@ -1234,6 +1232,7 @@ const Creator = () => {
                                       alignItems: "center",
                                       padding: "1em 2em",
                                       width: "30%",
+                                      gap: "2em",
                                     }}>
                                       <Button
                                         style={{
@@ -1975,7 +1974,6 @@ const Creator = () => {
                         onClick={() => {
                           handleSubmit();
                           setCanvas(false);
-                          fetchPageData();
                         }}
                         icon={<CloudSyncOutlined />}
                       >

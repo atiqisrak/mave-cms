@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import instance from "../../axios";
 import { Select } from "antd";
+import moment from "moment";
 
 const PressReleaseParser = ({ item, editMode, onPressReleaseSelect }) => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
@@ -60,7 +61,10 @@ const PressReleaseParser = ({ item, editMode, onPressReleaseSelect }) => {
             onChange={handlePressReleaseChange}
           >
             {pressReleases?.map((pressRelease) => (
-              <Option value={pressRelease?.id}>{pressRelease?.title}</Option>
+              <Option value={pressRelease?.id}>
+                {/* {pressRelease?.title} */}
+                {moment(pressRelease.created_at).format("Do MMMM YYYY")}
+              </Option>
             ))}
           </Select>
         </div>
