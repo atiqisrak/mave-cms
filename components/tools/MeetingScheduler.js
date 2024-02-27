@@ -11,12 +11,12 @@ const MeetingScheduler = () => {
     const [meetingDetails, setMeetingDetails] = useState({});
 
     const onDateSelect = value => {
-        console.log("Selected value: ", value);
+        // console.log("Selected value: ", value);
         setMeetingDate(value);
     }
 
     const onFinish = values => {
-        console.log("Success:", values);
+        // console.log("Success:", values);
         message.success("Meeting scheduled successfully!");
         setMeetingScheduled(true);
         setMeetingDetails(values);

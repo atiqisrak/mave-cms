@@ -55,12 +55,19 @@ const PressRelease = () => {
     const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
 
     const fetchPressReleases = async () => {
-        setLoading(true);
-        const response = await instance.get('/press_release');
-        if (response && response.data) {
-            setPressReleases(response.data);
-            console.log("Press Releases", response.data);
-            setLoading(false);
+        try {
+            setLoading(true);
+            const response = await instance.get('/press_release');
+            if (response && response.data) {
+                setPressReleases(response.data);
+                // console.log("Press Releases", response.data);
+                message.success("Press Releases fetched successfully");
+                setLoading(false);
+            } else {
+                message.error("Press Releases couldn't be fetched");
+            }
+        } catch (error) {
+            message.error("Press Releases couldn't be fetched");
         }
     }
 
@@ -157,7 +164,7 @@ const PressRelease = () => {
             });
         } catch (error) {
             message.error(error.message);
-            console.log("Error deleting press release", error);
+            // console.log("Error deleting press release", error);
         }
     };
 
@@ -184,7 +191,7 @@ const PressRelease = () => {
             setFormData(null);
         } catch (error) {
             message.error(error.message);
-            console.log("Error updating press release", error);
+            // console.log("Error updating press release", error);
         }
     }
 
@@ -205,7 +212,7 @@ const PressRelease = () => {
             fetchPressReleases();
         } catch (error) {
             message.error(error.message);
-            console.log("Error creating press release", error);
+            // console.log("Error creating press release", error);
         }
     }
 

@@ -91,7 +91,6 @@ const CreateCardForm = ({ onCreateCard, onCancel, media, pages }) => {
       ]}
       width={1200}
     >
-      {console.log("Pages getting from create card modal: ", pages)}
       <h2
         style={{
           fontSize: "1.5rem",

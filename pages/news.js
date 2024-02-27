@@ -33,11 +33,11 @@ const News = () => {
                 setNewsPages(response.data);
                 setLoading(false);
             } else {
-                console.log("No data was returned");
+                // console.log("No data was returned");
                 message.error("No data was returned");
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             message.error(error);
         }
     }
@@ -60,7 +60,7 @@ const News = () => {
             }
             if (pressReleaseResponse.data) {
                 setPressRelease(pressReleaseResponse.data);
-                console.log("Press Release: ", pressReleaseResponse.data)
+                // console.log("Press Release: ", pressReleaseResponse.data)
             }
 
             if (mediaResponse.data) {
@@ -71,7 +71,7 @@ const News = () => {
             }
             setLoading(false);
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             message.error(error);
         }
     };
@@ -274,7 +274,6 @@ const News = () => {
                 }
 
                 <Row gutter={[16, 16]}>
-                    {console.log("News Pages: ", newsPages)}
                     {
                         newsPages?.map((newsPage) => (
                             <Col key={newsPage?.id} xs={24} sm={24}>
@@ -539,60 +538,59 @@ const News = () => {
                                                                     </h3>
                                                                     {
                                                                         newsPage?.press_release_mave?.cards_mave?.map((card) => (
-                                                                        <div style={{
-                                                                            display: "grid",
-                                                                            gridTemplateColumns: "repeat(2, 1fr)",
-                                                                        }}>
-                                                                            <div>
-                                                                                <h3>Card Title (English): {card.title_en}</h3>
-                                                                                <h3>Card Title (Bangla): {card.title_bn}</h3>
-                                                                                <div dangerouslySetInnerHTML={{ __html: card.description_en }} 
-                                                                                style={{
-                                                                                    marginBottom: "1em",
-                                                                                }}/>
-                                                                                <div dangerouslySetInnerHTML={{ __html: card.description_bn }}
-                                                                                style={{
-                                                                                    marginBottom: "1em",
-                                                                                }} />
+                                                                            <div style={{
+                                                                                display: "grid",
+                                                                                gridTemplateColumns: "repeat(2, 1fr)",
+                                                                            }}>
+                                                                                <div>
+                                                                                    <h3>Card Title (English): {card.title_en}</h3>
+                                                                                    <h3>Card Title (Bangla): {card.title_bn}</h3>
+                                                                                    <div dangerouslySetInnerHTML={{ __html: card.description_en }}
+                                                                                        style={{
+                                                                                            marginBottom: "1em",
+                                                                                        }} />
+                                                                                    <div dangerouslySetInnerHTML={{ __html: card.description_bn }}
+                                                                                        style={{
+                                                                                            marginBottom: "1em",
+                                                                                        }} />
+                                                                                </div>
+                                                                                <div>
+                                                                                    <h3>Card Image</h3>
+                                                                                    {
+                                                                                        card?.media_files ? (
+                                                                                            <div>
+                                                                                                {
+                                                                                                    card?.media_files?.file_type?.startsWith('image') ? (
+                                                                                                        <Image
+                                                                                                            src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
+                                                                                                            style={{
+                                                                                                                width: "12vw",
+                                                                                                                height: "10vw",
+                                                                                                                objectFit: "cover",
+                                                                                                                borderRadius: 20
+                                                                                                            }}
+                                                                                                            preview={false}
+                                                                                                        />
+                                                                                                    ) : (
+                                                                                                        <video
+                                                                                                            src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
+                                                                                                            style={{
+                                                                                                                width: "12vw",
+                                                                                                                height: "10vw",
+                                                                                                                objectFit: "cover",
+                                                                                                            }}
+                                                                                                            autoPlay
+                                                                                                            loop
+                                                                                                            muted
+                                                                                                        />
+                                                                                                    )
+                                                                                                }
+                                                                                            </div>
+                                                                                        ) : null
+                                                                                    }
+                                                                                </div>
                                                                             </div>
-                                                                            <div>
-                                                                                <h3>Card Image</h3>
-                                                                                {
-                                                                                    card?.media_files ? (
-                                                                                        <div>
-                                                                                            {/* {console.log("Card Media: ", card?.media_files?.file_path)} */}
-                                                                                            {
-                                                                                                card?.media_files?.file_type?.startsWith('image') ? (
-                                                                                                    <Image
-                                                                                                        src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
-                                                                                                        style={{
-                                                                                                            width: "12vw",
-                                                                                                            height: "10vw",
-                                                                                                            objectFit: "cover",
-                                                                                                            borderRadius: 20
-                                                                                                        }}
-                                                                                                        preview={false}
-                                                                                                    />
-                                                                                                ) : (
-                                                                                                    <video
-                                                                                                        src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
-                                                                                                        style={{
-                                                                                                            width: "12vw",
-                                                                                                            height: "10vw",
-                                                                                                            objectFit: "cover",
-                                                                                                        }}
-                                                                                                        autoPlay
-                                                                                                        loop
-                                                                                                        muted
-                                                                                                    />
-                                                                                                )
-                                                                                            }
-                                                                                        </div>
-                                                                                    ) : null
-                                                                                }
-                                                                            </div>
-                                                                        </div>
-                                                                            ))
+                                                                        ))
                                                                     }
                                                                 </div>
                                                             </>

@@ -9,6 +9,7 @@ import {
   Select,
   Skeleton,
   Spin,
+  message,
 } from "antd";
 import UploadMedia from "../components/UploadMedia";
 import instance from "../axios";
@@ -71,7 +72,7 @@ const Gallery = () => {
   //         setTotalMediaAssets(response.data.total);
 
   //         {
-  //           console.log("Total: ", response.data.total);
+  // console.log("Total: ", response.data.total);
   //         }
   //       }
   //     } else {
@@ -167,14 +168,17 @@ const Gallery = () => {
             const response = await instance.delete(`/media/${id}`);
             if (response.data) {
               // Assuming the server request was successful, no need to update state again
-              console.log("Media deleted successfully");
+              // console.log("Media deleted successfully");
+              message.success("Media deleted successfully");
             } else {
               // Handle the case where the server request fails
-              console.error("Error deleting media:", response.data.message);
+              // console.error("Error deleting media:", response.data.message);
+              message.error("Error deleting media");
             }
           } catch (error) {
             // Handle errors that occur during the server request
-            console.error("Error deleting media:", error);
+            // console.error("Error deleting media:", error);
+            message.error("Error deleting media");
           }
         },
       });

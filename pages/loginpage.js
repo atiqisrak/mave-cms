@@ -14,7 +14,7 @@ const Loginpage = ({ open, setOpen, response, setResponse }) => {
   const [data, setData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log(token, "token");
+  // console.log(token, "token");
   const { setUser, setContextToken } = useContext(GLOBAL_CONTEXT);
   setUser(data);
   useEffect(() => {
@@ -56,7 +56,7 @@ const Loginpage = ({ open, setOpen, response, setResponse }) => {
     try {
       // Send a put request to the API endpoint
       const res = await instance.post("admin/login", items);
-      console.log(res, "res");
+      // console.log(res, "res");
       if (res?.status === 200) {
         setOpen(false);
         setData(res.data);
@@ -67,7 +67,7 @@ const Loginpage = ({ open, setOpen, response, setResponse }) => {
         setToken(newToken);
         localStorage.setItem("user", user);
         localStorage.setItem("token", newToken);
-        message.success("Login successfully");
+        message.success("Logged in successfully");
         // Handle success, e.g., show a success message or update your UI
         // console.log("Data deleted successfully");
       }
@@ -77,7 +77,7 @@ const Loginpage = ({ open, setOpen, response, setResponse }) => {
         message.error("Invalid Credentials");
         setIsLoading(false);
       }
-      console.error("Error data:", error);
+      // console.error("Error data:", error);
     }
   };
   if (isLoading)

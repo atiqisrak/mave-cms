@@ -1,4 +1,4 @@
-import { Select } from "antd";
+import { Select, message } from "antd";
 import React, { useState, useEffect } from "react";
 import instance from "../../axios";
 
@@ -14,7 +14,8 @@ const MenuParser = ({ item, editMode, onMenuSelect }) => {
       const response = await instance("/menus");
       if (response.data) {
         setMenus(response.data);
-        console.log("Menus: ", response.data);
+        // console.log("Menus: ", response.data);
+        message.success("Menus fetched successfully");
         setLoading(false);
       } else {
         console.error("Error fetching media assets:", response.data.message);
@@ -73,15 +74,15 @@ const MenuParser = ({ item, editMode, onMenuSelect }) => {
           >
             {item?._mave
               ? item._mave.menu_items?.map((menuItem) => (
-                  <div key={menuItem.id}>
-                    <p>{menuItem.title}</p>
-                  </div>
-                ))
+                <div key={menuItem.id}>
+                  <p>{menuItem.title}</p>
+                </div>
+              ))
               : item?.menu_items?.map((menuItem) => (
-                  <div key={menuItem.id}>
-                    <p>{menuItem.title}</p>
-                  </div>
-                ))}
+                <div key={menuItem.id}>
+                  <p>{menuItem.title}</p>
+                </div>
+              ))}
           </div>
         )}
       </div>

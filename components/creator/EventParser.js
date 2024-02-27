@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import instance from "../../axios";
-import { Select } from "antd";
+import { Select, message } from "antd";
 
 const EventParser = ({ item, editMode, onEventSelect }) => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
@@ -15,13 +15,16 @@ const EventParser = ({ item, editMode, onEventSelect }) => {
       const response = await instance("/events");
       if (response.data) {
         setEvents(response.data);
-        console.log("Events: ", response.data);
+        // console.log("Events: ", response.data);
+        message.success("Events fetched successfully");
         setLoading(false);
       } else {
-        console.error("Error fetching events:", response.data.message);
+        // console.error("Error fetching events:", response.data.message);
+        message.error("Error fetching events");
       }
     } catch (error) {
-      console.error("Error fetching events:", error);
+      // console.error("Error fetching events:", error);
+      message.error("Error fetching events");
     }
   };
 

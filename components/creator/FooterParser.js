@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Button, Input, Select, Card, Image, Popconfirm } from "antd";
+import { Row, Col, Button, Input, Select, Card, Image, Popconfirm, message } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -24,14 +24,16 @@ const FooterParser = ({ item, editMode, onFooterSelect }) => {
       const response = await instance("/footers");
       if (response.data) {
         setFooters(response.data);
-        console.log("Footers: ", response.data);
+        // console.log("Footers: ", response.data);
+        message.success("Footers fetched successfully");
         setLoading(false);
       } else {
         message.error("Error fetching footers");
-        console.error("Error fetching footers:", response.data.message);
+        // console.error("Error fetching footers:", response.data.message);
       }
     } catch (error) {
-      console.error("Error fetching footers:", error);
+      // console.error("Error fetching footers:", error);
+      message.error("Error fetching footers");
     }
   };
 

@@ -278,7 +278,6 @@ const Pages = () => {
               <Row gutter={[16, 16]}>
                 {pages?.map((page) => (
                   <Col key={page?.id} xs={24}>
-                    {console.log("Pages fetched:", page)}
                     <Card
                       title={`Page ID: ${page?.id}`}
                       extra={

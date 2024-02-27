@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import instance from "../../axios";
-import { Button, Image, Modal, Pagination, Select } from "antd";
+import { Button, Image, Modal, Pagination, Select, message } from "antd";
 import SingleMediaSelect from "../SingleMediaSelect";
 
 const MediaParser = ({ item, editMode, onMediaSelect }) => {
@@ -22,14 +22,17 @@ const MediaParser = ({ item, editMode, onMediaSelect }) => {
       if (response?.data) {
         setMedias(response?.data);
         setTotalMediaAssets(response?.data?.length);
-        console.log("TotalMediaAssets: ", setTotalMediaAssets);
-        console.log("Medias: ", response.data);
+        // console.log("TotalMediaAssets: ", setTotalMediaAssets);
+        // console.log("Medias: ", response.data);
+        message.success("Media assets fetched successfully");
         setLoading(false);
       } else {
-        console.error("Error fetching media assets:", response.data.message);
+        // console.error("Error fetching media assets:", response.data.message);
+        message.error("Media files couldn't be fetched");
       }
     } catch (error) {
-      console.error("Error fetching media assets:", error);
+      // console.error("Error fetching media assets:", error);
+      message.error("Media files couldn't be fetched");
     }
   };
 

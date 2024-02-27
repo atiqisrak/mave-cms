@@ -10,6 +10,7 @@ import {
   Row,
   Space,
   Typography,
+  message,
   notification,
 } from "antd";
 import React, { useEffect, useState } from "react";
@@ -83,12 +84,15 @@ const Sliders = () => {
         if (response.data) {
           setSliders(response.data);
           // console.log("Media Assets: ", response.data);
+          message.success("Sliders fetched successfully");
           setLoading(false);
         } else {
-          console.error("Error fetching media assets:", response.data.message);
+          // console.error("Error fetching media assets:", response.data.message);
+          message.error("Sliders couldn't be fetched");
         }
       } catch (error) {
-        console.error("Error fetching media assets:", error);
+        // console.error("Error fetching media assets:", error);
+        message.error("Sliders couldn't be fetched");
       }
     };
 
@@ -113,7 +117,7 @@ const Sliders = () => {
   const handDeleteSlider = async (e, id) => {
     // console.log("your log output", id);
     try {
-      // setLoading(true);
+      setLoading(true);
       const response = await instance.delete(`/sliders/${id}`);
 
       if (response?.data) {
@@ -122,9 +126,18 @@ const Sliders = () => {
           top,
         });
         setResponseData(response?.data);
-        // setLoading(false);
+        message.success("Slider deleted successfully");
+        setLoading(false);
+      } else {
+        // console.error("Error deleting slider:", response.data);
+        message.error("Error deleting slider");
+        setLoading(false);
       }
-    } catch (e) { }
+    } catch (e) {
+      // console.error("Error deleting slider:", e);
+      message.error("Error deleting slider");
+      setLoading(false);
+    }
   };
   const handleEditClick = (itemId) => {
     setEditingItemId(itemId);
@@ -133,7 +146,6 @@ const Sliders = () => {
     setEditingItemId(null);
   };
   const handleSubmit = async (values) => {
-    // console.log('your log output',)
     setLoading(true);
     try {
       const postData = {

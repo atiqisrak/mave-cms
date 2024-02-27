@@ -41,7 +41,8 @@ const CardGridView = ({
             const res = await instance.get(`/cards/${selectedCard.id}`);
             setSelectedCard(res.data);
         } catch (error) {
-            console.log(error);
+            // console.log(error);
+            message.error("Failed to fetch updated card data");
         }
     }
 
@@ -64,12 +65,14 @@ const CardGridView = ({
 
             const res = await instance.put(`/cards/${selectedCard.id}`, requestedData);
 
-            console.log("Card updated: ", res.data);
+            // console.log("Card updated: ", res.data);
+            message.success("Card updated successfully");
             setLoading(false);
             message.success("Card updated successfully");
             fetchUpdatedCardData();
         } catch (error) {
-            console.log(error);
+            // console.log(error);
+            message.error("Failed to update card");
             setLoading(false);
         }
     };

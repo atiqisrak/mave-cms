@@ -24,7 +24,8 @@ const Gases = () => {
             const res = await instance.get("/gas");
             if (res.status === 200) {
                 setGases(res.data);
-                console.log("Gases", res.data);
+                // console.log("Gases", res.data);
+                message.success("Gases fetched successfully");
             }
             else {
                 message.error("Unable to fetch gases");
@@ -32,7 +33,7 @@ const Gases = () => {
             setLoading(false);
         }
         catch (err) {
-            console.log(err);
+            // console.log(err);
             message.error("Unable to fetch gases");
             setLoading(false);
         }
@@ -53,7 +54,7 @@ const Gases = () => {
             }
         }
         catch (err) {
-            console.log(err);
+            // console.log(err);
             message.error("Unable to fetch media");
         }
     }
@@ -74,7 +75,7 @@ const Gases = () => {
             }
         }
         catch (err) {
-            console.log(err);
+            // console.log(err);
             message.error("Unable to delete gas");
         }
     }
@@ -92,7 +93,7 @@ const Gases = () => {
             }
         }
         catch (err) {
-            console.log(err);
+            // console.log(err);
             message.error("Unable to create gas");
         }
     }
@@ -110,7 +111,7 @@ const Gases = () => {
             }
         }
         catch (err) {
-            console.log(err);
+            // console.log(err);
             message.error("Unable to update gas");
         }
     }
@@ -166,10 +167,10 @@ const Gases = () => {
                             <div className="PageBody">
                                 <Modal title="Create Gas" open={createMode} onOk={handleCreate} onCancel={() => setCreateMode(false)}>
                                     <Button type="primary"
-                                    style={{
-                                        position: "initial"
-                                    }}
-                                    icon={<CheckCircleFilled />}
+                                        style={{
+                                            position: "initial"
+                                        }}
+                                        icon={<CheckCircleFilled />}
                                         onClick={handleOpenModal}
                                     >
                                         <Image
@@ -183,7 +184,7 @@ const Gases = () => {
                                             preview={false}
                                         />
                                     </Button>
-                                    
+
                                     <Input
                                         placeholder="Gas Type"
                                         value={formData?.type}
@@ -219,7 +220,7 @@ const Gases = () => {
                                 editMode && selectedPageId === gas.id ? (
                                     <Row gutter={[16, 16]} key={index} style={{
                                         padding: "2em 0",
-                                    
+
                                     }}>
                                         <Col span={4}>
                                             <Button type="primary"

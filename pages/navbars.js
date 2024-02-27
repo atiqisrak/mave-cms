@@ -60,15 +60,17 @@ const Navbars = () => {
         setMedia(mediaResponse.data);
         setMenus(menuResponse.data);
         setNavbars(navbarsResponse.data);
-
-        console.log("Media Data", mediaResponse.data);
-        console.log("Menu Data", menuResponse.data);
-        console.log("Navbar Data", navbarsResponse.data);
+        message.success("Data fetched successfully");
+        // console.log("Media Data", mediaResponse.data);
+        // console.log("Menu Data", menuResponse.data);
+        // console.log("Navbar Data", navbarsResponse.data);
       } else {
-        console.error("Error fetching data");
+        // console.error("Error fetching data");
+        message.error("Data couldn't be fetched");
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      // console.error("Error fetching data:", error);
+      message.error("Data couldn't be fetched");
     } finally {
       setLoading(false);
     }
@@ -109,7 +111,7 @@ const Navbars = () => {
       menu_id: formData.menu_id,
     };
 
-    console.log("Updating Navbar ID:", navbar.id, "with data:", updatedData);
+    // console.log("Updating Navbar ID:", navbar.id, "with data:", updatedData);
     instance
       .put(`/navbars/${navbar.id}`, updatedData)
       .then((response) => {
@@ -122,12 +124,15 @@ const Navbars = () => {
             const res = await instance.get("/navbars");
             setNavbars(res.data);
             setLoading(false);
-          } catch (error) { }
+          } catch (error) {
+            message.error("Error fetching data");
+          }
         };
         getData();
       })
       .catch((error) => {
-        console.error("Error updating navbar:", error);
+        // console.error("Error updating navbar:", error);
+        message.error("Error updating navbar");
       });
   };
 
@@ -360,7 +365,6 @@ const Navbars = () => {
                       {menus?.map((menu) => (
                         <>
                           {" "}
-                          {console.log(formData, "formData")}
                           <Option key={menu.id} value={menu?.id}>
                             {menu.name}{" "}
                           </Option>

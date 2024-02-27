@@ -292,7 +292,6 @@ const Cards = () => {
                   )
                 }
               </div>
-              {console.log("filteredCards size: ", filteredCards.length)}
               {/* Pagination */}
               <Pagination
                 defaultCurrent={1}

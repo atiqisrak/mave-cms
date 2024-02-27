@@ -11,6 +11,7 @@ import {
   Switch,
   Popconfirm,
   Select,
+  message,
 } from "antd";
 import instance from "../axios";
 import { useRouter } from "next/router";
@@ -51,15 +52,20 @@ export default function MenuItems() {
 
   const fetchMenuItems = async () => {
     try {
+      setLoading(true);
       const response = await instance("/menuitems");
       if (response.data) {
         setMenuItems(response.data);
-        console.log("Menu Items: ", response.data);
+        // console.log("Menu Items: ", response.data);
+        message.success("Menu items fetched successfully");
+        setLoading(false);
       } else {
-        console.error("Error fetching menu items:", response.data.message);
+        // console.error("Error fetching menu items:", response.data.message);
+        message.error("Menu items couldn't be fetched");
       }
     } catch (error) {
-      console.error("Error fetching menu items:", error);
+      // console.error("Error fetching menu items:", error);
+      message.error("Menu items couldn't be fetched");
     }
   };
 
@@ -294,7 +300,6 @@ export default function MenuItems() {
               </Button>
             </div>
           </div>
-          {console.log("Menu Items: ", menuItems)}
           <Row
             style={{
               padding: "2em 3em",
