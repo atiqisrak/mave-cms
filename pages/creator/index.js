@@ -589,17 +589,28 @@ const Creator = () => {
   };
   // console.log("updatedSection (Cards)", updatedSection);
 
-  const handleMediaSelect = (selectedMediaId) => {
+  const handleMediaSelect = (sectionId, componentIndex, selectedMediaId) => {
+    console.log("Section to update: ", sectionId);
+    console.log("Index of the changed media: ", componentIndex);
     const updatedPageData = showPageData.map((section) => {
       if (section._id === editedSectionId) {
-        const updatedData = section.data.map((item) => {
-          if (item.type === selectedMediaId.type) {
-            // console.log("selectedMediaId", selectedMediaId);
-            return selectedMediaId; // Replace the item with the selectedMediaId data
+        // const updatedData = section.data.map((item) => {
+        //   if (item.type === selectedMediaId.type) {
+        //     return selectedMediaId;
+        //   }
+        //   return item;
+        // });
+
+        // return {
+        //   ...section,
+        //   data: updatedData,
+        // };
+        const updatedData = section.data.map((item, index) => {
+          if (index === componentIndex) {
+            return selectedMediaId;
           }
           return item;
         });
-
         return {
           ...section,
           data: updatedData,
@@ -864,11 +875,9 @@ const Creator = () => {
   const handleDeleteComponent = async (sectionData) => {
     const xSectionId = sectionData?.sectionId;
     const xComponentIndex = sectionData?.componentIndex;
-    console.log("aa sectionId: ", xSectionId);
-    console.log("aa component Index: ", xComponentIndex);
+
     try {
       setLoading(true);
-      // delete component from section
       const updatedPageData = showPageData.map((section) => {
         if (section._id === xSectionId) {
           const updatedData = section.data.filter(
@@ -989,7 +998,7 @@ const Creator = () => {
                         <center>
                           <Button
                             // button disabled if no change is made
-                            disabled={save ? true : false}
+                            // disabled={save ? true : false}
                             style={{
                               margin: "10px",
                               backgroundColor: "var(--theme",
@@ -1179,7 +1188,7 @@ const Creator = () => {
                                 setCanvas(true);
                               }}
                             >
-                              Add Component
+                              Add Componentz
                             </Button>
                             <div>
                               <Button
@@ -1213,6 +1222,7 @@ const Creator = () => {
                                 onClick={() => {
                                   setEditMode(false);
                                   setEditedSectionId(null);
+                                  setCanvas(false);
                                 }}
                                 style={{
                                   margin: "10px",
@@ -1227,7 +1237,7 @@ const Creator = () => {
                                 }}
                                 icon={<CloseCircleFilled />}
                               >
-                                Cancel Edit
+                                Cancel Editz
                               </Button>
                             </div>
                           </div>
