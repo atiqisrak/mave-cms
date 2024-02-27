@@ -19,14 +19,15 @@ const SystemDemand = () => {
             if (response.status === 200) {
                 setMessages(response.data);
                 setLoading(false);
-                console.log("System Demand: ", response.data);
+                // console.log("System Demand: ", response.data);
+                message.success("System Demands fetched successfully");
             } else {
-                console.log("Error: ", response);
+                // console.log("Error: ", response);
                 message.error("Error fetching data");
                 setLoading(false);
             }
         } catch (error) {
-            console.log("Error: ", error);
+            // console.log("Error: ", error);
             message.error("Error fetching data");
             setLoading(false);
         }
@@ -47,12 +48,12 @@ const SystemDemand = () => {
                 fetchMessages();
                 setLoading(false);
             } else {
-                console.log("Error: ", response);
+                // console.log("Error: ", response);
                 message.error("Error updating message");
                 setLoading(false);
             }
         } catch (error) {
-            console.log("Error: ", error);
+            // console.log("Error: ", error);
             message.error("Error updating message");
             setLoading(false);
         }
@@ -70,12 +71,12 @@ const SystemDemand = () => {
                 setEditMode(false);
                 setLoading(false);
             } else {
-                console.log("Error: ", response);
+                // console.log("Error: ", response);
                 message.error("Error updating status");
                 setLoading(false);
             }
         } catch (error) {
-            console.log("Error: ", error);
+            // console.log("Error: ", error);
             message.error("Error updating status");
             setLoading(false);
         }

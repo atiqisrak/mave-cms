@@ -30,14 +30,15 @@ const ContactUsResponses = () => {
       if (response.status === 200) {
         setMessages(response.data);
         setLoading(false);
-        console.log("Messages: ", response.data);
+        // console.log("Messages: ", response.data);
+        message.success("Messages fetched successfully");
       } else {
-        console.log("Error: ", response);
+        // console.log("Error: ", response);
         message.error("Error fetching data");
         setLoading(false);
       }
     } catch (error) {
-      console.log("Error: ", error);
+      // console.log("Error: ", error);
       message.error("Error fetching data");
       setLoading(false);
     }
@@ -60,12 +61,12 @@ const ContactUsResponses = () => {
         fetchMessages();
         setLoading(false);
       } else {
-        console.log("Error: ", response);
+        // console.log("Error: ", response);
         message.error("Error updating message");
         setLoading(false);
       }
     } catch (error) {
-      console.log("Error: ", error);
+      // console.log("Error: ", error);
       message.error("Error updating message");
       setLoading(false);
     }
@@ -83,12 +84,12 @@ const ContactUsResponses = () => {
         setEditMode(false);
         setLoading(false);
       } else {
-        console.log("Error: ", response);
+        // console.log("Error: ", response);
         message.error("Error updating status");
         setLoading(false);
       }
     } catch (error) {
-      console.log("Error: ", error);
+      // console.log("Error: ", error);
       message.error("Error updating status");
       setLoading(false);
     }

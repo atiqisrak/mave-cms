@@ -260,7 +260,7 @@ const Creator = () => {
       setDescription(takenDescription);
     }
 
-    console.log("description", description);
+    // console.log("description", description);
     if (selectedType === "media") {
       const resultArray = filteredArray.map(
         ({ id, file_name, file_path, file_type, tags, type }) => ({
@@ -833,6 +833,8 @@ const Creator = () => {
     });
     setUpdatedSection(updatedPageData);
   };
+
+
   // delete section and make a put request with updated data
   const handleDeleteSection = async (sectionId) => {
     const updatedPageData = showPageData.filter(
@@ -853,6 +855,51 @@ const Creator = () => {
       }
     } catch (error) {
       message.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // delete component
+  const handleDeleteComponent = async (sectionData) => {
+    const xSectionId = sectionData?.sectionId;
+    const xComponentIndex = sectionData?.componentIndex;
+    console.log("aa sectionId: ", xSectionId);
+    console.log("aa component Index: ", xComponentIndex);
+    try {
+      setLoading(true);
+      // delete component from section
+      const updatedPageData = showPageData.map((section) => {
+        if (section._id === xSectionId) {
+          const updatedData = section.data.filter(
+            (item, index) => index !== xComponentIndex
+          );
+          return {
+            ...section,
+            data: updatedData,
+          };
+        }
+        return section;
+      });
+      setUpdatedSection(updatedPageData);
+
+
+      console.log("updatedPageData: ", updatedPageData);
+      // put request with updated page data
+      const response = await instance.put(`/pages/${pid}`, {
+        ...pageData,
+        body: updatedPageData,
+      });
+      if (response?.status === 200) {
+        setUpdateResponse(response.data);
+        message.success("Page updated successfully");
+        fetchPageData();
+        setEditedSectionId(xSectionId);
+        setEditMode(true);
+      }
+      else {
+        message.error(error.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -909,13 +956,13 @@ const Creator = () => {
                               }}
                               onClick={() => handleEditClick(section?._id)}
                             >
-                              Edit Mode
+                              Edit Mode 2
                             </Button>
                           </>
                         )}
                       </div>
 
-                      {/* Edit Section */}
+                      {/* Edit Section bluff */}
                       <ComponentParse
                         section={section?.data}
                         editMode={editMode && editedSectionId == section?._id}
@@ -936,10 +983,13 @@ const Creator = () => {
                         sectionData={sectionUpdatedData}
                         setSectionData={setSectionUpdatedData}
                         setNewData={setNewData}
+                        onDeleteComponent={handleDeleteComponent}
                       />
                       {editedSectionId === section?._id && (
                         <center>
                           <Button
+                            // button disabled if no change is made
+                            disabled={save ? true : false}
                             style={{
                               margin: "10px",
                               backgroundColor: "var(--theme",
@@ -953,16 +1003,17 @@ const Creator = () => {
                             }}
                             onClick={() => {
                               setEditMode(false);
-                              setSave(true);
                               setEditedSectionId(null);
                               handleUpdateSectionData(index, sectionData);
                               handleSave();
-                              // here
+                              setSave(true);
                               setNewSectionComponent([]);
                             }}
+                            icon={<CloudSyncOutlined />}
                           >
-                            Save
+                            Update Section
                           </Button>
+
                           <Button
                             danger
                             onClick={() => {
@@ -970,6 +1021,18 @@ const Creator = () => {
                               setEditMode(false);
                               setEditedSectionId(null);
                             }}
+                            style={{
+                              margin: "10px",
+                              backgroundColor: "var(--themes)",
+                              color: "#fff",
+                              border: "none",
+                              borderRadius: "5px",
+                              fontSize: "1.2rem",
+                              padding: "0.6rem 1rem",
+                              marginBottom: "3rem",
+                              height: "auto",
+                            }}
+                            icon={<CloseCircleFilled />}
                           >
                             Cancel Edit
                           </Button>
@@ -1065,7 +1128,9 @@ const Creator = () => {
                           </div>
                         ) :
                           (
+                            // Update Section Data
                             <ComponentParse
+                              sectionId={section?._id}
                               section={section?.data}
                               editMode={editMode && editedSectionId == section?._id}
                               onNavbarSelect={handleNavbarSelect}
@@ -1083,6 +1148,7 @@ const Creator = () => {
                               sectionData={sectionUpdatedData}
                               setSectionData={setSectionUpdatedData}
                               setNewData={setNewData}
+                              onDeleteComponent={handleDeleteComponent}
                             />
                           )
                       }
@@ -1117,6 +1183,8 @@ const Creator = () => {
                             </Button>
                             <div>
                               <Button
+                                // button disabled if no change is made
+                                disabled={!save}
                                 style={{
                                   margin: "10px",
                                   backgroundColor: "var(--theme",
@@ -1135,8 +1203,9 @@ const Creator = () => {
                                   handleUpdateSectionData(index, sectionData);
                                   handleSave();
                                 }}
+                                icon={<CloudSyncOutlined />}
                               >
-                                Save
+                                Update Section
                               </Button>
 
                               <Button
@@ -1145,6 +1214,18 @@ const Creator = () => {
                                   setEditMode(false);
                                   setEditedSectionId(null);
                                 }}
+                                style={{
+                                  margin: "10px",
+                                  backgroundColor: "var(--themes)",
+                                  color: "#fff",
+                                  border: "none",
+                                  borderRadius: "5px",
+                                  fontSize: "1.2rem",
+                                  padding: "0.6rem 1rem",
+                                  marginBottom: "3rem",
+                                  height: "auto",
+                                }}
+                                icon={<CloseCircleFilled />}
                               >
                                 Cancel Edit
                               </Button>
@@ -1509,7 +1590,6 @@ const Creator = () => {
                               case "slider":
                                 return (
                                   <div style={{ width: "40vw" }}>
-                                    {console.log("Got sliders", fetchedComponent)}
                                     <Select
                                       value={searchDefault}
                                       mode="multiple"
@@ -1858,7 +1938,6 @@ const Creator = () => {
                                           key={index}
                                           value={event.id}
                                         >
-                                          {console.log("Event", event)}
                                           {event.title_en}
                                         </Select.Option>
                                       ))}

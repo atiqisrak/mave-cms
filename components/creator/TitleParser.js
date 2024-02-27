@@ -16,7 +16,6 @@ const TitleParser = ({ item, editMode, onTitleChange }) => {
       {editMode ? (
         <div className="titleContainer">
           <h1>Title</h1>
-          {console.log("Getting Title: ", item)}
           <Input
             defaultValue={item?.value}
             value={title}

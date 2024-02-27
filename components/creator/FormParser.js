@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, memo } from "react";
 import instance from "../../axios";
-import { Form, Input, Select } from "antd";
+import { Form, Input, Select, message } from "antd";
 import FormComponent from "../FormComponent";
 
 const FormParser = ({ item, editMode, onFormSelect, onUpdateComponent }) => {
@@ -13,18 +13,21 @@ const FormParser = ({ item, editMode, onFormSelect, onUpdateComponent }) => {
   const fetchForms = async () => {
     try {
       setLoading(true);
-      console.log("Item: ", item);
+      // console.log("Item: ", item);
       const response = await instance("/forms");
       if (response.data) {
         setForms(response.data);
-        console.log("Forms: ", response.data);
+        // console.log("Forms: ", response.data);
+        message.success("Forms fetched successfully");
         setFormsFetched(true);
         setLoading(false);
       } else {
-        console.error("Error fetching form assets nn:", response.data.message);
+        // console.error("Error fetching form assets nn:", response.data.message);
+        message.error("Error fetching form assets");
       }
     } catch (error) {
-      console.error("Error fetching form assets:", error);
+      // console.error("Error fetching form assets:", error);
+      message.error("Error fetching form assets");
     }
   };
 

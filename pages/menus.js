@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Site from "../components/Site";
-import { Button, Col, Input, Popconfirm, Row, Select } from "antd";
+import { Button, Col, Input, Popconfirm, Row, Select, message } from "antd";
 import Router, { useRouter } from "next/router";
 import {
   ArrowRightOutlined,
@@ -36,7 +36,7 @@ const Menus = () => {
   const [selectedNewMenuItem, setSelectedNewMenuItem] = useState(null);
   const [menuItemsOrder, setMenuItemsOrder] = useState({}); // Use an object to store orders for each menu
 
-  console.log(editedMenuItemsIds, "menus");
+  // console.log(editedMenuItemsIds, "menus");
 
   const { Option } = Select;
   const router = useRouter();
@@ -49,12 +49,16 @@ const Menus = () => {
         const response = await instance("/menus");
         if (response.data) {
           setMenus(response.data);
-          console.log("Menus", response.data);
+          // console.log("Menus", response.data);
+          message.success("Menus fetched successfully");
+          setLoading(false);
         } else {
-          console.log("Error fetching menus", response.data.message);
+          // console.log("Error fetching menus", response.data.message);
+          message.error("Menus couldn't be fetched");
         }
       } catch (err) {
-        console.log("Error fetching menus", err);
+        // console.log("Error fetching menus", err);
+        message.error("Menus couldn't be fetched");
       }
       setLoading(false);
     };
@@ -69,12 +73,16 @@ const Menus = () => {
         const response = await instance("/menuitems");
         if (response.data) {
           setMenuItems(response.data);
-          console.log("MenuItems", response.data);
+          // console.log("MenuItems", response.data);
+          message.success("Menu items fetched successfully");
+          setLoading(false);
         } else {
-          console.log("Error fetching menu items", response.data.message);
+          // console.log("Error fetching menu items", response.data.message);
+          message.error("Menu items couldn't be fetched");
         }
       } catch (err) {
-        console.log("Error fetching menu items", err);
+        // console.log("Error fetching menu items", err);
+        message.error("Menu items couldn't be fetched");
       }
       setLoading(false);
     };
@@ -185,7 +193,7 @@ const Menus = () => {
         name: editedMenuName,
         menu_item_ids: editedMenuItemsIds,
       };
-      console.log(newMenu, "newmenu");
+      // console.log(newMenu, "newmenu");
       // Send a POST request to create a new menu
       const response = await instance.post("/menus", newMenu);
       if (response.status === 201) {
@@ -195,16 +203,18 @@ const Menus = () => {
           ...menus,
         ];
         setMenus(updatedMenus);
-
+        message.success("Menu created successfully");
         // Reset input fields and exit add menu mode
         setEditedMenuName("");
         setEditedMenuItemsIds([]);
         setIsAddMenuOpen(false);
       } else {
-        console.error("Error creating menu:", response.data.message);
+        // console.error("Error creating menu:", response.data.message);
+        message.error("Error creating menu");
       }
     } catch (error) {
-      console.error("Error creating menu:", error);
+      // console.error("Error creating menu:", error);
+      message.error("Error creating menu");
     }
   };
 
@@ -326,60 +336,61 @@ const Menus = () => {
           paddingBottom: "1.8em",
           marginBottom: "1em",
           marginTop: "1em"
-        
+
         }}>
           <FilterOutlined />Filter
         </Button>
         {
           filterMode && (
-          <Row style={{ padding: "2em 3em", borderBottom: "1px solid #f0f0f0"
-           }}>
-            <Col span={12}>
-              <h3 style={{ fontSize: "1.4em", paddingBottom: 20 }}>Sort By: </h3>
-              <div style={{ display: "flex", alignItems: "center", gap: 30 }}>
-                <Button
-                  type="primary"
-                  onClick={sortMenuByName}
-                >
-                  Name
-                </Button>
-                <Button
-                  type="primary"
-                  onClick={sortMenuById}
-                >
-                  ID
-                </Button>
-                <Button
-                  type="primary"
-                  onClick={sortMenuByDateAsc}
-                >
-                  Added First
-                </Button>
-                <Button
-                  type="primary"
-                  onClick={sortMenuByDateDesc}
-                >
-                  Added Last
-                </Button>
-              </div>
-            </Col>
-            <Col span={12} style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-end",
-              gap: 30
+            <Row style={{
+              padding: "2em 3em", borderBottom: "1px solid #f0f0f0"
             }}>
-              <h3 style={{ fontSize: "1.4em", paddingBottom: 10 }}>Search By: </h3>
-              <Input
-                placeholder="Search by name"
-                style={{
-                  padding: "0.6em 2em",
-                  width: "20em",
-                }}
-                onChange={(e) => searchMenuByName(e.target.value)}
-              />
-            </Col>
-          </Row>)
+              <Col span={12}>
+                <h3 style={{ fontSize: "1.4em", paddingBottom: 20 }}>Sort By: </h3>
+                <div style={{ display: "flex", alignItems: "center", gap: 30 }}>
+                  <Button
+                    type="primary"
+                    onClick={sortMenuByName}
+                  >
+                    Name
+                  </Button>
+                  <Button
+                    type="primary"
+                    onClick={sortMenuById}
+                  >
+                    ID
+                  </Button>
+                  <Button
+                    type="primary"
+                    onClick={sortMenuByDateAsc}
+                  >
+                    Added First
+                  </Button>
+                  <Button
+                    type="primary"
+                    onClick={sortMenuByDateDesc}
+                  >
+                    Added Last
+                  </Button>
+                </div>
+              </Col>
+              <Col span={12} style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                gap: 30
+              }}>
+                <h3 style={{ fontSize: "1.4em", paddingBottom: 10 }}>Search By: </h3>
+                <Input
+                  placeholder="Search by name"
+                  style={{
+                    padding: "0.6em 2em",
+                    width: "20em",
+                  }}
+                  onChange={(e) => searchMenuByName(e.target.value)}
+                />
+              </Col>
+            </Row>)
         }
 
 

@@ -1,4 +1,4 @@
-import { Select } from "antd";
+import { Select, message } from "antd";
 import React, { useState, useEffect } from "react";
 import instance from "../../axios";
 
@@ -12,17 +12,20 @@ const NavbarParser = ({ item, editMode, onNavbarSelect }) => {
   const fetchNavbars = async () => {
     try {
       setLoading(true);
-      console.log("Item: ", item);
+      // console.log("Item: ", item);
       const response = await instance("/navbars");
       if (response.data) {
         setNavbars(response.data);
-        console.log("Navbars: ", response.data);
+        // console.log("Navbars: ", response.data);
+        message.success("Navbars fetched successfully");
         setLoading(false);
       } else {
-        console.error("Error fetching media assets:", response.data.message);
+        // console.error("Error fetching media assets:", response.data.message);
+        message.error("Error fetching navbars");
       }
     } catch (error) {
-      console.error("Error fetching media assets:", error);
+      // console.error("Error fetching media assets:", error);
+      message.error("Error fetching navbars");
     }
   };
 

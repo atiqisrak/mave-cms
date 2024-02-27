@@ -43,7 +43,7 @@ const Profile = () => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUserData(JSON.parse(storedUser));
-      console.log("User Data: ", JSON.parse(storedUser));
+      // console.log("User Data: ", JSON.parse(storedUser));
     }
   }, []);
 
@@ -54,9 +54,11 @@ const Profile = () => {
         try {
           const res = await instance.get("/admin/users");
           setUsers(res.data);
-          console.log("All Users: ", res.data);
+          // console.log("All Users: ", res.data);
+          message.success("Users fetched successfully");
           setLoading(false);
         } catch (error) {
+          message.error("Something went wrong");
           setLoading(false);
         }
       };
@@ -80,7 +82,7 @@ const Profile = () => {
       instance
         .put(`/admin/user/${userData?.id}`, updatedData)
         .then((response) => {
-          console.log("Response: ", response?.data?.user);
+          // console.log("Response: ", response?.data?.user);
           if (response.status === 200) {
             message.success("Profile Updated Successfully");
             setUserData(updatedData);
@@ -89,11 +91,11 @@ const Profile = () => {
           }
         })
         .catch((error) => {
-          console.log("Error: ", error);
+          // console.log("Error: ", error);
           message.error("Something went wrong");
         });
     } catch (error) {
-      console.log("Error: ", error);
+      // console.log("Error: ", error);
       message.error("Something went wrong");
     } finally {
       setLoading(false);
@@ -126,7 +128,7 @@ const Profile = () => {
       instance
         .put(`/admin/user/${id}`, updatedUser)
         .then((response) => {
-          console.log("Response: ", response?.data?.user);
+          // console.log("Response: ", response?.data?.user);
           if (response.status === 200) {
             message.success("User Updated Successfully");
             setUsers(
@@ -136,11 +138,11 @@ const Profile = () => {
           }
         })
         .catch((error) => {
-          console.log("Error: ", error);
+          // console.log("Error: ", error);
           message.error("Something went wrong");
         });
     } catch (error) {
-      console.log("Error: ", error);
+      // console.log("Error: ", error);
       message.error("Something went wrong");
     } finally {
       setLoading(false);
@@ -166,18 +168,18 @@ const Profile = () => {
       instance
         .delete(`/admin/user/${id}`)
         .then((response) => {
-          console.log("Response: ", response?.data?.user);
+          // console.log("Response: ", response?.data?.user);
           if (response.status === 200) {
             message.success("User Deleted Successfully");
             setUsers(users.filter((user) => user.id !== id));
           }
         })
         .catch((error) => {
-          console.log("Error: ", error);
+          // console.log("Error: ", error);
           message.error("Something went wrong");
         });
     } catch (error) {
-      console.log("Error: ", error);
+      // console.log("Error: ", error);
       message.error("Something went wrong");
     } finally {
       setLoading(false);
@@ -548,7 +550,7 @@ const Profile = () => {
                               }}
                               onClick={() => {
                                 handleUserEdit(user);
-                                console.log("Clicked User Id: ", user?.id);
+                                // console.log("Clicked User Id: ", user?.id);
                               }}
                             >
                               <EditOutlined />
@@ -559,10 +561,12 @@ const Profile = () => {
                               (<Popconfirm
                                 title="Are you sure to delete this user?"
                                 onConfirm={() => {
-                                  console.log("Clicked User Id: ", user?.id);
+                                  message.success("User deleted successfully");
                                   handleDeleteUser(user?.id);
                                 }}
-                                onCancel={() => console.log("Canceled")}
+                                onCancel={() =>
+                                  message.info("User not deleted")
+                                }
                                 okText="Yes"
                                 cancelText="No"
                               >

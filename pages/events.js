@@ -60,12 +60,20 @@ const Events = () => {
     const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
 
     const fetchEvents = async () => {
-        setLoading(true);
-        const response = await instance.get('/events');
-        if (response && response.data) {
-            setEvents(response.data);
-            console.log("Events", response.data);
-            setLoading(false);
+        try {
+            setLoading(true);
+            const response = await instance.get('/events');
+            if (response && response.data) {
+                setEvents(response.data);
+                // console.log("Events", response.data);
+                message.success('Events fetched successfully');
+                setLoading(false);
+            }
+            else {
+                message.error('Error fetching events');
+            }
+        } catch (error) {
+            message.error('Error fetching events');
         }
     }
 
@@ -108,8 +116,8 @@ const Events = () => {
     }
 
     const handleDateChange = (date, dateString) => {
-        console.log("Date", date);
-        console.log("DateString", dateString);
+        // console.log("Date", date);
+        // console.log("DateString", dateString);
         setFormData({
             ...formData,
             event_date: dateString,

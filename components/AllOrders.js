@@ -26,12 +26,12 @@ const AllOrders = () => {
                 setAllOrders(response.data);
                 setLoading(false);
             } else {
-                console.log("Error: ", response);
+                // console.log("Error: ", response);
                 message.error("Error fetching data");
                 setLoading(false);
             }
         } catch (error) {
-            console.log("Error: ", error);
+            // console.log("Error: ", error);
             message.error("Error fetching data");
             setLoading(false);
         }
@@ -52,12 +52,12 @@ const AllOrders = () => {
                 setLoading(false);
                 setSelectedOrder(response.data);
             } else {
-                console.log("Error: ", response);
+                // console.log("Error: ", response);
                 message.error("Error fetching data");
                 setLoading(false);
             }
         } catch (error) {
-            console.log("Error: ", error);
+            // console.log("Error: ", error);
             message.error("Error fetching data");
             setLoading(false);
         }
@@ -75,13 +75,13 @@ const AllOrders = () => {
                 setEditMode(false);
                 fetchAllOrders();
             } else {
-                console.log("Error: ", response);
+                // console.log("Error: ", response);
                 message.error("Error updating order status");
                 setLoading(false);
                 setEditMode(false);
             }
         } catch (error) {
-            console.log("Error: ", error);
+            // console.log("Error: ", error);
             message.error("Error updating order status");
             setLoading(false);
             setEditMode(false);
@@ -225,9 +225,6 @@ const AllOrders = () => {
                                         padding: "1em 0",
 
                                     }}>
-                                        {
-                                            console.log("Order Details: ", orderDetails)
-                                        }
                                         <h4>Service Type: {
                                             orderDetails.order_details?.type_of_service ? orderDetails.order_details?.type_of_service : "N/A"
                                         }</h4>

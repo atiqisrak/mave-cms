@@ -39,7 +39,7 @@ const ToolsMarketplace = () => {
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
             setUserData(JSON.parse(storedUser));
-            console.log("User Data: ", JSON.parse(storedUser));
+            // console.log("User Data: ", JSON.parse(storedUser));
         }
     }, []);
     useEffect(() => {
@@ -49,7 +49,7 @@ const ToolsMarketplace = () => {
                 try {
                     const res = await instance.get("/admin/users");
                     setUsers(res.data);
-                    console.log("All Users: ", res.data);
+                    // console.log("All Users: ", res.data);
                     setLoading(false);
                 } catch (error) {
                     setLoading(false);

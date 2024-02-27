@@ -8,6 +8,7 @@ import {
   Select,
   Pagination,
   Skeleton,
+  message,
 } from "antd";
 import instance from "../axios";
 import Loader from "./Loader";
@@ -93,7 +94,8 @@ const SingleMediaSelect = ({ visible, onCancel, onMediaSelect, media }) => {
 
   useEffect(() => {
     fetchMediaAssets(currentPage, sortBy);
-    console.log("Media fetched from selector");
+    // console.log("Media fetched from selector");
+    message.success("Media fetched from selector");
   }, [currentPage, sortBy]);
 
   if (loading) {

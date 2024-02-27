@@ -13,9 +13,9 @@ const resetPasword = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [showconfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const router=useRouter()
-  const token=router.query.token
- 
+  const router = useRouter()
+  const token = router.query.token
+
   useEffect(() => {
     // Check if passwords match and update state
     setPasswordsMatch(password === confirmPassword);
@@ -47,26 +47,26 @@ const resetPasword = () => {
   };
 
   const handleResetPassword = async () => {
-    const items = { password:password,password_confirmation:confirmPassword,token:token,email:email}
-    console.log(items)
+    const items = { password: password, password_confirmation: confirmPassword, token: token, email: email }
+    // console.log(items)
     setIsLoading(true)
     try {
       // Send a put request to the API endpoint
       const res = await instance.post("admin/password/reset", items,);
-      console.log(res)
+      // console.log(res)
       if (res?.status === 200) {
         // setOpen(false)
-       
+
         // setResponse(res)
         setIsLoading(false)
-       
+
         message.success(res?.data?.message);
         // Handle success, e.g., show a success message or update your UI
-        console.log("Data deleted successfully");
+        // console.log("Data deleted successfully");
         router.push('/'); // Update this path to match your home page route
         // setIsModalOpen(true)
       }
-      
+
     } catch (error) {
       // Handle errors, e.g., display an error message or log the error
       if (error?.response?.status === 500) {
@@ -114,9 +114,9 @@ const resetPasword = () => {
             </Button>
           </Space>
 
-        
+
         </div>
-       
+
       </div>
     </div>
   )

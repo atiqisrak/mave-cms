@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import instance from "../../axios";
-import { Select } from "antd";
+import { Select, message } from "antd";
 import moment from "moment";
 
 const PressReleaseParser = ({ item, editMode, onPressReleaseSelect }) => {
@@ -13,17 +13,21 @@ const PressReleaseParser = ({ item, editMode, onPressReleaseSelect }) => {
   const fetchPressReleases = async () => {
     try {
       setLoading(true);
-      console.log("Item: ", item);
+      // console.log("Item: ", item);
       const response = await instance("/press_release");
       if (response.data) {
         setPressReleases(response.data);
-        console.log("Press Releases: ", response.data);
+        // console.log("Press Releases: ", response.data);
+        message.success("Press Releases fetched successfully");
         setLoading(false);
       } else {
-        console.error("Error fetching media assets:", response.data.message);
+        // console.error("Error fetching media assets:", response.data.message);
+        message.error("Error fetching press releases");
       }
     } catch (error) {
-      console.error("Error fetching media assets:", error);
+      // console.error("Error fetching media assets:", error);
+      message.error("Error fetching press releases");
+
     }
   };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, memo } from "react";
 import instance from "../../axios";
-import { Image, Select } from "antd";
+import { Image, Select, message } from "antd";
 
 const CardParser = ({
   item,
@@ -21,17 +21,20 @@ const CardParser = ({
   const fetchCards = async () => {
     try {
       setLoading(true);
-      console.log("Item: ", item);
+      // console.log("Item: ", item);
       const response = await instance("/cards");
       if (response.data) {
         setCards(response.data);
         setCardsFetched(true);
         setLoading(false);
+        message.success("Cards fetched successfully");
       } else {
-        console.error("Error fetching card assets nn:", response.data.message);
+        // console.error("Error fetching card assets nn:", response.data.message);
+        message.error("Error fetching card assets");
       }
     } catch (error) {
-      console.error("Error fetching card assets:", error);
+      // console.error("Error fetching card assets:", error);
+      message.error("Error fetching card assets");
     }
   };
 
@@ -47,7 +50,7 @@ const CardParser = ({
     const selectedCard = JSON.parse(value);
 
     setSelectedCard(value);
-    console.log("Selected Card: ", selectedCard);
+    // console.log("Selected Card: ", selectedCard);
     onCardSelect({
       _mave: selectedCard,
       type: "card",

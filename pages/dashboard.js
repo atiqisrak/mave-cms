@@ -22,7 +22,7 @@ const Dashboard = () => {
   const router = useRouter();
 
   useEffect(() => {
-    
+
     // Check if a token is stored in localStorage when the component mounts
     const storedToken = localStorage.getItem("token");
     const users = localStorage.getItem("user");
@@ -30,8 +30,8 @@ const Dashboard = () => {
     if (storedToken && user_Parse) {
       setToken(storedToken);
       setUser(user_Parse);
-      console.log("User: ", user_Parse);
-      console.log("Token: ", storedToken);
+      // console.log("User: ", user_Parse);
+      // console.log("Token: ", storedToken);
     }
   }, []);
 
@@ -65,16 +65,16 @@ const Dashboard = () => {
         ) : null}
       </div>
       <div className="flexed-center">
-          {/* iframe */}
-          <iframe src={GOOGLE_ANALYTICS}
-          width="60%" 
-          height="900px" 
+        {/* iframe */}
+        <iframe src={GOOGLE_ANALYTICS}
+          width="60%"
+          height="900px"
           frameborder="0"
           style={{
             overflowX: 'hidden',
             overflowY: 'hidden',
           }}
-          ></iframe>
+        ></iframe>
       </div>
       <Orders />
     </>

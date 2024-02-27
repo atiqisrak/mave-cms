@@ -6,7 +6,6 @@ import ComponentParse from "./ComponentParser";
 const InnerSectionParser = ({ item }) => {
   return (
     <div>
-      {/* {console.log("Niil 101: ", item.data)} */}
       {/* {item?.data?.map((item, index) => (
         <section>
           {(() => {

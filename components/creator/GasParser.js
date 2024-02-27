@@ -37,8 +37,6 @@ const GasParser = ({ item }) => {
 
   return (
     <>
-      {/* <h1>Gas</h1>
-      {console.log("GasParser", gas)} */}
 
       {gas && editMode ? (
         <div>

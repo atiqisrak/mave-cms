@@ -24,12 +24,12 @@ const DealershipRequests = () => {
                 setDealers(response.data);
                 setLoading(false);
             } else {
-                console.log("Error: ", response);
+                // console.log("Error: ", response);
                 message.error("Error fetching data");
                 setLoading(false);
             }
         } catch (error) {
-            console.log("Error: ", error);
+            // console.log("Error: ", error);
             message.error("Error fetching data");
             setLoading(false);
         }
@@ -48,13 +48,13 @@ const DealershipRequests = () => {
                 setModalVisible(true);
                 setLoading(false);
             } else {
-                console.log("Error: ", response);
+                // console.log("Error: ", response);
                 message.error("Error fetching data");
                 setLoading(false);
             }
         }
         catch (error) {
-            console.log("Error: ", error);
+            // console.log("Error: ", error);
             message.error("Error fetching data");
             setLoading(false);
         }
@@ -69,13 +69,13 @@ const DealershipRequests = () => {
                 setModalVisible(true);
                 setLoading(false);
             } else {
-                console.log("Error: ", response);
+                // console.log("Error: ", response);
                 message.error("Error fetching data");
                 setLoading(false);
             }
         }
         catch (error) {
-            console.log("Error: ", error);
+            // console.log("Error: ", error);
             message.error("Error fetching data");
             setLoading(false);
         }
@@ -93,12 +93,12 @@ const DealershipRequests = () => {
                 setEditMode(false);
                 setLoading(false);
             } else {
-                console.log("Error: ", response);
+                // console.log("Error: ", response);
                 message.error("Error updating status");
                 setLoading(false);
             }
         } catch (error) {
-            console.log("Error: ", error);
+            // console.log("Error: ", error);
             message.error("Error updating status");
             setLoading(false);
         }
@@ -175,7 +175,6 @@ const DealershipRequests = () => {
     return (
         <div className="">
             <h1>All Dealers</h1>
-            {console.log("Dealers: ", dealers)}
 
             <div className="flexed-center" style={{
                 gap: "1em",
