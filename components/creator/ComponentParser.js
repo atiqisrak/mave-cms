@@ -10,7 +10,7 @@ import SliderParser from "./SliderParser";
 import GasParser from "./GasParser";
 import FooterParser from "./FooterParser";
 import MenuParser from "./MenuParser";
-import { Button } from "antd";
+import { Button, Popconfirm } from "antd";
 import EventParser from "./EventParser";
 import FormParser from "./FormParser";
 import { DeleteFilled } from "@ant-design/icons";
@@ -104,6 +104,17 @@ const ComponentParse = ({
             }
           />
         );
+      case "media":
+        return (
+          <MediaParser
+            item={item}
+            editMode={editMode}
+            onMediaSelect={onMediaSelect}
+            onUpdateComponent={(updatedComponent) =>
+              handleComponentChange(index, updatedComponent)
+            }
+          />
+        );
       case "press_release":
         return (
           <PressReleaseParser
@@ -121,17 +132,6 @@ const ComponentParse = ({
             item={item}
             editMode={editMode}
             onFooterSelect={onFooterSelect}
-            onUpdateComponent={(updatedComponent) =>
-              handleComponentChange(index, updatedComponent)
-            }
-          />
-        );
-      case "media":
-        return (
-          <MediaParser
-            item={item}
-            editMode={editMode}
-            onMediaSelect={onMediaSelect}
             onUpdateComponent={(updatedComponent) =>
               handleComponentChange(index, updatedComponent)
             }
@@ -210,53 +210,28 @@ const ComponentParse = ({
     <div>
       {console.log("Current Section ID: ", sectionData?.id)}
       {console.log("Current Section Data: ", sectionData?.data)}
-      {/* {section?.map((item, index) => ( */}
-      {/* {sectionData?.data?.map((item, index) => (
-        <section key={index}>
-          {
-            editMode && (
-              <Button
-                style={{
-                  position: "absolute",
-                  right: "-20px",
-                  marginTop: "20px",
-                  zIndex: "1000",
-                  color: "red",
-                }}
-                icon={<DeleteFilled />}
-                onClick={() => {
-                  console.log("Deleting component: ", item);
-                  console.log("Delete Index: ", index);
-                  onDeleteComponent(item, index);
-                }}
-              />
-            )
-          }
-          {renderComponent(item, index)}
 
-        </section>
-      ))} */}
-      {/* Render Section data and assign delete button beside each element to delete component and send section id also */}
       {sectionData?.data?.map((item, index) => (
         <section key={index}>
           {
             editMode && (
-              <Button
-                style={{
-                  position: "absolute",
-                  right: "-20px",
-                  marginTop: "20px",
-                  zIndex: "1000",
-                  color: "red",
-                }}
-                icon={<DeleteFilled />}
-                onClick={() => {
-                  // console.log("nn Deleting component: ", item);
-                  console.log("nn Delete Index: ", index);
-                  console.log("nn Section ID: ", sectionData?.id);
-                  onDeleteComponent({ componentIndex: index, sectionId: sectionData?.id });
-                }}
-              />
+              <Popconfirm
+                title="Are you sure to delete this component?"
+                onConfirm={() => onDeleteComponent({ componentIndex: index, sectionId: sectionData?.id })}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  style={{
+                    position: "absolute",
+                    right: "-20px",
+                    marginTop: "20px",
+                    zIndex: "1000",
+                    color: "red",
+                  }}
+                  icon={<DeleteFilled />}
+                />
+              </Popconfirm>
             )
           }
           {renderComponent(item, index)}

@@ -57,7 +57,7 @@ export default function MenuItems() {
       if (response.data) {
         setMenuItems(response.data);
         // console.log("Menu Items: ", response.data);
-        message.success("Menu items fetched successfully");
+        // message.success("Menu items fetched successfully");
         setLoading(false);
       } else {
         // console.error("Error fetching menu items:", response.data.message);
@@ -73,7 +73,8 @@ export default function MenuItems() {
     fetchMenuItems();
   }, [isAddMenuItemOpen, editingItemId]);
 
-  const handleEdit = (id) => {
+  const handleEdit = (id, e) => {
+    e.preventDefault();
     // Find the menu item being edited
     const menuItemToEdit = menuItems.find((menuItem) => menuItem.id === id);
 
@@ -324,26 +325,27 @@ export default function MenuItems() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 style={{
-                  width: "16vw",
+                  width: "20vw",
                   height: "2.8em",
                   borderRadius: "10px",
                   fontSize: "1.2em",
                   padding: "0 1em",
-                  marginLeft: "1em",
+                  margin: "0 1em",
                 }}
               />
               {/* Reset Button */}
               <Button
-                type="primary"
-                style={{
-                  backgroundColor: "var(--theme)",
-                  borderColor: "var(--theme)",
-                  color: "white",
-                  borderRadius: "10px",
-                  fontSize: "1.2em",
-                  marginLeft: "1em",
-                  paddingBottom: "1.8em",
-                }}
+                danger
+                // style={{
+                //   backgroundColor: "var(--theme)",
+                //   borderColor: "var(--theme)",
+                //   color: "white",
+                //   borderRadius: "10px",
+                //   fontSize: "1.2em",
+                //   marginLeft: "1em",
+                //   paddingBottom: "1.8em",
+                // }}
+                disabled={searchTerm === ""}
                 onClick={() => handleReset()}
                 icon={<CloseCircleOutlined />}
               >
@@ -566,6 +568,7 @@ export default function MenuItems() {
                     <>
                       <Button
                         type="primary"
+                        htmlType="button"
                         style={{
                           backgroundColor: "var(--theme)",
                           borderColor: "var(--theme)",
@@ -575,7 +578,7 @@ export default function MenuItems() {
                           marginRight: "1em",
                           paddingBottom: "1.8em",
                         }}
-                        onClick={() => handleEdit(menuItem.id)}
+                        onClick={(e) => handleEdit(menuItem.id, e)}
                         icon={<EditOutlined />}
                       >
                         Edit

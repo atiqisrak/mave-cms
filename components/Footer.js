@@ -217,42 +217,49 @@ const Footer = () => {
     setSelectedMedia("");
   };
 
-  // footer get respose data area
+  const getFooters = async () => {
+    try {
+      setIsLoading(true);
+      const res = await instance.get("/footers");
+      setFooterData(res.data);
+      setIsLoading(false);
+    }
+    catch (error) {
+      message.error("Something went wrong");
+    }
+  };
+
+  const getMenus = async () => {
+    try {
+      setIsLoading(true);
+      const res = await instance.get("/menus");
+      setMenuData(res.data);
+      setIsLoading(false);
+    } catch (error) {
+      message.error("Something went wrong");
+    }
+  }
+
+  const getMedia = async () => {
+    try {
+      setIsLoading(true);
+      const res = await instance.get("/media");
+      setMediaList(res.data);
+      setIsLoading(false);
+    } catch (error) {
+      message.error("Something went wrong");
+    }
+  }
+
   useEffect(() => {
-    setIsLoading(true);
-    const getData = async () => {
-      try {
-        const res = await instance.get("/footers");
-        setFooterData(res.data);
-        setIsLoading(false);
-      } catch (error) { }
-    };
-    getData();
+    getFooters();
+    getMenus();
+    getMedia();
   }, []);
-  // footer get respose data area
-  useEffect(() => {
-    setIsLoading(true);
-    const getMenu = async () => {
-      try {
-        // const res = await instance.get("/menus");
-        setMenuData(res.data);
-        setIsLoading(false);
-      } catch (error) { }
-    };
-    getMenu();
-  }, []);
-  // footer get respose data area
-  useEffect(() => {
-    setIsLoading(true);
-    const getMenu = async () => {
-      try {
-        const res = await instance.get("/media");
-        setMediaList(res.data);
-        setIsLoading(false);
-      } catch (error) { }
-    };
-    getMenu();
-  }, []);
+
+
+
+
   // footer post respose data area
   const handlePost = async () => {
     try {
@@ -265,7 +272,11 @@ const Footer = () => {
           const res = await instance.get("/footers");
           setFooterData(res.data);
           setIsLoading(false);
-        } catch (error) { }
+
+        } catch (error) {
+          message.error("Something went wrong");
+        }
+
       };
       getData();
     } catch (error) {
@@ -276,18 +287,14 @@ const Footer = () => {
   // footer update respose data area
   const handleUpdate = async () => {
     try {
+      setIsLoading(true);
       // Send a put request to the API endpoint
       const res = await instance.put(`/footers/${id}`, formData);
       message.success("Footer Updated successfully");
       setData(res.data);
-      const getData = async () => {
-        try {
-          const res = await instance.get("/footers");
-          setFooterData(res.data);
-          setIsLoading(false);
-        } catch (error) { }
-      };
-      getData();
+      getFooters();
+      setIsLoading(false);
+      toggleCollapse(id);
     } catch (error) {
       // Handle errors, e.g., display an error message or log the error
       console.error("Error deleting data:", error);
@@ -505,6 +512,7 @@ const Footer = () => {
                       <br />
                       <div className="content">
                         <h3>Column2 Menu:</h3>
+                        {console.log("Menu List: ", menuData)}
                         <Select
                           showSearch
                           // mode="multiple"
@@ -865,7 +873,7 @@ const Footer = () => {
                     }}
                     onClick={() => toggleCollapse(items.id, items)}
                   >
-                    {isCollapsed && id === items.id ? "Edit" : "Edit"}
+                    {isCollapsed && id === items.id ? "Edit" : "Update"}
                   </Button>
                 </div>
 
