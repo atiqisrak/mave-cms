@@ -124,6 +124,7 @@ const CardGridView = ({
     return (
         <div>
             <Row gutter={[16, 16]}>
+                {console.log("Card Data gg: ", cardData)}
                 {cardData?.map((card) => (
                     <Col xs={24} sm={12} md={8} lg={6} key={card.id}>
                         <div style={{

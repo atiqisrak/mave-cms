@@ -198,7 +198,6 @@ export default function SiteContent({ children }) {
             </Menu>
           </div>
         </div>
-
         {creatorMode == false ? (
           <Sider
             trigger={null}

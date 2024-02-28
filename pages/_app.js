@@ -25,6 +25,10 @@ function MyApp({ Component, pageProps }) {
       <ContextProvider>
         <Site />
         <Component {...pageProps} />
+
+        <footer className="mave-footer">
+          <p>© 2024 <a href="https://www.ethertech.ltd" target="_blank" rel="noopener noreferrer">Ether Technologies</a> | All rights reserved | Powered by <a href="https://www.webable.digital" target="_blank" rel="noopener noreferrer">Webable Digital</a></p>
+        </footer>
       </ContextProvider>
     </>
   );

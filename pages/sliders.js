@@ -84,7 +84,7 @@ const Sliders = () => {
         if (response.data) {
           setSliders(response.data);
           // console.log("Media Assets: ", response.data);
-          message.success("Sliders fetched successfully");
+          // message.success("Sliders fetched successfully");
           setLoading(false);
         } else {
           // console.error("Error fetching media assets:", response.data.message);
@@ -121,10 +121,7 @@ const Sliders = () => {
       const response = await instance.delete(`/sliders/${id}`);
 
       if (response?.data) {
-        api.info({
-          message: `${response?.data?.message}`,
-          top,
-        });
+
         setResponseData(response?.data);
         message.success("Slider deleted successfully");
         setLoading(false);
@@ -159,10 +156,11 @@ const Sliders = () => {
       );
       if (response.status === 200) {
         if (response?.data) {
-          api.info({
-            message: `${response?.data?.message}`,
-            top,
-          });
+          // api.info({
+          //   message: `${response?.data?.message}`,
+          //   top,
+          // });
+          message.success("Slider updated successfully");
           setResponseData(response);
         }
         setEditingItemId(null);
