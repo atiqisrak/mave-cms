@@ -1,4 +1,4 @@
-import { AppstoreOutlined, ClockCircleOutlined, FilterOutlined, FontColorsOutlined, PlusCircleOutlined, SortAscendingOutlined, UnorderedListOutlined } from "@ant-design/icons";
+import { AppstoreOutlined, ClockCircleOutlined, FilterOutlined, FontColorsOutlined, PlusCircleOutlined, SortAscendingOutlined, SyncOutlined, UnorderedListOutlined } from "@ant-design/icons";
 import { Alert, Button, Col, Input, Modal, Pagination, Row, Select, message } from "antd";
 import React, { useEffect, useState } from "react";
 import instance from "../axios";
@@ -47,7 +47,7 @@ const Cards = () => {
 
   useEffect(() => {
     fetchCards();
-  }, [setCardsData, setLoading]);
+  }, [setCardsData, setLoading, setIsCreateCardFormVisible]);
 
   // Pages names
   const pageNames = pages?.map((page) => ({
@@ -61,8 +61,11 @@ const Cards = () => {
   };
 
   const handleCreateCard = (createdCard) => {
+    setLoading(true);
     setCardsData([...cardsData, createdCard]);
-    setIsCreateCardFormVisible(false);
+    message.success("Card created successfully");
+    // setIsCreateCardFormVisible(false);
+    setLoading(false);
   };
 
   // Sort Cards
@@ -207,6 +210,19 @@ const Cards = () => {
                   >
                     Grid View
                   </Button>
+
+                  <Button
+                    icon={<SyncOutlined />}
+                    style={{
+                      backgroundColor: "var(--themes)",
+                      color: "white",
+                      position: "absolute",
+                      right: "10%",
+                    }}
+                    onClick={fetchCards}
+                  >
+                    Sync
+                  </Button>
                 </Row>
 
                 {/* Filter */}
@@ -265,7 +281,9 @@ const Cards = () => {
                       onCreateCard={handleCreateCard}
                       onCancel={toggleCreateCardForm}
                       media={media}
-                      pages={pageNames}
+                      pages={pages}
+                      fetchCards={fetchCards}
+                      setIsCreateCardFormVisible={setIsCreateCardFormVisible}
                     />
                   </Col>
                 )}

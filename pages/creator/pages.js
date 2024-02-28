@@ -6,7 +6,7 @@ import {
   EditOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
-import { Button, Card, Row, Col, Input, Modal, message } from "antd";
+import { Button, Card, Row, Col, Input, Modal, message, Popconfirm } from "antd";
 import React, { useState, useEffect } from "react";
 import instance from "../../axios";
 import { useRouter } from "next/router";
@@ -122,6 +122,30 @@ const Pages = () => {
   const handleCancelEdit = () => {
     setEditingItemId(null);
   };
+
+  // Page name change
+  const [pageNameEn, setPageNameEn] = useState("");
+  const [pageNameBn, setPageNameBn] = useState("");
+  const [editPageName, setEditPageName] = useState(false);
+
+  const handleEditPageName = async ({ id, prevpen, prevpbn }) => {
+    try {
+      const response = await instance.put(`/pages/${id}`, {
+        page_name_en: pageNameEn ? pageNameEn : prevpen,
+        page_name_bn: pageNameBn ? pageNameBn : prevpbn,
+      });
+      if (response.status === 200) {
+        message.success("Page name updated successfully");
+        setEditPageName(false);
+        fetchPages();
+      } else {
+        console.error("Error updating page name:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error updating page name:", error);
+    }
+  }
+
 
   return (
     <div className="ViewContainer">
@@ -367,13 +391,133 @@ const Pages = () => {
                               </>
                             )}
                             <div
-                              className="pageContainer"
+                              className="pageContainer flexed-center"
                               style={{
                                 padding: "2em 0",
+                                gap: "2em",
                               }}
                             >
-                              <h1>Page Name: {page.page_name_en}</h1>
-                              <h1>Page Name (Bangla): {page.page_name_bn}</h1>
+                              <div>
+                                <div style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  gap: "2em",
+                                  marginBottom: "2em"
+                                }}>
+                                  {
+                                    editPageName ? (
+                                      <Input
+                                        allowClear
+                                        defaultValue={page.page_name_en}
+                                        placeholder={page.page_name_en}
+                                        value={pageNameEn}
+                                        onChange={(e) =>
+                                          setPageNameEn(e.target.value)
+                                        }
+                                        style={{
+                                          width: "16vw",
+                                          height: "2.8em",
+                                          borderRadius: "10px",
+                                          fontSize: "1.2em",
+                                          padding: "0 1em",
+                                        }}
+                                      />
+                                    ) : (
+                                      <h1>Page Name: {page.page_name_en}</h1>)
+                                  }
+                                </div>
+
+                                <div style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  gap: "2em"
+                                }}>
+                                  {
+                                    editPageName ? (
+                                      <Input
+                                        allowClear
+                                        defaultValue={page.page_name_bn}
+                                        placeholder={page.page_name_bn}
+                                        value={pageNameBn}
+                                        onChange={(e) =>
+                                          setPageNameBn(e.target.value)
+                                        }
+                                        style={{
+                                          width: "16vw",
+                                          height: "2.8em",
+                                          borderRadius: "10px",
+                                          fontSize: "1.2em",
+                                          padding: "0 1em",
+                                        }}
+                                      />
+                                    ) : (
+                                      <h1>Page Name: {page.page_name_bn}</h1>)
+                                  }
+                                </div>
+                              </div>
+                              {
+                                editPageName ? (
+                                  <div>
+                                    <Popconfirm
+                                      title="Are you sure you want to edit this page name?"
+                                      onConfirm={() => handleEditPageName
+                                        (
+                                          {
+                                            id: page?.id,
+                                            prevpen: page?.page_name_en,
+                                            prevpbn: page?.page_name_bn
+                                          }
+                                        )
+                                      }
+                                      okText="Yes"
+                                      cancelText="No"
+                                    >
+                                      <Button
+                                        type="primary"
+                                        icon={<CheckCircleFilled />}
+                                        style={{
+                                          backgroundColor: "green",
+                                          borderColor: "green",
+                                          color: "white",
+                                          borderRadius: "10px",
+                                          fontSize: "1.2em",
+                                          paddingBottom: "1.8em",
+                                          marginRight: "1em",
+                                        }}>
+                                        Submit
+                                      </Button>
+                                    </Popconfirm>
+
+                                    <Button
+                                      icon={<CloseCircleFilled />}
+                                      danger
+                                      onClick={() =>
+                                        setEditPageName(!editPageName)
+                                      } />
+                                  </div>
+
+                                ) : (
+                                  <Button
+                                    type="primary"
+                                    icon={<EditOutlined />}
+                                    style={{
+                                      backgroundColor: "var(--themes)",
+                                      borderColor: "var(--themes)",
+                                      color: "white",
+                                      borderRadius: "10px",
+                                      fontSize: "1.2em",
+                                      paddingBottom: "1.8em",
+                                    }}
+                                    onClick={() =>
+                                      setEditPageName(!editPageName)
+                                    }>
+                                    Edit Page Name
+                                  </Button>
+                                )
+                              }
+
                             </div>
                           </center>
                         </div>
