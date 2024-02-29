@@ -1188,7 +1188,7 @@ const Creator = () => {
                                 setCanvas(true);
                               }}
                             >
-                              Add Componentz
+                              Add Component
                             </Button>
                             <div>
                               <Button
@@ -1237,7 +1237,7 @@ const Creator = () => {
                                 }}
                                 icon={<CloseCircleFilled />}
                               >
-                                Cancel Editz
+                                Cancel Edit
                               </Button>
                             </div>
                           </div>

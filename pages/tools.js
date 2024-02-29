@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ToolsMarketplace from "../components/tools/ToolsMarketplace";
 import { Radio } from "antd";
+import InfluencerTemplate from "../components/tools/InfluencerTemplate";
 // import ImageOptimizer from "../components/tools/ImageOptimizer";
 
 
@@ -25,8 +26,11 @@ const Tools = () => {
                     </Radio.Group>
                 </center>
                 {
-                    platinumUser ? <ToolsMarketplace /> : <center><h1>Coming soon...</h1></center>
+                    // platinumUser ? <ToolsMarketplace /> : <center><h1>Coming soon...</h1></center>
+                    platinumUser ? <center><h1>Coming soon...</h1></center> : <center><h1>Coming soon...</h1></center>
                 }
+
+                {/* <InfluencerTemplate /> */}
             </div>
         </div>
     );

@@ -1,0 +1,41 @@
+[
+    {
+        "version": "0.1.93",
+        "date": "2024-02-05",
+        "changes": {
+            "Feature": [
+                "User needs to refresh page after adding component to see the edit or delete Section option",
+                "When creating a new page, user needs to manually refresh the page to access/expand the newly made Page."
+            ],
+            "BugFix": [
+                "When Viewing Navbar nested Menus in cms, all the nested menus become opened and can only be closed by pressing the menu of the 1st Nav bar",
+                "When creating new Navbar, it gets auto submitted when the menu is selected/clicked.",
+                "User Cannot Delete Pages.",
+                "When adding Images in a Section, User does not see media library but instead a drop down menu with Image IDs.",
+                "When adding Forms in a Section, the drop down menu shows no data.",
+                "When adding Events in a Section, the drop down menu shows no data.",
+                "After Editing a Section, a new section is created but only visually created.",
+                "After creating a card in a section, if User goes to Edit Mode and changes the card from the drop down menu, User gets redirected to a Application error page."
+            ]
+        }
+    },
+    {
+        "version": "0.1.94",
+        "date": "2024-02-10",
+        "changes": {
+            "Feature": [
+                "Need to Preview Media",
+                "Need to Preview Slider",
+                "Need to show 'Page Name' along with 'Page ID' in the pages list."
+            ],
+            "BugFix": [
+                "Menu items are premade, addtional menu items cannot be created",
+                "In the Navbar section, user is not able to update the menu of the Navbar.",
+                "Card-> Create New -> Select Media -> Unselect Media Option is not working.",
+                "Edit Section -> Add Component is not working",
+                "Edit Section -> Add Section Not working",
+                "Edit Section -> Updating one paragraph changes all other paragraphs in same section"
+            ]
+        }
+    }
+]
