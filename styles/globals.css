@@ -382,3 +382,7 @@ a:hover {
 .mave-footer a:hover{
   color: var(--themes);
 }
+
+.content{
+  margin: 3em 0;
+}

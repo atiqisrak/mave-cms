@@ -66,8 +66,6 @@ const Pages = () => {
         favicon_id: 10,
       });
       if (response.status === 201) {
-        const newPage = response.data;
-        setPages((prevPages) => [...prevPages, newPage]);
         message.success("New page added successfully");
         closeAddNewPageCard();
         fetchPages();
