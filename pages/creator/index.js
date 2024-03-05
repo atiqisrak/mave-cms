@@ -971,7 +971,7 @@ const Creator = () => {
                         )}
                       </div>
 
-                      {/* Edit Section bluff */}
+                      {/* Edit Section main */}
                       <ComponentParse
                         section={section?.data}
                         editMode={editMode && editedSectionId == section?._id}

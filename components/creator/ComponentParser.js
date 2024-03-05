@@ -16,8 +16,8 @@ import FormParser from "./FormParser";
 import { DeleteFilled } from "@ant-design/icons";
 
 const ComponentParse = ({
-  section,
   sectionId,
+  section,
   editMode,
   setEditMode,
   onNavbarSelect,
@@ -39,49 +39,25 @@ const ComponentParse = ({
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
   const handleComponentChange = (index, updatedComponent) => {
     if (onUpdateSectionData) {
-      // console.log("updatedComponent", updatedComponent);
+      console.log("updatedComponent", updatedComponent);
       const updatedSection = section ? [...section] : [];
       updatedSection[index] = updatedComponent;
 
-      // console.log("Updated Section: ", updatedSection);
+      console.log("Updated Section: ", updatedSection);
       onUpdateSectionData(updatedSection);
       setNewData(updatedSection);
       setSectionData(updatedSection);
     }
   };
 
-  // const sectionData = section + sectionId;
   const sectionData =
   {
     id: sectionId,
     data: section,
   };
 
-
   const renderComponent = (item, index) => {
     switch (item?.type) {
-      case "title":
-        return (
-          <TitleParser
-            item={item}
-            editMode={editMode}
-            onTitleChange={(value, type) => onTitleChange(index, value, type)}
-            onUpdateComponent={(updatedComponent) =>
-              handleComponentChange(index, updatedComponent)
-            }
-          />
-        );
-      case "description":
-        return (
-          <DescriptionParser
-            item={item}
-            editMode={editMode}
-            onDescriptionChange={(value, type) => onDescriptionChange(index, value, type)}
-            onUpdateComponent={(updatedComponent) =>
-              handleComponentChange(index, updatedComponent)
-            }
-          />
-        );
       case "navbar":
         return (
           <NavbarParser
@@ -96,6 +72,8 @@ const ComponentParse = ({
       case "card":
         return (
           <CardParser
+            niloy={index}
+            sectionId={section?._id}
             item={item}
             editMode={editMode}
             onCardSelect={onCardSelect}
@@ -104,12 +82,27 @@ const ComponentParse = ({
             }
           />
         );
-      case "media":
+      case "title":
         return (
-          <MediaParser
+          <TitleParser
+            key={index}
             item={item}
             editMode={editMode}
-            onMediaSelect={onMediaSelect}
+            onTitleChange={(value, type) => onTitleChange(index, value, type)}
+            onUpdateComponent={(updatedComponent) =>
+              handleComponentChange(index, updatedComponent)
+            }
+          />
+
+        );
+      case "description":
+        return (
+          <DescriptionParser
+            key={index}
+            item={item}
+            editMode={editMode}
+            setEditMode={setEditMode}
+            onDescriptionChange={(value, type) => onDescriptionChange(index, value, type)}
             onUpdateComponent={(updatedComponent) =>
               handleComponentChange(index, updatedComponent)
             }
@@ -132,6 +125,17 @@ const ComponentParse = ({
             item={item}
             editMode={editMode}
             onFooterSelect={onFooterSelect}
+            onUpdateComponent={(updatedComponent) =>
+              handleComponentChange(index, updatedComponent)
+            }
+          />
+        );
+      case "media":
+        return (
+          <MediaParser
+            item={item}
+            editMode={editMode}
+            onMediaSelect={onMediaSelect}
             onUpdateComponent={(updatedComponent) =>
               handleComponentChange(index, updatedComponent)
             }
@@ -190,28 +194,29 @@ const ComponentParse = ({
             }
           />
         );
+
       case "form":
         return (
-          <FormParser
-            item={item}
-            editMode={editMode}
-            onFormSelect={onFormSelect}
-            onUpdateComponent={(updatedComponent) =>
-              handleComponentChange(index, updatedComponent)
-            }
-          />
+          <div style={{ display: "flex" }}>
+            <FormParser
+              item={item}
+              editMode={editMode}
+              onFormSelect={onFormSelect}
+              onUpdateComponent={(updatedComponent) =>
+                handleComponentChange(index, updatedComponent)
+              }
+            />
+          </div>
         );
       default:
         return <h1>{item.type}</h1>;
     }
+
   };
 
   return (
     <div>
-      {console.log("Current Section ID: ", sectionData?.id)}
-      {console.log("Current Section Data: ", sectionData?.data)}
-
-      {sectionData?.data?.map((item, index) => (
+      {section && sectionData?.data?.map((item, index) => (
         <section key={index}>
           {
             editMode && (
@@ -235,7 +240,6 @@ const ComponentParse = ({
             )
           }
           {renderComponent(item, index)}
-
         </section>
       ))}
     </div>
