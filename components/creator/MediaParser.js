@@ -3,7 +3,7 @@ import instance from "../../axios";
 import { Button, Image, Modal, Pagination, Select, message } from "antd";
 import SingleMediaSelect from "../SingleMediaSelect";
 
-const MediaParser = ({ item, editMode, onMediaSelect }) => {
+const MediaParser = ({ item, editMode, onMediaSelect, setMediaId }) => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
   const { Option } = Select;
   const [loading, setLoading] = useState(false);
@@ -20,6 +20,7 @@ const MediaParser = ({ item, editMode, onMediaSelect }) => {
       setLoading(true);
       const response = await instance("/media");
       if (response?.data) {
+        // console.log('response',response)
         setMedias(response?.data);
         setTotalMediaAssets(response?.data?.length);
         // console.log("TotalMediaAssets: ", setTotalMediaAssets);
@@ -36,7 +37,8 @@ const MediaParser = ({ item, editMode, onMediaSelect }) => {
     }
   };
 
-  const handleClick = () => {
+  const handleClick = (e) => {
+    setMediaId(e);
     try {
       setLoading(true);
       fetchMedias();
@@ -56,8 +58,10 @@ const MediaParser = ({ item, editMode, onMediaSelect }) => {
   // };
 
   const handleMediaChange = (value) => {
+    // console.log('our medias',medias)
     const selectedMedia = medias.find((media) => media.id === value);
     setSelectedMedia(value);
+    // console.log("selectedMedia", selectedMedia);
     onMediaSelect({ _mave: selectedMedia, type: "media", id: value });
   };
 
@@ -98,7 +102,7 @@ const MediaParser = ({ item, editMode, onMediaSelect }) => {
               backgroundColor: "var(--themes)",
             }}
             onClick={() => {
-              handleClick();
+              handleClick(item);
             }}
           >
             Select Media
