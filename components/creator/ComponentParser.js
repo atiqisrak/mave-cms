@@ -35,23 +35,23 @@ const ComponentParse = ({
   setNewData,
   setSectionData,
   onDeleteComponent,
+  setMediaId,
 }) => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
+  console.log("sdfgsdfgsdfg: ");
   const handleComponentChange = (index, updatedComponent) => {
     if (onUpdateSectionData) {
       console.log("updatedComponent", updatedComponent);
       const updatedSection = section ? [...section] : [];
       updatedSection[index] = updatedComponent;
 
-      console.log("Updated Section: ", updatedSection);
       onUpdateSectionData(updatedSection);
       setNewData(updatedSection);
       setSectionData(updatedSection);
     }
   };
 
-  const sectionData =
-  {
+  const sectionData = {
     id: sectionId,
     data: section,
   };
@@ -93,7 +93,6 @@ const ComponentParse = ({
               handleComponentChange(index, updatedComponent)
             }
           />
-
         );
       case "description":
         return (
@@ -102,7 +101,9 @@ const ComponentParse = ({
             item={item}
             editMode={editMode}
             setEditMode={setEditMode}
-            onDescriptionChange={(value, type) => onDescriptionChange(index, value, type)}
+            onDescriptionChange={(value, type) =>
+              onDescriptionChange(index, value, type)
+            }
             onUpdateComponent={(updatedComponent) =>
               handleComponentChange(index, updatedComponent)
             }
@@ -136,6 +137,7 @@ const ComponentParse = ({
             item={item}
             editMode={editMode}
             onMediaSelect={onMediaSelect}
+            setMediaId={setMediaId}
             onUpdateComponent={(updatedComponent) =>
               handleComponentChange(index, updatedComponent)
             }
@@ -211,18 +213,22 @@ const ComponentParse = ({
       default:
         return <h1>{item.type}</h1>;
     }
-
   };
 
   return (
     <div>
-      {section && sectionData?.data?.map((item, index) => (
-        <section key={index}>
-          {
-            editMode && (
+      {section &&
+        sectionData?.data?.map((item, index) => (
+          <section key={index}>
+            {editMode && (
               <Popconfirm
                 title="Are you sure to delete this component?"
-                onConfirm={() => onDeleteComponent({ componentIndex: index, sectionId: sectionData?.id })}
+                onConfirm={() =>
+                  onDeleteComponent({
+                    componentIndex: index,
+                    sectionId: sectionData?.id,
+                  })
+                }
                 okText="Yes"
                 cancelText="No"
               >
@@ -237,11 +243,10 @@ const ComponentParse = ({
                   icon={<DeleteFilled />}
                 />
               </Popconfirm>
-            )
-          }
-          {renderComponent(item, index)}
-        </section>
-      ))}
+            )}
+            {renderComponent(item, index)}
+          </section>
+        ))}
     </div>
   );
 };

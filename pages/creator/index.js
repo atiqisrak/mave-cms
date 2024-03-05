@@ -51,7 +51,7 @@ const Creator = () => {
   const [creatorMode, setCreatorMode] = useState(null);
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
-  const [media, setMedia] = useState([]);
+  const [mediaId, setMediaId] = useState([]);
   const [menus, setMenus] = useState([]);
   const [navbars, setNavbars] = useState([]);
   const [sliders, setSliders] = useState([]);
@@ -218,8 +218,7 @@ const Creator = () => {
     newSectionComponents.pop();
     setNewSection(null);
     setSelectionMode(false);
-  }
-
+  };
 
   const fetchComponents = async (data) => {
     try {
@@ -262,6 +261,7 @@ const Creator = () => {
 
     // console.log("description", description);
     if (selectedType === "media") {
+      console.log("resultArray", resultArray);
       const resultArray = filteredArray.map(
         ({ id, file_name, file_path, file_type, tags, type }) => ({
           id,
@@ -410,7 +410,7 @@ const Creator = () => {
 
     return randomId;
   }
-  // console.log("newSectionComponents", newSectionComponents);
+  console.log("newSectionComponents", newSectionComponents);
   const sectionData = {
     _id: generateRandomId(16),
     type: "",
@@ -496,7 +496,6 @@ const Creator = () => {
     setShowPageData(showPageData);
   };
   const handleSave = async () => {
-
     const modifiedData = {
       slug: "home",
       type: "Page",
@@ -535,7 +534,7 @@ const Creator = () => {
   };
 
   const handleUpdateSectionData = (index, updatedComponent) => {
-    // console.log("Updated Section Data:", updatedComponent);
+    console.log("updatedComponent", updatedComponent);
     const updatedData = { ...sectionData };
     updatedData.data[index] = updatedComponent;
     sectionData = updatedData;
@@ -590,27 +589,38 @@ const Creator = () => {
   // console.log("updatedSection (Cards)", updatedSection);
 
   const handleMediaSelect = (sectionId, componentIndex, selectedMediaId) => {
-    console.log("Section to update: ", sectionId);
+    console.log("sectionId: ", sectionId);
     console.log("Index of the changed media: ", componentIndex);
+    console.log("showPageData: ", showPageData);
+    // console.log("kashfee", showPageData);
+    // const updatedPageData = showPageData.map((section) => {
+    //   if (section._id === editedSectionId) {
+    //     const updatedData = section.data.map((item) => {
+    //       if (item.type === sectionId.type) {
+    //         console.log("kashfee", sectionId);
+    //         return sectionId;
+    //       }
+    //       return item;
+    //     });
+    //     console.log("updatedPageData", updatedData);
+    //     return {
+    //       ...section,
+    //       data: updatedData,
+    //     };
+    //   }
+    //   return section;
+    // });
+
     const updatedPageData = showPageData.map((section) => {
       if (section._id === editedSectionId) {
-        // const updatedData = section.data.map((item) => {
-        //   if (item.type === selectedMediaId.type) {
-        //     return selectedMediaId;
-        //   }
-        //   return item;
-        // });
-
-        // return {
-        //   ...section,
-        //   data: updatedData,
-        // };
-        const updatedData = section.data.map((item, index) => {
-          if (index === componentIndex) {
-            return selectedMediaId;
+        const updatedData = section.data.map((item) => {
+          console.log("Replacing item with updated sectionId:", sectionId);
+          if (item.type === mediaId.type && item.id === mediaId.id) {
+            return sectionId;
           }
           return item;
         });
+        console.log("updatedPageData", updatedData);
         return {
           ...section,
           data: updatedData,
@@ -618,6 +628,27 @@ const Creator = () => {
       }
       return section;
     });
+    // const updatedPageData = showPageData.map((section) => {
+    //   if (section._id === editedSectionId) {
+    //     const updatedData = section.data.map((item) => {
+    //       console.log("Replacing item with id: ", item.id,sectionId.id);
+    //       if (item.id === sectionId.id) {
+    //         // Replace the item with the updated sectionId
+    //         return sectionId;
+    //       }
+    //       return item;
+    //     });
+
+    //     console.log("updatedPageData", updatedData);
+
+    //     return {
+    //       ...section,
+    //       data: updatedData,
+    //     };
+    //   }
+    //   return section;
+    // });
+    // console.log("updatedPageData", updatedPageData);
     setUpdatedSection(updatedPageData);
   };
   // console.log("updatedSection", updatedSection);
@@ -685,11 +716,9 @@ const Creator = () => {
         };
       }
       return section;
-    }
-    );
+    });
     setUpdatedSection(updatedPageData);
   };
-
 
   // console.log("updatedSection", updatedSection);
 
@@ -732,10 +761,9 @@ const Creator = () => {
         };
       }
       return section;
-    }
-    );
+    });
     setUpdatedSection(updatedPageData);
-  }
+  };
 
   const handleSliderSelect = (selectedSliderId) => {
     const updatedPageData = showPageData.map((section) => {
@@ -845,7 +873,6 @@ const Creator = () => {
     setUpdatedSection(updatedPageData);
   };
 
-
   // delete section and make a put request with updated data
   const handleDeleteSection = async (sectionId) => {
     const updatedPageData = showPageData.filter(
@@ -892,7 +919,6 @@ const Creator = () => {
       });
       setUpdatedSection(updatedPageData);
 
-
       console.log("updatedPageData: ", updatedPageData);
       // put request with updated page data
       const response = await instance.put(`/pages/${pid}`, {
@@ -905,8 +931,7 @@ const Creator = () => {
         fetchPageData();
         setEditedSectionId(xSectionId);
         setEditMode(true);
-      }
-      else {
+      } else {
         message.error(error.message);
       }
     } finally {
@@ -987,6 +1012,7 @@ const Creator = () => {
                         onPressReleaseSelect={handlePressReleaseSelect}
                         onFormSelect={handleFormSelect}
                         onFooterSelect={handleFooterSelect}
+                        setMediaId={setMediaId}
                         // dummy
                         onUpdateSectionData={handleUpdateSectionData}
                         sectionData={sectionUpdatedData}
@@ -1012,6 +1038,7 @@ const Creator = () => {
                             }}
                             onClick={() => {
                               setEditMode(false);
+                              console.log("one");
                               setEditedSectionId(null);
                               handleUpdateSectionData(index, sectionData);
                               handleSave();
@@ -1123,44 +1150,42 @@ const Creator = () => {
                       </div>
 
                       {/* Loading */}
-                      {
-                        loading ? (
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              flexDirection: "column",
-                            }}
-                          >
-                            <Spin spinning={loading} />
-                          </div>
-                        ) :
-                          (
-                            // Update Section Data
-                            <ComponentParse
-                              sectionId={section?._id}
-                              section={section?.data}
-                              editMode={editMode && editedSectionId == section?._id}
-                              onNavbarSelect={handleNavbarSelect}
-                              onCardSelect={handleCardSelect}
-                              onMediaSelect={handleMediaSelect}
-                              onEventSelect={handleEventSelect}
-                              onMenuSelect={handleMenuSelect}
-                              onTitleChange={handleTitleChange}
-                              onDescriptionChange={handleDescriptionChange}
-                              onSliderSelect={handleSliderSelect}
-                              onPressReleaseSelect={handleSliderSelect}
-                              onFooterSelect={handleFooterSelect}
-                              onFormSelect={handleFormSelect}
-                              onUpdateSectionData={handleUpdateSectionData}
-                              sectionData={sectionUpdatedData}
-                              setSectionData={setSectionUpdatedData}
-                              setNewData={setNewData}
-                              onDeleteComponent={handleDeleteComponent}
-                            />
-                          )
-                      }
+                      {loading ? (
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            flexDirection: "column",
+                          }}
+                        >
+                          <Spin spinning={loading} />
+                        </div>
+                      ) : (
+                        // Update Section Data
+                        <ComponentParse
+                          sectionId={section?._id}
+                          section={section?.data}
+                          editMode={editMode && editedSectionId == section?._id}
+                          onNavbarSelect={handleNavbarSelect}
+                          onCardSelect={handleCardSelect}
+                          onMediaSelect={handleMediaSelect}
+                          onEventSelect={handleEventSelect}
+                          onMenuSelect={handleMenuSelect}
+                          onTitleChange={handleTitleChange}
+                          onDescriptionChange={handleDescriptionChange}
+                          onSliderSelect={handleSliderSelect}
+                          onPressReleaseSelect={handleSliderSelect}
+                          onFooterSelect={handleFooterSelect}
+                          onFormSelect={handleFormSelect}
+                          onUpdateSectionData={handleUpdateSectionData}
+                          sectionData={sectionUpdatedData}
+                          setSectionData={setSectionUpdatedData}
+                          setNewData={setNewData}
+                          onDeleteComponent={handleDeleteComponent}
+                          setMediaId={setMediaId}
+                        />
+                      )}
 
                       {editedSectionId === section?._id && (
                         <center>
@@ -1208,7 +1233,7 @@ const Creator = () => {
                                 onClick={() => {
                                   setEditMode(false);
                                   setEditedSectionId(null);
-                                  // console.log("Sending: ", sectionData);
+                                  console.log("three");
                                   handleUpdateSectionData(index, sectionData);
                                   handleSave();
                                 }}
@@ -1317,14 +1342,16 @@ const Creator = () => {
                                         )
                                       }
                                     />
-                                    <div style={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      alignItems: "center",
-                                      padding: "1em 2em",
-                                      width: "30%",
-                                      gap: "2em",
-                                    }}>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        padding: "1em 2em",
+                                        width: "30%",
+                                        gap: "2em",
+                                      }}
+                                    >
                                       <Button
                                         style={{
                                           backgroundColor: "var(--theme)",
@@ -1374,13 +1401,15 @@ const Creator = () => {
                                         )
                                       }
                                     />
-                                    <div style={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      alignItems: "center",
-                                      padding: "1em 2em",
-                                      width: "30%",
-                                    }}>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        padding: "1em 2em",
+                                        width: "30%",
+                                      }}
+                                    >
                                       <Button
                                         style={{
                                           backgroundColor: "var(--theme)",
@@ -1515,13 +1544,15 @@ const Creator = () => {
                                         </Select.Option>
                                       ))}
                                     </Select>
-                                    <div style={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      alignItems: "center",
-                                      padding: "1em 2em",
-                                      width: "40%",
-                                    }}>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        padding: "1em 2em",
+                                        width: "40%",
+                                      }}
+                                    >
                                       <Button
                                         style={{
                                           backgroundColor: "var(--theme)",
@@ -1536,7 +1567,9 @@ const Creator = () => {
                                         danger
                                         onClick={() => destroy()}
                                         icon={<CloseOutlined />}
-                                      >Cancel</Button>
+                                      >
+                                        Cancel
+                                      </Button>
                                     </div>
                                   </div>
                                 );
@@ -1572,13 +1605,15 @@ const Creator = () => {
                                         </Select.Option>
                                       ))}
                                     </Select>
-                                    <div style={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      alignItems: "center",
-                                      padding: "1em 2em",
-                                      width: "40%",
-                                    }}>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        padding: "1em 2em",
+                                        width: "40%",
+                                      }}
+                                    >
                                       <Button
                                         style={{
                                           backgroundColor: "var(--theme)",
@@ -1593,7 +1628,9 @@ const Creator = () => {
                                         danger
                                         onClick={() => destroy()}
                                         icon={<CloseOutlined />}
-                                      >Cancel</Button>
+                                      >
+                                        Cancel
+                                      </Button>
                                     </div>
                                   </div>
                                 );
@@ -1625,44 +1662,47 @@ const Creator = () => {
                                           key={index}
                                           value={card.id}
                                         >
-                                          {
-                                            card && (
-                                              <div>
-                                                <Carousel
-                                                  autoplay
-                                                  style={{
-                                                    width: "100%",
-                                                    height: "100%",
-                                                  }}
-                                                >
-                                                  {
-                                                    card?.medias?.map((media, index) => (
-                                                      <div key={index}>
-                                                        <Image
-                                                          preview={false}
-                                                          src={`${MEDIA_URL}/${media?.file_path}`}
-                                                          alt={media?.file_path}
-                                                          width={"100%"}
-                                                          height={200}
-                                                          style={{ objectFit: "cover", borderRadius: 10 }}
-                                                        />
-                                                      </div>
-                                                    ))
-                                                  }
-                                                </Carousel>
-                                              </div>
-                                            )
-                                          }
+                                          {card && (
+                                            <div>
+                                              <Carousel
+                                                autoplay
+                                                style={{
+                                                  width: "100%",
+                                                  height: "100%",
+                                                }}
+                                              >
+                                                {card?.medias?.map(
+                                                  (media, index) => (
+                                                    <div key={index}>
+                                                      <Image
+                                                        preview={false}
+                                                        src={`${MEDIA_URL}/${media?.file_path}`}
+                                                        alt={media?.file_path}
+                                                        width={"100%"}
+                                                        height={200}
+                                                        style={{
+                                                          objectFit: "cover",
+                                                          borderRadius: 10,
+                                                        }}
+                                                      />
+                                                    </div>
+                                                  )
+                                                )}
+                                              </Carousel>
+                                            </div>
+                                          )}
                                         </Select.Option>
                                       ))}
                                     </Select>
-                                    <div style={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      alignItems: "center",
-                                      padding: "1em 2em",
-                                      width: "40%",
-                                    }}>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        padding: "1em 2em",
+                                        width: "40%",
+                                      }}
+                                    >
                                       <Button
                                         onClick={() => setSelectionMode(false)}
                                         style={{
@@ -1681,7 +1721,6 @@ const Creator = () => {
                                         Cancel
                                       </Button>
                                     </div>
-
                                   </div>
                                 );
                               case "card":
@@ -1716,13 +1755,15 @@ const Creator = () => {
                                         </Select.Option>
                                       ))}
                                     </Select>
-                                    <div style={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      alignItems: "center",
-                                      padding: "1em 2em",
-                                      width: "40%",
-                                    }}>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        padding: "1em 2em",
+                                        width: "40%",
+                                      }}
+                                    >
                                       <Button
                                         style={{
                                           backgroundColor: "var(--theme)",
@@ -1775,13 +1816,15 @@ const Creator = () => {
                                         </Select.Option>
                                       ))}
                                     </Select>
-                                    <div style={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      alignItems: "center",
-                                      padding: "1em 2em",
-                                      width: "40%",
-                                    }}>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        padding: "1em 2em",
+                                        width: "40%",
+                                      }}
+                                    >
                                       <Button
                                         style={{
                                           backgroundColor: "var(--theme)",
@@ -1825,22 +1868,26 @@ const Creator = () => {
                                         )
                                       }
                                     >
-                                      {fetchedComponent?.map((footer, index) => (
-                                        <Select.Option
-                                          key={index}
-                                          value={footer.id}
-                                        >
-                                          {footer.title_en}
-                                        </Select.Option>
-                                      ))}
+                                      {fetchedComponent?.map(
+                                        (footer, index) => (
+                                          <Select.Option
+                                            key={index}
+                                            value={footer.id}
+                                          >
+                                            {footer.title_en}
+                                          </Select.Option>
+                                        )
+                                      )}
                                     </Select>
-                                    <div style={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      alignItems: "center",
-                                      padding: "1em 2em",
-                                      width: "40%",
-                                    }}>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        padding: "1em 2em",
+                                        width: "40%",
+                                      }}
+                                    >
                                       <Button
                                         style={{
                                           backgroundColor: "var(--theme)",
@@ -1884,22 +1931,28 @@ const Creator = () => {
                                         )
                                       }
                                     >
-                                      {fetchedComponent?.map((press_release, index) => (
-                                        <Select.Option
-                                          key={index}
-                                          value={press_release.id}
-                                        >
-                                          {moment(press_release.created_at).format("Do MMMM YYYY")}
-                                        </Select.Option>
-                                      ))}
+                                      {fetchedComponent?.map(
+                                        (press_release, index) => (
+                                          <Select.Option
+                                            key={index}
+                                            value={press_release.id}
+                                          >
+                                            {moment(
+                                              press_release.created_at
+                                            ).format("Do MMMM YYYY")}
+                                          </Select.Option>
+                                        )
+                                      )}
                                     </Select>
-                                    <div style={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      alignItems: "center",
-                                      padding: "1em 2em",
-                                      width: "40%",
-                                    }}>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        padding: "1em 2em",
+                                        width: "40%",
+                                      }}
+                                    >
                                       <Button
                                         style={{
                                           backgroundColor: "var(--theme)",
@@ -1952,13 +2005,15 @@ const Creator = () => {
                                         </Select.Option>
                                       ))}
                                     </Select>
-                                    <div style={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      alignItems: "center",
-                                      padding: "1em 2em",
-                                      width: "40%",
-                                    }}>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        padding: "1em 2em",
+                                        width: "40%",
+                                      }}
+                                    >
                                       <Button
                                         style={{
                                           backgroundColor: "var(--theme)",
@@ -2011,13 +2066,15 @@ const Creator = () => {
                                         </Select.Option>
                                       ))}
                                     </Select>
-                                    <div style={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      alignItems: "center",
-                                      padding: "1em 2em",
-                                      width: "40%",
-                                    }}>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        padding: "1em 2em",
+                                        width: "40%",
+                                      }}
+                                    >
                                       <Button
                                         style={{
                                           backgroundColor: "var(--theme)",
