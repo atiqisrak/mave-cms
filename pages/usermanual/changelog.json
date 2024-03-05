@@ -1,5 +1,14 @@
 [
     {
+        "version": "v 0.2.3",
+        "date": "2024-03-04",
+        "changes": {
+            "BugFix": [
+                "Creating new page will no longer change other pages names"
+            ]
+        }
+    },
+    {
         "version": "0.1.93",
         "date": "2024-02-05",
         "changes": {

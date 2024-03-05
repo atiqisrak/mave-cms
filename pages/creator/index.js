@@ -440,8 +440,8 @@ const Creator = () => {
     page_name_en: "Home",
     page_name_bn: "হোম",
     head: {
-      meta_title: "Home Page",
-      meta_description: "This is a home page of the MAVE CMS",
+      meta_title: "MAVE CMS",
+      meta_description: "MAVE CMS",
       meta_keywords: ["home", "Page", "CMS", "Builder"],
     },
     body: postDataBody,
