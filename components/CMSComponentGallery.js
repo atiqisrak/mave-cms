@@ -426,23 +426,6 @@ const CMSComponentGallery = ({ children, router }) => {
                     </Menu>
                     {children}
                 </div>
-                {/* <p style={{
-            color: "var(--gray)",
-            fontWeight: 300,
-            textAlign: 'center',
-            fontSize: '1em',
-            marginTop: '20%',
-            position: 'absolute',
-            bottom: "30px",
-            width: '100%',
-            textOverflow: "clip"
-          }}>Made with ❤️ by <br />
-          <a href="https://www.ethertech.ltd/" 
-          target="_blank" 
-          style={{ color: 'white', textDecoration: 'underline' }}>
-            <strong>Ether Technologies</strong></a>
-          </p> */}
-
             </Sider>
         </>
     )

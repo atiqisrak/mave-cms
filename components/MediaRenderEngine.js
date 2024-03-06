@@ -63,6 +63,15 @@ const MediaRenderEngine = ({ item }) => {
                 mediaType === "application" && (
                     <a href={mediaUrl} target="_blank" rel="noreferrer">
                         {item?.title_en}
+                        <iframe
+                            src={`${mediaUrl}`}
+                            type={item?.file_type}
+                            style={{
+                                width: "300px",
+                                height: "40vh",
+                            }}
+                            title="document"
+                        />
                     </a>
                 )
             }

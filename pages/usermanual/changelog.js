@@ -14,9 +14,11 @@ const ChangelogItem = ({ version, date, changes }) => {
         }>
             {console.log("Change: ", changes)}
             {/* <center> */}
-            <h2>Version {version} <span style={{
+            <h2>Version {version}
+                {/* <span style={{
                 color: "var(--theme)"
-            }}>({date})</span></h2>
+            }}>({date})</span> */}
+            </h2>
             {/* </center> */}
             <ul style={{
                 display: "flex",
@@ -48,6 +50,8 @@ const ChangelogItem = ({ version, date, changes }) => {
                                 </strong>
                                 <span style={{
                                     padding: "0 1em",
+                                    textWrap: "wrap",
+                                    wordWrap: "break-word",
                                 }}>
                                     {change}
                                 </span>
@@ -72,20 +76,63 @@ const Changelog = () => {
 
     return (
         <div className="ViewContainer ViewContentContainer">
-            <h1>Changelog</h1>
+            <h1 style={{
+                marginBottom: "2em",
+            }}>Changelog</h1>
             {
                 changeLogs?.map((change, index) => {
                     return (
-                        <ChangelogItem
-                            key={index}
-                            version={change.version}
-                            date={change.date}
-                            changes={change.changes}
-                        />
+                        <div style={{
+                            gap: "2em",
+                            display: "grid",
+                            gridTemplateColumns: "1fr 9fr",
+                        }}>
+                            <div style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                            }}>
+                                <div style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    border: "2px solid var(--theme)",
+                                    color: "var(--themes)",
+                                    borderRadius: "50%",
+                                    width: "150px",
+                                    height: "150px",
+                                    backgroundColor: "white",
+                                    zIndex: "1",
+                                }}>
+                                    <span>{change.date}</span>
+                                </div>
+                                {
+                                    index !== changeLogs.length - 1 && (
+                                        <div
+                                            style={{
+                                                // position: "absolute",
+                                                // left: "14%",
+                                                // marginTop: "130px",
+                                                borderLeft: "2px solid var(--theme)",
+                                                // height: "50px"
+                                                height: "100%",
+                                            }}
+                                        />
+                                    )
+                                }
+                            </div>
+                            {console.log("Change length: ", change.changes.length)}
+                            <ChangelogItem
+                                key={index}
+                                version={change.version}
+                                date={change.date}
+                                changes={change.changes}
+                            />
+                        </div>
+
                     );
                 })
             }
-
             {/* JSON Structure */}
             <pre
                 style={{

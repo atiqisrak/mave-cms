@@ -1,5 +1,22 @@
 [
     {
+        "version": "v 0.2.5",
+        "date": "2024-03-06",
+        "changes": {
+            "Feature": [
+                "Added 'Documents' in Components",
+                "User can upload documents in the CMS",
+                "User can view the uploaded documents in the CMS",
+                "User can delete the uploaded documents in the CMS"
+            ],
+            "BugFix": [
+                "Changing single media in page editor no longer changes all the media in the section",
+                "Fixed the position of 'Go Top' & 'Go Bottom' buttons in the page editor",
+                "Fixed Content view hide overflow"
+            ]
+        }
+    },
+    {
         "version": "v 0.2.3",
         "date": "2024-03-04",
         "changes": {

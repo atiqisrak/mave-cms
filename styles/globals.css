@@ -371,7 +371,8 @@ a:hover {
   color: rgb(219, 219, 219);
   text-align: center;
   padding: 10px 0;
-  box-shadow: 0px 0px 20px 0px #3a3a3a;
+  /* box-shadow: 0px 0px 20px 0px #3a3a3a; */
+  z-index: 101;
 }
 
 .mave-footer a{

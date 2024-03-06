@@ -17,6 +17,7 @@ import { FilterOutlined } from "@ant-design/icons";
 const SingleMediaSelect = ({ visible, onCancel, onMediaSelect, media }) => {
   const [mediaAssets, setMediaAssets] = useState([]);
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -223,10 +224,10 @@ const SingleMediaSelect = ({ visible, onCancel, onMediaSelect, media }) => {
                 </>
               ) : asset.file_type === "application/pdf" ? (
                 <iframe
-                  src={`${API_BASE_URL}/${asset.file_path}`}
+                  src={`${MEDIA_URL}/${asset.file_path}`}
                   width={275}
                   height={200}
-                ></iframe>
+                />
               ) : (
                 <p>Unsupported file format: {asset.file_type}</p>
               )}
