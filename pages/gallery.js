@@ -21,6 +21,7 @@ import {
   UploadOutlined,
 } from "@ant-design/icons";
 const { Option } = Select;
+import { Document, Page } from 'react-pdf';
 
 const Gallery = () => {
   useEffect(() => {
@@ -32,6 +33,13 @@ const Gallery = () => {
   const [mediaAssets, setMediaAssets] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+  const [numPages, setNumPages] = useState();
+  const [pageNumber, setPageNumber] = useState(1);
+
+  const onDocumentLoadSuccess = ({ numPages }) => {
+    setNumPages(numPages);
+  }
 
   const [currentPage, setCurrentPage] = useState(1);
   const showModal = () => {
@@ -383,12 +391,25 @@ const Gallery = () => {
                     Your browser does not support the video tag.
                   </video>
                 </>
-              ) : asset.file_type === "application/pdf" ? (
-                <iframe
-                  src={`${API_BASE_URL}/${asset.file_path}`}
-                  width={275}
-                  height={200}
-                ></iframe>
+              ) : asset.file_type.startsWith("application/pdf") ? (
+                <img
+                  src="/images/pdf_file_type.png"
+                  alt="pdf"
+                  style={{
+                    width: "auto",
+                    height: "18vh",
+                  }}
+                  onClick={() => window.open(`${MEDIA_URL}/${asset.file_path}`)}
+                />
+                // <>
+                //   <Document file={`${MEDIA_URL}/${asset.file_path}`}
+                //     onLoadSuccess={onDocumentLoadSuccess}>
+                //     <Page pageNumber={pageNumber} />
+                //   </Document>
+                //   <p>
+                //     Page {pageNumber} of {numPages}
+                //   </p>
+                // </>
               ) : (
                 <p>Unsupported file format: {asset.file_type}</p>
               )}
