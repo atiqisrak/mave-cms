@@ -41,6 +41,7 @@ import {
   ClockCircleOutlined,
   VideoCameraOutlined,
   MessageOutlined,
+  FilePdfOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -339,6 +340,14 @@ export default function SiteContent({ children }) {
                       >
                         Media Library
                       </Menu.Item>
+                      <Menu.Item
+                        key="32"
+                        icon={<FilePdfOutlined />}
+                        onClick={() => router.push("/documents")}
+                      >
+                        Documents
+                      </Menu.Item>
+
                       <Menu.Item
                         key="9"
                         icon={<MenuOutlined />}
