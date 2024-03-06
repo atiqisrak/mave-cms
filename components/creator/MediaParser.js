@@ -118,23 +118,56 @@ const MediaParser = ({ item, editMode, onMediaSelect, setMediaId }) => {
           )}
         </div>
       ) : (
-        <div>
+        <div style={{
+          marginBottom: "20px",
+        }}>
           {item?._mave?.file_type.startsWith("image") ? (
             <img
               src={`${MEDIA_URL}/${item?._mave?.file_path}`}
               alt={item?._mave?.file_path}
               style={{ width: "15vw", height: "auto" }}
             />
-          ) : (
-            <video
-              src={`${MEDIA_URL}/${item?._mave?.file_path}`}
-              alt={item?._mave?.file_path}
-              style={{ width: "15vw", height: "auto" }}
-              autoPlay
-              loop
-              muted
-            />
-          )}
+          ) :
+            item?._mave?.file_type.startsWith("video") ?
+              (
+                <video
+                  src={`${MEDIA_URL}/${item?._mave?.file_path}`}
+                  alt={item?._mave?.file_path}
+                  style={{ width: "15vw", height: "auto" }}
+                  autoPlay
+                  loop
+                  muted
+                />
+              ) :
+              item?._mave?.file_type.startsWith("audio") ?
+                (
+                  <audio
+                    src={`${MEDIA_URL}/${item?._mave?.file_path}`}
+                    alt={item?._mave?.file_path}
+                    style={{ width: "15vw", height: "auto" }}
+                    controls
+                  />
+                ) :
+                item?._mave?.file_type.startsWith("application") ?
+                  (
+                    <iframe
+                      src={`${MEDIA_URL}/${item?._mave?.file_path}`}
+                      style={{
+                        width: "300px",
+                        height: "40vh",
+                      }}
+                      title="document"
+                    />
+                  )
+                  : (
+                    <a
+                      href={`${MEDIA_URL}/${item?._mave?.file_path}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {item?._mave?.title_en}
+                    </a>
+                  )}
         </div>
       )}
     </>

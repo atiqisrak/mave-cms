@@ -92,14 +92,22 @@ const Documents = () => {
                                 {documents.map((document, index) => (
                                     <Col
                                         key={index}
-                                        xs={24}
-                                        sm={12}
-                                        md={8}
-                                        lg={6}
-                                        xl={4}
+                                        style={{
+                                            marginTop: "40px",
+                                        }}
                                     >
-                                        <div className="media-card">
-                                            <img
+                                        <div className="media-card" style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            padding: "10px",
+                                            border: "1px solid #e8e8e8",
+                                            borderRadius: "15px",
+                                            boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
+                                            gap: "20px",
+                                        }}>
+                                            {/* <img
                                                 src="/images/pdf_file_type.png"
                                                 alt="pdf"
                                                 style={{
@@ -107,6 +115,14 @@ const Documents = () => {
                                                     height: "18vh",
                                                 }}
                                                 onClick={() => window.open(`${DOC_URL}/${document?.file_path}`)}
+                                            /> */}
+                                            <iframe
+                                                src={`${DOC_URL}/${document?.file_path}`}
+                                                style={{
+                                                    width: "300px",
+                                                    height: "40vh",
+                                                }}
+                                                title="document"
                                             />
                                             <Button danger onClick={() => onDelete(document?.id)}>
                                                 Delete
