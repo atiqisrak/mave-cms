@@ -164,6 +164,7 @@ const Sliders = () => {
           setResponseData(response);
         }
         setEditingItemId(null);
+        setSelectedMedia([]);
         setLoading(false);
       } else {
         console.error("Error creating slider:", response.data);
@@ -275,7 +276,9 @@ const Sliders = () => {
                                   currentMedia={asset?.medias}
                                   selectedMedia={selectedMedia}
                                   setSelectedMedia={setSelectedMedia}
-                                ></MediaSelectionModal>
+                                  isModalVisible={isModalVisible}
+                                  setIsModalVisible={setIsModalVisible}
+                                />
                               </Modal>
                             </Form.Item>
                           </Form>
