@@ -3,7 +3,7 @@ import instance from "../axios";
 import { Col, Checkbox, Image, Row } from "antd";
 import Loader from "./Loader";
 
-const MediaSelectionModal = ({ media, selectedMedia, setSelectedMedia }) => {
+const MediaSelectionModal = ({ media, selectedMedia, setSelectedMedia, currentMedia }) => {
   const [mediaAssets, setMediaAssets] = useState([]);
   const [loading, setLoading] = useState(false);
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
@@ -30,12 +30,13 @@ const MediaSelectionModal = ({ media, selectedMedia, setSelectedMedia }) => {
   const handleMediaSelection = (mediaId) => {
     setSelectedMedia((prevSelectedMedia) => {
       if (prevSelectedMedia?.includes(mediaId)) {
-        return prevSelectedMedia?.filter((id) => id !== mediaId);
+        return prevSelectedMedia?.filter((id) => id !== mediaId)
       } else {
         return [...prevSelectedMedia, mediaId];
       }
     });
   };
+
 
   if (loading) {
     return <Loader />;
@@ -47,8 +48,12 @@ const MediaSelectionModal = ({ media, selectedMedia, setSelectedMedia }) => {
         {mediaAssets?.map((mediaItem, index) => (
           <Col key={index} span={6} style={{ marginTop: "1rem" }}>
             <label>
-              <Checkbox
-                checked={selectedMedia?.includes(mediaItem.id)}
+              {console.log("Current Media", currentMedia)}
+              {/* {console.log("Selected Media", selectedMedia)} */}
+              {/* <Checkbox
+                checked={
+                  selectedMedia?.includes(mediaItem.id) ||
+                  currentMedia?.map((media) => media.id).includes(mediaItem.id)}
                 onChange={() => handleMediaSelection(mediaItem.id)}
                 style={
                   {
@@ -58,23 +63,62 @@ const MediaSelectionModal = ({ media, selectedMedia, setSelectedMedia }) => {
                     zIndex: 1
                   }
                 }
-              />
-              {/* Check if image or video */}
+              /> */}
+              {
+                console.log("Current Media", currentMedia?.id)}{
+                console.log("Selected Media", selectedMedia)
+              }
+              <div style={{
+                position: "absolute",
+                zIndex: 1,
+                color: "white",
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                height: "clamp(150px, 6vw, 200px)",
+                width: "clamp(150px, 6vw, 200px)",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: "5px",
+                display: selectedMedia?.includes(mediaItem.id) ? "flex" : "none"
+              }}>
+                Selected
+              </div>
+              <div style={{
+                position: "absolute",
+                zIndex: 1,
+                color: "white",
+                backgroundColor: "var(--theme)",
+                padding: "5px 15px",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: "5px 15px",
+                display: currentMedia?.map((media) => media.id).includes(mediaItem.id) ? "flex" : "none"
+              }}>
+                Current
+              </div>
               {mediaItem.file_type.startsWith("image") ? (
-                <Image
-                  className="checkboxmedia"
-                  preview={false}
-                  src={`${MEDIA_URL}/${mediaItem.file_path}`}
-                  alt={mediaItem.file_name}
-                  style={{
-                    height: "clamp(150px, 6vw, 200px)",
-                    width: "clamp(150px, 6vw, 200px)",
-                    objectFit: "cover",
-                    borderRadius: 10,
-                  }}
-                />
+                <div>
+                  <Image
+                    onClick={() =>
+                      // handleMediaSelection(mediaItem.id)}
+                      // select and deselect media
+                      !selectedMedia?.includes(mediaItem.id) &&
+                      handleMediaSelection(mediaItem.id)
+                    }
+                    className="checkboxmedia"
+                    preview={false}
+                    src={`${MEDIA_URL}/${mediaItem.file_path}`}
+                    alt={mediaItem.file_name}
+                    style={{
+                      height: "clamp(150px, 6vw, 200px)",
+                      width: "clamp(150px, 6vw, 200px)",
+                      objectFit: "cover",
+                      borderRadius: 10,
+                    }}
+                  />
+                </div>
               ) : mediaItem.file_type.startsWith("video") ? (
                 <video
+                  onClick={() => handleMediaSelection(mediaItem.id)}
                   className="checkboxmedia"
                   autoPlay
                   loop
@@ -86,17 +130,33 @@ const MediaSelectionModal = ({ media, selectedMedia, setSelectedMedia }) => {
                 >
                   Your browser does not support the video tag.
                 </video>
-              ) : (
-                <Image
-                  src="/images/Image_Placeholder.png"
-                  style={{
-                    height: "200px",
-                    width: "18vw",
-                    objectFit: "cover",
-                    borderRadius: 10,
-                  }}
-                />
-              )}
+              ) : mediaItem.file_type.startsWith("application") ?
+                (
+                  <Image
+                    onClick={() => handleMediaSelection(mediaItem.id)}
+                    preview={false}
+                    src="/images/pdf_file_type.png"
+                    style={{
+                      height: "clamp(150px, 6vw, 200px)",
+                      width: "clamp(150px, 6vw, 200px)",
+                      objectFit: "cover",
+                      borderRadius: 10,
+                    }}
+                  />
+                ) :
+                (
+                  <Image
+                    onClick={() => handleMediaSelection(mediaItem.id)}
+                    preview={false}
+                    src="/images/Image_Placeholder.png"
+                    style={{
+                      height: "clamp(150px, 6vw, 200px)",
+                      width: "clamp(150px, 6vw, 200px)",
+                      objectFit: "cover",
+                      borderRadius: 10,
+                    }}
+                  />
+                )}
             </label>
           </Col>
         ))}

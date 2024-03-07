@@ -264,7 +264,7 @@ const Sliders = () => {
                                 </Button>
                               </Space>
                               <Modal
-                                width={"40%"}
+                                width={"70%"}
                                 title="Upload Media"
                                 open={isModalVisible}
                                 onOk={handleOk}
@@ -272,6 +272,7 @@ const Sliders = () => {
                                 className="uploadMediaModal"
                               >
                                 <MediaSelectionModal
+                                  currentMedia={asset?.medias}
                                   selectedMedia={selectedMedia}
                                   setSelectedMedia={setSelectedMedia}
                                 ></MediaSelectionModal>
