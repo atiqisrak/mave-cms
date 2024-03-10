@@ -384,7 +384,6 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
               <SubMenu
                 key="mave-admin"
                 icon={<UserOutlined style={{ fontSize: "1.5rem" }} />}
-                // title="MAVE Admin"
                 style={{
                   marginTop: "20%",
                   fontSize: "1.1em",
@@ -458,15 +457,15 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
                         backgroundColor: "white",
                         padding: "5px",
                         borderRadius: "5px 0 5px 0",
-                        position: "absolute",
+                        position: collapsed ? "relative" : "absolute",
                         zIndex: 1,
-                        right: 20,
-                        top: 80,
+                        right: collapsed ? "" : 20,
+                        top: collapsed ? "" : 80,
                       }}
                     >
                       {
                         changeLogs && changeLogs.length > 0 ? changeLogs[0].version
-                          : "v 0.0.1"
+                          : "v 1.0.0"
                       }
                     </h3>
                   </Link>

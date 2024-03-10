@@ -6,6 +6,9 @@
             "Feature": [
                 "Now user can update page slug in page editor",
                 "Changelog version automatically updates in the CMS from the changelog.json file"
+            ],
+            "BugFix": [
+                "Now user can add & update multilingual title to menu items"
             ]
         }
     },

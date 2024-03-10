@@ -45,6 +45,7 @@ export default function MenuItems() {
   const [isLoading, setIsLoading] = useState(true);
   const [isAddMenuItemOpen, setIsAddMenuItemOpen] = useState(false);
   const [newMenuItemTitle, setNewMenuItemTitle] = useState("");
+  const [newMenuItemTitleBn, setNewMenuItemTitleBn] = useState("");
   const [newMenuItemLink, setNewMenuItemLink] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -89,6 +90,7 @@ export default function MenuItems() {
 
     // Initialize editedTitleEn and editedLink with current values
     setEditedTitleEn(menuItemToEdit.title);
+    setEditedTitleBn(menuItemToEdit.title_bn);
     setEditedLink(menuItemToEdit.link);
   };
 
@@ -179,15 +181,8 @@ export default function MenuItems() {
     setIsAddMenuItemOpen(false);
     // Reset the input fields
     setNewMenuItemTitle("");
+    setNewMenuItemTitleBn("");
     setNewMenuItemLink("");
-  };
-
-  const handleNewMenuItemTitleChange = (e) => {
-    setNewMenuItemTitle(e.target.value);
-  };
-
-  const handleNewMenuItemLinkChange = (e) => {
-    setNewMenuItemLink(e.target.value);
   };
 
   const handleAddMenuItem = async () => {
@@ -195,6 +190,7 @@ export default function MenuItems() {
       const response = await instance.post("/menuitems", [
         {
           title: newMenuItemTitle,
+          title_bn: newMenuItemTitleBn,
           link: newMenuItemLink,
         },
       ]);
@@ -336,15 +332,6 @@ export default function MenuItems() {
               {/* Reset Button */}
               <Button
                 danger
-                // style={{
-                //   backgroundColor: "var(--theme)",
-                //   borderColor: "var(--theme)",
-                //   color: "white",
-                //   borderRadius: "10px",
-                //   fontSize: "1.2em",
-                //   marginLeft: "1em",
-                //   paddingBottom: "1.8em",
-                // }}
                 disabled={searchTerm === ""}
                 onClick={() => handleReset()}
                 icon={<CloseCircleOutlined />}
@@ -378,13 +365,16 @@ export default function MenuItems() {
             </Col>
           </Row>
           <Row style={{ padding: "2em 3em" }}>
-            <Col span={4}>
+            <Col span={2}>
               <h3 style={{ fontSize: "1.4em" }}>Item ID</h3>
             </Col>
-            <Col span={8}>
+            <Col span={6}>
               <h3 style={{ fontSize: "1.4em" }}>Item Name</h3>
             </Col>
             <Col span={6}>
+              <h3 style={{ fontSize: "1.4em" }}>আইটেম নাম</h3>
+            </Col>
+            <Col span={4}>
               <h3 style={{ fontSize: "1.4em" }}>Item Link</h3>
             </Col>
             <Col span={6}>
@@ -400,19 +390,23 @@ export default function MenuItems() {
           </Row>
           {isAddMenuItemOpen ? (
             <div>
-              <Row
+              <Row span={24}
                 style={{
                   padding: "2em 3em",
                   alignItems: "center",
+                  gap: "1em",
                 }}
               >
-                <Col span={8} style={{ marginRight: "0em" }}>
+                <Col span={1}>
+                  <h3 style={{ fontSize: "1.4em" }}>New</h3>
+                </Col>
+                <Col span={6} style={{ marginRight: "0em" }}>
                   <Input
                     placeholder="Menu Item Title"
                     value={newMenuItemTitle}
                     onChange={(e) => setNewMenuItemTitle(e.target.value)}
                     style={{
-                      width: "16vw",
+                      // width: "16vw",
                       height: "2.8em",
                       borderRadius: "10px",
                       fontSize: "1.2em",
@@ -420,13 +414,27 @@ export default function MenuItems() {
                     }}
                   />
                 </Col>
-                <Col span={8} style={{ marginLeft: "0em" }}>
+                <Col span={6} style={{ marginRight: "0em" }}>
+                  <Input
+                    placeholder="মেনু আইটেম শিরোনাম"
+                    value={newMenuItemTitleBn}
+                    onChange={(e) => setNewMenuItemTitleBn(e.target.value)}
+                    style={{
+                      // width: "16vw",
+                      height: "2.8em",
+                      borderRadius: "10px",
+                      fontSize: "1.2em",
+                      padding: "0 1em",
+                    }}
+                  />
+                </Col>
+                <Col span={4} style={{ marginLeft: "0em" }}>
                   <Input
                     placeholder="Menu Item Link"
                     value={newMenuItemLink}
                     onChange={(e) => setNewMenuItemLink(e.target.value)}
                     style={{
-                      width: "16vw",
+                      // width: "16vw",
                       height: "2.8em",
                       borderRadius: "10px",
                       fontSize: "1.2em",
@@ -434,7 +442,7 @@ export default function MenuItems() {
                     }}
                   />
                 </Col>
-                <Col span={8} style={{ paddingLeft: "2em" }}>
+                <Col span={5}>
                   <Button
                     type="primary"
                     onClick={handleAddMenuItem}
@@ -479,10 +487,10 @@ export default function MenuItems() {
                   borderBottom: "1px solid #ccc",
                 }}
               >
-                <Col span={4}>
+                <Col span={2}>
                   <p style={{ fontSize: "1.2em" }}>{menuItem.id} </p>
                 </Col>
-                <Col span={4}>
+                <Col span={6}>
                   {editingItemId === menuItem.id ? (
                     <Input
                       allowClear
@@ -496,7 +504,7 @@ export default function MenuItems() {
                   )}{" "}
                 </Col>
                 {/* Title BN */}
-                <Col span={4}>
+                <Col span={6}>
                   {editingItemId === menuItem.id ? (
                     <Input
                       allowClear
@@ -530,7 +538,7 @@ export default function MenuItems() {
                     </p>
                   )}{" "}
                 </Col>
-                <Col span={8} style={{ paddingLeft: "2em" }}>
+                <Col span={6} style={{ paddingLeft: "2em" }}>
                   {editingItemId === menuItem.id ? (
                     <>
                       <Button
@@ -541,8 +549,9 @@ export default function MenuItems() {
                           color: "white",
                           borderRadius: "10px",
                           fontSize: "1.2em",
+                          fontSize: "1em",
+                          width: "clamp(100px, 4vw, 200px)",
                           marginRight: "1em",
-                          paddingBottom: "1.8em",
                         }}
                         onClick={() => handleUpdate(menuItem.id)}
                         icon={<SyncOutlined />}
@@ -555,8 +564,8 @@ export default function MenuItems() {
                           borderColor: "var(--themes)",
                           color: "white",
                           borderRadius: "10px",
-                          fontSize: "1.2em",
-                          paddingBottom: "1.8em",
+                          fontSize: "1em",
+                          width: "clamp(100px, 4vw, 200px)"
                         }}
                         onClick={handleCancelEdit}
                         icon={<CloseCircleOutlined />}
