@@ -42,6 +42,8 @@ import {
   VideoCameraOutlined,
   MessageOutlined,
   FilePdfOutlined,
+  RightCircleOutlined,
+  ArrowRightOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -51,6 +53,7 @@ import GLOBAL_CONTEXT from "../src/context/context";
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 const { Panel } = Collapse;
+import Changelog from "../pages/usermanual/changelog.json";
 
 export default function SiteContent({ children, collapsed, setCollapsed }) {
   const router = useRouter();
@@ -62,7 +65,7 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
   const [response, setResponse] = useState();
   const { setContextToken } = useContext(GLOBAL_CONTEXT);
   const [creatorMode, setCreatorMode] = useState(false);
-  // const localCreatormode = localStorage.getItem("creatorMode");
+  const [changeLogs, setChangeLogs] = useState([]);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -73,6 +76,8 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
       setUser(user_Parse);
     }
     localStorage.setItem("creatorMode", creatorMode);
+
+    setChangeLogs(Changelog);
   }, [response]);
 
   const handleCollapse = () => {
@@ -436,13 +441,37 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
                   paddingTop: 40,
                 }}
               >
-                <h3
-                  style={{
-                    color: "var(--gray)",
-                  }}
-                >
-                  v 0.2.5
-                </h3>
+                <div style={{
+                  display: "flex",
+                  gap: 10,
+                  alignItems: "center",
+
+                }}>
+                  <Link
+                    href={"/usermanual/changelog"}
+                  >
+                    <h3
+                      style={{
+                        color: "var(--theme)",
+                        fontSize: "1em",
+                        fontWeight: "bold",
+                        backgroundColor: "white",
+                        padding: "5px",
+                        borderRadius: "5px 0 5px 0",
+                        position: "absolute",
+                        zIndex: 1,
+                        right: 20,
+                        top: 80,
+                      }}
+                    >
+                      {
+                        changeLogs && changeLogs.length > 0 ? changeLogs[0].version
+                          : "v 0.0.1"
+                      }
+                    </h3>
+                  </Link>
+                </div>
+
                 <Link href="/dashboard" className="sitelogo">
                   {collapsed ? (
                     <Image
