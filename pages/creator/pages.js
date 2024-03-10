@@ -6,7 +6,7 @@ import {
   EditOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
-import { Button, Card, Row, Col, Input, Modal, message, Popconfirm } from "antd";
+import { Button, Card, Row, Col, Input, Modal, message, Popconfirm, Table } from "antd";
 import React, { useState, useEffect } from "react";
 import instance from "../../axios";
 import { useRouter } from "next/router";
@@ -19,6 +19,12 @@ const Pages = () => {
   const [expandedPageId, setExpandedPageId] = useState(null);
   const [newPageTitleEn, setNewPageTitleEn] = useState("");
   const [newPageTitleBn, setNewPageTitleBn] = useState("");
+  const [newSlug, setNewSlug] = useState("");
+  // Page name change
+  const [pageNameEn, setPageNameEn] = useState("");
+  const [pageNameBn, setPageNameBn] = useState("");
+  const [pageSlug, setPageSlug] = useState("");
+  const [editPageName, setEditPageName] = useState(false);
   const router = useRouter();
 
   const fetchPages = async () => {
@@ -64,6 +70,8 @@ const Pages = () => {
         page_name_bn: newPageTitleBn,
         type: "Page",
         favicon_id: 10,
+        // slug = lowercased page_name_en, if space then hyphen
+        slug: newPageTitleEn.toLowerCase().split(" ").join("-"),
       });
       if (response.status === 201) {
         message.success("New page added successfully");
@@ -121,26 +129,23 @@ const Pages = () => {
     setEditingItemId(null);
   };
 
-  // Page name change
-  const [pageNameEn, setPageNameEn] = useState("");
-  const [pageNameBn, setPageNameBn] = useState("");
-  const [editPageName, setEditPageName] = useState(false);
 
-  const handleEditPageName = async ({ id, prevpen, prevpbn }) => {
+  const handleEditPageName = async ({ id, prevpen, prevpbn, prevpslug }) => {
     try {
       const response = await instance.put(`/pages/${id}`, {
         page_name_en: pageNameEn ? pageNameEn : prevpen,
         page_name_bn: pageNameBn ? pageNameBn : prevpbn,
+        slug: pageSlug ? pageSlug : prevpslug
       });
       if (response.status === 200) {
-        message.success("Page name updated successfully");
+        message.success("Page info updated successfully");
         setEditPageName(false);
         fetchPages();
       } else {
-        console.error("Error updating page name:", response.data.message);
+        console.error("Error updating page info:", response.data.message);
       }
     } catch (error) {
-      console.error("Error updating page name:", error);
+      console.error("Error updating page info:", error);
     }
   }
 
@@ -395,13 +400,17 @@ const Pages = () => {
                                 gap: "2em",
                               }}
                             >
-                              <div>
+                              <div style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                gap: "2em",
+                                marginBottom: "2em",
+                                flexDirection: "column"
+                              }}>
                                 <div style={{
                                   display: "flex",
-                                  justifyContent: "center",
                                   alignItems: "center",
                                   gap: "2em",
-                                  marginBottom: "2em"
                                 }}>
                                   {
                                     editPageName ? (
@@ -422,13 +431,14 @@ const Pages = () => {
                                         }}
                                       />
                                     ) : (
-                                      <h1>Page Name: {page.page_name_en}</h1>)
+                                      <h1><span style={{
+                                        color: "var(--themes)"
+                                      }}>Page Name:</span> {page.page_name_en}</h1>)
                                   }
                                 </div>
 
                                 <div style={{
                                   display: "flex",
-                                  justifyContent: "center",
                                   alignItems: "center",
                                   gap: "2em"
                                 }}>
@@ -451,7 +461,66 @@ const Pages = () => {
                                         }}
                                       />
                                     ) : (
-                                      <h1>Page Name: {page.page_name_bn}</h1>)
+                                      <h1><span style={{
+                                        color: "var(--themes)"
+                                      }}>পৃষ্ঠার নাম:
+                                      </span> {page.page_name_bn}
+                                      </h1>)
+                                  }
+                                </div>
+
+                                <div style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "2em",
+                                }}>
+                                  {
+                                    editPageName ? (
+                                      <div style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        gap: "1em",
+                                      }}>
+                                        <Input
+                                          allowClear
+                                          defaultValue={page.slug}
+                                          placeholder={page.slug}
+                                          value={pageSlug}
+                                          onChange={(e) =>
+                                            setPageSlug(e.target.value)
+                                          }
+                                          style={{
+                                            width: "16vw",
+                                            height: "2.8em",
+                                            borderRadius: "10px",
+                                            fontSize: "1.2em",
+                                            padding: "0 1em",
+                                          }}
+                                        />
+                                        <p style={{
+                                          fontSize: "0.8em",
+                                          color: "var(--themes)",
+                                          textAlign: "left",
+                                        }}>
+                                          *Use only lowercase letters
+                                          <br />
+                                          *No spaces, use hyphen
+                                          <br />
+                                          *no special characters
+                                          <br />
+                                          <span style={{ color: "var(--theme)" }}>*Example: about-us</span>
+                                        </p>
+                                      </div>
+                                    ) : (
+                                      <h1><span style={{
+                                        color: "var(--themes)"
+                                      }}>Link: </span>
+                                        <a
+                                          href="#"
+                                          style={{
+                                            color: "var(--theme)"
+                                          }}>/{page.slug}</a></h1>
+                                    )
                                   }
                                 </div>
                               </div>
@@ -465,7 +534,8 @@ const Pages = () => {
                                           {
                                             id: page?.id,
                                             prevpen: page?.page_name_en,
-                                            prevpbn: page?.page_name_bn
+                                            prevpbn: page?.page_name_bn,
+                                            prevpslug: page?.slug
                                           }
                                         )
                                       }
@@ -493,7 +563,7 @@ const Pages = () => {
                                       danger
                                       onClick={() =>
                                         setEditPageName(!editPageName)
-                                      } />
+                                      }>Cancel</Button>
                                   </div>
 
                                 ) : (

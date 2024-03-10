@@ -1,5 +1,15 @@
 [
     {
+        "version": "v 0.2.7",
+        "date": "2024-03-08",
+        "changes": {
+            "Feature": [
+                "Now user can update page slug in page editor",
+                "Changelog version automatically updates in the CMS from the changelog.json file"
+            ]
+        }
+    },
+    {
         "version": "v 0.2.5",
         "date": "2024-03-06",
         "changes": {
