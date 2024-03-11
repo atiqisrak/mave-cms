@@ -410,7 +410,6 @@ const Creator = () => {
 
     return randomId;
   }
-  console.log("newSectionComponents", newSectionComponents);
   const sectionData = {
     _id: generateRandomId(16),
     type: "",
@@ -486,6 +485,8 @@ const Creator = () => {
     fetchPageData();
   }, [pid]);
   const convertedSectionData = bodyParser(pageData);
+  console.log("convertedSectionData: ", convertedSectionData);
+  console.log("pageData nn: ", pageData);
   useEffect(() => {
     setShowPageData(convertedSectionData);
   }, [pageData]);
@@ -998,6 +999,7 @@ const Creator = () => {
 
                       {/* Edit Section main */}
                       <ComponentParse
+                        sectionId={section?._id}
                         section={section?.data}
                         editMode={editMode && editedSectionId == section?._id}
                         setEditMode={setEditMode}
@@ -1163,28 +1165,33 @@ const Creator = () => {
                         </div>
                       ) : (
                         // Update Section Data
-                        <ComponentParse
-                          sectionId={section?._id}
-                          section={section?.data}
-                          editMode={editMode && editedSectionId == section?._id}
-                          onNavbarSelect={handleNavbarSelect}
-                          onCardSelect={handleCardSelect}
-                          onMediaSelect={handleMediaSelect}
-                          onEventSelect={handleEventSelect}
-                          onMenuSelect={handleMenuSelect}
-                          onTitleChange={handleTitleChange}
-                          onDescriptionChange={handleDescriptionChange}
-                          onSliderSelect={handleSliderSelect}
-                          onPressReleaseSelect={handleSliderSelect}
-                          onFooterSelect={handleFooterSelect}
-                          onFormSelect={handleFormSelect}
-                          onUpdateSectionData={handleUpdateSectionData}
-                          sectionData={sectionUpdatedData}
-                          setSectionData={setSectionUpdatedData}
-                          setNewData={setNewData}
-                          onDeleteComponent={handleDeleteComponent}
-                          setMediaId={setMediaId}
-                        />
+                        <>
+
+                          {console.log("Section Data: ", showPageData)}
+                          <ComponentParse
+                            sectionId={section?._id}
+                            section={section?.data}
+                            editMode={editMode && editedSectionId == section?._id}
+                            onNavbarSelect={handleNavbarSelect}
+                            onCardSelect={handleCardSelect}
+                            onMediaSelect={handleMediaSelect}
+                            onEventSelect={handleEventSelect}
+                            onMenuSelect={handleMenuSelect}
+                            onTitleChange={handleTitleChange}
+                            onDescriptionChange={handleDescriptionChange}
+                            onSliderSelect={handleSliderSelect}
+                            onPressReleaseSelect={handleSliderSelect}
+                            onFooterSelect={handleFooterSelect}
+                            onFormSelect={handleFormSelect}
+                            onUpdateSectionData={handleUpdateSectionData}
+                            sectionData={sectionUpdatedData}
+                            setSectionData={setSectionUpdatedData}
+                            setNewData={setNewData}
+                            onDeleteComponent={handleDeleteComponent}
+                            setMediaId={setMediaId}
+                          />
+                        </>
+
                       )}
 
                       {editedSectionId === section?._id && (
@@ -2258,7 +2265,6 @@ const Creator = () => {
                 )}
               </div>
             </Modal>
-
             <Modal>
               <Select
                 style={{ width: "100%" }}

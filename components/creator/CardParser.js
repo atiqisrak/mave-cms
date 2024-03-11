@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, memo } from "react";
 import instance from "../../axios";
 import { Image, Select, message } from "antd";
+import Loader from "../Loader";
 
 const CardParser = ({
   item,
@@ -126,40 +127,52 @@ const CardParser = ({
               alignItems: "center",
             }}
           >
-            {item?._mave?.media_files &&
-              (item?._mave?.media_files?.file_type.startsWith("image") ? (
-                <img
-                  src={`${MEDIA_URL}/${item?._mave?.media_files?.file_path}`}
-                  alt={item?._mave?.media_files?.file_path}
-                  style={{ width: "15vw", height: "auto" }}
-                />
-              ) : (
-                <video
-                  muted
-                  src={`${MEDIA_URL}/${item?._mave?.media_files?.file_path}`}
-                  alt={item?._mave?.media_files?.file_path}
-                  style={{ width: "15vw", height: "auto" }}
-                />
-              ))}
+            {
+              item._mave ? (
+                item?._mave?.media_files &&
+                (item?._mave?.media_files?.file_type.startsWith("image") ? (
+                  <img
+                    src={`${MEDIA_URL}/${item?._mave?.media_files?.file_path}`}
+                    alt={item?._mave?.media_files?.file_path}
+                    style={{ width: "15vw", height: "auto" }}
+                  />
+                ) : (
+                  <video
+                    muted
+                    src={`${MEDIA_URL}/${item?._mave?.media_files?.file_path}`}
+                    alt={item?._mave?.media_files?.file_path}
+                    style={{ width: "15vw", height: "auto" }}
+                  />
+                ))
+              ) : <Loader />
+            }
           </div>
-          <div className="contentContainer" style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "1em",
-          }}>
-            <center>
-              <h3>{item?._mave?.title_en} ( {item?._mave?.title_bn} )</h3>
-            </center>
 
-            <div
-              dangerouslySetInnerHTML={{ __html: item?._mave?.description_en }}
-              style={{ textAlign: "left", fontSize: "1em" }}
-            />
-            <div
-              dangerouslySetInnerHTML={{ __html: item?._mave?.description_bn }}
-              style={{ textAlign: "left", fontSize: "1em" }}
-            />
-          </div>
+          {
+            item ? (
+              <div className="contentContainer" style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1em",
+              }}>
+                <center>
+                  <h3>{item?._mave && item?._mave?.title_en} ( {item?._mave?.title_bn} )</h3>
+                </center>
+
+                <div
+                  dangerouslySetInnerHTML={{ __html: item?._mave && item?._mave?.description_en }}
+                  style={{ textAlign: "left", fontSize: "1em" }}
+                />
+                <div
+                  dangerouslySetInnerHTML={{ __html: item?._mave && item?._mave?.description_bn }}
+                  style={{ textAlign: "left", fontSize: "1em" }}
+                />
+              </div>
+            ) : (
+              <Loader />
+            )
+          }
+
         </div>
       )}
     </>

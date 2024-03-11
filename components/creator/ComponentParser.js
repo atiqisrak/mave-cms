@@ -38,7 +38,6 @@ const ComponentParse = ({
   setMediaId,
 }) => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
-  console.log("sdfgsdfgsdfg: ");
   const handleComponentChange = (index, updatedComponent) => {
     if (onUpdateSectionData) {
       console.log("updatedComponent", updatedComponent);
