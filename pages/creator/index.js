@@ -85,6 +85,9 @@ const Creator = () => {
   const [description, setDescription] = useState();
   const [updatedSection, setUpdatedSection] = useState([]);
   const [save, setSave] = useState(false);
+  const [currentPageNameEn, setCurrentPageNameEn] = useState("");
+  const [currentPageNameBn, setCurrentPageNameBn] = useState("");
+  const [currentPageSlug, setCurrentPageSlug] = useState("");
 
   const handleCollapse = () => {
     setCollapsed(!collapsed);
@@ -433,11 +436,11 @@ const Creator = () => {
     postDataBody = [...showPageData, sectionData];
   }
   const postData = {
-    slug: "home",
+    slug: currentPageSlug,
     type: "Page",
     favicon_id: 10,
-    page_name_en: "Home",
-    page_name_bn: "হোম",
+    page_name_en: currentPageNameEn,
+    page_name_bn: currentPageNameBn,
     head: {
       meta_title: "MAVE CMS",
       meta_description: "MAVE CMS",
@@ -489,6 +492,9 @@ const Creator = () => {
   console.log("pageData nn: ", pageData);
   useEffect(() => {
     setShowPageData(convertedSectionData);
+    setCurrentPageNameEn(pageData?.page_name_en);
+    setCurrentPageNameBn(pageData?.page_name_bn);
+    setCurrentPageSlug(pageData?.slug);
   }, [pageData]);
 
   const handleCloseSectionModal = () => {
@@ -498,13 +504,13 @@ const Creator = () => {
   };
   const handleSave = async () => {
     const modifiedData = {
-      slug: "home",
+      slug: currentPageSlug,
       type: "Page",
       favicon_id: 10,
-      page_name_en: "Home",
-      page_name_bn: "Home Bangla",
+      page_name_en: currentPageNameEn,
+      page_name_bn: currentPageNameBn,
       head: {
-        meta_title: "Home Page",
+        meta_title: "MAVE CMS",
         meta_description: "This is a home page of the MAVE CMS",
         meta_keywords: ["home", "Page", "CMS", "Builder"],
       },

@@ -144,12 +144,18 @@ const Sliders = () => {
   };
   const handleSubmit = async (values) => {
     setLoading(true);
+    const previousTitleEn = sliders.find((slider) => slider.id === editingItemId).title_en;
+    const previousTitleBn = sliders.find((slider) => slider.id === editingItemId).title_bn;
+    // media ids is a array of numbers
+    const previousMediaIds = sliders.find((slider) => slider.id === editingItemId).media_ids;
+
     try {
       const postData = {
-        title_en: values.title_e,
-        title_bn: values.title_b,
-        media_ids: selectedMedia,
+        title_en: values.title_e ? values.title_e : previousTitleEn,
+        title_bn: values.title_b ? values.title_b : previousTitleBn,
+        media_ids: selectedMedia?.length > 0 ? selectedMedia : previousMediaIds,
       };
+      console.log("Sending data: ", postData);
       const response = await instance.put(
         `/sliders/${editingItemId}`,
         postData
@@ -240,13 +246,18 @@ const Sliders = () => {
                             autoComplete="off"
                           >
                             <Form.Item hasFeedback label="Title English" name="title_e">
-                              <Input placeholder="Enter title in English" />
+                              <Input
+                                placeholder="Enter title in English"
+                                defaultValue={asset.title_en}
+                              />
                             </Form.Item>
                             <Form.Item hasFeedback label="Title Bangla" name="title_b">
-                              <Input placeholder="Enter title in Bangla" />
+                              <Input
+                                placeholder="Enter title in Bangla"
+                                defaultValue={asset.title_bn}
+                              />
                             </Form.Item>
-                            <Form.Item hasFeedback label="Select Media" name="title_m">
-                              {/* <Collapse accordion ghost items={items}></Collapse> */}
+                            <Form.Item hasFeedback label="Select Media" name="media_items">
                               <Button icon={<UploadOutlined />} onClick={showModal}>
                                 Click to Select
                               </Button>

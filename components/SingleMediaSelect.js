@@ -196,10 +196,11 @@ const SingleMediaSelect = ({ visible, onCancel, onMediaSelect, media }) => {
                       src={`${MEDIA_URL}/${asset.file_path}`}
                       alt={asset.file_name}
                       style={{
-                        objectFit: "cover",
+                        objectFit: "contain",
                         borderRadius: 10,
                         width: "12vw",
                         height: "18vh",
+                        backgroundColor: "black"
                       }}
                     />
                   )}
