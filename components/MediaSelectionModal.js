@@ -66,7 +66,7 @@ const MediaSelectionModal = ({ isModalVisible, setIsModalVisible, media, selecte
         >
           Clear Selection
         </Button>
-        <Button
+        {/* <Button
           onClick={() => {
             setIsModalVisible(false);
           }
@@ -79,7 +79,7 @@ const MediaSelectionModal = ({ isModalVisible, setIsModalVisible, media, selecte
             height: "clamp(30px, 3vw, 40px)",
             width: "clamp(100px, 10vw, 200px)",
           }}
-        >Submit</Button>
+        >Submit</Button> */}
         <Button
           onClick={() => {
             setIsModalVisible(false);
