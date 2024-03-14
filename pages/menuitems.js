@@ -12,6 +12,7 @@ import {
   Popconfirm,
   Select,
   message,
+  Radio,
 } from "antd";
 import instance from "../axios";
 import { useRouter } from "next/router";
@@ -26,7 +27,7 @@ import {
 import { setPageTitle } from "../global/constants/pageTitle";
 import Loader from "../components/Loader";
 
-export default function MenuItems() {
+const MenuItems = () => {
   useEffect(() => {
     // Set the dynamic page title for the Home page
     setPageTitle("Menu Items");
@@ -48,6 +49,11 @@ export default function MenuItems() {
   const [newMenuItemTitleBn, setNewMenuItemTitleBn] = useState("");
   const [newMenuItemLink, setNewMenuItemLink] = useState("");
   const [loading, setLoading] = useState(true);
+  const [pages, setPages] = useState([]);
+  const [linkType, setLinkType] = useState("independent");
+  const [sisterConcernSelected, setSisterConcernSelected] = useState(false);
+  const [newParentId, setNewParentId] = useState(null);
+  const [editedParentId, setEditedParentId] = useState(null);
 
   const router = useRouter();
 
@@ -57,29 +63,43 @@ export default function MenuItems() {
       const response = await instance("/menuitems");
       if (response.data) {
         setMenuItems(response.data);
-        // console.log("Menu Items: ", response.data);
-        // message.success("Menu items fetched successfully");
         setLoading(false);
       } else {
-        // console.error("Error fetching menu items:", response.data.message);
         message.error("Menu items couldn't be fetched");
       }
     } catch (error) {
-      // console.error("Error fetching menu items:", error);
       message.error("Menu items couldn't be fetched");
     }
   };
 
+  const fetchPages = async () => {
+    try {
+      setLoading(true);
+      const response = await instance("/pages");
+      if (response.data) {
+        setPages(response.data);
+        // console.log("Pages: ", response.data);
+        // message.success("Pages fetched successfully");
+        setLoading(false);
+      } else {
+        // console.error("Error fetching pages:", response.data.message);
+        message.error("Pages couldn't be fetched");
+      }
+    } catch (error) {
+      // console.error("Error fetching pages:", error);
+      message.error("Pages couldn't be fetched");
+    }
+  }
+
   useEffect(() => {
     fetchMenuItems();
+    fetchPages();
   }, [isAddMenuItemOpen, editingItemId]);
 
   const handleEdit = (id, e) => {
     e.preventDefault();
-    // Find the menu item being edited
     const menuItemToEdit = menuItems.find((menuItem) => menuItem.id === id);
 
-    // Store the original values and edited values in state
     setEditingItemId(id);
     setEditedMenuItem({
       ...menuItemToEdit,
@@ -87,8 +107,6 @@ export default function MenuItems() {
     setOriginalMenuItem({
       ...menuItemToEdit,
     });
-
-    // Initialize editedTitleEn and editedLink with current values
     setEditedTitleEn(menuItemToEdit.title);
     setEditedTitleBn(menuItemToEdit.title_bn);
     setEditedLink(menuItemToEdit.link);
@@ -99,49 +117,33 @@ export default function MenuItems() {
   };
 
   const handleUpdate = async (id) => {
-    // Find the menu item being edited
     const menuItemToEdit = menuItems.find((menuItem) => menuItem.id === id);
+    try {
+      const updatedMenuItem = {
+        ...menuItemToEdit,
+        title: editedTitleEn ? editedTitleEn : menuItemToEdit.title,
+        title_bn: editedTitleBn ? editedTitleBn : menuItemToEdit.title_bn,
+        parent_id: editedParentId ? editedParentId : menuItemToEdit.parent_id,
+        link: "/" + editedLink ? editedLink : menuItemToEdit.link,
+      };
 
-    // Check if there are changes in the edited values
-    if (
-      // editedTitleEn !== originalMenuItem.title ||
-      // editedLink !== originalMenuItem.link
-      editedTitleEn !== menuItemToEdit.title ||
-      editedTitleBn !== menuItemToEdit.title_bn ||
-      editedLink !== menuItemToEdit.link
-    ) {
-      try {
-        const updatedMenuItem = {
-          ...menuItemToEdit,
-          title: editedTitleEn,
-          title_bn: editedTitleBn,
-          link: editedLink,
-        };
-
-        const response = await instance.put(
-          `/menuitems/${id}`,
-          updatedMenuItem
+      const response = await instance.put(
+        `/menuitems/${id}`,
+        updatedMenuItem
+      );
+      if (response.status === 200) {
+        const updatedMenuItems = menuItems?.map((menuItem) =>
+          menuItem.id === id ? updatedMenuItem : menuItem
         );
-        if (response.status === 200) {
-          // Update the edited item in the state
-          const updatedMenuItems = menuItems?.map((menuItem) =>
-            menuItem.id === id ? updatedMenuItem : menuItem
-          );
-          setMenuItems(updatedMenuItems);
-          setEditingItemId(null); // Clear editing mode
-          setEditedMenuItem(null); // Clear edited values
-          setOriginalMenuItem(null); // Clear original values
-        } else {
-          console.error("Error updating menu item:", response.data.message);
-        }
-      } catch (error) {
-        console.error("Error updating menu item:", error);
+        setMenuItems(updatedMenuItems);
+        setEditingItemId(null);
+        setEditedMenuItem(null);
+        setOriginalMenuItem(null);
+      } else {
+        console.error("Error updating menu item:", response.data.message);
       }
-    } else {
-      // If no changes, simply exit editing mode
-      setEditingItemId(null);
-      setEditedMenuItem(null);
-      setOriginalMenuItem(null);
+    } catch (error) {
+      console.error("Error updating menu item:", error);
     }
   };
 
@@ -154,12 +156,11 @@ export default function MenuItems() {
     try {
       const response = await instance.delete(`/menuitems/${deleteItemId}`);
       if (response.status === 200) {
-        // Remove the deleted item from the state
         const updatedMenuItems = menuItems.filter(
           (menuItem) => menuItem.id !== deleteItemId
         );
         setMenuItems(updatedMenuItems);
-        setDeleteConfirmationVisible(false); // Close the confirmation modal
+        setDeleteConfirmationVisible(false);
       } else {
         console.error("Error deleting menu item:", response.data.message);
       }
@@ -189,17 +190,16 @@ export default function MenuItems() {
     try {
       const response = await instance.post("/menuitems", [
         {
-          title: newMenuItemTitle,
-          title_bn: newMenuItemTitleBn,
-          link: newMenuItemLink,
+          title: newMenuItemTitle ? newMenuItemTitle : "N/A",
+          title_bn: newMenuItemTitleBn ? newMenuItemTitleBn : "N/A",
+          parent_id: newParentId ? newParentId : "/",
+          link: "/" + newMenuItemLink ? newMenuItemLink : "",
         },
       ]);
       if (response.status === 201) {
-        // Successfully added the menu item, update the state
         const newMenuItem = response.data;
         setMenuItems((prevMenuItems) => [...prevMenuItems, newMenuItem]);
 
-        // Close the "Add menu item" card
         closeAddMenuItemCard();
       } else {
         console.error("Error adding menu item:", response.data.message);
@@ -209,7 +209,6 @@ export default function MenuItems() {
     }
   };
 
-  // Sort, Filter and Search
   const [sortType, setSortType] = useState("asc");
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -240,7 +239,6 @@ export default function MenuItems() {
   const handleReset = () => {
     setSearchTerm("");
     setSortType("asc");
-    // Refresh the page
     fetchMenuItems();
   };
 
@@ -305,7 +303,6 @@ export default function MenuItems() {
               alignItems: "center",
             }}
           >
-            {/* Filter Button and Search Button */}
             <Col
               span={8}
               style={{
@@ -329,7 +326,6 @@ export default function MenuItems() {
                   margin: "0 1em",
                 }}
               />
-              {/* Reset Button */}
               <Button
                 danger
                 disabled={searchTerm === ""}
@@ -368,11 +364,14 @@ export default function MenuItems() {
             <Col span={2}>
               <h3 style={{ fontSize: "1.4em" }}>Item ID</h3>
             </Col>
-            <Col span={6}>
+            <Col span={4}>
               <h3 style={{ fontSize: "1.4em" }}>Item Name</h3>
             </Col>
-            <Col span={6}>
+            <Col span={4}>
               <h3 style={{ fontSize: "1.4em" }}>আইটেম নাম</h3>
+            </Col>
+            <Col span={4}>
+              <h3 style={{ fontSize: "1.4em" }}>Parent Menu</h3>
             </Col>
             <Col span={4}>
               <h3 style={{ fontSize: "1.4em" }}>Item Link</h3>
@@ -400,7 +399,7 @@ export default function MenuItems() {
                 <Col span={1}>
                   <h3 style={{ fontSize: "1.4em" }}>New</h3>
                 </Col>
-                <Col span={6} style={{ marginRight: "0em" }}>
+                <Col span={4} style={{ marginRight: "0em" }}>
                   <Input
                     placeholder="Menu Item Title"
                     value={newMenuItemTitle}
@@ -414,7 +413,7 @@ export default function MenuItems() {
                     }}
                   />
                 </Col>
-                <Col span={6} style={{ marginRight: "0em" }}>
+                <Col span={4} style={{ marginRight: "0em" }}>
                   <Input
                     placeholder="মেনু আইটেম শিরোনাম"
                     value={newMenuItemTitleBn}
@@ -428,19 +427,131 @@ export default function MenuItems() {
                     }}
                   />
                 </Col>
-                <Col span={4} style={{ marginLeft: "0em" }}>
-                  <Input
-                    placeholder="Menu Item Link"
-                    value={newMenuItemLink}
-                    onChange={(e) => setNewMenuItemLink(e.target.value)}
+                <Col span={4} style={{ marginRight: "0em" }}>
+
+                  <Select
+                    showSearch
+                    style={{ width: "100%" }}
+                    placeholder="Select a Parent Menu"
+                    optionFilterProp="children"
+                    onChange={(value) => setNewParentId(value)}
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {
+                      menuItems?.map((menuItem) => (
+                        <Select.Option
+                          value={menuItem.id}>
+                          {menuItem.title}
+                        </Select.Option>
+                      ))
+                    }
+                  </Select>
+                </Col>
+                <Col span={4} style={{
+                  marginLeft: "0em",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1em"
+                }}>
+                  {/* <h3 style={{ fontSize: "1.4em" }}>Parent Menu</h3>
+                  <Select
+                    showSearch
+                    style={{ width: "100%" }}
+                    placeholder="Select a Parent Menu"
+                    optionFilterProp="children"
+                    onChange={(value) => setParentId(value)}
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {
+                      menuItems?.map((menuItem) => (
+                        <Select.Option
+                          value={menuItem.id}>
+                          {menuItem.title}
+                        </Select.Option>
+                      ))
+                    }
+                  </Select> */}
+                  <br />
+                  <Radio.Group
+                    onChange={(e) => setLinkType(e.target.value)}
+                    value={linkType}
                     style={{
-                      // width: "16vw",
-                      height: "2.8em",
-                      borderRadius: "10px",
-                      fontSize: "1.2em",
-                      padding: "0 1em",
+                      display: "flex",
+                      justifyContent: "center",
+                      flexDirection: "column",
                     }}
-                  />
+                  >
+                    <Radio value="independent">Independent</Radio>
+                    <Radio value="page">Page</Radio>
+                    <Radio value="sisterConcern">Sister Concern</Radio>
+                  </Radio.Group>
+
+                  {linkType === "page" ? (
+                    <>
+                      <Select
+                        showSearch
+                        style={{ width: "100%" }}
+                        placeholder="Select a page"
+                        optionFilterProp="children"
+                        onChange={(value) => setNewMenuItemLink(value)}
+                        filterOption={(input, option) =>
+                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                      >
+                        {pages?.map((page) => (
+                          <Select.Option
+                            // value={`${page.slug}?pageId=${page.id}`}>
+                            value={page.slug}>
+                            {page.page_name_en}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </>
+                  ) :
+                    linkType === "sisterConcern" ? (
+                      <Select
+                        showSearch
+                        style={{ width: "100%" }}
+                        placeholder="Select a Sister Concern"
+                        optionFilterProp="children"
+                        onChange={(value) => setNewMenuItemLink(value)}
+                        filterOption={(input, option) =>
+                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                      >
+                        {
+                          pages?.map((page) => {
+                            if (page.page_name_en?.includes("Ltd")) {
+                              return (
+                                <Select.Option
+                                  value={`sister-concerns?pageId=${page.id}`}>
+                                  {page.page_name_en}
+                                </Select.Option>
+                              )
+                            }
+                          })
+                        }
+                      </Select>
+                    ) :
+                      (
+                        <Input
+                          placeholder="Menu Item Link"
+                          value={newMenuItemLink}
+                          onChange={(e) => setNewMenuItemLink(e.target.value)}
+                          style={{
+                            // width: "16vw",
+                            height: "2.8em",
+                            borderRadius: "10px",
+                            fontSize: "1.2em",
+                            padding: "0 1em",
+                          }}
+                        />
+                      )}
+
                 </Col>
                 <Col span={5}>
                   <Button
@@ -490,7 +601,7 @@ export default function MenuItems() {
                 <Col span={2}>
                   <p style={{ fontSize: "1.2em" }}>{menuItem.id} </p>
                 </Col>
-                <Col span={6}>
+                <Col span={4}>
                   {editingItemId === menuItem.id ? (
                     <Input
                       allowClear
@@ -500,11 +611,16 @@ export default function MenuItems() {
                       onChange={(e) => setEditedTitleEn(e.target.value)}
                     />
                   ) : (
-                    <p style={{ fontSize: "1.2em" }}>{menuItem.title} </p>
+                    <p style={{
+                      fontSize: "1.2em",
+                      textWrap: "wrap",
+                      wordWrap: "break-word",
+                      paddingRight: "1em",
+                    }}>{menuItem.title} </p>
                   )}{" "}
                 </Col>
                 {/* Title BN */}
-                <Col span={6}>
+                <Col span={4}>
                   {editingItemId === menuItem.id ? (
                     <Input
                       allowClear
@@ -514,24 +630,159 @@ export default function MenuItems() {
                       onChange={(e) => setEditedTitleBn(e.target.value)}
                     />
                   ) : (
-                    <p style={{ fontSize: "1.2em" }}>
+                    <p style={{
+                      fontSize: "1.2em",
+
+                      textWrap: "wrap",
+                      wordWrap: "break-word",
+                      paddingRight: "1em",
+                    }}>
                       {menuItem?.title_bn ? menuItem?.title_bn : "N/A"}{" "}
                     </p>
                   )}{" "}
                 </Col>
                 <Col span={4}>
                   {editingItemId === menuItem.id ? (
-                    <Input
-                      name="link"
-                      value={editedLink}
-                      onChange={(e) => setEditedLink(e.target.value)}
-                    />
+                    <>
+                      <Select
+                        showSearch
+                        style={{ width: "100%" }}
+                        placeholder="Select a Parent Menu"
+                        optionFilterProp="children"
+                        onChange={(value) => setEditedParentId(value)}
+                        filterOption={(input, option) =>
+                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                      >
+                        {
+                          menuItems?.map((menuItem) => (
+                            <Select.Option
+                              value={menuItem.id}>
+                              {menuItem.title}
+                            </Select.Option>
+                          ))
+                        }
+                      </Select>
+                    </>
+                  ) : (
+                    <p style={{
+                      fontSize: "1.2em",
+                      textWrap: "wrap",
+                      wordWrap: "break-word",
+                      paddingRight: "1em",
+                    }}>{
+                        menuItem?.parent_id ? menuItems?.find((item) => item.id === menuItem?.parent_id)?.title : "N/A"
+                      }
+                    </p>
+                  )}{" "}
+                </Col>
+                <Col span={4}
+                  style={{
+                    marginLeft: "0em",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "1em"
+                  }}>
+                  {editingItemId === menuItem.id ? (
+                    <>
+                      {/* <h3 style={{ fontSize: "1.4em" }}>Parent Menu</h3>
+                      <Select
+                        showSearch
+                        style={{ width: "100%" }}
+                        placeholder="Select a Parent Menu"
+                        optionFilterProp="children"
+                        onChange={(value) => setParentId(value)}
+                        filterOption={(input, option) =>
+                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                      >
+                        {
+                          menuItems?.map((menuItem) => (
+                            <Select.Option
+                              value={menuItem.id}>
+                              {menuItem.title}
+                            </Select.Option>
+                          ))
+                        }
+                      </Select> */}
+                      <Radio.Group
+                        onChange={(e) => setLinkType(e.target.value)}
+                        value={linkType}
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <Radio value="independent">Independent</Radio>
+                        <Radio value="page">Page</Radio>
+                        <Radio value="sisterConcern">Sister Concern</Radio>
+                      </Radio.Group>
+                      {linkType === "page" ? (
+                        <>
+                          <Select
+                            showSearch
+                            style={{ width: "100%" }}
+                            placeholder="Select a page"
+                            optionFilterProp="children"
+                            onChange={(value) => setEditedLink(value)}
+                            filterOption={(input, option) =>
+                              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }
+                          >
+                            {pages?.map((page) => (
+                              <Select.Option
+                                value={page.slug}>
+                                {page.page_name_en}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        </>
+                      ) :
+                        linkType === "sisterConcern" ? (
+                          <Select
+                            showSearch
+                            style={{ width: "100%" }}
+                            placeholder="Select a Sister Concern"
+                            optionFilterProp="children"
+                            onChange={(value) => setEditedLink(value)}
+                            filterOption={(input, option) =>
+                              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }
+                          >
+                            {
+                              pages?.map((page) => {
+                                if (page.page_name_en?.includes("Ltd")) {
+                                  return (
+                                    <Select.Option
+                                      value={`sister-concerns?pageId=${page.id}`}>
+                                      {page.page_name_en}
+                                    </Select.Option>
+                                  )
+                                }
+                              })
+                            }
+                          </Select>
+                        ) :
+                          (
+                            <Input
+                              allowClear
+                              showSearch
+                              name="link"
+                              value={editedLink}
+                              onChange={(e) => setEditedLink(e.target.value)}
+                            />
+                          )}
+                    </>
                   ) : (
                     <p
                       style={{
                         color: "var(--themes)",
                         textDecoration: "underline",
                         fontSize: "1.2em",
+                        textWrap: "wrap",
+                        wordWrap: "break-word",
+                        paddingRight: "1em",
                       }}
                     >
                       {menuItem.link}{" "}
@@ -643,3 +894,5 @@ export default function MenuItems() {
     </>
   );
 }
+
+export default MenuItems;
