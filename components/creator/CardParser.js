@@ -66,23 +66,31 @@ const CardParser = ({
     <>
       {editMode ? (
         <div className="cardContainer">
-          <Select
-            showSearch
-            style={{ width: "100%", height: "100px" }}
-            placeholder="Select a card"
-            optionFilterProp="children"
-            onChange={handleCardChange}
-          >
-            {memoizedCards?.map((card, index) => (
-              <Option key={index} value={JSON.stringify(card)}>
-                {/* {card?.title_en} */}
-                <div style={{
-                  display: "flex",
-                  gap: "1em",
-                  alignItems: "center",
-                }}>
-                  {
-                    card?.media_files && card?.media_files?.file_type.startsWith("image") ? (
+          <div className="flexed-between">
+            <Select
+              showSearch
+              style={{
+                width: "100%",
+                height: "100px",
+                marginBottom: "2em",
+                marginRight: "1em",
+              }}
+              placeholder="Select a card"
+              optionFilterProp="children"
+              onChange={handleCardChange}
+            >
+              {memoizedCards?.map((card, index) => (
+                <Option key={index} value={JSON.stringify(card)}>
+                  {/* {card?.title_en} */}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "1em",
+                      alignItems: "center",
+                    }}
+                  >
+                    {card?.media_files &&
+                    card?.media_files?.file_type.startsWith("image") ? (
                       <Image
                         width={100}
                         height={60}
@@ -98,13 +106,79 @@ const CardParser = ({
                         alt={card?.media_files?.file_path}
                         style={{ objectFit: "contain" }}
                       />
-                    )
-                  }
-                  <h3>{card?.title_en}</h3>
+                    )}
+                    <h3>{card?.title_en}</h3>
+                  </div>
+                </Option>
+              ))}
+            </Select>
+            {/* Current Card */}
+            <div
+              className="cardContainer"
+              style={{
+                display: "grid",
+                padding: "0.5em",
+                marginBottom: "1em",
+                border: "2px solid var(--themes)",
+                borderRadius: 10,
+                gap: "1em",
+              }}
+            >
+              <div
+                className="imageContainer"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {item._mave ? (
+                  item?._mave?.media_files &&
+                  (item?._mave?.media_files?.file_type.startsWith("image") ? (
+                    <img
+                      src={`${MEDIA_URL}/${item?._mave?.media_files?.file_path}`}
+                      alt={item?._mave?.media_files?.file_path}
+                      style={{
+                        width: "10vw",
+                        height: "100px",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    <video
+                      muted
+                      src={`${MEDIA_URL}/${item?._mave?.media_files?.file_path}`}
+                      alt={item?._mave?.media_files?.file_path}
+                      style={{
+                        width: "10vw",
+                        height: "100px",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ))
+                ) : (
+                  <Loader />
+                )}
+              </div>
+
+              {item ? (
+                <div
+                  className="contentContainer"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "1em",
+                  }}
+                >
+                  <center>
+                    <h3>{item?._mave && item?._mave?.title_en}</h3>
+                  </center>
                 </div>
-              </Option>
-            ))}
-          </Select>
+              ) : (
+                <Loader />
+              )}
+            </div>
+          </div>
         </div>
       ) : (
         <div
@@ -127,52 +201,59 @@ const CardParser = ({
               alignItems: "center",
             }}
           >
-            {
-              item._mave ? (
-                item?._mave?.media_files &&
-                (item?._mave?.media_files?.file_type.startsWith("image") ? (
-                  <img
-                    src={`${MEDIA_URL}/${item?._mave?.media_files?.file_path}`}
-                    alt={item?._mave?.media_files?.file_path}
-                    style={{ width: "15vw", height: "auto" }}
-                  />
-                ) : (
-                  <video
-                    muted
-                    src={`${MEDIA_URL}/${item?._mave?.media_files?.file_path}`}
-                    alt={item?._mave?.media_files?.file_path}
-                    style={{ width: "15vw", height: "auto" }}
-                  />
-                ))
-              ) : <Loader />
-            }
+            {item._mave ? (
+              item?._mave?.media_files &&
+              (item?._mave?.media_files?.file_type.startsWith("image") ? (
+                <img
+                  src={`${MEDIA_URL}/${item?._mave?.media_files?.file_path}`}
+                  alt={item?._mave?.media_files?.file_path}
+                  style={{ width: "15vw", height: "auto" }}
+                />
+              ) : (
+                <video
+                  muted
+                  src={`${MEDIA_URL}/${item?._mave?.media_files?.file_path}`}
+                  alt={item?._mave?.media_files?.file_path}
+                  style={{ width: "15vw", height: "auto" }}
+                />
+              ))
+            ) : (
+              <Loader />
+            )}
           </div>
 
-          {
-            item ? (
-              <div className="contentContainer" style={{
+          {item ? (
+            <div
+              className="contentContainer"
+              style={{
                 display: "flex",
                 flexDirection: "column",
                 gap: "1em",
-              }}>
-                <center>
-                  <h3>{item?._mave && item?._mave?.title_en} ( {item?._mave?.title_bn} )</h3>
-                </center>
+              }}
+            >
+              <center>
+                <h3>
+                  {item?._mave && item?._mave?.title_en} ({" "}
+                  {item?._mave?.title_bn} )
+                </h3>
+              </center>
 
-                <div
-                  dangerouslySetInnerHTML={{ __html: item?._mave && item?._mave?.description_en }}
-                  style={{ textAlign: "left", fontSize: "1em" }}
-                />
-                <div
-                  dangerouslySetInnerHTML={{ __html: item?._mave && item?._mave?.description_bn }}
-                  style={{ textAlign: "left", fontSize: "1em" }}
-                />
-              </div>
-            ) : (
-              <Loader />
-            )
-          }
-
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: item?._mave && item?._mave?.description_en,
+                }}
+                style={{ textAlign: "left", fontSize: "1em" }}
+              />
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: item?._mave && item?._mave?.description_bn,
+                }}
+                style={{ textAlign: "left", fontSize: "1em" }}
+              />
+            </div>
+          ) : (
+            <Loader />
+          )}
         </div>
       )}
     </>

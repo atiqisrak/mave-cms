@@ -1,5 +1,24 @@
-import { AppstoreOutlined, ClockCircleOutlined, FilterOutlined, FontColorsOutlined, PlusCircleOutlined, SortAscendingOutlined, SyncOutlined, UnorderedListOutlined } from "@ant-design/icons";
-import { Alert, Button, Col, Input, Modal, Pagination, Row, Select, message } from "antd";
+import {
+  AppstoreOutlined,
+  ClockCircleOutlined,
+  FilterOutlined,
+  FontColorsOutlined,
+  PlusCircleOutlined,
+  SortAscendingOutlined,
+  SyncOutlined,
+  UnorderedListOutlined,
+} from "@ant-design/icons";
+import {
+  Alert,
+  Button,
+  Col,
+  Input,
+  Modal,
+  Pagination,
+  Row,
+  Select,
+  message,
+} from "antd";
 import React, { useEffect, useState } from "react";
 import instance from "../axios";
 import Loader from "../components/Loader";
@@ -26,24 +45,26 @@ const Cards = () => {
         instance.get("/pages"),
       ]);
 
-      if (cardsResponse.status === 200 && mediaResponse.status === 200 && pageResponse.status === 200) {
+      if (
+        cardsResponse.status === 200 &&
+        mediaResponse.status === 200 &&
+        pageResponse.status === 200
+      ) {
         setCardsData(cardsResponse.data);
-        setFilteredCards(cardsResponse.data);
+        // setFilteredCards(cardsResponse.data);
+        setFilteredCards(cardsResponse?.data?.sort((a, b) => b.id - a.id));
         setMedia(mediaResponse.data);
         setPages(pageResponse.data);
         setLoading(false);
-      }
-
-      else {
+      } else {
         message.error("Failed to fetch cards");
         setLoading(false);
       }
-    }
-    catch (error) {
+    } catch (error) {
       message.error("Failed to fetch cards");
       setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     fetchCards();
@@ -108,17 +129,19 @@ const Cards = () => {
   const handleSearchCards = (searchText) => {
     if (searchText) {
       const searchedCards = cardsData.filter((card) =>
-        card.title_en.toLowerCase().includes(searchText.toLowerCase()));
+        card?.title_en?.toLowerCase().includes(searchText.toLowerCase())
+      );
       setFilteredCards(searchedCards);
-    }
-    else {
+    } else {
       setFilteredCards(cardsData);
     }
-  }
+  };
 
   // Filter by page
   const handleFilterByPage = (pageSlug) => {
-    const filteredCards = cardsData.filter((card) => card.page_slug === pageSlug);
+    const filteredCards = cardsData.filter(
+      (card) => card.page_slug === pageSlug
+    );
     setFilteredCards(filteredCards);
   };
 
@@ -131,7 +154,7 @@ const Cards = () => {
   const onPageSizeOptionsChange = (current, pageSize) => {
     setCurrentPage(current);
     setNumberOfCardsPerPage(pageSize);
-  }
+  };
 
   useEffect(() => {
     const start = (currentPage - 1) * numberOfCardsPerPage;
@@ -139,203 +162,222 @@ const Cards = () => {
     setDisplayedCards(filteredCards.slice(start, end));
   }, [currentPage, filteredCards, numberOfCardsPerPage]);
 
-
   return (
     <div className="ViewContainer">
       <div className="ViewContentContainer">
-        {
-          loading ? <Loader /> : (
-            <>
-
-              <div>
-                {/* Top Header */}
-                <Row justify="space-between" align="middle" gutter={16}
+        {loading ? (
+          <Loader />
+        ) : (
+          <>
+            <div>
+              {/* Top Header */}
+              <Row
+                justify="space-between"
+                align="middle"
+                gutter={16}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr 3fr 2fr 1fr",
+                  gap: "1rem",
+                  marginBottom: "1rem",
+                }}
+              >
+                <Button
+                  type="primary"
+                  icon={<PlusCircleOutlined />}
+                  style={{ backgroundColor: "var(--themes)" }}
+                  onClick={toggleCreateCardForm}
+                >
+                  Add Card
+                </Button>
+                <Button
+                  type="primary"
+                  icon={<FilterOutlined />}
+                  style={{ backgroundColor: "var(--themes)" }}
+                  onClick={() => setSortMode(!sortMode)}
+                >
+                  Sort
+                </Button>
+                <Input
+                  allowClear
+                  placeholder="Search Cards"
+                  onChange={(e) => handleSearchCards(e.target.value)}
+                />
+                <Select
+                  allowClear
+                  placeholder="Filter by page"
+                  onChange={handleFilterByPage}
+                >
+                  {pageNames?.map((page) => (
+                    <Select.Option key={page.value} value={page.value}>
+                      {page.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+                <Button
+                  type="primary"
+                  icon={<UnorderedListOutlined />}
                   style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr 3fr 2fr 1fr",
-                    gap: "1rem",
-                    marginBottom: "1rem",
-                  }}>
-                  <Button
-                    type="primary"
-                    icon={<PlusCircleOutlined />}
-                    style={{ backgroundColor: "var(--themes)" }}
-                    onClick={toggleCreateCardForm}
-                  >
-                    Add Card
-                  </Button>
-                  <Button
-                    type="primary"
-                    icon={<FilterOutlined />}
-                    style={{ backgroundColor: "var(--themes)" }}
-                    onClick={() => setSortMode(!sortMode)}
-                  >
-                    Sort
-                  </Button>
-                  <Input
-                    allowClear
-                    placeholder="Search Cards"
-                    onChange={(e) => handleSearchCards(e.target.value)}
-                  />
-                  <Select
-                    allowClear
-                    placeholder="Filter by page"
-                    onChange={handleFilterByPage}
-                  >
-                    {pageNames?.map((page) => (
-                      <Select.Option key={page.value} value={page.value}>
-                        {page.name}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                  <Button
-                    type="primary"
-                    icon={<UnorderedListOutlined />}
-                    style={{
-                      backgroundColor: "var(--themes)",
-                      display: viewType === "list" ? "none" : "block",
-                    }}
-                    onClick={() => setViewType("list")}
-                  >
-                    List View
-                  </Button>
-                  <Button
-                    type="primary"
-                    icon={<AppstoreOutlined />}
-                    style={{
-                      backgroundColor: "var(--themes)",
-                      display: viewType === "grid" ? "none" : "block",
-                    }}
-                    onClick={() => setViewType("grid")}
-                  >
-                    Grid View
-                  </Button>
+                    backgroundColor: "var(--themes)",
+                    display: viewType === "list" ? "none" : "block",
+                  }}
+                  onClick={() => setViewType("list")}
+                >
+                  List View
+                </Button>
+                <Button
+                  type="primary"
+                  icon={<AppstoreOutlined />}
+                  style={{
+                    backgroundColor: "var(--themes)",
+                    display: viewType === "grid" ? "none" : "block",
+                  }}
+                  onClick={() => setViewType("grid")}
+                >
+                  Grid View
+                </Button>
 
-                  <Button
-                    icon={<SyncOutlined />}
-                    style={{
-                      backgroundColor: "var(--themes)",
-                      color: "white",
-                      position: "absolute",
-                      right: "10%",
-                    }}
-                    onClick={fetchCards}
-                  >
-                    Sync
-                  </Button>
-                </Row>
+                <Button
+                  icon={<SyncOutlined />}
+                  style={{
+                    backgroundColor: "var(--themes)",
+                    color: "white",
+                    position: "absolute",
+                    right: "10%",
+                  }}
+                  onClick={fetchCards}
+                >
+                  Sync
+                </Button>
+              </Row>
 
-                {/* Filter */}
-                <Row style={{ display: sortMode ? "block" : "none", marginBottom: "2em" }}>
-                  <center style={{
+              {/* Filter */}
+              <Row
+                style={{
+                  display: sortMode ? "block" : "none",
+                  marginBottom: "2em",
+                }}
+              >
+                <center
+                  style={{
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                  }}>
-                    <Select
-                      placeholder="Sort by"
-                      style={{ width: "30%", marginRight: "1rem" }}
-                      onChange={handleSortCards}
-                    >
-                      <Select.Option value="name">
-                        <FontColorsOutlined style={{
+                  }}
+                >
+                  <Select
+                    placeholder="Sort by"
+                    style={{ width: "30%", marginRight: "1rem" }}
+                    onChange={handleSortCards}
+                  >
+                    <Select.Option value="name">
+                      <FontColorsOutlined
+                        style={{
                           paddingRight: "1rem",
-                        }} />
-                        Name</Select.Option>
-                      <Select.Option value="date">
-                        <ClockCircleOutlined style={{
+                        }}
+                      />
+                      Name
+                    </Select.Option>
+                    <Select.Option value="date">
+                      <ClockCircleOutlined
+                        style={{
                           paddingRight: "1rem",
-                        }} />
-                        Date</Select.Option>
-                    </Select>
-                    <Select
-                      placeholder="Order"
-                      style={{
-                        width: "30%",
-                        marginRight: "1rem",
-                        display: sortActivated ? "block" : "none",
-                      }}
-                      onChange={handleOrderCards}
-                    >
-                      <Select.Option value="asc">
-                        <SortAscendingOutlined style={{
+                        }}
+                      />
+                      Date
+                    </Select.Option>
+                  </Select>
+                  <Select
+                    placeholder="Order"
+                    style={{
+                      width: "30%",
+                      marginRight: "1rem",
+                      display: sortActivated ? "block" : "none",
+                    }}
+                    onChange={handleOrderCards}
+                  >
+                    <Select.Option value="asc">
+                      <SortAscendingOutlined
+                        style={{
                           paddingRight: "1rem",
-                        }} />
-                        Added First
-                      </Select.Option>
-                      <Select.Option value="desc">
-                        <SortAscendingOutlined style={{
+                        }}
+                      />
+                      Added First
+                    </Select.Option>
+                    <Select.Option value="desc">
+                      <SortAscendingOutlined
+                        style={{
                           paddingLeft: "1rem",
                           transform: "rotate(180deg)",
-                        }} />
-                        Added Last
-                      </Select.Option>
-                    </Select>
-                  </center>
-                </Row>
+                        }}
+                      />
+                      Added Last
+                    </Select.Option>
+                  </Select>
+                </center>
+              </Row>
 
-                {/* Create Card */}
-                {isCreateCardFormVisible && (
-                  <Col span={24}>
-                    <CreateCardForm
-                      onCreateCard={handleCreateCard}
-                      onCancel={toggleCreateCardForm}
+              {/* Create Card */}
+              {isCreateCardFormVisible && (
+                <Col span={24}>
+                  <CreateCardForm
+                    onCreateCard={handleCreateCard}
+                    onCancel={toggleCreateCardForm}
+                    media={media}
+                    pages={pages}
+                    fetchCards={fetchCards}
+                    setIsCreateCardFormVisible={setIsCreateCardFormVisible}
+                  />
+                </Col>
+              )}
+              {/* Cards Gallary */}
+              {filteredCards?.length > 0 ? (
+                <div>
+                  {viewType === "grid" ? (
+                    <CardGridView
+                      cardData={displayedCards}
                       media={media}
-                      pages={pages}
                       fetchCards={fetchCards}
-                      setIsCreateCardFormVisible={setIsCreateCardFormVisible}
                     />
-                  </Col>
-                )}
-                {/* Cards Gallary */}
-                {
-                  filteredCards?.length > 0 ? (
-                    <div>
-                      {viewType === "grid" ? (
-                        <CardGridView
-                          cardData={displayedCards}
-                          media={media}
-                          fetchCards={fetchCards}
-                        />
-                      ) : (
-                        <CardListView
-                          cardData={filteredCards}
-                          media={media}
-                          fetchCards={fetchCards}
-                        />
-                      )}
-                    </div>
                   ) : (
-                    <h2>No cards found</h2>
-                  )
-                }
-              </div>
-              {/* Pagination */}
-              <Pagination
-                defaultCurrent={1}
-                current={currentPage}
-                defaultPageSize={numberOfCardsPerPage}
-                hideOnSinglePage={true}
-                pageSizeOptions={["12", "24", "36", "48"]}
-                responsive={true}
-                showPrevNextJumpers={true}
-                showQuickJumper={true}
-                showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
-                onChange={onPageSizeOptionsChange}
-                total={totalNumberOfCards}
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: "2rem",
-                }}
-              />
-            </>
-          )
-        }
+                    <CardListView
+                      cardData={filteredCards}
+                      media={media}
+                      fetchCards={fetchCards}
+                    />
+                  )}
+                </div>
+              ) : (
+                <h2>No cards found</h2>
+              )}
+            </div>
+            {/* Pagination */}
+            <Pagination
+              defaultCurrent={1}
+              current={currentPage}
+              defaultPageSize={numberOfCardsPerPage}
+              hideOnSinglePage={true}
+              pageSizeOptions={["12", "24", "36", "48"]}
+              responsive={true}
+              showPrevNextJumpers={true}
+              showQuickJumper={true}
+              showTotal={(total, range) =>
+                `${range[0]}-${range[1]} of ${total} items`
+              }
+              onChange={onPageSizeOptionsChange}
+              total={totalNumberOfCards}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: "2rem",
+              }}
+            />
+          </>
+        )}
       </div>
     </div>
   );
-}
+};
 
 export default Cards;
