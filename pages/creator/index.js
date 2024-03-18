@@ -488,8 +488,6 @@ const Creator = () => {
     fetchPageData();
   }, [pid]);
   const convertedSectionData = bodyParser(pageData);
-  console.log("convertedSectionData: ", convertedSectionData);
-  console.log("pageData nn: ", pageData);
   useEffect(() => {
     setShowPageData(convertedSectionData);
     setCurrentPageNameEn(pageData?.page_name_en);
@@ -950,10 +948,43 @@ const Creator = () => {
     <>
       <div className="ViewContainer">
         <div className="ViewContentContainer">
+          <center>
+            <div>
+              {/* <div
+                // vertical line
+                style={{
+                  position: "absolute",
+                  left: "52%",
+                  top: "0",
+                  width: "4px",
+                  height: "20px",
+                  backgroundColor: "var(--themes)",
+                }}
+              /> */}
+              <h2
+                style={{
+                  color: "var(--themes)",
+                  position: "absolute",
+                  top: 0,
+                  scrollBehavior: "smooth",
+                  scrollTimeline: "smooth",
+                  backgroundColor: "white",
+                  padding: "10px 20px",
+                  borderRadius: "0 0 10px 10px",
+                  left: "45%",
+                  boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+                  border: "2px solid var(--themes)",
+                }}
+              >
+                {pageData?.page_name_en} Page
+              </h2>
+            </div>
+          </center>
           <div
             className="creator-canvas"
             style={{
               position: "relative",
+              backgroundColor: "white",
             }}
           >
             <div>
@@ -1172,12 +1203,13 @@ const Creator = () => {
                       ) : (
                         // Update Section Data
                         <>
-
                           {console.log("Section Data: ", showPageData)}
                           <ComponentParse
                             sectionId={section?._id}
                             section={section?.data}
-                            editMode={editMode && editedSectionId == section?._id}
+                            editMode={
+                              editMode && editedSectionId == section?._id
+                            }
                             onNavbarSelect={handleNavbarSelect}
                             onCardSelect={handleCardSelect}
                             onMediaSelect={handleMediaSelect}
@@ -1197,7 +1229,6 @@ const Creator = () => {
                             setMediaId={setMediaId}
                           />
                         </>
-
                       )}
 
                       {editedSectionId === section?._id && (
