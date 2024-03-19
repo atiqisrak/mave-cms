@@ -131,7 +131,7 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
         </Menu.Item>
       </>
     );
-  }
+  };
 
   const renderAuthorizedMenuItems = () => {
     return (
@@ -241,7 +241,6 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
           Form Responses
         </Menu.Item>
 
-
         {/* only admin can see this */}
         <SubMenu
           key="creatortools"
@@ -273,7 +272,8 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
               marginTop: "10%",
               fontSize: "1.1em",
               fontWeight: "bold",
-            }}>
+            }}
+          >
             Blogs
           </Menu.Item>
           {/* Tools */}
@@ -333,7 +333,7 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
         </SubMenu>
       </>
     );
-  }
+  };
 
   return (
     <>
@@ -383,11 +383,20 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
               {/* MAVE Admin */}
               <SubMenu
                 key="mave-admin"
-                icon={<UserOutlined style={{ fontSize: "1.5rem" }} />}
+                // icon={<UserOutlined style={{ fontSize: "1.5rem" }} />}
+                icon={
+                  <Image
+                    src="/images/profile_avatar.png"
+                    preview={false}
+                    style={{
+                      borderRadius: "50%",
+                    }}
+                  />
+                }
                 style={{
                   marginTop: "20%",
-                  fontSize: "1.1em",
-                  fontWeight: "bold",
+                  width: "100px",
+                  height: "auto",
                 }}
               >
                 {token ? (
@@ -408,133 +417,128 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
           </div>
         </div>
         {creatorMode == false ? (
-          <><Sider
-            trigger={null}
-            collapsible={true}
-            collapsed={collapsed}
-            onCollapse={handleCollapse}
-            breakpoint="md"
-            collapsedWidth={80}
-            width={260}
-            theme="lite"
-            style={{
-              overflow: "auto",
-              position: "fixed",
-              zIndex: 9,
-              height: "100%",
-              left: 0,
-              top: 0,
-              borderRadius: "0 10px 10px 0",
-              paddingTop: 30,
-            }}
-          >
-            <div>
-              <div
-                className="logoholder"
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 30,
-                  paddingTop: 40,
-                }}
-              >
-                <div style={{
-                  display: "flex",
-                  gap: 10,
-                  alignItems: "center",
-
-                }}>
-                  <Link
-                    href={"/usermanual/changelog"}
-                  >
-                    <h3
-                      style={{
-                        color: "var(--theme)",
-                        fontSize: "1em",
-                        fontWeight: "bold",
-                        backgroundColor: "white",
-                        padding: "5px",
-                        borderRadius: "5px 0 5px 0",
-                        position: collapsed ? "relative" : "absolute",
-                        zIndex: 1,
-                        right: collapsed ? "" : 20,
-                        top: collapsed ? "" : 80,
-                      }}
-                    >
-                      {
-                        changeLogs && changeLogs.length > 0 ? changeLogs[0].version
-                          : "v 1.0.0"
-                      }
-                    </h3>
-                  </Link>
-                </div>
-
-                <Link href="/dashboard" className="sitelogo">
-                  {collapsed ? (
-                    <Image
-                      className="sitelogo"
-                      src="/images/mave_logo.png"
-                      width={40} // Adjust the collapsed logo width
-                      height={40} // Adjust the collapsed logo height
-                      resizeMode="contain"
-                      preview={false}
-                    />
-                  ) : (
-                    <Image
-                      className="sitelogo"
-                      src="/images/mave_logo_horizontal.png"
-                      width={629 / 4}
-                      height={301 / 4}
-                      resizeMode="contain"
-                      preview={false}
-                    />
-                  )}
-                </Link>
-              </div>
-              <Menu
-                theme="dark"
-                mode="inline"
-                defaultSelectedKeys={[selectedMenuItem]}
-                onClick={handleMenuClick}
-                collapsible={true}
-                collapsedWidth={80}
-              >
-                {/* MAVE Admin */}
-                <SubMenu
-                  key="mave-admin"
-                  icon={<UserOutlined />}
-                  title="MAVE Admin"
+          <>
+            <Sider
+              trigger={null}
+              collapsible={true}
+              collapsed={collapsed}
+              onCollapse={handleCollapse}
+              breakpoint="md"
+              collapsedWidth={80}
+              width={260}
+              theme="lite"
+              style={{
+                overflow: "auto",
+                position: "fixed",
+                zIndex: 9,
+                height: "100%",
+                left: 0,
+                top: 0,
+                borderRadius: "0 10px 10px 0",
+                paddingTop: 30,
+              }}
+            >
+              <div>
+                <div
+                  className="logoholder"
                   style={{
-                    marginTop: "20%",
-                    fontSize: "1.1em",
-                    fontWeight: "bold",
+                    display: "flex",
+                    justifyContent: "center",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 30,
+                    paddingTop: 40,
                   }}
                 >
-                  {token ? (
-                    renderUnAuthorizedMenuItems()
-                  ) : (
-                    <>
-                      <Menu.Item
-                        key="6"
-                        icon={<LoginOutlined />}
-                        onClick={() => setIsModalOpen(true)}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 10,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Link href={"/usermanual/changelog"}>
+                      <h3
+                        style={{
+                          color: "var(--theme)",
+                          fontSize: "1em",
+                          fontWeight: "bold",
+                          backgroundColor: "white",
+                          padding: "5px",
+                          borderRadius: "5px 0 5px 0",
+                          position: collapsed ? "relative" : "absolute",
+                          zIndex: 1,
+                          right: collapsed ? "" : 20,
+                          top: collapsed ? "" : 80,
+                        }}
                       >
-                        Login
-                      </Menu.Item>
-                    </>
-                  )}
-                </SubMenu>
-                {token ? (
-                  renderAuthorizedMenuItems()
-                ) : (
-                  ""
-                )}
-              </Menu>
-              {children}
-            </div>
-          </Sider>
+                        {changeLogs && changeLogs.length > 0
+                          ? changeLogs[0].version
+                          : "v 1.0.0"}
+                      </h3>
+                    </Link>
+                  </div>
+
+                  <Link href="/dashboard" className="sitelogo">
+                    {collapsed ? (
+                      <Image
+                        className="sitelogo"
+                        src="/images/mave_logo.png"
+                        width={40} // Adjust the collapsed logo width
+                        height={40} // Adjust the collapsed logo height
+                        resizeMode="contain"
+                        preview={false}
+                      />
+                    ) : (
+                      <Image
+                        className="sitelogo"
+                        src="/images/mave_logo_horizontal.png"
+                        width={629 / 4}
+                        height={301 / 4}
+                        resizeMode="contain"
+                        preview={false}
+                      />
+                    )}
+                  </Link>
+                </div>
+                <Menu
+                  theme="dark"
+                  mode="inline"
+                  defaultSelectedKeys={[selectedMenuItem]}
+                  onClick={handleMenuClick}
+                  collapsible={true}
+                  collapsedWidth={80}
+                >
+                  {/* MAVE Admin */}
+                  <SubMenu
+                    key="mave-admin"
+                    icon={<UserOutlined />}
+                    title="MAVE Admin"
+                    style={{
+                      marginTop: "20%",
+                      fontSize: "1.1em",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {token ? (
+                      renderUnAuthorizedMenuItems()
+                    ) : (
+                      <>
+                        <Menu.Item
+                          key="6"
+                          icon={<LoginOutlined />}
+                          onClick={() => setIsModalOpen(true)}
+                        >
+                          Login
+                        </Menu.Item>
+                      </>
+                    )}
+                  </SubMenu>
+                  {token ? renderAuthorizedMenuItems() : ""}
+                </Menu>
+                {children}
+              </div>
+            </Sider>
           </>
         ) : (
           ""
