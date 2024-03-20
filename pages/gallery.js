@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Button,
   Col,
-  Image,
   Modal,
   Pagination,
   Row,
@@ -21,7 +20,8 @@ import {
   UploadOutlined,
 } from "@ant-design/icons";
 const { Option } = Select;
-import { Document, Page } from 'react-pdf';
+import { Document, Page } from "react-pdf";
+import Image from "next/image";
 
 const Gallery = () => {
   useEffect(() => {
@@ -39,7 +39,7 @@ const Gallery = () => {
 
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
-  }
+  };
 
   const [currentPage, setCurrentPage] = useState(1);
   const showModal = () => {
@@ -362,14 +362,14 @@ const Gallery = () => {
                     <Skeleton.Image />
                   ) : (
                     <Image
+                      placeholder="blur"
+                      blurDataURL="/images/Image_Placholder.png"
+                      width={300}
+                      height={300}
+                      objectFit="cover"
+                      borderRadius="10px"
                       src={`${MEDIA_URL}/${asset.file_path}`}
                       alt={asset.file_name}
-                      style={{
-                        objectFit: "cover",
-                        borderRadius: 10,
-                        width: "12vw",
-                        height: "18vh",
-                      }}
                     />
                   )}
                 </>
@@ -401,6 +401,7 @@ const Gallery = () => {
                   }}
                   onClick={() => window.open(`${MEDIA_URL}/${asset.file_path}`)}
                 />
+              ) : (
                 // <>
                 //   <Document file={`${MEDIA_URL}/${asset.file_path}`}
                 //     onLoadSuccess={onDocumentLoadSuccess}>
@@ -410,7 +411,6 @@ const Gallery = () => {
                 //     Page {pageNumber} of {numPages}
                 //   </p>
                 // </>
-              ) : (
                 <p>Unsupported file format: {asset.file_type}</p>
               )}
 
