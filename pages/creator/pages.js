@@ -5,6 +5,7 @@ import {
   DeleteFilled,
   EditOutlined,
   PlusCircleOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import {
   Button,
@@ -157,6 +158,21 @@ const Pages = () => {
     }
   };
 
+  // filter pages
+  const handlePageSearch = async (searchText) => {
+    // filter pages by page_name_en
+    try {
+      searchText === "" ? fetchPages() : null;
+
+      const filteredPages = pages.filter((page) =>
+        page.page_name_en.toLowerCase().includes(searchText.toLowerCase())
+      );
+      setPages(filteredPages);
+    } catch (error) {
+      console.error("Error filtering pages:", error);
+    }
+  };
+
   return (
     <div className="ViewContainer">
       <div className="ViewContentContainer">
@@ -168,6 +184,19 @@ const Pages = () => {
           }}
         >
           <h1>Pages</h1>
+
+          <Input
+            placeholder="Search Pages"
+            suffix={<SearchOutlined />}
+            style={{
+              width: "20vw",
+              height: "2em",
+              borderRadius: "10px",
+              fontSize: "1.2em",
+              padding: "0 1em",
+            }}
+            onChange={(e) => handlePageSearch(e.target.value)}
+          />
 
           {createMode ? (
             <Button

@@ -23,7 +23,7 @@ const SingleMediaSelect = ({ visible, onCancel, onMediaSelect, media }) => {
 
   // Pagination and Sorting
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortBy, setSortBy] = useState("asc");
+  const [sortBy, setSortBy] = useState("DESC");
   const [filterMode, setFilterMode] = useState(false);
   const [totalMediaAssets, setTotalMediaAssets] = useState(0);
 
@@ -200,7 +200,7 @@ const SingleMediaSelect = ({ visible, onCancel, onMediaSelect, media }) => {
                         borderRadius: 10,
                         width: "12vw",
                         height: "18vh",
-                        backgroundColor: "black"
+                        backgroundColor: "black",
                       }}
                     />
                   )}
@@ -224,11 +224,27 @@ const SingleMediaSelect = ({ visible, onCancel, onMediaSelect, media }) => {
                   </video>
                 </>
               ) : asset.file_type === "application/pdf" ? (
-                <iframe
-                  src={`${MEDIA_URL}/${asset.file_path}`}
-                  width={275}
-                  height={200}
-                />
+                // <iframe
+                //   src={`${MEDIA_URL}/${asset.file_path}`}
+                //   width={275}
+                //   height={200}
+                // />
+                <>
+                  <img
+                    src="/images/pdf_file_type.png"
+                    alt="pdf"
+                    style={{
+                      width: "6vw",
+                      height: "auto",
+                      objectFit: "cover",
+                    }}
+                  />
+                  <p>
+                    {asset.file_name.length > 16
+                      ? asset.file_name.substring(0, 16) + "..."
+                      : asset.file_name}
+                  </p>
+                </>
               ) : (
                 <p>Unsupported file format: {asset.file_type}</p>
               )}

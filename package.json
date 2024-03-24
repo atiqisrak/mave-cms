@@ -12,6 +12,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
     "@react-pdf-viewer/core": "^3.12.0",
+    "@react-pdf-viewer/thumbnail": "^3.12.0",
     "antd": "^5.14.1",
     "axios": "^1.6.7",
     "croppie": "^2.6.5",
@@ -23,6 +24,7 @@
     "lottie-web": "^5.12.2",
     "moment": "^2.29.4",
     "next": "^12.3.4",
+    "pdf-thumbnail": "^1.0.6",
     "pdfjs-dist": "^3.4.120",
     "quill": "^1.3.7",
     "react": "18.2.0",

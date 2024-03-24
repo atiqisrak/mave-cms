@@ -1,5 +1,42 @@
 [
     {
+        "version": "v 0.2.34",
+        "date": "2024-03-23",
+        "changes": {
+            "Feature": [
+                "Rich text editors are now more upgraded and user friendly",
+                "Media selector is now more user friendly",
+                "Creator Studio has got feature to search pages by their name/title"
+            ]
+        }
+    },
+    {
+        "version": "v 0.2.26",
+        "date": "2024-03-19",
+        "changes": {
+            "Feature": [
+                "User can upload and see documents (e.g. PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX) in the CMS Documents Section in the Components",
+                "Users can delete files instantly without waiting for the request to be processed",
+                "Menu Items got parent menu feature. Now user can create nested menu items",
+                "User can see the parent menu of the menu item in the CMS",
+                "User can set 3 types of links in the menu item link: Independent, Page, Mega Menu"
+            ]
+        }
+    },
+    {
+        "version": "v 0.2.11",
+        "date": "2024-03-15",
+        "changes": {
+            "Feature": [
+                "Now admins can create user from MAVE Admin -> Profile",
+                "Now users can change theme to from top right corner of the CMS",
+                "Authorised users can see avatar in their profile picture",
+                "Media Library is now 1.2x faster than before",
+                "User can see tabs as Photos and Videos in Media Library"
+            ]
+        }
+    },
+    {
         "version": "v 0.2.9",
         "date": "2024-03-13",
         "changes": {

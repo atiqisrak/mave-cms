@@ -68,6 +68,7 @@ const Creator = () => {
   const [newSectionComponents, setNewSectionComponent] = useState([]);
   const [newData, setNewData] = useState(null);
   const [canvas, setCanvas] = useState(false);
+  const [internalCanvas, setInternalCanvas] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editedSectionId, setEditedSectionId] = useState(null);
   const [selectedComponent, setSelectedComponent] = useState(null);
@@ -216,8 +217,12 @@ const Creator = () => {
 
   // Cancel Button
 
+  const minidestroy = () => {
+    // newSectionComponents.pop();
+    setSelectionMode(false);
+  };
+
   const destroy = () => {
-    // pop last element from newSectionComponent array
     newSectionComponents.pop();
     setNewSection(null);
     setSelectionMode(false);
@@ -498,6 +503,7 @@ const Creator = () => {
   const handleCloseSectionModal = () => {
     setNewSectionComponent([]);
     setCanvas(false);
+    setInternalCanvas(false);
     setShowPageData(showPageData);
   };
   const handleSave = async () => {
@@ -597,24 +603,6 @@ const Creator = () => {
     console.log("sectionId: ", sectionId);
     console.log("Index of the changed media: ", componentIndex);
     console.log("showPageData: ", showPageData);
-    // console.log("kashfee", showPageData);
-    // const updatedPageData = showPageData.map((section) => {
-    //   if (section._id === editedSectionId) {
-    //     const updatedData = section.data.map((item) => {
-    //       if (item.type === sectionId.type) {
-    //         console.log("kashfee", sectionId);
-    //         return sectionId;
-    //       }
-    //       return item;
-    //     });
-    //     console.log("updatedPageData", updatedData);
-    //     return {
-    //       ...section,
-    //       data: updatedData,
-    //     };
-    //   }
-    //   return section;
-    // });
 
     const updatedPageData = showPageData.map((section) => {
       if (section._id === editedSectionId) {
@@ -633,27 +621,6 @@ const Creator = () => {
       }
       return section;
     });
-    // const updatedPageData = showPageData.map((section) => {
-    //   if (section._id === editedSectionId) {
-    //     const updatedData = section.data.map((item) => {
-    //       console.log("Replacing item with id: ", item.id,sectionId.id);
-    //       if (item.id === sectionId.id) {
-    //         // Replace the item with the updated sectionId
-    //         return sectionId;
-    //       }
-    //       return item;
-    //     });
-
-    //     console.log("updatedPageData", updatedData);
-
-    //     return {
-    //       ...section,
-    //       data: updatedData,
-    //     };
-    //   }
-    //   return section;
-    // });
-    // console.log("updatedPageData", updatedPageData);
     setUpdatedSection(updatedPageData);
   };
   // console.log("updatedSection", updatedSection);
@@ -724,28 +691,6 @@ const Creator = () => {
     });
     setUpdatedSection(updatedPageData);
   };
-
-  // console.log("updatedSection", updatedSection);
-
-  // const handleDescriptionChange = (value) => {
-  //   const updatedPageData = showPageData.map((section) => {
-  //     if (section._id === editedSectionId) {
-  //       const updatedData = section.data.map((item) => {
-  //         if (item.type === "description") {
-  //           return value; // Replace the item with the selectedDescriptionId data
-  //         }
-  //         return item;
-  //       });
-
-  //       return {
-  //         ...section,
-  //         data: updatedData,
-  //       };
-  //     }
-  //     return section;
-  //   });
-  //   setUpdatedSection(updatedPageData);
-  // };
 
   const handleDescriptionChange = (index, value, type) => {
     const updatedPageData = showPageData.map((section) => {
@@ -1233,6 +1178,948 @@ const Creator = () => {
 
                       {editedSectionId === section?._id && (
                         <center>
+                          {internalCanvas && (
+                            <div
+                              className="flexed-center"
+                              style={{
+                                width: "50vw",
+                                height: "300px",
+                                border: "2px dashed var(--black)",
+                                borderRadius: "10px",
+                                marginTop: "3rem",
+                              }}
+                            >
+                              {selectionMode ? (
+                                <div>
+                                  {fetchedComponent &&
+                                    selectedComponentType && (
+                                      <>
+                                        {(() => {
+                                          switch (selectedComponentType) {
+                                            case "title":
+                                              return (
+                                                <div style={{ width: "40vw" }}>
+                                                  <Input
+                                                    style={{
+                                                      padding: "1em 2em",
+                                                      marginBottom: "1em",
+                                                      borderRadius: 10,
+                                                      fontSize: "1.6rem",
+                                                      fontWeight: "bold",
+                                                    }}
+                                                    placeholder="Enter Title"
+                                                    onChange={(e) =>
+                                                      handleFormChange(
+                                                        "hero_title_en",
+                                                        e.target.value,
+                                                        selectedComponentType
+                                                      )
+                                                    }
+                                                  />
+                                                  <div
+                                                    style={{
+                                                      display: "flex",
+                                                      justifyContent:
+                                                        "space-between",
+                                                      alignItems: "center",
+                                                      padding: "1em 2em",
+                                                      width: "30%",
+                                                      gap: "2em",
+                                                    }}
+                                                  >
+                                                    <Button
+                                                      style={{
+                                                        backgroundColor:
+                                                          "var(--theme)",
+                                                        color: "#fff",
+                                                      }}
+                                                      onClick={() => {
+                                                        handleClickOfText(
+                                                          selectedComponentType
+                                                        );
+                                                        setSelectionMode(false);
+                                                      }}
+                                                      icon={<PlusOutlined />}
+                                                    >
+                                                      Add
+                                                    </Button>
+                                                    <Button
+                                                      danger
+                                                      onClick={() =>
+                                                        minidestroy()
+                                                      }
+                                                      icon={<CloseOutlined />}
+                                                    >
+                                                      Cancel
+                                                    </Button>
+                                                  </div>
+                                                </div>
+                                              );
+                                            case "description":
+                                              return (
+                                                <div style={{ width: "40vw" }}>
+                                                  <RichTextEditor
+                                                    editMode="true"
+                                                    placeholder="Enter Description"
+                                                    onChange={(e) =>
+                                                      handleFormChange(
+                                                        "hero_description_en",
+                                                        e,
+                                                        selectedComponentType
+                                                      )
+                                                    }
+                                                  />
+                                                  <div
+                                                    style={{
+                                                      display: "flex",
+                                                      justifyContent:
+                                                        "space-between",
+                                                      alignItems: "center",
+                                                      padding: "1em 2em",
+                                                      width: "30%",
+                                                    }}
+                                                  >
+                                                    <Button
+                                                      style={{
+                                                        backgroundColor:
+                                                          "var(--theme)",
+                                                        color: "#fff",
+                                                      }}
+                                                      onClick={() => {
+                                                        handleClickOfText(
+                                                          selectedComponentType
+                                                        );
+                                                        setSelectionMode(false);
+                                                      }}
+                                                      icon={<PlusOutlined />}
+                                                    >
+                                                      Add
+                                                    </Button>
+                                                    <Button
+                                                      danger
+                                                      onClick={() =>
+                                                        minidestroy()
+                                                      }
+                                                      icon={<CloseOutlined />}
+                                                    >
+                                                      Cancel
+                                                    </Button>
+                                                  </div>
+                                                </div>
+                                              );
+                                            case "inner-section":
+                                              return (
+                                                <InnerSectionParser
+                                                  item={item}
+                                                  editMode={editMode}
+                                                />
+                                              );
+                                            case "media":
+                                              return (
+                                                <div style={{ width: "40vw" }}>
+                                                  <Select
+                                                    value={searchDefault}
+                                                    mode="multiple"
+                                                    allowClear
+                                                    showSearch
+                                                    filterOption={(
+                                                      input,
+                                                      option
+                                                    ) =>
+                                                      option.children
+                                                        .toLowerCase()
+                                                        .indexOf(
+                                                          input.toLowerCase()
+                                                        ) >= 0
+                                                    }
+                                                    style={{ width: "100%" }}
+                                                    placeholder="Select Media"
+                                                    onChange={(value) =>
+                                                      handleFormChange(
+                                                        "card_ids",
+                                                        value,
+                                                        selectedComponentType
+                                                      )
+                                                    }
+                                                  >
+                                                    {fetchedComponent?.map(
+                                                      (card, index) => (
+                                                        <Select.Option
+                                                          key={index}
+                                                          value={card.id}
+                                                        >
+                                                          <Image
+                                                            preview={false}
+                                                            src={`${MEDIA_URL}/${card?.file_path}`}
+                                                            alt={
+                                                              card?.file_path
+                                                            }
+                                                            width={300}
+                                                            height={200}
+                                                            objectFit="cover"
+                                                          />
+                                                        </Select.Option>
+                                                      )
+                                                    )}
+                                                  </Select>
+                                                  <div
+                                                    style={{
+                                                      display: "flex",
+                                                      justifyContent:
+                                                        "space-between",
+                                                      alignItems: "center",
+                                                      padding: "1em 2em",
+                                                      width: "30%",
+                                                      gap: "2em",
+                                                    }}
+                                                  >
+                                                    <Button
+                                                      style={{
+                                                        backgroundColor:
+                                                          "var(--theme)",
+                                                        color: "#fff",
+                                                      }}
+                                                      onClick={() => {
+                                                        setSelectionMode(false);
+                                                      }}
+                                                      icon={<PlusOutlined />}
+                                                    >
+                                                      Add
+                                                    </Button>
+                                                    <Button
+                                                      danger
+                                                      onClick={() =>
+                                                        minidestroy()
+                                                      }
+                                                      icon={<CloseOutlined />}
+                                                    >
+                                                      Cancel
+                                                    </Button>
+                                                  </div>
+                                                </div>
+                                              );
+                                            case "menu":
+                                              return (
+                                                <div style={{ width: "40vw" }}>
+                                                  <Select
+                                                    value={searchDefault}
+                                                    mode="multiple"
+                                                    allowClear
+                                                    showSearch
+                                                    filterOption={(
+                                                      input,
+                                                      option
+                                                    ) =>
+                                                      option.children
+                                                        .toLowerCase()
+                                                        .indexOf(
+                                                          input.toLowerCase()
+                                                        ) >= 0
+                                                    }
+                                                    style={{ width: "100%" }}
+                                                    placeholder="Select Menu"
+                                                    onChange={(value) =>
+                                                      handleFormChange(
+                                                        "card_ids",
+                                                        value,
+                                                        selectedComponentType
+                                                      )
+                                                    }
+                                                  >
+                                                    {fetchedComponent?.map(
+                                                      (menu, index) => (
+                                                        <Select.Option
+                                                          key={index}
+                                                          value={menu.id}
+                                                        >
+                                                          {menu?.name}
+                                                        </Select.Option>
+                                                      )
+                                                    )}
+                                                  </Select>
+                                                  <div
+                                                    style={{
+                                                      display: "flex",
+                                                      justifyContent:
+                                                        "space-between",
+                                                      alignItems: "center",
+                                                      padding: "1em 2em",
+                                                      width: "40%",
+                                                    }}
+                                                  >
+                                                    <Button
+                                                      style={{
+                                                        backgroundColor:
+                                                          "var(--theme)",
+                                                        color: "#fff",
+                                                      }}
+                                                      onClick={() =>
+                                                        setSelectionMode(false)
+                                                      }
+                                                      icon={<PlusOutlined />}
+                                                    >
+                                                      Add
+                                                    </Button>
+                                                    <Button
+                                                      danger
+                                                      onClick={() =>
+                                                        minidestroy()
+                                                      }
+                                                      icon={<CloseOutlined />}
+                                                    >
+                                                      Cancel
+                                                    </Button>
+                                                  </div>
+                                                </div>
+                                              );
+                                            case "navbar":
+                                              return (
+                                                <div style={{ width: "40vw" }}>
+                                                  <Select
+                                                    value={searchDefault}
+                                                    mode="multiple"
+                                                    allowClear
+                                                    showSearch
+                                                    filterOption={(
+                                                      input,
+                                                      option
+                                                    ) =>
+                                                      option.children
+                                                        .toLowerCase()
+                                                        .indexOf(
+                                                          input.toLowerCase()
+                                                        ) >= 0
+                                                    }
+                                                    style={{ width: "100%" }}
+                                                    placeholder="Select Navbar"
+                                                    onChange={(value) =>
+                                                      handleFormChange(
+                                                        "card_ids",
+                                                        value,
+                                                        selectedComponentType
+                                                      )
+                                                    }
+                                                  >
+                                                    {fetchedComponent?.map(
+                                                      (card, index) => (
+                                                        <Select.Option
+                                                          key={index}
+                                                          value={card.id}
+                                                        >
+                                                          {card.title_en}
+                                                        </Select.Option>
+                                                      )
+                                                    )}
+                                                  </Select>
+                                                  <div
+                                                    style={{
+                                                      display: "flex",
+                                                      justifyContent:
+                                                        "space-between",
+                                                      alignItems: "center",
+                                                      padding: "1em 2em",
+                                                      width: "40%",
+                                                    }}
+                                                  >
+                                                    <Button
+                                                      style={{
+                                                        backgroundColor:
+                                                          "var(--theme)",
+                                                        color: "#fff",
+                                                      }}
+                                                      onClick={() =>
+                                                        setSelectionMode(false)
+                                                      }
+                                                      icon={<PlusOutlined />}
+                                                    >
+                                                      Add
+                                                    </Button>
+                                                    <Button
+                                                      danger
+                                                      onClick={() =>
+                                                        minidestroy()
+                                                      }
+                                                      icon={<CloseOutlined />}
+                                                    >
+                                                      Cancel
+                                                    </Button>
+                                                  </div>
+                                                </div>
+                                              );
+                                            case "slider":
+                                              return (
+                                                <div style={{ width: "40vw" }}>
+                                                  <Select
+                                                    value={searchDefault}
+                                                    mode="multiple"
+                                                    allowClear
+                                                    showSearch
+                                                    filterOption={(
+                                                      input,
+                                                      option
+                                                    ) =>
+                                                      option.children
+                                                        .toLowerCase()
+                                                        .indexOf(
+                                                          input.toLowerCase()
+                                                        ) >= 0
+                                                    }
+                                                    style={{ width: "100%" }}
+                                                    placeholder="Select Slider"
+                                                    onChange={(value) =>
+                                                      handleFormChange(
+                                                        "card_ids",
+                                                        value,
+                                                        selectedComponentType
+                                                      )
+                                                    }
+                                                  >
+                                                    {fetchedComponent?.map(
+                                                      (card, index) => (
+                                                        <Select.Option
+                                                          key={index}
+                                                          value={card.id}
+                                                        >
+                                                          {card && (
+                                                            <div>
+                                                              <Carousel
+                                                                autoplay
+                                                                style={{
+                                                                  width: "100%",
+                                                                  height:
+                                                                    "100%",
+                                                                }}
+                                                              >
+                                                                {card?.medias?.map(
+                                                                  (
+                                                                    media,
+                                                                    index
+                                                                  ) => (
+                                                                    <div
+                                                                      key={
+                                                                        index
+                                                                      }
+                                                                    >
+                                                                      <Image
+                                                                        preview={
+                                                                          false
+                                                                        }
+                                                                        src={`${MEDIA_URL}/${media?.file_path}`}
+                                                                        alt={
+                                                                          media?.file_path
+                                                                        }
+                                                                        width={
+                                                                          "100%"
+                                                                        }
+                                                                        height={
+                                                                          200
+                                                                        }
+                                                                        style={{
+                                                                          objectFit:
+                                                                            "cover",
+                                                                          borderRadius: 10,
+                                                                        }}
+                                                                      />
+                                                                    </div>
+                                                                  )
+                                                                )}
+                                                              </Carousel>
+                                                            </div>
+                                                          )}
+                                                        </Select.Option>
+                                                      )
+                                                    )}
+                                                  </Select>
+                                                  <div
+                                                    style={{
+                                                      display: "flex",
+                                                      justifyContent:
+                                                        "space-between",
+                                                      alignItems: "center",
+                                                      padding: "1em 2em",
+                                                      width: "40%",
+                                                    }}
+                                                  >
+                                                    <Button
+                                                      onClick={() =>
+                                                        setSelectionMode(false)
+                                                      }
+                                                      style={{
+                                                        backgroundColor:
+                                                          "var(--theme)",
+                                                        color: "#fff",
+                                                      }}
+                                                      icon={<PlusOutlined />}
+                                                    >
+                                                      Add
+                                                    </Button>
+                                                    <Button
+                                                      danger
+                                                      onClick={() =>
+                                                        minidestroy()
+                                                      }
+                                                      icon={<CloseOutlined />}
+                                                    >
+                                                      Cancel
+                                                    </Button>
+                                                  </div>
+                                                </div>
+                                              );
+                                            case "card":
+                                              return (
+                                                <div style={{ width: "40vw" }}>
+                                                  <Select
+                                                    value={searchDefault}
+                                                    mode="multiple"
+                                                    allowClear
+                                                    showSearch
+                                                    filterOption={(
+                                                      input,
+                                                      option
+                                                    ) =>
+                                                      option.children
+                                                        .toLowerCase()
+                                                        .indexOf(
+                                                          input.toLowerCase()
+                                                        ) >= 0
+                                                    }
+                                                    style={{ width: "100%" }}
+                                                    placeholder="Select Cards"
+                                                    onChange={(value) =>
+                                                      handleFormChange(
+                                                        "card_ids",
+                                                        value,
+                                                        selectedComponentType
+                                                      )
+                                                    }
+                                                  >
+                                                    {fetchedComponent?.map(
+                                                      (card, index) => (
+                                                        <Select.Option
+                                                          key={index}
+                                                          value={card.id}
+                                                        >
+                                                          {card.title_en}
+                                                        </Select.Option>
+                                                      )
+                                                    )}
+                                                  </Select>
+                                                  <div
+                                                    style={{
+                                                      display: "flex",
+                                                      justifyContent:
+                                                        "space-between",
+                                                      alignItems: "center",
+                                                      padding: "1em 2em",
+                                                      width: "40%",
+                                                    }}
+                                                  >
+                                                    <Button
+                                                      style={{
+                                                        backgroundColor:
+                                                          "var(--theme)",
+                                                        color: "#fff",
+                                                      }}
+                                                      onClick={() =>
+                                                        setSelectionMode(false)
+                                                      }
+                                                      icon={<PlusOutlined />}
+                                                    >
+                                                      Add
+                                                    </Button>
+                                                    <Button
+                                                      danger
+                                                      onClick={() =>
+                                                        minidestroy()
+                                                      }
+                                                      icon={<CloseOutlined />}
+                                                    >
+                                                      Cancel
+                                                    </Button>
+                                                  </div>
+                                                </div>
+                                              );
+                                            case "form":
+                                              return (
+                                                <div style={{ width: "40vw" }}>
+                                                  <Select
+                                                    value={searchDefault}
+                                                    mode="multiple"
+                                                    allowClear
+                                                    showSearch
+                                                    filterOption={(
+                                                      input,
+                                                      option
+                                                    ) =>
+                                                      option.children
+                                                        .toLowerCase()
+                                                        .indexOf(
+                                                          input.toLowerCase()
+                                                        ) >= 0
+                                                    }
+                                                    style={{ width: "100%" }}
+                                                    placeholder="Select Form"
+                                                    onChange={(value) =>
+                                                      handleFormChange(
+                                                        "card_ids",
+                                                        value,
+                                                        selectedComponentType
+                                                      )
+                                                    }
+                                                  >
+                                                    {fetchedComponent?.map(
+                                                      (form, index) => (
+                                                        <Select.Option
+                                                          key={index}
+                                                          value={form.id}
+                                                        >
+                                                          {form.title_en}
+                                                        </Select.Option>
+                                                      )
+                                                    )}
+                                                  </Select>
+                                                  <div
+                                                    style={{
+                                                      display: "flex",
+                                                      justifyContent:
+                                                        "space-between",
+                                                      alignItems: "center",
+                                                      padding: "1em 2em",
+                                                      width: "40%",
+                                                    }}
+                                                  >
+                                                    <Button
+                                                      style={{
+                                                        backgroundColor:
+                                                          "var(--theme)",
+                                                        color: "#fff",
+                                                      }}
+                                                      onClick={() =>
+                                                        setSelectionMode(false)
+                                                      }
+                                                      icon={<PlusOutlined />}
+                                                    >
+                                                      Add
+                                                    </Button>
+                                                    <Button
+                                                      danger
+                                                      onClick={() =>
+                                                        minidestroy()
+                                                      }
+                                                      icon={<CloseOutlined />}
+                                                    >
+                                                      Cancel
+                                                    </Button>
+                                                  </div>
+                                                </div>
+                                              );
+                                            case "footer":
+                                              return (
+                                                <div style={{ width: "40vw" }}>
+                                                  <Select
+                                                    value={searchDefault}
+                                                    mode="multiple"
+                                                    allowClear
+                                                    showSearch
+                                                    filterOption={(
+                                                      input,
+                                                      option
+                                                    ) =>
+                                                      option.children
+                                                        .toLowerCase()
+                                                        .indexOf(
+                                                          input.toLowerCase()
+                                                        ) >= 0
+                                                    }
+                                                    style={{ width: "100%" }}
+                                                    placeholder="Select Footer"
+                                                    onChange={(value) =>
+                                                      handleFormChange(
+                                                        "card_ids",
+                                                        value,
+                                                        selectedComponentType
+                                                      )
+                                                    }
+                                                  >
+                                                    {fetchedComponent?.map(
+                                                      (footer, index) => (
+                                                        <Select.Option
+                                                          key={index}
+                                                          value={footer.id}
+                                                        >
+                                                          {footer.title_en}
+                                                        </Select.Option>
+                                                      )
+                                                    )}
+                                                  </Select>
+                                                  <div
+                                                    style={{
+                                                      display: "flex",
+                                                      justifyContent:
+                                                        "space-between",
+                                                      alignItems: "center",
+                                                      padding: "1em 2em",
+                                                      width: "40%",
+                                                    }}
+                                                  >
+                                                    <Button
+                                                      style={{
+                                                        backgroundColor:
+                                                          "var(--theme)",
+                                                        color: "#fff",
+                                                      }}
+                                                      onClick={() =>
+                                                        setSelectionMode(false)
+                                                      }
+                                                      icon={<PlusOutlined />}
+                                                    >
+                                                      Add
+                                                    </Button>
+                                                    <Button
+                                                      danger
+                                                      onClick={() =>
+                                                        minidestroy()
+                                                      }
+                                                      icon={<CloseOutlined />}
+                                                    >
+                                                      Cancel
+                                                    </Button>
+                                                  </div>
+                                                </div>
+                                              );
+                                            case "press_release":
+                                              return (
+                                                <div style={{ width: "40vw" }}>
+                                                  <Select
+                                                    value={searchDefault}
+                                                    mode="multiple"
+                                                    allowClear
+                                                    showSearch
+                                                    filterOption={(
+                                                      input,
+                                                      option
+                                                    ) =>
+                                                      option.children
+                                                        .toLowerCase()
+                                                        .indexOf(
+                                                          input.toLowerCase()
+                                                        ) >= 0
+                                                    }
+                                                    style={{ width: "100%" }}
+                                                    placeholder="Select Press Release"
+                                                    onChange={(value) =>
+                                                      handleFormChange(
+                                                        "card_ids",
+                                                        value,
+                                                        selectedComponentType
+                                                      )
+                                                    }
+                                                  >
+                                                    {fetchedComponent?.map(
+                                                      (
+                                                        press_release,
+                                                        index
+                                                      ) => (
+                                                        <Select.Option
+                                                          key={index}
+                                                          value={
+                                                            press_release.id
+                                                          }
+                                                        >
+                                                          {moment(
+                                                            press_release.created_at
+                                                          ).format(
+                                                            "Do MMMM YYYY"
+                                                          )}
+                                                        </Select.Option>
+                                                      )
+                                                    )}
+                                                  </Select>
+                                                  <div
+                                                    style={{
+                                                      display: "flex",
+                                                      justifyContent:
+                                                        "space-between",
+                                                      alignItems: "center",
+                                                      padding: "1em 2em",
+                                                      width: "40%",
+                                                    }}
+                                                  >
+                                                    <Button
+                                                      style={{
+                                                        backgroundColor:
+                                                          "var(--theme)",
+                                                        color: "#fff",
+                                                      }}
+                                                      onClick={() =>
+                                                        setSelectionMode(false)
+                                                      }
+                                                      icon={<PlusOutlined />}
+                                                    >
+                                                      Add
+                                                    </Button>
+                                                    <Button
+                                                      danger
+                                                      onClick={() =>
+                                                        minidestroy()
+                                                      }
+                                                      icon={<CloseOutlined />}
+                                                    >
+                                                      Cancel
+                                                    </Button>
+                                                  </div>
+                                                </div>
+                                              );
+                                            case "event":
+                                              return (
+                                                <div style={{ width: "40vw" }}>
+                                                  <Select
+                                                    value={searchDefault}
+                                                    mode="multiple"
+                                                    allowClear
+                                                    showSearch
+                                                    filterOption={(
+                                                      input,
+                                                      option
+                                                    ) =>
+                                                      option.children
+                                                        .toLowerCase()
+                                                        .indexOf(
+                                                          input.toLowerCase()
+                                                        ) >= 0
+                                                    }
+                                                    style={{ width: "100%" }}
+                                                    placeholder="Select Events"
+                                                    onChange={(value) =>
+                                                      handleFormChange(
+                                                        "card_ids",
+                                                        value,
+                                                        selectedComponentType
+                                                      )
+                                                    }
+                                                  >
+                                                    {fetchedComponent?.map(
+                                                      (event, index) => (
+                                                        <Select.Option
+                                                          key={index}
+                                                          value={event.id}
+                                                        >
+                                                          {event.title_en}
+                                                        </Select.Option>
+                                                      )
+                                                    )}
+                                                  </Select>
+                                                  <div
+                                                    style={{
+                                                      display: "flex",
+                                                      justifyContent:
+                                                        "space-between",
+                                                      alignItems: "center",
+                                                      padding: "1em 2em",
+                                                      width: "40%",
+                                                    }}
+                                                  >
+                                                    <Button
+                                                      style={{
+                                                        backgroundColor:
+                                                          "var(--theme)",
+                                                        color: "#fff",
+                                                      }}
+                                                      onClick={() =>
+                                                        setSelectionMode(false)
+                                                      }
+                                                      icon={<PlusOutlined />}
+                                                    >
+                                                      Add
+                                                    </Button>
+                                                    <Button
+                                                      danger
+                                                      onClick={() =>
+                                                        minidestroy()
+                                                      }
+                                                      icon={<CloseOutlined />}
+                                                    >
+                                                      Cancel
+                                                    </Button>
+                                                  </div>
+                                                </div>
+                                              );
+                                            default:
+                                              return <h1>Contact Admin</h1>;
+                                          }
+                                        })()}
+                                      </>
+                                    )}
+                                </div>
+                              ) : (
+                                <div>
+                                  <Button
+                                    style={{
+                                      margin: "10px",
+                                      backgroundColor: "var(--theme)",
+                                      color: "#fff",
+                                      border: "none",
+                                      borderRadius: "40px",
+                                      fontSize: "1.2rem",
+                                      padding: "0.6rem 1rem",
+                                      marginBottom: "3rem",
+                                      height: "auto",
+                                    }}
+                                    onClick={() => {
+                                      handleSubmit();
+                                      setCanvas(false);
+                                    }}
+                                    icon={<CloudSyncOutlined />}
+                                  >
+                                    Finish Section
+                                  </Button>
+                                  <Button
+                                    style={{
+                                      margin: "10px",
+                                      backgroundColor: "var(--themes)",
+                                      color: "#fff",
+                                      border: "none",
+                                      borderRadius: "40px",
+                                      fontSize: "1.2rem",
+                                      padding: "0.6rem 1rem",
+                                      marginBottom: "3rem",
+                                      height: "auto",
+                                    }}
+                                    icon={<PlusSquareOutlined />}
+                                    onClick={() => setModalVisible(true)}
+                                  >
+                                    Add Components
+                                  </Button>
+
+                                  <Popconfirm
+                                    title="Are you sure to close without saving? All changes will be lost."
+                                    onConfirm={() => {
+                                      handleCloseSectionModal();
+                                    }}
+                                    okText="Yes"
+                                    cancelText="No"
+                                  >
+                                    <Button
+                                      danger
+                                      style={{
+                                        margin: "10px",
+                                        border: "none",
+                                        borderRadius: "40px",
+                                        fontSize: "1.2rem",
+                                        padding: "0.6rem 1rem",
+                                        marginBottom: "3rem",
+                                        height: "auto",
+                                        border: "1px solid red",
+                                      }}
+                                      icon={<CloseCircleFilled />}
+                                    >
+                                      Close
+                                    </Button>
+                                  </Popconfirm>
+                                </div>
+                              )}
+                            </div>
+                          )}
                           <div
                             style={{
                               display: "flex",
@@ -1241,24 +2128,28 @@ const Creator = () => {
                               flexDirection: "column",
                             }}
                           >
-                            <Button
-                              style={{
-                                margin: "10px",
-                                backgroundColor: "var(--theme",
-                                color: "#fff",
-                                border: "none",
-                                borderRadius: "5px",
-                                fontSize: "1.2rem",
-                                padding: "0.6rem 1rem",
-                                marginBottom: "3rem",
-                                height: "auto",
-                              }}
-                              onClick={() => {
-                                setCanvas(true);
-                              }}
-                            >
-                              Add Component
-                            </Button>
+                            {!internalCanvas && (
+                              <Button
+                                style={{
+                                  margin: "10px",
+                                  backgroundColor: "var(--theme",
+                                  color: "#fff",
+                                  border: "none",
+                                  borderRadius: "5px",
+                                  fontSize: "1.2rem",
+                                  padding: "0.6rem 1rem",
+                                  marginBottom: "3rem",
+                                  height: "auto",
+                                }}
+                                onClick={() => {
+                                  // setCanvas(true);
+                                  setInternalCanvas(true);
+                                }}
+                              >
+                                Add Componentz
+                              </Button>
+                            )}
+
                             <div>
                               <Button
                                 // button disabled if no change is made
@@ -1413,7 +2304,7 @@ const Creator = () => {
                                       </Button>
                                       <Button
                                         danger
-                                        onClick={() => destroy()}
+                                        onClick={() => minidestroy()}
                                         icon={<CloseOutlined />}
                                       >
                                         Cancel
@@ -1471,7 +2362,7 @@ const Creator = () => {
                                       </Button>
                                       <Button
                                         danger
-                                        onClick={() => destroy()}
+                                        onClick={() => minidestroy()}
                                         icon={<CloseOutlined />}
                                       >
                                         Cancel
@@ -1532,6 +2423,7 @@ const Creator = () => {
                                         alignItems: "center",
                                         padding: "1em 2em",
                                         width: "30%",
+                                        gap: "2em",
                                       }}
                                     >
                                       <Button
@@ -1548,7 +2440,7 @@ const Creator = () => {
                                       </Button>
                                       <Button
                                         danger
-                                        onClick={() => destroy()}
+                                        onClick={() => minidestroy()}
                                         icon={<CloseOutlined />}
                                       >
                                         Cancel
@@ -1609,7 +2501,7 @@ const Creator = () => {
                                       </Button>
                                       <Button
                                         danger
-                                        onClick={() => destroy()}
+                                        onClick={() => minidestroy()}
                                         icon={<CloseOutlined />}
                                       >
                                         Cancel
@@ -1670,7 +2562,7 @@ const Creator = () => {
                                       </Button>
                                       <Button
                                         danger
-                                        onClick={() => destroy()}
+                                        onClick={() => minidestroy()}
                                         icon={<CloseOutlined />}
                                       >
                                         Cancel
@@ -1759,7 +2651,7 @@ const Creator = () => {
                                       </Button>
                                       <Button
                                         danger
-                                        onClick={() => destroy()}
+                                        onClick={() => minidestroy()}
                                         icon={<CloseOutlined />}
                                       >
                                         Cancel
@@ -1820,7 +2712,7 @@ const Creator = () => {
                                       </Button>
                                       <Button
                                         danger
-                                        onClick={() => destroy()}
+                                        onClick={() => minidestroy()}
                                         icon={<CloseOutlined />}
                                       >
                                         Cancel
@@ -1881,7 +2773,7 @@ const Creator = () => {
                                       </Button>
                                       <Button
                                         danger
-                                        onClick={() => destroy()}
+                                        onClick={() => minidestroy()}
                                         icon={<CloseOutlined />}
                                       >
                                         Cancel
@@ -1944,7 +2836,7 @@ const Creator = () => {
                                       </Button>
                                       <Button
                                         danger
-                                        onClick={() => destroy()}
+                                        onClick={() => minidestroy()}
                                         icon={<CloseOutlined />}
                                       >
                                         Cancel
@@ -2009,7 +2901,7 @@ const Creator = () => {
                                       </Button>
                                       <Button
                                         danger
-                                        onClick={() => destroy()}
+                                        onClick={() => minidestroy()}
                                         icon={<CloseOutlined />}
                                       >
                                         Cancel
@@ -2070,7 +2962,7 @@ const Creator = () => {
                                       </Button>
                                       <Button
                                         danger
-                                        onClick={() => destroy()}
+                                        onClick={() => minidestroy()}
                                         icon={<CloseOutlined />}
                                       >
                                         Cancel
@@ -2131,7 +3023,7 @@ const Creator = () => {
                                       </Button>
                                       <Button
                                         danger
-                                        onClick={() => destroy()}
+                                        onClick={() => minidestroy()}
                                         icon={<CloseOutlined />}
                                       >
                                         Cancel
@@ -2186,25 +3078,32 @@ const Creator = () => {
                       >
                         Add Components
                       </Button>
-                      <Button
-                        danger
-                        style={{
-                          margin: "10px",
-                          border: "none",
-                          borderRadius: "40px",
-                          fontSize: "1.2rem",
-                          padding: "0.6rem 1rem",
-                          marginBottom: "3rem",
-                          height: "auto",
-                          border: "1px solid red",
-                        }}
-                        icon={<CloseCircleFilled />}
-                        onClick={() => {
+
+                      <Popconfirm
+                        title="Are you sure to close without saving? All changes will be lost."
+                        onConfirm={() => {
                           handleCloseSectionModal();
                         }}
+                        okText="Yes"
+                        cancelText="No"
                       >
-                        Close
-                      </Button>
+                        <Button
+                          danger
+                          style={{
+                            margin: "10px",
+                            border: "none",
+                            borderRadius: "40px",
+                            fontSize: "1.2rem",
+                            padding: "0.6rem 1rem",
+                            marginBottom: "3rem",
+                            height: "auto",
+                            border: "1px solid red",
+                          }}
+                          icon={<CloseCircleFilled />}
+                        >
+                          Close
+                        </Button>
+                      </Popconfirm>
                     </div>
                   )}
                 </div>
