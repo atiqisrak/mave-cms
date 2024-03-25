@@ -3,6 +3,8 @@ import {
   CloseOutlined,
   DeleteOutlined,
   EditOutlined,
+  EyeInvisibleOutlined,
+  EyeOutlined,
 } from "@ant-design/icons";
 import { Button, Col, Input, Popconfirm, Row, Select, message } from "antd";
 import { useContext, useState, useEffect } from "react";
@@ -17,6 +19,80 @@ const Profile = () => {
   const [modifiedData, setModifiedData] = useState({});
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
+  const [createUser, setCreateUser] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEamil] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showconfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordsMatch, setPasswordsMatch] = useState(true);
+  const [token, setToken] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState({});
+  const [validEmail, setValidEmail] = useState(false);
+  const [emailMessage, setEmailMessage] = useState("");
+
+  useEffect(() => {
+    // Check if passwords match and update state
+    setPasswordsMatch(password === confirmPassword);
+  }, [password, confirmPassword]);
+  const handleChange = (e, inputName) => {
+    // Dynamically select the state variable to update based on inputName
+    switch (inputName) {
+      case "name":
+        setName(e.target.value);
+        break;
+      case "email":
+        setEamil(e.target.value);
+        emailValidation(e.target.value);
+        break;
+      case "password":
+        setPassword(e.target.value);
+
+        break;
+      case "confirmPassword":
+        setConfirmPassword(e.target.value);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleCreateUser = async () => {
+    setIsLoading(true);
+    const items = {
+      name: name,
+      email: email,
+      password: password,
+      password_confirmation: confirmPassword,
+    };
+    try {
+      const response = await instance.post("/admin/register", items);
+      if (response.status === 200) {
+        message.success("User created successfully");
+        setCreateUser(false);
+        fetchUsers();
+
+        setIsLoading(false);
+      }
+    } catch (error) {
+      setIsLoading(false);
+      message.error("Something went wrong");
+    }
+  };
+
+  // handlearea
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showconfirmPassword);
+  };
+  const handleChangeState = () => {
+    setOpen(false);
+    setOpen1(true);
+  };
 
   const [roles, setRoles] = useState([
     { id: 1, u_id: "9zrsdrfhw8", name: "Super Admin" },
@@ -47,21 +123,21 @@ const Profile = () => {
     }
   }, []);
 
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const res = await instance.get("/admin/users");
+      if (res.status === 200) {
+        setUsers(res.data);
+      }
+    } catch (error) {
+      message.error("Something went wrong");
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
     if (userData?.role_id == 1 || userData?.role_id == 2) {
-      const fetchUsers = async () => {
-        setLoading(true);
-        try {
-          const res = await instance.get("/admin/users");
-          setUsers(res.data);
-          // console.log("All Users: ", res.data);
-          message.success("Users fetched successfully");
-          setLoading(false);
-        } catch (error) {
-          message.error("Something went wrong");
-          setLoading(false);
-        }
-      };
       fetchUsers();
     }
   }, [userData]);
@@ -187,15 +263,42 @@ const Profile = () => {
     setLoading(false);
   };
 
+  const emailValidation = (email) => {
+    // emailregex with @mave.com
+    const emailRegEx = /^\w+@mave\.com$/;
+    // Check if email is empty
+    if (!email.trim()) {
+      setEmailMessage("Email is required. (e.g.: username@mave.com)");
+      setValidEmail(false);
+      return;
+    }
+
+    if (emailRegEx.test(email)) {
+      setEmailMessage("Email is valid");
+      setValidEmail(true);
+    } else {
+      setEmailMessage(
+        "Email is invalid. Please use @mave.com as email extension"
+      );
+      setValidEmail(false);
+    }
+  };
+
+  const isSubmitDisabled = !validEmail || !passwordsMatch;
+
   return (
     <>
       <div className="ViewContainer">
         <div className="ViewContentContainer">
           <div className="user">
             <img
-              src="https://cdn-icons-png.flaticon.com/512/6596/6596121.png"
-              width={50}
-              alt=""
+              src="/images/profile_avatar.png"
+              alt="Niloy"
+              style={{
+                width: "100px",
+                height: "100px",
+                borderRadius: "50%",
+              }}
             />
             <h2 style={{ textAlign: "center" }}>{userData.name}</h2>
             <p>Admin</p>
@@ -320,7 +423,7 @@ const Profile = () => {
                           {userData?.role_id == "null"
                             ? "Guest"
                             : roles.find((role) => role.id == userData?.role_id)
-                              ?.name}
+                                ?.name}
                         </p>
                       )}
                     </div>
@@ -431,9 +534,9 @@ const Profile = () => {
                     borderRadius: "5px",
                   }}
                 >
-                  <center><h1>
-                    User Management
-                  </h1></center>
+                  <center>
+                    <h1>User Management</h1>
+                  </center>
                   <Row
                     gutter={16}
                     style={{
@@ -498,7 +601,8 @@ const Profile = () => {
                           <Select
                             defaultValue={
                               //  Find role name by id
-                              roles2.find((role) => role.id == user?.role_id)?.id
+                              roles2.find((role) => role.id == user?.role_id)
+                                ?.id
                             }
                             onChange={(value) =>
                               handleUserInputChange("role_id", value)
@@ -555,10 +659,8 @@ const Profile = () => {
                             >
                               <EditOutlined />
                             </Button>
-                            {
-                              // Only Super Admin can delete users
-                              userData?.role_id == 1 &&
-                              (<Popconfirm
+                            {userData?.role_id == 1 && (
+                              <Popconfirm
                                 title="Are you sure to delete this user?"
                                 onConfirm={() => {
                                   message.success("User deleted successfully");
@@ -582,15 +684,184 @@ const Profile = () => {
                                 >
                                   <DeleteOutlined />
                                 </Button>
-                              </Popconfirm>)
-                            }
-
+                              </Popconfirm>
+                            )}
                           </div>
                         )}
                       </Col>
                     </Row>
                   ))}
                 </Col>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <Button
+                  type="primary"
+                  style={{
+                    backgroundColor: createUser ? "red" : "var(--theme)",
+                    color: "white",
+                    padding: "0.5rem 1rem",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  onClick={() => {
+                    setCreateUser(!createUser);
+                  }}
+                >
+                  {createUser ? "Cancel" : "Create User"}
+                </Button>
+                {createUser && (
+                  <Row
+                    gutter={16}
+                    style={{
+                      marginTop: "1rem",
+                      backgroundColor: "#ceedff",
+                      padding: "1rem 1em",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    <Col span={6}>
+                      <label htmlFor="name">Name</label>
+                      <Input
+                        style={{
+                          backgroundColor: "white",
+                          padding: "0.5rem 1rem",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                        placeholder="Name"
+                        value={name}
+                        required
+                        onChange={(e) => handleChange(e, "name")}
+                      />
+                    </Col>
+                    <Col span={6}>
+                      <label htmlFor="email">Email</label>
+                      <Input
+                        style={{
+                          backgroundColor: "white",
+                          padding: "0.5rem 1rem",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                        placeholder="username@mave.com"
+                        value={email}
+                        required
+                        onChange={(e) => {
+                          handleChange(e, "email");
+                          emailValidation(e.target.value);
+                        }}
+                      />
+                      <br />
+                      {!validEmail && (
+                        <p style={{ color: "red" }}>{emailMessage}</p>
+                      )}
+                    </Col>
+                    <Col span={4}>
+                      <label htmlFor="password">Password</label>
+                      <Input
+                        style={{
+                          backgroundColor: "white",
+                          padding: "0.5rem 1rem",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          marginTop: "0",
+                        }}
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        required
+                        onChange={(e) => handleChange(e, "password")}
+                        placeholder="Password"
+                        className="input-field"
+                        suffix={
+                          showPassword ? (
+                            <EyeOutlined onClick={togglePasswordVisibility} />
+                          ) : (
+                            <EyeInvisibleOutlined
+                              onClick={togglePasswordVisibility}
+                            />
+                          )
+                        }
+                      />
+                    </Col>
+                    <Col span={4}>
+                      <label htmlFor="confirmPassword">Confirm Password</label>
+                      <Input
+                        style={{
+                          backgroundColor: "white",
+                          padding: "0.5rem 1rem",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          marginTop: "0",
+                        }}
+                        type={showconfirmPassword ? "text" : "password"}
+                        value={confirmPassword}
+                        required
+                        onChange={(e) => handleChange(e, "confirmPassword")}
+                        placeholder="Confirm Password"
+                        className="input-field"
+                        suffix={
+                          showconfirmPassword ? (
+                            <EyeOutlined
+                              onClick={toggleConfirmPasswordVisibility}
+                            />
+                          ) : (
+                            <EyeInvisibleOutlined
+                              onClick={toggleConfirmPasswordVisibility}
+                            />
+                          )
+                        }
+                      />
+                    </Col>
+                    <Col span={4}>
+                      <div
+                        className="flexed-between"
+                        style={{
+                          marginTop: "1.6em",
+                        }}
+                      >
+                        <Button
+                          type="primary"
+                          disabled={!passwordsMatch}
+                          style={{
+                            backgroundColor: "var(--theme)",
+                            color: "white",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            padding: "0.5rem 1rem",
+                          }}
+                          onClick={isSubmitDisabled ? null : handleCreateUser}
+                        >
+                          Create
+                        </Button>
+                        <Button
+                          danger
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            padding: "0.5rem 1rem",
+                          }}
+                          onClick={() => setCreateUser(false)}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </Col>
+                  </Row>
+                )}
               </div>
             </div>
           ) : null}

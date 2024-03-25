@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Tasks from "./Tasks";
 import changelog from "./changelog.json";
+import moment from "moment";
 
 const ChangelogItem = ({ version, date, changes }) => {
 
@@ -13,13 +13,8 @@ const ChangelogItem = ({ version, date, changes }) => {
             }
         }>
             {console.log("Change: ", changes)}
-            {/* <center> */}
             <h2>Version {version}
-                {/* <span style={{
-                color: "var(--theme)"
-            }}>({date})</span> */}
             </h2>
-            {/* </center> */}
             <ul style={{
                 display: "flex",
                 flexDirection: "column",
@@ -37,7 +32,10 @@ const ChangelogItem = ({ version, date, changes }) => {
                             }}>
                                 <strong style={{
                                     color: "white",
-                                    backgroundColor: type === "BugFix" ? "var(--theme)" : "var(--themes)",
+                                    // backgroundColor: type === "BugFix" ? "#9012ff30" : "#f1612a30",
+                                    // border: type === "BugFix" ? "2px solid #9012ff80" : "2px solid #f1612a80",
+                                    backgroundColor: type === "BugFix" ? "var(--themes)" : "var(--theme)",
+                                    border: type === "BugFix" ? "2px solid var(--themes)" : "2px solid var(--theme)",
                                     borderRadius: "5px",
                                     display: "flex",
                                     alignItems: "center",
@@ -96,32 +94,34 @@ const Changelog = () => {
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
-                                    border: "2px solid var(--theme)",
                                     color: "var(--themes)",
-                                    borderRadius: "50%",
-                                    width: "150px",
-                                    height: "150px",
+                                    textAlign: "center",
                                     backgroundColor: "white",
                                     zIndex: "1",
+                                    padding: "1.9em 1em",
+                                    borderRadius: "50%",
+                                    border: "2px solid var(--theme)",
                                 }}>
-                                    <span>{change.date}</span>
+                                    <span style={{
+                                        fontSize: "1.2em",
+                                        fontWeight: "500",
+                                    }}>
+                                        {
+                                            moment(change.date).format("DD MMM YYYY")
+                                        }
+                                    </span>
                                 </div>
                                 {
                                     index !== changeLogs.length - 1 && (
                                         <div
                                             style={{
-                                                // position: "absolute",
-                                                // left: "14%",
-                                                // marginTop: "130px",
                                                 borderLeft: "2px solid var(--theme)",
-                                                // height: "50px"
                                                 height: "100%",
                                             }}
                                         />
                                     )
                                 }
                             </div>
-                            {console.log("Change length: ", change.changes.length)}
                             <ChangelogItem
                                 key={index}
                                 version={change.version}
@@ -134,7 +134,7 @@ const Changelog = () => {
                 })
             }
             {/* JSON Structure */}
-            <pre
+            {/* <pre
                 style={{
                     backgroundColor: "var(--black)",
                     color: "var(--white)",
@@ -146,7 +146,7 @@ const Changelog = () => {
                 }}
             >
                 {formattedjson}
-            </pre>
+            </pre> */}
         </div>
     );
 }

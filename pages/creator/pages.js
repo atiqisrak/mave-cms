@@ -5,8 +5,19 @@ import {
   DeleteFilled,
   EditOutlined,
   PlusCircleOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
-import { Button, Card, Row, Col, Input, Modal, message, Popconfirm, Table } from "antd";
+import {
+  Button,
+  Card,
+  Row,
+  Col,
+  Input,
+  Modal,
+  message,
+  Popconfirm,
+  Table,
+} from "antd";
 import React, { useState, useEffect } from "react";
 import instance from "../../axios";
 import { useRouter } from "next/router";
@@ -74,7 +85,7 @@ const Pages = () => {
         slug: newPageTitleEn.toLowerCase().split(" ").join("-"),
       });
       if (response.status === 201) {
-        message.success("New page added successfully");
+        // message.success("New page added successfully");
         closeAddNewPageCard();
         fetchPages();
         setCreateMode(false);
@@ -105,9 +116,8 @@ const Pages = () => {
 
             message.success("Page deleted successfully");
             fetchPages();
-          }
-          );
-        }
+          });
+        },
       });
     } catch (error) {
       console.error("Error deleting menu item:", error);
@@ -129,13 +139,12 @@ const Pages = () => {
     setEditingItemId(null);
   };
 
-
   const handleEditPageName = async ({ id, prevpen, prevpbn, prevpslug }) => {
     try {
       const response = await instance.put(`/pages/${id}`, {
         page_name_en: pageNameEn ? pageNameEn : prevpen,
         page_name_bn: pageNameBn ? pageNameBn : prevpbn,
-        slug: pageSlug ? pageSlug : prevpslug
+        slug: pageSlug ? pageSlug : prevpslug,
       });
       if (response.status === 200) {
         message.success("Page info updated successfully");
@@ -147,8 +156,22 @@ const Pages = () => {
     } catch (error) {
       console.error("Error updating page info:", error);
     }
-  }
+  };
 
+  // filter pages
+  const handlePageSearch = async (searchText) => {
+    // filter pages by page_name_en
+    try {
+      searchText === "" ? fetchPages() : null;
+
+      const filteredPages = pages.filter((page) =>
+        page.page_name_en.toLowerCase().includes(searchText.toLowerCase())
+      );
+      setPages(filteredPages);
+    } catch (error) {
+      console.error("Error filtering pages:", error);
+    }
+  };
 
   return (
     <div className="ViewContainer">
@@ -161,6 +184,19 @@ const Pages = () => {
           }}
         >
           <h1>Pages</h1>
+
+          <Input
+            placeholder="Search Pages"
+            suffix={<SearchOutlined />}
+            style={{
+              width: "20vw",
+              height: "2em",
+              borderRadius: "10px",
+              fontSize: "1.2em",
+              padding: "0 1em",
+            }}
+            onChange={(e) => handlePageSearch(e.target.value)}
+          />
 
           {createMode ? (
             <Button
@@ -228,10 +264,13 @@ const Pages = () => {
                             alignItems: "center",
                           }}
                         >
-                          <Col span={16} style={{
-                            display: "flex",
-                            gap: "1em"
-                          }}>
+                          <Col
+                            span={16}
+                            style={{
+                              display: "flex",
+                              gap: "1em",
+                            }}
+                          >
                             <Input
                               placeholder="Page Title En"
                               value={newPageTitleEn}
@@ -306,11 +345,48 @@ const Pages = () => {
                 {pages?.map((page) => (
                   <Col key={page?.id} xs={24}>
                     <Card
-                      title={`Page ID: ${page?.id}`}
+                      title={`Page ID-${page?.id} : ${page?.page_name_en}`}
+                      // title={page?.page_name_en}
                       extra={
-                        <Button onClick={() => handleExpand(page?.id)}>
-                          {expandedPageId === page.id ? "Collapse" : "Expand"}
-                        </Button>
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "2em",
+                          }}
+                        >
+                          <Button
+                            style={{
+                              backgroundColor: "var(--themes)",
+                              borderColor: "var(--themes)",
+                              color: "white",
+                              borderRadius: "10px",
+                              fontSize: "1.2em",
+                              paddingBottom: "1.8em",
+                            }}
+                            onClick={() => handleEditPage(page.id)}
+                            icon={<EditOutlined />}
+                          >
+                            Edit Page
+                          </Button>
+                          <Button
+                            style={{
+                              backgroundColor: "var(--theme)",
+                              borderColor: "var(--theme)",
+                              color: "white",
+                              borderRadius: "10px",
+                              fontSize: "1.2em",
+                              paddingBottom: "1.8em",
+                            }}
+                            onClick={() => handleExpand(page?.id)}
+                          >
+                            {expandedPageId === page.id ? "Collapse" : "Expand"}
+                            {expandedPageId === page.id ? (
+                              <CloseCircleFilled />
+                            ) : (
+                              <PlusCircleOutlined />
+                            )}
+                          </Button>
+                        </div>
                       }
                       style={{
                         marginBottom: "5em",
@@ -400,192 +476,220 @@ const Pages = () => {
                                 gap: "2em",
                               }}
                             >
-                              <div style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                gap: "2em",
-                                marginBottom: "2em",
-                                flexDirection: "column"
-                              }}>
-                                <div style={{
+                              <div
+                                style={{
                                   display: "flex",
-                                  alignItems: "center",
+                                  justifyContent: "center",
                                   gap: "2em",
-                                }}>
-                                  {
-                                    editPageName ? (
-                                      <Input
-                                        allowClear
-                                        defaultValue={page.page_name_en}
-                                        placeholder={page.page_name_en}
-                                        value={pageNameEn}
-                                        onChange={(e) =>
-                                          setPageNameEn(e.target.value)
-                                        }
+                                  marginBottom: "2em",
+                                  flexDirection: "column",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "2em",
+                                  }}
+                                >
+                                  {editPageName ? (
+                                    <Input
+                                      allowClear
+                                      defaultValue={page.page_name_en}
+                                      placeholder={page.page_name_en}
+                                      value={pageNameEn}
+                                      onChange={(e) =>
+                                        setPageNameEn(e.target.value)
+                                      }
+                                      style={{
+                                        width: "16vw",
+                                        height: "2.8em",
+                                        borderRadius: "10px",
+                                        fontSize: "1.2em",
+                                        padding: "0 1em",
+                                      }}
+                                    />
+                                  ) : (
+                                    <h1>
+                                      <span
                                         style={{
-                                          width: "16vw",
-                                          height: "2.8em",
-                                          borderRadius: "10px",
-                                          fontSize: "1.2em",
-                                          padding: "0 1em",
+                                          color: "var(--themes)",
                                         }}
-                                      />
-                                    ) : (
-                                      <h1><span style={{
-                                        color: "var(--themes)"
-                                      }}>Page Name:</span> {page.page_name_en}</h1>)
-                                  }
+                                      >
+                                        Page Name:
+                                      </span>{" "}
+                                      {page.page_name_en}
+                                    </h1>
+                                  )}
                                 </div>
 
-                                <div style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "2em"
-                                }}>
-                                  {
-                                    editPageName ? (
-                                      <Input
-                                        allowClear
-                                        defaultValue={page.page_name_bn}
-                                        placeholder={page.page_name_bn}
-                                        value={pageNameBn}
-                                        onChange={(e) =>
-                                          setPageNameBn(e.target.value)
-                                        }
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "2em",
+                                  }}
+                                >
+                                  {editPageName ? (
+                                    <Input
+                                      allowClear
+                                      defaultValue={page.page_name_bn}
+                                      placeholder={page.page_name_bn}
+                                      value={pageNameBn}
+                                      onChange={(e) =>
+                                        setPageNameBn(e.target.value)
+                                      }
+                                      style={{
+                                        width: "16vw",
+                                        height: "2.8em",
+                                        borderRadius: "10px",
+                                        fontSize: "1.2em",
+                                        padding: "0 1em",
+                                      }}
+                                    />
+                                  ) : (
+                                    <h1>
+                                      <span
                                         style={{
-                                          width: "16vw",
-                                          height: "2.8em",
-                                          borderRadius: "10px",
-                                          fontSize: "1.2em",
-                                          padding: "0 1em",
+                                          color: "var(--themes)",
                                         }}
-                                      />
-                                    ) : (
-                                      <h1><span style={{
-                                        color: "var(--themes)"
-                                      }}>পৃষ্ঠার নাম:
-                                      </span> {page.page_name_bn}
-                                      </h1>)
-                                  }
+                                      >
+                                        পৃষ্ঠার নাম:
+                                      </span>{" "}
+                                      {page.page_name_bn}
+                                    </h1>
+                                  )}
                                 </div>
 
-                                <div style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "2em",
-                                }}>
-                                  {
-                                    editPageName ? (
-                                      <div style={{
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "2em",
+                                  }}
+                                >
+                                  {editPageName ? (
+                                    <div
+                                      style={{
                                         display: "flex",
                                         flexDirection: "column",
                                         gap: "1em",
-                                      }}>
-                                        <Input
-                                          allowClear
-                                          defaultValue={page.slug}
-                                          placeholder={page.slug}
-                                          value={pageSlug}
-                                          onChange={(e) =>
-                                            setPageSlug(e.target.value)
-                                          }
-                                          style={{
-                                            width: "16vw",
-                                            height: "2.8em",
-                                            borderRadius: "10px",
-                                            fontSize: "1.2em",
-                                            padding: "0 1em",
-                                          }}
-                                        />
-                                        <p style={{
+                                      }}
+                                    >
+                                      <Input
+                                        allowClear
+                                        defaultValue={page.slug}
+                                        placeholder={page.slug}
+                                        value={pageSlug}
+                                        onChange={(e) =>
+                                          setPageSlug(e.target.value)
+                                        }
+                                        style={{
+                                          width: "16vw",
+                                          height: "2.8em",
+                                          borderRadius: "10px",
+                                          fontSize: "1.2em",
+                                          padding: "0 1em",
+                                        }}
+                                      />
+                                      <p
+                                        style={{
                                           fontSize: "0.8em",
                                           color: "var(--themes)",
                                           textAlign: "left",
-                                        }}>
-                                          *Use only lowercase letters
-                                          <br />
-                                          *No spaces, use hyphen
-                                          <br />
-                                          *no special characters
-                                          <br />
-                                          <span style={{ color: "var(--theme)" }}>*Example: about-us</span>
-                                        </p>
-                                      </div>
-                                    ) : (
-                                      <h1><span style={{
-                                        color: "var(--themes)"
-                                      }}>Link: </span>
-                                        <a
-                                          href="#"
-                                          style={{
-                                            color: "var(--theme)"
-                                          }}>/{page.slug}</a></h1>
-                                    )
-                                  }
+                                        }}
+                                      >
+                                        *Use only lowercase letters
+                                        <br />
+                                        *No spaces, use hyphen
+                                        <br />
+                                        *no special characters
+                                        <br />
+                                        <span style={{ color: "var(--theme)" }}>
+                                          *Example: about-us
+                                        </span>
+                                      </p>
+                                    </div>
+                                  ) : (
+                                    <h1>
+                                      <span
+                                        style={{
+                                          color: "var(--themes)",
+                                        }}
+                                      >
+                                        Link:{" "}
+                                      </span>
+                                      <a
+                                        href="#"
+                                        style={{
+                                          color: "var(--theme)",
+                                        }}
+                                      >
+                                        /{page.slug}
+                                      </a>
+                                    </h1>
+                                  )}
                                 </div>
                               </div>
-                              {
-                                editPageName ? (
-                                  <div>
-                                    <Popconfirm
-                                      title="Are you sure you want to edit this page name?"
-                                      onConfirm={() => handleEditPageName
-                                        (
-                                          {
-                                            id: page?.id,
-                                            prevpen: page?.page_name_en,
-                                            prevpbn: page?.page_name_bn,
-                                            prevpslug: page?.slug
-                                          }
-                                        )
-                                      }
-                                      okText="Yes"
-                                      cancelText="No"
-                                    >
-                                      <Button
-                                        type="primary"
-                                        icon={<CheckCircleFilled />}
-                                        style={{
-                                          backgroundColor: "green",
-                                          borderColor: "green",
-                                          color: "white",
-                                          borderRadius: "10px",
-                                          fontSize: "1.2em",
-                                          paddingBottom: "1.8em",
-                                          marginRight: "1em",
-                                        }}>
-                                        Submit
-                                      </Button>
-                                    </Popconfirm>
-
+                              {editPageName ? (
+                                <div>
+                                  <Popconfirm
+                                    title="Are you sure you want to edit this page name?"
+                                    onConfirm={() =>
+                                      handleEditPageName({
+                                        id: page?.id,
+                                        prevpen: page?.page_name_en,
+                                        prevpbn: page?.page_name_bn,
+                                        prevpslug: page?.slug,
+                                      })
+                                    }
+                                    okText="Yes"
+                                    cancelText="No"
+                                  >
                                     <Button
-                                      icon={<CloseCircleFilled />}
-                                      danger
-                                      onClick={() =>
-                                        setEditPageName(!editPageName)
-                                      }>Cancel</Button>
-                                  </div>
+                                      type="primary"
+                                      icon={<CheckCircleFilled />}
+                                      style={{
+                                        backgroundColor: "green",
+                                        borderColor: "green",
+                                        color: "white",
+                                        borderRadius: "10px",
+                                        fontSize: "1.2em",
+                                        paddingBottom: "1.8em",
+                                        marginRight: "1em",
+                                      }}
+                                    >
+                                      Submit
+                                    </Button>
+                                  </Popconfirm>
 
-                                ) : (
                                   <Button
-                                    type="primary"
-                                    icon={<EditOutlined />}
-                                    style={{
-                                      backgroundColor: "var(--themes)",
-                                      borderColor: "var(--themes)",
-                                      color: "white",
-                                      borderRadius: "10px",
-                                      fontSize: "1.2em",
-                                      paddingBottom: "1.8em",
-                                    }}
+                                    icon={<CloseCircleFilled />}
+                                    danger
                                     onClick={() =>
                                       setEditPageName(!editPageName)
-                                    }>
-                                    Edit Page Name
+                                    }
+                                  >
+                                    Cancel
                                   </Button>
-                                )
-                              }
-
+                                </div>
+                              ) : (
+                                <Button
+                                  type="primary"
+                                  icon={<EditOutlined />}
+                                  style={{
+                                    backgroundColor: "var(--themes)",
+                                    borderColor: "var(--themes)",
+                                    color: "white",
+                                    borderRadius: "10px",
+                                    fontSize: "1.2em",
+                                    paddingBottom: "1.8em",
+                                  }}
+                                  onClick={() => setEditPageName(!editPageName)}
+                                >
+                                  Edit Page Name
+                                </Button>
+                              )}
                             </div>
                           </center>
                         </div>
