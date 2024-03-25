@@ -16,7 +16,7 @@ const EventParser = ({ item, editMode, onEventSelect }) => {
       if (response.data) {
         setEvents(response.data);
         // console.log("Events: ", response.data);
-        message.success("Events fetched successfully");
+        // message.success("Events fetched successfully");
         setLoading(false);
       } else {
         // console.error("Error fetching events:", response.data.message);

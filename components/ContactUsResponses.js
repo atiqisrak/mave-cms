@@ -31,7 +31,7 @@ const ContactUsResponses = () => {
         setMessages(response.data);
         setLoading(false);
         // console.log("Messages: ", response.data);
-        message.success("Messages fetched successfully");
+        // message.success("Messages fetched successfully");
       } else {
         // console.log("Error: ", response);
         message.error("Error fetching data");
@@ -103,9 +103,12 @@ const ContactUsResponses = () => {
       messages
         .map(
           (message) =>
-            `${message?.contact_person_mave?.full_name},${message?.contact_person_mave?.email
-            },${message?.contact_person_mave?.phone},"${message?.message
-            }",${moment(message.created_at).format("DD-MM-YYYY")},${message.status == 1 ? "Read" : "Unread"
+            `${message?.contact_person_mave?.full_name},${
+              message?.contact_person_mave?.email
+            },${message?.contact_person_mave?.phone},"${
+              message?.message
+            }",${moment(message.created_at).format("DD-MM-YYYY")},${
+              message.status == 1 ? "Read" : "Unread"
             }`
         )
         .join("\n");

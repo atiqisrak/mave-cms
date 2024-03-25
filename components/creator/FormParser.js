@@ -18,7 +18,7 @@ const FormParser = ({ item, editMode, onFormSelect, onUpdateComponent }) => {
       if (response.data) {
         setForms(response.data);
         // console.log("Forms: ", response.data);
-        message.success("Forms fetched successfully");
+        // message.success("Forms fetched successfully");
         setFormsFetched(true);
         setLoading(false);
       } else {

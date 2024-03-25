@@ -69,6 +69,11 @@ const CardParser = ({
           <div className="flexed-between">
             <Select
               showSearch
+              filterOption={(input, option) =>
+                option?.children && input
+                  ? option.children.toLowerCase().includes(input.toLowerCase())
+                  : false
+              }
               style={{
                 width: "100%",
                 height: "100px",

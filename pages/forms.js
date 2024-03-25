@@ -28,7 +28,7 @@ function Forms() {
       if (response.data) {
         setForms(response.data);
         // console.log("Forms: ", response.data);
-        message.success("Forms fetched successfully");
+        // message.success("Forms fetched successfully");
         setLoading(false);
       } else {
         console.error("Error fetching forms:", response.data.message);
@@ -104,7 +104,7 @@ function Forms() {
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
               gridGap: "1em",
-              border: "1px solid black"
+              border: "1px solid black",
             }}
           >
             {forms?.map((formData) => (

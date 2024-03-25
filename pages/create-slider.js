@@ -86,7 +86,7 @@ const CreateSlider = () => {
         if (response.data) {
           setMediaAssets(response.data);
           // console.log("Media Assets: ", response.data);
-          message.success("Media assets fetched successfully");
+          // message.success("Media assets fetched successfully");
           setLoading(false);
         } else {
           // console.error("Error fetching media assets:", response.data.message);
