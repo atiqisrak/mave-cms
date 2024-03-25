@@ -44,23 +44,21 @@ const Navbars = () => {
   const [selectedMediaId, setSelectedMediaId] = useState(null);
   const [selectedMenuId, setSelectedMenuId] = useState(null);
 
-
   const fetchData = async () => {
     try {
       setLoading(true);
 
-      const [mediaResponse, menuResponse, navbarsResponse] =
-        await Promise.all([
-          instance("/media"),
-          instance("/menus"),
-          instance("/navbars"),
-        ]);
+      const [mediaResponse, menuResponse, navbarsResponse] = await Promise.all([
+        instance("/media"),
+        instance("/menus"),
+        instance("/navbars"),
+      ]);
 
       if (mediaResponse.data && menuResponse.data && navbarsResponse.data) {
         setMedia(mediaResponse.data);
         setMenus(menuResponse.data);
         setNavbars(navbarsResponse.data);
-        message.success("Data fetched successfully");
+        // message.success("Data fetched successfully");
         // console.log("Media Data", mediaResponse.data);
         // console.log("Menu Data", menuResponse.data);
         // console.log("Navbar Data", navbarsResponse.data);
@@ -183,7 +181,7 @@ const Navbars = () => {
             const res = await instance.get("/navbars");
             setNavbars(res.data);
             setLoading(false);
-          } catch (error) { }
+          } catch (error) {}
         };
         getData();
       } else {
@@ -258,20 +256,23 @@ const Navbars = () => {
                     marginBottom: "1em",
                   }}
                 >
-                  <div style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flexDirection: "column",
-                    gap: "2em",
-                  }}>
-                    <div><label>
-                      Navbar Title (English)
-                      <span style={{ color: "red" }}>*</span>
-                    </label>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      flexDirection: "column",
+                      gap: "2em",
+                    }}
+                  >
+                    <div>
+                      <label>
+                        Navbar Title (English)
+                        <span style={{ color: "red" }}>*</span>
+                      </label>
                       <Input
                         style={{
-                          width: "50%"
+                          width: "50%",
                         }}
                         allowClear
                         type="text"
@@ -279,14 +280,16 @@ const Navbars = () => {
                         placeholder="Enter Navbar Title"
                         value={navbarTitleEn}
                         onChange={(e) => setNavbarTitleEn(e.target.value)}
-                      /></div>
-                    <div><label>
-                      Navbar Title (Bangla)
-                      <span style={{ color: "red" }}>*</span>
-                    </label>
+                      />
+                    </div>
+                    <div>
+                      <label>
+                        Navbar Title (Bangla)
+                        <span style={{ color: "red" }}>*</span>
+                      </label>
                       <Input
                         style={{
-                          width: "50%"
+                          width: "50%",
                         }}
                         allowClear
                         type="text"
@@ -294,8 +297,8 @@ const Navbars = () => {
                         placeholder="Enter Navbar Title (Bangla)"
                         value={navbarTitleBn}
                         onChange={(e) => setNavbarTitleBn(e.target.value)}
-                      /></div>
-
+                      />
+                    </div>
                   </div>
                   <div
                     style={{
@@ -471,20 +474,23 @@ const Navbars = () => {
                                 }
                               />
                             </div> */}
-                            <div style={{
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              flexDirection: "column",
-                              gap: "2em",
-                            }}>
-                              <div><label>
-                                Navbar Title (English)
-                                <span style={{ color: "red" }}>*</span>
-                              </label>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                flexDirection: "column",
+                                gap: "2em",
+                              }}
+                            >
+                              <div>
+                                <label>
+                                  Navbar Title (English)
+                                  <span style={{ color: "red" }}>*</span>
+                                </label>
                                 <Input
                                   style={{
-                                    width: "70%"
+                                    width: "70%",
                                   }}
                                   allowClear
                                   type="text"
@@ -492,15 +498,19 @@ const Navbars = () => {
                                   placeholder={navbar?.title_en}
                                   defaultValue={navbar?.title_en}
                                   value={navbarTitleEn}
-                                  onChange={(e) => setNavbarTitleEn(e.target.value)}
-                                /></div>
-                              <div><label>
-                                Navbar Title (Bangla)
-                                <span style={{ color: "red" }}>*</span>
-                              </label>
+                                  onChange={(e) =>
+                                    setNavbarTitleEn(e.target.value)
+                                  }
+                                />
+                              </div>
+                              <div>
+                                <label>
+                                  Navbar Title (Bangla)
+                                  <span style={{ color: "red" }}>*</span>
+                                </label>
                                 <Input
                                   style={{
-                                    width: "70%"
+                                    width: "70%",
                                   }}
                                   allowClear
                                   type="text"
@@ -508,9 +518,11 @@ const Navbars = () => {
                                   placeholder={navbar?.title_bn}
                                   defaultValue={navbar?.title_bn}
                                   value={navbarTitleBn}
-                                  onChange={(e) => setNavbarTitleBn(e.target.value)}
-                                /></div>
-
+                                  onChange={(e) =>
+                                    setNavbarTitleBn(e.target.value)
+                                  }
+                                />
+                              </div>
                             </div>
                           </form>
                         </div>
@@ -588,31 +600,31 @@ const Navbars = () => {
                                   )}
                                   {(!editMode ||
                                     editedNavbarId !== navbar.id) && (
-                                      <>
-                                        <Button
-                                          className="change-media-button"
-                                          style={{
-                                            fontSize: "1rem",
-                                            position: "absolute",
-                                            background: "rgba(0, 0, 0, 0.6)",
-                                            color: "#fff",
-                                            padding: "18px 16px",
-                                            borderRadius: "4px",
-                                            cursor: "pointer",
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                          }}
-                                          onClick={() =>
-                                            handleOpenMediaSelectionModal(
-                                              navbar.id
-                                            )
-                                          }
-                                        >
-                                          Change
-                                        </Button>
-                                      </>
-                                    )}{" "}
+                                    <>
+                                      <Button
+                                        className="change-media-button"
+                                        style={{
+                                          fontSize: "1rem",
+                                          position: "absolute",
+                                          background: "rgba(0, 0, 0, 0.6)",
+                                          color: "#fff",
+                                          padding: "18px 16px",
+                                          borderRadius: "4px",
+                                          cursor: "pointer",
+                                          display: "flex",
+                                          justifyContent: "center",
+                                          alignItems: "center",
+                                        }}
+                                        onClick={() =>
+                                          handleOpenMediaSelectionModal(
+                                            navbar.id
+                                          )
+                                        }
+                                      >
+                                        Change
+                                      </Button>
+                                    </>
+                                  )}{" "}
                                 </div>
                               </div>
                             </form>
@@ -695,7 +707,10 @@ const Navbars = () => {
                                     alignItems: "center",
                                   }}
                                   onClick={() => {
-                                    setUnfolded(prevState => ({ ...prevState, [navbar.id]: !prevState[navbar.id] }));
+                                    setUnfolded((prevState) => ({
+                                      ...prevState,
+                                      [navbar.id]: !prevState[navbar.id],
+                                    }));
                                   }}
                                 />
                                 {unfolded[navbar.id] && (

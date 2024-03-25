@@ -8,7 +8,6 @@ import { Image } from "antd";
 import Orders from "./orders";
 
 const Dashboard = () => {
-
   const GOOGLE_ANALYTICS = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_LINK;
 
   useEffect(() => {
@@ -22,7 +21,6 @@ const Dashboard = () => {
   const router = useRouter();
 
   useEffect(() => {
-
     // Check if a token is stored in localStorage when the component mounts
     const storedToken = localStorage.getItem("token");
     const users = localStorage.getItem("user");
@@ -34,8 +32,6 @@ const Dashboard = () => {
       // console.log("Token: ", storedToken);
     }
   }, []);
-
-
 
   return (
     <>
@@ -51,14 +47,22 @@ const Dashboard = () => {
               {/* <h1>Admin Dashboard</h1> */}
               <div className="user">
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/6596/6596121.png"
+                  src="/images/profile_avatar.png"
+                  style={{
+                    borderRadius: "50%",
+                    border: "1px solid #f0f0f0",
+                  }}
                   width={50}
                   alt=""
                 />
                 <h2 style={{ textAlign: "center" }}>{user.name}</h2>
-                <p style={{
-                  textTransform: 'lowercase',
-                }}>{user.email}</p>
+                <p
+                  style={{
+                    textTransform: "lowercase",
+                  }}
+                >
+                  {user.email}
+                </p>
               </div>
             </div>
           </>
@@ -66,13 +70,14 @@ const Dashboard = () => {
       </div>
       <div className="flexed-center">
         {/* iframe */}
-        <iframe src={GOOGLE_ANALYTICS}
+        <iframe
+          src={GOOGLE_ANALYTICS}
           width="60%"
           height="900px"
           frameborder="0"
           style={{
-            overflowX: 'hidden',
-            overflowY: 'hidden',
+            overflowX: "hidden",
+            overflowY: "hidden",
           }}
         ></iframe>
       </div>
