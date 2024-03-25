@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from "react";
 import {
   Layout,
-  Switch,
   Select,
   Button,
-  Collapse,
   Image,
   Input,
   message,
   Modal,
   Popconfirm,
-  Carousel,
   Spin,
 } from "antd";
 import { useRouter } from "next/router";
@@ -22,22 +19,16 @@ import {
   FormOutlined,
   FontSizeOutlined,
   BoxPlotOutlined,
-  SettingOutlined,
   ProfileOutlined,
   SwitcherOutlined,
   FileImageFilled,
   AlignLeftOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
   PlusSquareOutlined,
   CloseCircleFilled,
   PlusOutlined,
   CloseOutlined,
   CloudSyncOutlined,
 } from "@ant-design/icons";
-import Link from "next/link";
-const { Sider, Content } = Layout;
-const { Option } = Select;
 import RichTextEditor from "../../components/RichTextEditor";
 import instance from "../../axios";
 import bodyParser from "../../utils/sectionperser";
@@ -47,19 +38,11 @@ import moment from "moment";
 
 const Creator = () => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
-  const [collapsed, setCollapsed] = useState(false);
   const [creatorMode, setCreatorMode] = useState(null);
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
   const [mediaId, setMediaId] = useState([]);
-  const [menus, setMenus] = useState([]);
-  const [navbars, setNavbars] = useState([]);
-  const [sliders, setSliders] = useState([]);
   const [cards, setCards] = useState([]);
-  const [forms, setForms] = useState([]);
-  const [footers, setFooters] = useState([]);
-  const [pressReleases, setPressReleases] = useState([]);
-  const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const Option = Select.Option;
   const [pageData, setPageData] = useState();
@@ -71,16 +54,12 @@ const Creator = () => {
   const [internalCanvas, setInternalCanvas] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editedSectionId, setEditedSectionId] = useState(null);
-  const [selectedComponent, setSelectedComponent] = useState(null);
   // New members
   const [selectedComponentType, setSelectedComponentType] = useState(null);
-  const [existingData, setExistingData] = useState([]);
   const [selectedExistingData, setSelectedExistingData] = useState(null);
   const [fetchedComponent, setFetchedComponent] = useState([]);
   const [selectionMode, setSelectionMode] = useState(false);
   const [updateResponse, setUpdateResponse] = useState();
-  const [navbarComponents, setNavbarComponents] = useState([]);
-  const [cardComponents, setCardComponents] = useState([]);
   const [searchDefault, setSearchDefault] = useState();
   const [title, setTitle] = useState();
   const [description, setDescription] = useState();
@@ -90,9 +69,6 @@ const Creator = () => {
   const [currentPageNameBn, setCurrentPageNameBn] = useState("");
   const [currentPageSlug, setCurrentPageSlug] = useState("");
 
-  const handleCollapse = () => {
-    setCollapsed(!collapsed);
-  };
   useEffect(() => {
     const localCreatormode = localStorage.getItem("creatorMode");
     localCreatormode ? setCreatorMode(localCreatormode) : setCreatorMode(false);
@@ -117,15 +93,6 @@ const Creator = () => {
         slug: "description",
       },
     ],
-    /* [
-      "Inner Section",
-      {
-        type: "inner-section",
-        icon: SettingOutlined,
-        iconpath: "/images/icons/InnerSection.svg",
-        slug: "inner_sections",
-      },
-    ], */
     [
       "Media",
       {
@@ -216,15 +183,7 @@ const Creator = () => {
   });
 
   // Cancel Button
-
   const minidestroy = () => {
-    // newSectionComponents.pop();
-    setSelectionMode(false);
-  };
-
-  const destroy = () => {
-    newSectionComponents.pop();
-    setNewSection(null);
     setSelectionMode(false);
   };
 
@@ -895,17 +854,6 @@ const Creator = () => {
         <div className="ViewContentContainer">
           <center>
             <div>
-              {/* <div
-                // vertical line
-                style={{
-                  position: "absolute",
-                  left: "52%",
-                  top: "0",
-                  width: "4px",
-                  height: "20px",
-                  backgroundColor: "var(--themes)",
-                }}
-              /> */}
               <h2
                 style={{
                   color: "var(--themes)",
@@ -1321,17 +1269,6 @@ const Creator = () => {
                                                     value={searchDefault}
                                                     mode="multiple"
                                                     allowClear
-                                                    showSearch
-                                                    filterOption={(
-                                                      input,
-                                                      option
-                                                    ) =>
-                                                      option.children
-                                                        .toLowerCase()
-                                                        .indexOf(
-                                                          input.toLowerCase()
-                                                        ) >= 0
-                                                    }
                                                     style={{ width: "100%" }}
                                                     placeholder="Select Media"
                                                     onChange={(value) =>
@@ -1410,11 +1347,13 @@ const Creator = () => {
                                                       input,
                                                       option
                                                     ) =>
-                                                      option.children
-                                                        .toLowerCase()
-                                                        .indexOf(
-                                                          input.toLowerCase()
-                                                        ) >= 0
+                                                      option?.children && input
+                                                        ? option.children
+                                                            .toLowerCase()
+                                                            .includes(
+                                                              input.toLowerCase()
+                                                            )
+                                                        : false
                                                     }
                                                     style={{ width: "100%" }}
                                                     placeholder="Select Menu"
@@ -1484,11 +1423,13 @@ const Creator = () => {
                                                       input,
                                                       option
                                                     ) =>
-                                                      option.children
-                                                        .toLowerCase()
-                                                        .indexOf(
-                                                          input.toLowerCase()
-                                                        ) >= 0
+                                                      option?.children && input
+                                                        ? option.children
+                                                            .toLowerCase()
+                                                            .includes(
+                                                              input.toLowerCase()
+                                                            )
+                                                        : false
                                                     }
                                                     style={{ width: "100%" }}
                                                     placeholder="Select Navbar"
@@ -1558,11 +1499,13 @@ const Creator = () => {
                                                       input,
                                                       option
                                                     ) =>
-                                                      option.children
-                                                        .toLowerCase()
-                                                        .indexOf(
-                                                          input.toLowerCase()
-                                                        ) >= 0
+                                                      option?.children && input
+                                                        ? option.children
+                                                            .toLowerCase()
+                                                            .includes(
+                                                              input.toLowerCase()
+                                                            )
+                                                        : false
                                                     }
                                                     style={{ width: "100%" }}
                                                     placeholder="Select Slider"
@@ -1580,52 +1523,54 @@ const Creator = () => {
                                                           key={index}
                                                           value={card.id}
                                                         >
-                                                          {card && (
-                                                            <div>
-                                                              <Carousel
-                                                                autoplay
-                                                                style={{
-                                                                  width: "100%",
-                                                                  height:
-                                                                    "100%",
-                                                                }}
-                                                              >
-                                                                {card?.medias?.map(
-                                                                  (
-                                                                    media,
-                                                                    index
-                                                                  ) => (
-                                                                    <div
-                                                                      key={
-                                                                        index
-                                                                      }
-                                                                    >
-                                                                      <Image
-                                                                        preview={
-                                                                          false
-                                                                        }
-                                                                        src={`${MEDIA_URL}/${media?.file_path}`}
-                                                                        alt={
-                                                                          media?.file_path
-                                                                        }
-                                                                        width={
-                                                                          "100%"
-                                                                        }
-                                                                        height={
-                                                                          200
-                                                                        }
-                                                                        style={{
-                                                                          objectFit:
-                                                                            "cover",
-                                                                          borderRadius: 10,
-                                                                        }}
-                                                                      />
-                                                                    </div>
-                                                                  )
-                                                                )}
-                                                              </Carousel>
-                                                            </div>
-                                                          )}
+                                                          {
+                                                            card &&
+                                                              card?.title_en
+                                                            // <div>
+                                                            //   <Carousel
+                                                            //     autoplay
+                                                            //     style={{
+                                                            //       width: "100%",
+                                                            //       height:
+                                                            //         "100%",
+                                                            //     }}
+                                                            //   >
+                                                            //     {card?.medias?.map(
+                                                            //       (
+                                                            //         media,
+                                                            //         index
+                                                            //       ) => (
+                                                            //         <div
+                                                            //           key={
+                                                            //             index
+                                                            //           }
+                                                            //         >
+                                                            //           <Image
+                                                            //             preview={
+                                                            //               false
+                                                            //             }
+                                                            //             src={`${MEDIA_URL}/${media?.file_path}`}
+                                                            //             alt={
+                                                            //               media?.file_path
+                                                            //             }
+                                                            //             width={
+                                                            //               "100%"
+                                                            //             }
+                                                            //             height={
+                                                            //               200
+                                                            //             }
+                                                            //             style={{
+                                                            //               objectFit:
+                                                            //                 "cover",
+                                                            //               borderRadius: 10,
+                                                            //             }}
+                                                            //           />
+                                                            //         </div>
+                                                            //       )
+                                                            //     )}
+                                                            //   </Carousel>
+                                                            // </div>
+                                                          }
                                                         </Select.Option>
                                                       )
                                                     )}
@@ -1677,11 +1622,13 @@ const Creator = () => {
                                                       input,
                                                       option
                                                     ) =>
-                                                      option.children
-                                                        .toLowerCase()
-                                                        .indexOf(
-                                                          input.toLowerCase()
-                                                        ) >= 0
+                                                      option?.children && input
+                                                        ? option.children
+                                                            .toLowerCase()
+                                                            .includes(
+                                                              input.toLowerCase()
+                                                            )
+                                                        : false
                                                     }
                                                     style={{ width: "100%" }}
                                                     placeholder="Select Cards"
@@ -1751,11 +1698,13 @@ const Creator = () => {
                                                       input,
                                                       option
                                                     ) =>
-                                                      option.children
-                                                        .toLowerCase()
-                                                        .indexOf(
-                                                          input.toLowerCase()
-                                                        ) >= 0
+                                                      option?.children && input
+                                                        ? option.children
+                                                            .toLowerCase()
+                                                            .includes(
+                                                              input.toLowerCase()
+                                                            )
+                                                        : false
                                                     }
                                                     style={{ width: "100%" }}
                                                     placeholder="Select Form"
@@ -1825,11 +1774,13 @@ const Creator = () => {
                                                       input,
                                                       option
                                                     ) =>
-                                                      option.children
-                                                        .toLowerCase()
-                                                        .indexOf(
-                                                          input.toLowerCase()
-                                                        ) >= 0
+                                                      option?.children && input
+                                                        ? option.children
+                                                            .toLowerCase()
+                                                            .includes(
+                                                              input.toLowerCase()
+                                                            )
+                                                        : false
                                                     }
                                                     style={{ width: "100%" }}
                                                     placeholder="Select Footer"
@@ -1899,11 +1850,13 @@ const Creator = () => {
                                                       input,
                                                       option
                                                     ) =>
-                                                      option.children
-                                                        .toLowerCase()
-                                                        .indexOf(
-                                                          input.toLowerCase()
-                                                        ) >= 0
+                                                      option?.children && input
+                                                        ? option.children
+                                                            .toLowerCase()
+                                                            .includes(
+                                                              input.toLowerCase()
+                                                            )
+                                                        : false
                                                     }
                                                     style={{ width: "100%" }}
                                                     placeholder="Select Press Release"
@@ -1982,11 +1935,13 @@ const Creator = () => {
                                                       input,
                                                       option
                                                     ) =>
-                                                      option.children
-                                                        .toLowerCase()
-                                                        .indexOf(
-                                                          input.toLowerCase()
-                                                        ) >= 0
+                                                      option?.children && input
+                                                        ? option.children
+                                                            .toLowerCase()
+                                                            .includes(
+                                                              input.toLowerCase()
+                                                            )
+                                                        : false
                                                     }
                                                     style={{ width: "100%" }}
                                                     placeholder="Select Events"
@@ -2068,6 +2023,7 @@ const Creator = () => {
                                     onClick={() => {
                                       handleSubmit();
                                       setCanvas(false);
+                                      setInternalCanvas(false);
                                     }}
                                     icon={<CloudSyncOutlined />}
                                   >
@@ -2092,11 +2048,11 @@ const Creator = () => {
                                   </Button>
 
                                   <Popconfirm
-                                    title="Are you sure to close without saving? All changes will be lost."
+                                    title="All changes will be lost."
                                     onConfirm={() => {
                                       handleCloseSectionModal();
                                     }}
-                                    okText="Yes"
+                                    okText="Sure"
                                     cancelText="No"
                                   >
                                     <Button
@@ -2384,12 +2340,6 @@ const Creator = () => {
                                       value={searchDefault}
                                       mode="multiple"
                                       allowClear
-                                      showSearch
-                                      filterOption={(input, option) =>
-                                        option.children
-                                          .toLowerCase()
-                                          .indexOf(input.toLowerCase()) >= 0
-                                      }
                                       style={{ width: "100%" }}
                                       placeholder="Select Media"
                                       onChange={(value) =>
@@ -2457,9 +2407,11 @@ const Creator = () => {
                                       allowClear
                                       showSearch
                                       filterOption={(input, option) =>
-                                        option.children
-                                          .toLowerCase()
-                                          .indexOf(input.toLowerCase()) >= 0
+                                        option?.children && input
+                                          ? option.children
+                                              .toLowerCase()
+                                              .includes(input.toLowerCase())
+                                          : false
                                       }
                                       style={{ width: "100%" }}
                                       placeholder="Select Menu"
@@ -2518,9 +2470,11 @@ const Creator = () => {
                                       allowClear
                                       showSearch
                                       filterOption={(input, option) =>
-                                        option.children
-                                          .toLowerCase()
-                                          .indexOf(input.toLowerCase()) >= 0
+                                        option?.children && input
+                                          ? option.children
+                                              .toLowerCase()
+                                              .includes(input.toLowerCase())
+                                          : false
                                       }
                                       style={{ width: "100%" }}
                                       placeholder="Select Navbar"
@@ -2579,9 +2533,11 @@ const Creator = () => {
                                       allowClear
                                       showSearch
                                       filterOption={(input, option) =>
-                                        option.children
-                                          .toLowerCase()
-                                          .indexOf(input.toLowerCase()) >= 0
+                                        option?.children && input
+                                          ? option.children
+                                              .toLowerCase()
+                                              .includes(input.toLowerCase())
+                                          : false
                                       }
                                       style={{ width: "100%" }}
                                       placeholder="Select Slider"
@@ -2598,35 +2554,36 @@ const Creator = () => {
                                           key={index}
                                           value={card.id}
                                         >
-                                          {card && (
-                                            <div>
-                                              <Carousel
-                                                autoplay
-                                                style={{
-                                                  width: "100%",
-                                                  height: "100%",
-                                                }}
-                                              >
-                                                {card?.medias?.map(
-                                                  (media, index) => (
-                                                    <div key={index}>
-                                                      <Image
-                                                        preview={false}
-                                                        src={`${MEDIA_URL}/${media?.file_path}`}
-                                                        alt={media?.file_path}
-                                                        width={"100%"}
-                                                        height={200}
-                                                        style={{
-                                                          objectFit: "cover",
-                                                          borderRadius: 10,
-                                                        }}
-                                                      />
-                                                    </div>
-                                                  )
-                                                )}
-                                              </Carousel>
-                                            </div>
-                                          )}
+                                          {
+                                            card && card?.title_en
+                                            // <div>
+                                            //   <Carousel
+                                            //     autoplay
+                                            //     style={{
+                                            //       width: "100%",
+                                            //       height: "100%",
+                                            //     }}
+                                            //   >
+                                            //     {card?.medias?.map(
+                                            //       (media, index) => (
+                                            //         <div key={index}>
+                                            //           <Image
+                                            //             preview={false}
+                                            //             src={`${MEDIA_URL}/${media?.file_path}`}
+                                            //             alt={media?.file_path}
+                                            //             width={"100%"}
+                                            //             height={200}
+                                            //             style={{
+                                            //               objectFit: "cover",
+                                            //               borderRadius: 10,
+                                            //             }}
+                                            //           />
+                                            //         </div>
+                                            //       )
+                                            //     )}
+                                            //   </Carousel>
+                                            // </div>
+                                          }
                                         </Select.Option>
                                       ))}
                                     </Select>
@@ -2668,9 +2625,11 @@ const Creator = () => {
                                       allowClear
                                       showSearch
                                       filterOption={(input, option) =>
-                                        option.children
-                                          .toLowerCase()
-                                          .indexOf(input.toLowerCase()) >= 0
+                                        option?.children && input
+                                          ? option.children
+                                              .toLowerCase()
+                                              .includes(input.toLowerCase())
+                                          : false
                                       }
                                       style={{ width: "100%" }}
                                       placeholder="Select Cards"
@@ -2729,9 +2688,11 @@ const Creator = () => {
                                       allowClear
                                       showSearch
                                       filterOption={(input, option) =>
-                                        option.children
-                                          .toLowerCase()
-                                          .indexOf(input.toLowerCase()) >= 0
+                                        option?.children && input
+                                          ? option.children
+                                              .toLowerCase()
+                                              .includes(input.toLowerCase())
+                                          : false
                                       }
                                       style={{ width: "100%" }}
                                       placeholder="Select Form"
@@ -2790,9 +2751,11 @@ const Creator = () => {
                                       allowClear
                                       showSearch
                                       filterOption={(input, option) =>
-                                        option.children
-                                          .toLowerCase()
-                                          .indexOf(input.toLowerCase()) >= 0
+                                        option?.children && input
+                                          ? option.children
+                                              .toLowerCase()
+                                              .includes(input.toLowerCase())
+                                          : false
                                       }
                                       style={{ width: "100%" }}
                                       placeholder="Select Footer"
@@ -2853,9 +2816,11 @@ const Creator = () => {
                                       allowClear
                                       showSearch
                                       filterOption={(input, option) =>
-                                        option.children
-                                          .toLowerCase()
-                                          .indexOf(input.toLowerCase()) >= 0
+                                        option?.children && input
+                                          ? option.children
+                                              .toLowerCase()
+                                              .includes(input.toLowerCase())
+                                          : false
                                       }
                                       style={{ width: "100%" }}
                                       placeholder="Select Press Release"
@@ -2918,9 +2883,11 @@ const Creator = () => {
                                       allowClear
                                       showSearch
                                       filterOption={(input, option) =>
-                                        option.children
-                                          .toLowerCase()
-                                          .indexOf(input.toLowerCase()) >= 0
+                                        option?.children && input
+                                          ? option.children
+                                              .toLowerCase()
+                                              .includes(input.toLowerCase())
+                                          : false
                                       }
                                       style={{ width: "100%" }}
                                       placeholder="Select Events"
@@ -2979,9 +2946,11 @@ const Creator = () => {
                                       allowClear
                                       showSearch
                                       filterOption={(input, option) =>
-                                        option.children
-                                          .toLowerCase()
-                                          .indexOf(input.toLowerCase()) >= 0
+                                        option?.children && input
+                                          ? option.children
+                                              .toLowerCase()
+                                              .includes(input.toLowerCase())
+                                          : false
                                       }
                                       style={{ width: "100%" }}
                                       placeholder="Select Tabs"
@@ -3080,7 +3049,7 @@ const Creator = () => {
                       </Button>
 
                       <Popconfirm
-                        title="Are you sure to close without saving? All changes will be lost."
+                        title="All changes will be lost."
                         onConfirm={() => {
                           handleCloseSectionModal();
                         }}
@@ -3203,6 +3172,15 @@ const Creator = () => {
             </Modal>
             <Modal>
               <Select
+                allowClear
+                showSearch
+                filterOption={(input, option) =>
+                  option?.children && input
+                    ? option.children
+                        .toLowerCase()
+                        .includes(input.toLowerCase())
+                    : false
+                }
                 style={{ width: "100%" }}
                 placeholder="Select a card"
                 onChange={(value) => {

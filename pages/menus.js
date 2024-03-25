@@ -17,10 +17,9 @@ import Loader from "../components/Loader";
 import moment from "moment";
 
 const Menus = () => {
-
   useEffect(() => {
     // Set the dynamic page title for the Home page
-    setPageTitle('Menus');
+    setPageTitle("Menus");
   }, []);
 
   const [menus, setMenus] = useState([]);
@@ -50,7 +49,7 @@ const Menus = () => {
         if (response.data) {
           setMenus(response.data);
           // console.log("Menus", response.data);
-          message.success("Menus fetched successfully");
+          // message.success("Menus fetched successfully");
           setLoading(false);
         } else {
           // console.log("Error fetching menus", response.data.message);
@@ -74,7 +73,7 @@ const Menus = () => {
         if (response.data) {
           setMenuItems(response.data);
           // console.log("MenuItems", response.data);
-          message.success("Menu items fetched successfully");
+          // message.success("Menu items fetched successfully");
           setLoading(false);
         } else {
           // console.log("Error fetching menu items", response.data.message);
@@ -139,10 +138,10 @@ const Menus = () => {
           const updatedMenus = menus?.map((menu) =>
             menu.id === id
               ? {
-                ...menu,
-                name: editedMenuName,
-                menu_item_ids: editedMenuItemsIds,
-              }
+                  ...menu,
+                  name: editedMenuName,
+                  menu_item_ids: editedMenuItemsIds,
+                }
               : menu
           );
           setMenus(updatedMenus);
@@ -236,9 +235,7 @@ const Menus = () => {
 
   // Sort menu by name
   const sortMenuByName = () => {
-    const sortedMenus = [...menus].sort((a, b) =>
-      a.name.localeCompare(b.name)
-    );
+    const sortedMenus = [...menus].sort((a, b) => a.name.localeCompare(b.name));
     setMenus(sortedMenus);
   };
 
@@ -250,16 +247,19 @@ const Menus = () => {
 
   // SOrt by create date moment
   const sortMenuByDateAsc = () => {
-    const sortedMenus = [...menus].sort((a, b) => moment(a.created_at).diff(moment(b.created_at)));
+    const sortedMenus = [...menus].sort((a, b) =>
+      moment(a.created_at).diff(moment(b.created_at))
+    );
     setMenus(sortedMenus);
   };
 
   // SOrt by create date moment
   const sortMenuByDateDesc = () => {
-    const sortedMenus = [...menus].sort((a, b) => moment(b.created_at).diff(moment(a.created_at)));
+    const sortedMenus = [...menus].sort((a, b) =>
+      moment(b.created_at).diff(moment(a.created_at))
+    );
     setMenus(sortedMenus);
   };
-
 
   // Search menu by name
   const searchMenuByName = (value) => {
@@ -270,8 +270,6 @@ const Menus = () => {
   };
 
   const [filterMode, setFilterMode] = useState(false);
-
-
 
   return (
     <div className="ViewContainer ViewContentContainer">
@@ -327,72 +325,72 @@ const Menus = () => {
       </div>
 
       <div className="tableContainer">
-        <Button type="primary" onClick={() => setFilterMode(!filterMode)} style={{
-          backgroundColor: "var(--theme)",
-          borderColor: "var(--theme)",
-          color: "white",
-          borderRadius: "10px",
-          fontSize: "1.2em",
-          paddingBottom: "1.8em",
-          marginBottom: "1em",
-          marginTop: "1em"
-
-        }}>
-          <FilterOutlined />Filter
+        <Button
+          type="primary"
+          onClick={() => setFilterMode(!filterMode)}
+          style={{
+            backgroundColor: "var(--theme)",
+            borderColor: "var(--theme)",
+            color: "white",
+            borderRadius: "10px",
+            fontSize: "1.2em",
+            paddingBottom: "1.8em",
+            marginBottom: "1em",
+            marginTop: "1em",
+          }}
+        >
+          <FilterOutlined />
+          Filter
         </Button>
-        {
-          filterMode && (
-            <Row style={{
-              padding: "2em 3em", borderBottom: "1px solid #f0f0f0"
-            }}>
-              <Col span={12}>
-                <h3 style={{ fontSize: "1.4em", paddingBottom: 20 }}>Sort By: </h3>
-                <div style={{ display: "flex", alignItems: "center", gap: 30 }}>
-                  <Button
-                    type="primary"
-                    onClick={sortMenuByName}
-                  >
-                    Name
-                  </Button>
-                  <Button
-                    type="primary"
-                    onClick={sortMenuById}
-                  >
-                    ID
-                  </Button>
-                  <Button
-                    type="primary"
-                    onClick={sortMenuByDateAsc}
-                  >
-                    Added First
-                  </Button>
-                  <Button
-                    type="primary"
-                    onClick={sortMenuByDateDesc}
-                  >
-                    Added Last
-                  </Button>
-                </div>
-              </Col>
-              <Col span={12} style={{
+        {filterMode && (
+          <Row
+            style={{
+              padding: "2em 3em",
+              borderBottom: "1px solid #f0f0f0",
+            }}
+          >
+            <Col span={12}>
+              <h3 style={{ fontSize: "1.4em", paddingBottom: 20 }}>
+                Sort By:{" "}
+              </h3>
+              <div style={{ display: "flex", alignItems: "center", gap: 30 }}>
+                <Button type="primary" onClick={sortMenuByName}>
+                  Name
+                </Button>
+                <Button type="primary" onClick={sortMenuById}>
+                  ID
+                </Button>
+                <Button type="primary" onClick={sortMenuByDateAsc}>
+                  Added First
+                </Button>
+                <Button type="primary" onClick={sortMenuByDateDesc}>
+                  Added Last
+                </Button>
+              </div>
+            </Col>
+            <Col
+              span={12}
+              style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "flex-end",
-                gap: 30
-              }}>
-                <h3 style={{ fontSize: "1.4em", paddingBottom: 10 }}>Search By: </h3>
-                <Input
-                  placeholder="Search by name"
-                  style={{
-                    padding: "0.6em 2em",
-                    width: "20em",
-                  }}
-                  onChange={(e) => searchMenuByName(e.target.value)}
-                />
-              </Col>
-            </Row>)
-        }
-
+                gap: 30,
+              }}
+            >
+              <h3 style={{ fontSize: "1.4em", paddingBottom: 10 }}>
+                Search By:{" "}
+              </h3>
+              <Input
+                placeholder="Search by name"
+                style={{
+                  padding: "0.6em 2em",
+                  width: "20em",
+                }}
+                onChange={(e) => searchMenuByName(e.target.value)}
+              />
+            </Col>
+          </Row>
+        )}
 
         <Row style={{ padding: "2em 3em" }}>
           <Col span={4}>
@@ -442,7 +440,8 @@ const Menus = () => {
                 allowClear
                 showSearch
                 filterOption={(input, option) =>
-                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                  0
                 }
                 mode="multiple"
                 placeholder="Select menu items"
@@ -506,175 +505,176 @@ const Menus = () => {
 
         {/* Print saved menus */}
         {loading && <Loader />}
-        {
-          menus?.map((menu, index) => (
-            <Row
-              key={index}
-              style={{
-                padding: "2em 3em",
-                borderBottom: "1px solid #f0f0f0",
-                alignItems: "center",
-              }}
-            >
-              <Col span={4}>
-                <p
+        {menus?.map((menu, index) => (
+          <Row
+            key={index}
+            style={{
+              padding: "2em 3em",
+              borderBottom: "1px solid #f0f0f0",
+              alignItems: "center",
+            }}
+          >
+            <Col span={4}>
+              <p
+                style={{
+                  fontSize: "1.2em",
+                  fontWeight: "bold",
+                  color: "var(--theme)",
+                }}
+              >
+                {menu.id}
+              </p>
+            </Col>
+            <Col span={7}>
+              {editingMenuId === menu.id ? (
+                <Input
+                  value={editedMenuName}
+                  onChange={(e) => setEditedMenuName(e.target.value)}
                   style={{
-                    fontSize: "1.2em",
-                    fontWeight: "bold",
-                    color: "var(--theme)",
+                    padding: "0.6em 2em",
+                    width: "20em",
                   }}
-                >
-                  {menu.id}
-                </p>
-              </Col>
-              <Col span={7}>
-                {editingMenuId === menu.id ? (
-                  <Input
-                    value={editedMenuName}
-                    onChange={(e) => setEditedMenuName(e.target.value)}
-                    style={{
-                      padding: "0.6em 2em",
-                      width: "20em",
-                    }}
-                  />
-                ) : (
-                  <p style={{ fontSize: "1.2em" }}>{menu.name}</p>
-                )}
-              </Col>
-              <Col span={7}>
-                {editingMenuId === menu.id ? (
-                  <Select
-                    allowClear
-                    showSearch
-                    filterOption={(input, option) =>
-                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
-                    mode="multiple"
-                    style={{
-                      marginRight: "1em",
-                      width: "20em",
-                    }}
-                    placeholder="Select menu items"
-                    value={editedMenuItemsIds}
-                    onChange={(values) => setEditedMenuItemsIds(values)}
-                  >
-                    {menuItems?.map((menuItem) => (
-                      <Option key={menuItem.id} value={menuItem.id}>
-                        {menuItem.title}
-                      </Option>
-                    ))}
-                  </Select>
-                ) : (
-                  <ul style={{ listStyleType: "none" }}>
-                    {menu.menu_items?.map((menuItem, itemIndex) => (
-                      <li
-                        key={itemIndex}
-                        style={{
-                          fontSize: "1.2em",
-                          paddingBottom: "0.5em",
-                          color: "var(--themes)",
-                        }}
-                      >
-                        <p>{menuItem.title}</p>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </Col>
-              <Col span={6}>
-                <div
-                  className="actionButtons"
+                />
+              ) : (
+                <p style={{ fontSize: "1.2em" }}>{menu.name}</p>
+              )}
+            </Col>
+            <Col span={7}>
+              {editingMenuId === menu.id ? (
+                <Select
+                  allowClear
+                  showSearch
+                  filterOption={(input, option) =>
+                    option.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                  mode="multiple"
                   style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: "1em",
+                    marginRight: "1em",
+                    width: "20em",
                   }}
+                  placeholder="Select menu items"
+                  value={editedMenuItemsIds}
+                  onChange={(values) => setEditedMenuItemsIds(values)}
                 >
-                  {editingMenuId === menu.id ? (
-                    <>
-                      <Button
-                        type="primary"
-                        onClick={() => handleUpdate(menu.id)}
-                        style={{
-                          backgroundColor: "var(--success)",
-                          borderColor: "var(--success)",
-                          color: "white",
-                          borderRadius: "10px",
-                          fontSize: "1.2em",
-                          marginRight: "1em",
-                          paddingBottom: "1.8em",
-                        }}
-                        icon={<SyncOutlined />}
-                      >
-                        Update
-                      </Button>
-                      <Button
-                        style={{
-                          backgroundColor: "var(--themes)",
-                          borderColor: "var(--themes)",
-                          color: "white",
-                          borderRadius: "10px",
-                          fontSize: "1.2em",
-                          paddingBottom: "1.8em",
-                        }}
-                        onClick={handleCancelEdit}
-                        icon={<CloseCircleOutlined />}
-                      >
-                        Cancel
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button
-                        type="primary"
-                        style={{
-                          backgroundColor: "var(--theme)",
-                          borderColor: "var(--theme)",
-                          color: "white",
-                          borderRadius: "10px",
-                          fontSize: "1.2em",
-                          marginRight: "1em",
-                          paddingBottom: "1.8em",
-                        }}
-                        onClick={() => handleEdit(menu.id)}
-                        icon={<EditOutlined />}
-                      >
-                        Edit
-                      </Button>
-                      <Popconfirm
-                        title="Are you sure you want to delete this menu?"
-                        onConfirm={() => handleDelete(menu.id)}
-                        okText="Sure"
-                        cancelText="Cancel"
-                        open={
-                          deleteConfirmationVisible && deleteMenuId === menu.id
+                  {menuItems?.map((menuItem) => (
+                    <Option key={menuItem.id} value={menuItem.id}>
+                      {menuItem.title}
+                    </Option>
+                  ))}
+                </Select>
+              ) : (
+                <ul style={{ listStyleType: "none" }}>
+                  {menu.menu_items?.map((menuItem, itemIndex) => (
+                    <li
+                      key={itemIndex}
+                      style={{
+                        fontSize: "1.2em",
+                        paddingBottom: "0.5em",
+                        color: "var(--themes)",
+                      }}
+                    >
+                      <p>{menuItem.title}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </Col>
+            <Col span={6}>
+              <div
+                className="actionButtons"
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "1em",
+                }}
+              >
+                {editingMenuId === menu.id ? (
+                  <>
+                    <Button
+                      type="primary"
+                      onClick={() => handleUpdate(menu.id)}
+                      style={{
+                        backgroundColor: "var(--success)",
+                        borderColor: "var(--success)",
+                        color: "white",
+                        borderRadius: "10px",
+                        fontSize: "1.2em",
+                        marginRight: "1em",
+                        paddingBottom: "1.8em",
+                      }}
+                      icon={<SyncOutlined />}
+                    >
+                      Update
+                    </Button>
+                    <Button
+                      style={{
+                        backgroundColor: "var(--themes)",
+                        borderColor: "var(--themes)",
+                        color: "white",
+                        borderRadius: "10px",
+                        fontSize: "1.2em",
+                        paddingBottom: "1.8em",
+                      }}
+                      onClick={handleCancelEdit}
+                      icon={<CloseCircleOutlined />}
+                    >
+                      Cancel
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      type="primary"
+                      style={{
+                        backgroundColor: "var(--theme)",
+                        borderColor: "var(--theme)",
+                        color: "white",
+                        borderRadius: "10px",
+                        fontSize: "1.2em",
+                        marginRight: "1em",
+                        paddingBottom: "1.8em",
+                      }}
+                      onClick={() => handleEdit(menu.id)}
+                      icon={<EditOutlined />}
+                    >
+                      Edit
+                    </Button>
+                    <Popconfirm
+                      title="Are you sure you want to delete this menu?"
+                      onConfirm={() => handleDelete(menu.id)}
+                      okText="Sure"
+                      cancelText="Cancel"
+                      open={
+                        deleteConfirmationVisible && deleteMenuId === menu.id
+                      }
+                      onOpenChange={(visible) => {
+                        if (!visible) {
+                          handleCancelDelete();
                         }
-                        onOpenChange={(visible) => {
-                          if (!visible) {
-                            handleCancelDelete();
-                          }
+                      }}
+                    >
+                      <Button
+                        type="primary"
+                        danger
+                        style={{
+                          borderRadius: "10px",
+                          fontSize: "1.2em",
+                          paddingBottom: "1.8em",
                         }}
+                        onClick={() => showDeleteConfirmation(menu.id)}
+                        icon={<DeleteOutlined />}
                       >
-                        <Button
-                          type="primary"
-                          danger
-                          style={{
-                            borderRadius: "10px",
-                            fontSize: "1.2em",
-                            paddingBottom: "1.8em",
-                          }}
-                          onClick={() => showDeleteConfirmation(menu.id)}
-                          icon={<DeleteOutlined />}
-                        >
-                          Delete
-                        </Button>
-                      </Popconfirm>
-                    </>
-                  )}
-                </div>
-              </Col>
-            </Row>
-          ))}
+                        Delete
+                      </Button>
+                    </Popconfirm>
+                  </>
+                )}
+              </div>
+            </Col>
+          </Row>
+        ))}
       </div>
     </div>
   );

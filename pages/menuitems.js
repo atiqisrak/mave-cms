@@ -63,7 +63,8 @@ const MenuItems = () => {
       setLoading(true);
       const response = await instance("/menuitems");
       if (response.data) {
-        setMenuItems(response.data);
+        // setMenuItems(response.data);
+        setMenuItems(response.data?.sort((a, b) => b.id - a.id));
         setLoading(false);
       } else {
         message.error("Menu items couldn't be fetched");
@@ -190,8 +191,8 @@ const MenuItems = () => {
         {
           title: newMenuItemTitle ? newMenuItemTitle : "N/A",
           title_bn: newMenuItemTitleBn ? newMenuItemTitleBn : "N/A",
-          parent_id: newParentId ? newParentId : "/",
-          link: "/" + newMenuItemLink ? newMenuItemLink : "",
+          parent_id: newParentId ? newParentId : 1,
+          link: newMenuItemLink ? "/" + newMenuItemLink : "/",
         },
       ]);
       if (response.status === 201) {
@@ -427,43 +428,6 @@ const MenuItems = () => {
                   />
                 </Col>
                 <Col span={4} style={{ marginRight: "0em" }}>
-                  {/* <Radio.Group
-                    onChange={(e) => setParentType(e.target.value)}
-                    value={parentType}
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      flexDirection: "column",
-                    }}
-                  >
-                    <Radio value="hasParent">Has Parent</Radio>
-                    <Radio value="noParent">No Parent</Radio>
-                  </Radio.Group>
-                  <br />
-                  {parentType === "hasParent" ? (
-                    <Select
-                      showSearch
-                      style={{ width: "100%" }}
-                      placeholder="Select a Parent Menu"
-                      optionFilterProp="children"
-                      onChange={(value) => setNewParentId(value)}
-                      filterOption={(input, option) =>
-                        option.children
-                          .toLowerCase()
-                          .indexOf(input.toLowerCase()) >= 0
-                      }
-                    >
-                      <Select.Option value={null}>No Parent</Select.Option>
-                      {menuItems?.map((menuItem) => (
-                        <Select.Option value={menuItem.id}>
-                          {menuItem.title}
-                        </Select.Option>
-                      ))}
-                    </Select>
-                  ) : (
-                    setNewParentId(null)
-                  )} */}
-
                   <Select
                     showSearch
                     style={{ width: "100%" }}
@@ -523,10 +487,7 @@ const MenuItems = () => {
                         }
                       >
                         {pages?.map((page) => (
-                          <Select.Option
-                            // value={`${page.slug}?pageId=${page.id}`}>
-                            value={page.slug}
-                          >
+                          <Select.Option value={page.slug}>
                             {page.page_name_en}
                           </Select.Option>
                         ))}

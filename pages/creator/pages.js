@@ -85,7 +85,7 @@ const Pages = () => {
         slug: newPageTitleEn.toLowerCase().split(" ").join("-"),
       });
       if (response.status === 201) {
-        message.success("New page added successfully");
+        // message.success("New page added successfully");
         closeAddNewPageCard();
         fetchPages();
         setCreateMode(false);
