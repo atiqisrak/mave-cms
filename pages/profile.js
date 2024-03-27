@@ -72,9 +72,8 @@ const Profile = () => {
       if (response.status === 200) {
         message.success("User created successfully");
         setCreateUser(false);
-        fetchUsers();
-
         setIsLoading(false);
+        window.location.reload();
       }
     } catch (error) {
       setIsLoading(false);
@@ -264,11 +263,14 @@ const Profile = () => {
   };
 
   const emailValidation = (email) => {
-    // emailregex with @mave.com
-    const emailRegEx = /^\w+@mave\.com$/;
+    // const emailRegEx = /^\w+@(?:gmail\.com|webable\.digital)$/;
+    // const emailRegEx = /^\w(?:\w+\.)+@(?:\w+\.)?(?:gmail\.com|webable\.digital)$/;
+    const emailRegEx =
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+)*@(gmail\.com|webable\.digital)$/;
+
     // Check if email is empty
     if (!email.trim()) {
-      setEmailMessage("Email is required. (e.g.: username@mave.com)");
+      setEmailMessage("Email is required. (e.g.: username@gmail.com)");
       setValidEmail(false);
       return;
     }
@@ -278,7 +280,7 @@ const Profile = () => {
       setValidEmail(true);
     } else {
       setEmailMessage(
-        "Email is invalid. Please use @mave.com as email extension"
+        "Email is invalid. Please use @gmail.com as email extension"
       );
       setValidEmail(false);
     }
@@ -347,12 +349,18 @@ const Profile = () => {
                       </label>
                       |
                       {modifyMode ? (
-                        <Input
-                          defaultValue={userData.email}
-                          onChange={(e) =>
-                            handleInputChange("email", e.target.value)
-                          }
-                        />
+                        <>
+                          <Input
+                            defaultValue={userData.email}
+                            onChange={(e) => {
+                              handleInputChange("email", e.target.value);
+                              emailValidation(e.target.value);
+                            }}
+                          />
+                          {!validEmail && (
+                            <p style={{ color: "red" }}>{emailMessage}</p>
+                          )}
+                        </>
                       ) : (
                         <p className="top2">
                           {userData.email ? userData.email : "Admin Email"}
@@ -626,7 +634,7 @@ const Profile = () => {
                       </Col>
                       <Col span={2}>
                         {userEdit && user?.id == editUserId ? (
-                          <>
+                          <div className="flexed-center">
                             <Button
                               icon={<CheckOutlined />}
                               style={{
@@ -639,7 +647,7 @@ const Profile = () => {
                               icon={<CloseOutlined />}
                               onClick={() => setUserEdit(false)}
                             />
-                          </>
+                          </div>
                         ) : (
                           <div className="flexed-center" style={{ gap: "1em" }}>
                             <Button
@@ -753,7 +761,7 @@ const Profile = () => {
                           justifyContent: "center",
                           alignItems: "center",
                         }}
-                        placeholder="username@mave.com"
+                        placeholder="username@gmail.com"
                         value={email}
                         required
                         onChange={(e) => {

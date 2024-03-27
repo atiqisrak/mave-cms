@@ -57,7 +57,7 @@ const Navbars = () => {
       if (mediaResponse.data && menuResponse.data && navbarsResponse.data) {
         setMedia(mediaResponse.data);
         setMenus(menuResponse.data);
-        setNavbars(navbarsResponse.data);
+        setNavbars(navbarsResponse?.data?.sort((a, b) => b.id - a.id));
         // message.success("Data fetched successfully");
         // console.log("Media Data", mediaResponse.data);
         // console.log("Menu Data", menuResponse.data);
