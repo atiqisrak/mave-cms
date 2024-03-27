@@ -1,11 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Site from "../components/Site";
 import { setPageTitle } from "../global/constants/pageTitle";
-import Login from "../components/Login";
 import { useRouter } from "next/router";
-import { Image } from "antd";
-import Orders from "./orders";
 
 const Dashboard = () => {
   const GOOGLE_ANALYTICS = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_LINK;
@@ -81,7 +77,6 @@ const Dashboard = () => {
           }}
         ></iframe>
       </div>
-      <Orders />
     </>
   );
 };

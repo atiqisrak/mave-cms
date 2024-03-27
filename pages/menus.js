@@ -47,7 +47,7 @@ const Menus = () => {
         setLoading(true);
         const response = await instance("/menus");
         if (response.data) {
-          setMenus(response.data);
+          setMenus(response.data?.sort((a, b) => b.id - a.id));
           // console.log("Menus", response.data);
           // message.success("Menus fetched successfully");
           setLoading(false);

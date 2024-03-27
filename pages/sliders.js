@@ -82,7 +82,7 @@ const Sliders = () => {
         // const response = await axios.get(`${API_BASE_URL}/media`);
         const response = await instance("/sliders");
         if (response.data) {
-          setSliders(response.data);
+          setSliders(response.data?.sort((a, b) => b.id - a.id));
           // console.log("Media Assets: ", response.data);
           // message.success("Sliders fetched successfully");
           setLoading(false);
@@ -121,7 +121,6 @@ const Sliders = () => {
       const response = await instance.delete(`/sliders/${id}`);
 
       if (response?.data) {
-
         setResponseData(response?.data);
         message.success("Slider deleted successfully");
         setLoading(false);
@@ -144,10 +143,16 @@ const Sliders = () => {
   };
   const handleSubmit = async (values) => {
     setLoading(true);
-    const previousTitleEn = sliders.find((slider) => slider.id === editingItemId).title_en;
-    const previousTitleBn = sliders.find((slider) => slider.id === editingItemId).title_bn;
+    const previousTitleEn = sliders.find(
+      (slider) => slider.id === editingItemId
+    ).title_en;
+    const previousTitleBn = sliders.find(
+      (slider) => slider.id === editingItemId
+    ).title_bn;
     // media ids is a array of numbers
-    const previousMediaIds = sliders.find((slider) => slider.id === editingItemId).media_ids;
+    const previousMediaIds = sliders.find(
+      (slider) => slider.id === editingItemId
+    ).media_ids;
 
     try {
       const postData = {
@@ -224,152 +229,172 @@ const Sliders = () => {
               ></CreateSliderComponent>
             )}
 
-            {
-              loading ? (
-                <Loader />
-              ) : (
-                <>
-                  <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-                    {sliders?.map((asset) => (
-                      <Col span={12} style={{ marginTop: "1rem" }} key={asset.id}>
-                        {editingItemId === asset.id ? (
-                          <Form
-                            form={form}
-                            name="createSlider"
-                            onFinish={handleSubmit}
-                            style={{
-                              marginTop: "10em",
-                              maxWidth: 600,
-                              margin: "0 auto",
-                            }}
-                            layout="vertical"
-                            autoComplete="off"
+            {loading ? (
+              <Loader />
+            ) : (
+              <>
+                <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                  {sliders?.map((asset) => (
+                    <Col span={12} style={{ marginTop: "1rem" }} key={asset.id}>
+                      {editingItemId === asset.id ? (
+                        <Form
+                          form={form}
+                          name="createSlider"
+                          onFinish={handleSubmit}
+                          style={{
+                            marginTop: "10em",
+                            maxWidth: 600,
+                            margin: "0 auto",
+                          }}
+                          layout="vertical"
+                          autoComplete="off"
+                        >
+                          <Form.Item
+                            hasFeedback
+                            label="Title English"
+                            name="title_e"
                           >
-                            <Form.Item hasFeedback label="Title English" name="title_e">
-                              <Input
-                                placeholder="Enter title in English"
-                                defaultValue={asset.title_en}
-                              />
-                            </Form.Item>
-                            <Form.Item hasFeedback label="Title Bangla" name="title_b">
-                              <Input
-                                placeholder="Enter title in Bangla"
-                                defaultValue={asset.title_bn}
-                              />
-                            </Form.Item>
-                            <Form.Item hasFeedback label="Select Media" name="media_items">
-                              <Button icon={<UploadOutlined />} onClick={showModal}>
-                                Click to Select
+                            <Input
+                              placeholder="Enter title in English"
+                              defaultValue={asset.title_en}
+                            />
+                          </Form.Item>
+                          <Form.Item
+                            hasFeedback
+                            label="Title Bangla"
+                            name="title_b"
+                          >
+                            <Input
+                              placeholder="Enter title in Bangla"
+                              defaultValue={asset.title_bn}
+                            />
+                          </Form.Item>
+                          <Form.Item
+                            hasFeedback
+                            label="Select Media"
+                            name="media_items"
+                          >
+                            <Button
+                              icon={<UploadOutlined />}
+                              onClick={showModal}
+                            >
+                              Click to Select
+                            </Button>
+                          </Form.Item>
+                          <Form.Item>
+                            <Space>
+                              <Button type="primary" htmlType="submit">
+                                Submit
                               </Button>
-                            </Form.Item>
-                            <Form.Item>
-                              <Space>
-                                <Button type="primary" htmlType="submit">
-                                  Submit
-                                </Button>
-                                <Button
-                                  onClick={() => handleCancelEdit()}
-                                  type="primary"
-                                  danger
-                                >
-                                  Cancel
-                                </Button>
-                              </Space>
-                              <Modal
-                                width={"70%"}
-                                title="Upload Media"
-                                open={isModalVisible}
-                                onOk={handleOk}
-                                onCancel={handleCancel}
-                                className="uploadMediaModal"
+                              <Button
+                                onClick={() => handleCancelEdit()}
+                                type="primary"
+                                danger
                               >
-                                <MediaSelectionModal
-                                  currentMedia={asset?.medias}
-                                  selectedMedia={selectedMedia}
-                                  setSelectedMedia={setSelectedMedia}
-                                  isModalVisible={isModalVisible}
-                                  setIsModalVisible={setIsModalVisible}
-                                />
-                              </Modal>
-                            </Form.Item>
-                          </Form>
-                        ) : (
-                          <div style={{
+                                Cancel
+                              </Button>
+                            </Space>
+                            <Modal
+                              width={"70%"}
+                              title="Upload Media"
+                              open={isModalVisible}
+                              onOk={handleOk}
+                              onCancel={handleCancel}
+                              className="uploadMediaModal"
+                            >
+                              <MediaSelectionModal
+                                currentMedia={asset?.medias}
+                                selectedMedia={selectedMedia}
+                                setSelectedMedia={setSelectedMedia}
+                                isModalVisible={isModalVisible}
+                                setIsModalVisible={setIsModalVisible}
+                              />
+                            </Modal>
+                          </Form.Item>
+                        </Form>
+                      ) : (
+                        <div
+                          style={{
                             marginBottom: "5rem",
                             border: "1px solid #f0f0f0",
                             borderRadius: "10px",
                             padding: "2.4rem",
                             boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-                          }}>
-                            <Carousel
-                              style={{ position: "relative" }}
-                              autoplay
-                              arrows={true}
-                              prevArrow={<CustomPrevArrow />}
-                              nextArrow={<CustomNextArrow />}
-                            >
-                              {asset?.medias?.map((img, index) => (
-                                <div key={index}>
-                                  <Image
-                                    src={`${MEDIA_URL}/${img?.file_path}`}
-                                    alt={asset.file_name}
-                                    width={"100%"}
-                                    height={400}
-                                    style={{ objectFit: "cover", borderRadius: 10 }}
-                                  />
-                                </div>
-                              ))}
-                            </Carousel>
+                          }}
+                        >
+                          <Carousel
+                            style={{ position: "relative" }}
+                            autoplay
+                            arrows={true}
+                            prevArrow={<CustomPrevArrow />}
+                            nextArrow={<CustomNextArrow />}
+                          >
+                            {asset?.medias?.map((img, index) => (
+                              <div key={index}>
+                                <Image
+                                  src={`${MEDIA_URL}/${img?.file_path}`}
+                                  alt={asset.file_name}
+                                  width={"100%"}
+                                  height={400}
+                                  style={{
+                                    objectFit: "cover",
+                                    borderRadius: 10,
+                                  }}
+                                />
+                              </div>
+                            ))}
+                          </Carousel>
 
-                            <Space
+                          <Space
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "flex-start",
+                            }}
+                          >
+                            <Title level={4}>Title: {asset.title_en}</Title>
+                            <Title level={5}>শিরোনাম: {asset.title_bn}</Title>
+                          </Space>
+                          <Space
+                            style={{
+                              marginTop: "1em",
+                              display: "flex",
+                              justifyContent: "center",
+                              width: "100%",
+                            }}
+                          >
+                            <Button
+                              onClick={() => handleEditClick(asset.id)}
                               style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "flex-start",
-                              }}
-                            >
-                              <Title level={4}>Title: {asset.title_en}</Title>
-                              <Title level={5}>শিরোনাম: {asset.title_bn}</Title>
-                            </Space>
-                            <Space
-                              style={{
-                                marginTop: "1em",
-                                display: "flex",
-                                justifyContent: "center",
-                                width: "100%",
-                              }}
-                            >
-                              <Button onClick={() => handleEditClick(asset.id)} style={{
                                 backgroundColor: "var(--theme)",
                                 borderColor: "var(--theme)",
                                 color: "white",
-                              }}>
-                                <EditOutlined /> Edit
+                              }}
+                            >
+                              <EditOutlined /> Edit
+                            </Button>
+                            <Popconfirm
+                              title="Are you sure delete this slider?"
+                              okText="Yes"
+                              cancelText="No"
+                              onConfirm={(e) => handDeleteSlider(e, asset?.id)}
+                            >
+                              <Button danger>
+                                <DeleteOutlined /> Delete
                               </Button>
-                              <Popconfirm
-                                title="Are you sure delete this slider?"
-                                okText="Yes"
-                                cancelText="No"
-                                onConfirm={(e) => handDeleteSlider(e, asset?.id)}
-                              >
-                                <Button danger
-                                ><DeleteOutlined /> Delete</Button>
-                              </Popconfirm>
-                            </Space>
-                          </div>
-                        )}
-                      </Col>
-                    ))}
-                  </Row>
-                </>
-              )
-            }
-
+                            </Popconfirm>
+                          </Space>
+                        </div>
+                      )}
+                    </Col>
+                  ))}
+                </Row>
+              </>
+            )}
           </div>
         </div>
       </div>
     </div>
-
   );
 };
 

@@ -221,10 +221,9 @@ const Footer = () => {
     try {
       setIsLoading(true);
       const res = await instance.get("/footers");
-      setFooterData(res.data);
+      setFooterData(res.data?.sort((a, b) => b.id - a.id));
       setIsLoading(false);
-    }
-    catch (error) {
+    } catch (error) {
       message.error("Something went wrong");
     }
   };
@@ -238,7 +237,7 @@ const Footer = () => {
     } catch (error) {
       message.error("Something went wrong");
     }
-  }
+  };
 
   const getMedia = async () => {
     try {
@@ -249,16 +248,13 @@ const Footer = () => {
     } catch (error) {
       message.error("Something went wrong");
     }
-  }
+  };
 
   useEffect(() => {
     getFooters();
     getMenus();
     getMedia();
   }, []);
-
-
-
 
   // footer post respose data area
   const handlePost = async () => {
@@ -273,11 +269,9 @@ const Footer = () => {
           const res = await instance.get("/footers");
           setFooterData(res.data);
           setIsLoading(false);
-
         } catch (error) {
           message.error("Something went wrong");
         }
-
       };
       getData();
     } catch (error) {
@@ -313,7 +307,7 @@ const Footer = () => {
 
           setFooterData(res.data);
           setIsLoading(false);
-        } catch (error) { }
+        } catch (error) {}
       };
       getData();
     } catch (error) {
@@ -748,8 +742,6 @@ const Footer = () => {
                         </p>
                       ))}
                     </h4>
-
-
                   </Col>
                   <Col span={6}>
                     <h2>Member Of</h2>
@@ -761,7 +753,8 @@ const Footer = () => {
                         justifyItems: "center",
                         columnGap: "1rem",
                       }}
-                    >{" "}
+                    >
+                      {" "}
                       {items?.column4_description_en}
                     </p>
                   </Col>
@@ -776,10 +769,11 @@ const Footer = () => {
                         marginTop: "1rem",
                       }}
                     >
-
                       {/* <h4>© 2022 UNITED AYGAZ LPG LTD.</h4>
                        */}
-                      <center><h4>{items?.column4_description_en}</h4></center>
+                      <center>
+                        <h4>{items?.column4_description_en}</h4>
+                      </center>
                       <h4
                         style={{
                           color: "#c3c3c3",

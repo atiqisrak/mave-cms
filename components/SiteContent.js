@@ -44,6 +44,7 @@ import {
   FilePdfOutlined,
   RightCircleOutlined,
   ArrowRightOutlined,
+  QuestionCircleOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -277,7 +278,7 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
             Blogs
           </Menu.Item>
           {/* Tools */}
-          <Menu.Item
+          {/* <Menu.Item
             key="15"
             icon={<SettingOutlined />}
             style={{
@@ -288,7 +289,8 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
             onClick={() => router.push("/tools")}
           >
             Tools
-          </Menu.Item>
+          </Menu.Item> */}
+          {/* Support */}
         </SubMenu>
 
         {/* Manual */}
@@ -322,6 +324,13 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
             onClick={() => router.push("/usermanual/userguide")}
           >
             User Guide
+          </Menu.Item>
+          <Menu.Item
+            key="21"
+            icon={<QuestionCircleOutlined />}
+            onClick={() => router.push("/usermanual/faq")}
+          >
+            FAQ
           </Menu.Item>
           <Menu.Item
             key="20"

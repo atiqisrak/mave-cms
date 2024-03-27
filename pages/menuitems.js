@@ -469,7 +469,7 @@ const MenuItems = () => {
                   >
                     <Radio value="independent">Independent</Radio>
                     <Radio value="page">Page</Radio>
-                    <Radio value="sisterConcern">Sister Concern</Radio>
+                    {/* <Radio value="sisterConcern">Sister Concern</Radio> */}
                   </Radio.Group>
 
                   {linkType === "page" ? (
