@@ -363,7 +363,7 @@ a:hover {
   color: var(--theme);
 }
 
-.mave-footer{
+.mave-footer {
   position: fixed;
   bottom: 0;
   width: 100%;
@@ -375,15 +375,34 @@ a:hover {
   z-index: 101;
 }
 
-.mave-footer a{
+.mave-footer a {
   color: white;
   font-weight: 500;
 }
 
-.mave-footer a:hover{
+.mave-footer a:hover {
   color: var(--themes);
 }
 
-.content{
+.content {
   margin: 3em 0;
+}
+
+.support-card {
+  color: #001529;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+  padding: 2em;
+  cursor: pointer;
+  border-radius: 25px;
+  border: 2px solid #f0f0f0;
+  background-color: white;
+}
+
+.support-card:hover {
+  color: #001529;
+  background-color: #9012ff20;
+  box-shadow: 0px 14px 14px rgba(0, 0, 0, 0.25);
 }
