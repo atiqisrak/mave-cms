@@ -191,7 +191,7 @@ const MenuItems = () => {
         {
           title: newMenuItemTitle ? newMenuItemTitle : "N/A",
           title_bn: newMenuItemTitleBn ? newMenuItemTitleBn : "N/A",
-          parent_id: newParentId ? newParentId : 1,
+          parent_id: newParentId ? newParentId : null,
           link: newMenuItemLink ? "/" + newMenuItemLink : "/",
         },
       ]);
@@ -440,7 +440,7 @@ const MenuItems = () => {
                         .indexOf(input.toLowerCase()) >= 0
                     }
                   >
-                    <Select.Option value={38}>No Parent</Select.Option>
+                    <Select.Option>No Parent</Select.Option>
                     {menuItems?.map((menuItem) => (
                       <Select.Option value={menuItem.id}>
                         {menuItem.title}
@@ -493,32 +493,33 @@ const MenuItems = () => {
                         ))}
                       </Select>
                     </>
-                  ) : linkType === "sisterConcern" ? (
-                    <Select
-                      showSearch
-                      style={{ width: "100%" }}
-                      placeholder="Select a Sister Concern"
-                      optionFilterProp="children"
-                      onChange={(value) => setNewMenuItemLink(value)}
-                      filterOption={(input, option) =>
-                        option.children
-                          .toLowerCase()
-                          .indexOf(input.toLowerCase()) >= 0
-                      }
-                    >
-                      {pages?.map((page) => {
-                        if (page.page_name_en?.includes("Ltd")) {
-                          return (
-                            <Select.Option
-                              value={`sister-concerns?pageId=${page.id}`}
-                            >
-                              {page.page_name_en}
-                            </Select.Option>
-                          );
-                        }
-                      })}
-                    </Select>
                   ) : (
+                    // linkType === "sisterConcern" ? (
+                    //   <Select
+                    //     showSearch
+                    //     style={{ width: "100%" }}
+                    //     placeholder="Select a Sister Concern"
+                    //     optionFilterProp="children"
+                    //     onChange={(value) => setNewMenuItemLink(value)}
+                    //     filterOption={(input, option) =>
+                    //       option.children
+                    //         .toLowerCase()
+                    //         .indexOf(input.toLowerCase()) >= 0
+                    //     }
+                    //   >
+                    //     {pages?.map((page) => {
+                    //       if (page.page_name_en?.includes("Ltd")) {
+                    //         return (
+                    //           <Select.Option
+                    //             value={`sister-concerns?pageId=${page.id}`}
+                    //           >
+                    //             {page.page_name_en}
+                    //           </Select.Option>
+                    //         );
+                    //       }
+                    //     })}
+                    //   </Select>
+                    // ) :
                     <Input
                       placeholder="Menu Item Link"
                       value={newMenuItemLink}
@@ -642,7 +643,7 @@ const MenuItems = () => {
                             .indexOf(input.toLowerCase()) >= 0
                         }
                       >
-                        <Select.Option value={38}>No Parent</Select.Option>
+                        <Select.Option>No Parent</Select.Option>
                         {menuItems?.map((menuItem) => (
                           <Select.Option value={menuItem.id}>
                             {menuItem.title}
@@ -709,7 +710,7 @@ const MenuItems = () => {
                       >
                         <Radio value="independent">Independent</Radio>
                         <Radio value="page">Page</Radio>
-                        <Radio value="sisterConcern">Sister Concern</Radio>
+                        {/* <Radio value="sisterConcern">Sister Concern</Radio> */}
                       </Radio.Group>
                       {linkType === "page" ? (
                         <>
@@ -718,7 +719,7 @@ const MenuItems = () => {
                             style={{ width: "100%" }}
                             placeholder="Select a page"
                             optionFilterProp="children"
-                            onChange={(value) => setEditedLink(value)}
+                            onChange={(value) => setEditedLink("/" + value)}
                             filterOption={(input, option) =>
                               option.children
                                 .toLowerCase()
@@ -732,32 +733,34 @@ const MenuItems = () => {
                             ))}
                           </Select>
                         </>
-                      ) : linkType === "sisterConcern" ? (
-                        <Select
-                          showSearch
-                          style={{ width: "100%" }}
-                          placeholder="Select a Sister Concern"
-                          optionFilterProp="children"
-                          onChange={(value) => setEditedLink(value)}
-                          filterOption={(input, option) =>
-                            option.children
-                              .toLowerCase()
-                              .indexOf(input.toLowerCase()) >= 0
-                          }
-                        >
-                          {pages?.map((page) => {
-                            if (page.page_name_en?.includes("Ltd")) {
-                              return (
-                                <Select.Option
-                                  value={`sister-concerns?pageId=${page.id}`}
-                                >
-                                  {page.page_name_en}
-                                </Select.Option>
-                              );
-                            }
-                          })}
-                        </Select>
                       ) : (
+                        // :
+                        // linkType === "sisterConcern" ? (
+                        //   <Select
+                        //     showSearch
+                        //     style={{ width: "100%" }}
+                        //     placeholder="Select a Sister Concern"
+                        //     optionFilterProp="children"
+                        //     onChange={(value) => setEditedLink(value)}
+                        //     filterOption={(input, option) =>
+                        //       option.children
+                        //         .toLowerCase()
+                        //         .indexOf(input.toLowerCase()) >= 0
+                        //     }
+                        //   >
+                        //     {pages?.map((page) => {
+                        //       if (page.page_name_en?.includes("Ltd")) {
+                        //         return (
+                        //           <Select.Option
+                        //             value={`sister-concerns?pageId=${page.id}`}
+                        //           >
+                        //             {page.page_name_en}
+                        //           </Select.Option>
+                        //         );
+                        //       }
+                        //     })}
+                        //   </Select>
+                        // )
                         <Input
                           allowClear
                           showSearch

@@ -67,7 +67,7 @@
         "content": [
             {
                 "question": "How do I contact customer support?",
-                "answer": "<p>Our dedicated customer support team is here to assist you. You can reach out to us via email at support@fitnessapp.com. We strive to respond to all inquiries promptly.</p>"
+                "answer": "<p>Our dedicated customer support team is here to assist you. You can reach out to us via email at support@mave.com. We strive to respond to all inquiries promptly.</p>"
             },
             {
                 "question": "Is there a help center?",
@@ -75,7 +75,7 @@
             },
             {
                 "question": "Can I request a feature?",
-                "answer": "<p>We value your feedback and are always looking to improve. If you have a feature request or suggestion, please don't hesitate to contact us at feedback@fitnessapp.com. Your input helps shape the future of our platform.</p>"
+                "answer": "<p>We value your feedback and are always looking to improve. If you have a feature request or suggestion, please don't hesitate to contact us at feedback@mave.com. Your input helps shape the future of our platform.</p>"
             }
         ]
     },
