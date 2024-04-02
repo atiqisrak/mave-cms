@@ -1,12 +1,12 @@
 import React from "react";
+import Support from "./support";
 
 const Documentation = () => {
-    return (
-        <div className="ViewContainer ViewContentContainer">
-            <h1>Documentation</h1>
-            <p>Coming soon...</p>
-        </div>
-    );
-}
+  return (
+    <>
+      <Support />
+    </>
+  );
+};
 
 export default Documentation;
