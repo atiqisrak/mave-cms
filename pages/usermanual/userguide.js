@@ -1,12 +1,12 @@
 import React from "react";
+import Support from "./support";
 
 const UserGuide = () => {
-    return (
-        <div className="ViewContainer ViewContentContainer">
-            <h1>User Guide</h1>
-            <p>Coming soon...</p>
-        </div>
-    );
-}
+  return (
+    <>
+      <Support />
+    </>
+  );
+};
 
 export default UserGuide;

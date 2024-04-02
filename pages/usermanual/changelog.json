@@ -1,5 +1,14 @@
 [
     {
+        "version": "v 0.2.36",
+        "date": "2024-04-02",
+        "changes": {
+            "Feature": [
+                "Added documentation & User Guide"
+            ]
+        }
+    },
+    {
         "version": "v 0.2.35",
         "date": "2024-03-27",
         "changes": {
