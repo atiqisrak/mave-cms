@@ -34,6 +34,7 @@ const MenuItems = () => {
   }, []);
 
   const [menuItems, setMenuItems] = useState([]);
+  const [initialMenuItem, setInitialMenuItem] = useState([]);
   const [editingItemId, setEditingItemId] = useState(null);
   const [deleteConfirmationVisible, setDeleteConfirmationVisible] =
     useState(false);
@@ -43,7 +44,6 @@ const MenuItems = () => {
   const [editedLink, setEditedLink] = useState("");
   const [editedMenuItem, setEditedMenuItem] = useState(null);
   const [originalMenuItem, setOriginalMenuItem] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isAddMenuItemOpen, setIsAddMenuItemOpen] = useState(false);
   const [newMenuItemTitle, setNewMenuItemTitle] = useState("");
   const [newMenuItemTitleBn, setNewMenuItemTitleBn] = useState("");
@@ -65,6 +65,7 @@ const MenuItems = () => {
       if (response.data) {
         // setMenuItems(response.data);
         setMenuItems(response.data?.sort((a, b) => b.id - a.id));
+        setInitialMenuItem(response.data?.sort((a, b) => b.id - a.id));
         setLoading(false);
       } else {
         message.error("Menu items couldn't be fetched");
@@ -99,8 +100,9 @@ const MenuItems = () => {
   }, [isAddMenuItemOpen, editingItemId]);
 
   const handleEdit = (id, e) => {
+    // setMenuItems(searchResults);
     e.preventDefault();
-    const menuItemToEdit = menuItems.find((menuItem) => menuItem.id === id);
+    const menuItemToEdit = menuItems?.find((menuItem) => menuItem?.id === id);
 
     setEditingItemId(id);
     setEditedMenuItem({
@@ -213,8 +215,8 @@ const MenuItems = () => {
   const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
-    const results = menuItems?.filter((menuItem) =>
-      menuItem.title.toLowerCase().includes(searchTerm.toLowerCase())
+    const results = initialMenuItem?.filter((menuItem) =>
+      menuItem?.title?.toLowerCase().includes(searchTerm?.toLowerCase())
     );
     setSearchResults(results);
   }, [searchTerm]);
@@ -230,10 +232,13 @@ const MenuItems = () => {
   }, [sortType]);
 
   useEffect(() => {
-    if (searchTerm !== "") {
-      setMenuItems(searchResults);
-    }
-  }, [searchResults]);
+    // searchTerm !== "" ? setMenuItems(searchResults) : setMenuItems(menuItems);
+    searchTerm === ""
+      ? setMenuItems(initialMenuItem)
+      : setMenuItems(searchResults);
+  }, [searchResults, searchTerm]);
+
+  console.log("Menu Items: ", menuItems);
 
   const handleReset = () => {
     setSearchTerm("");
@@ -327,7 +332,7 @@ const MenuItems = () => {
               />
               <Button
                 danger
-                disabled={searchTerm === ""}
+                // disabled={searchTerm === ""}
                 onClick={() => handleReset()}
                 icon={<CloseCircleOutlined />}
               >
@@ -487,7 +492,9 @@ const MenuItems = () => {
                         }
                       >
                         {pages?.map((page) => (
-                          <Select.Option value={page.slug}>
+                          <Select.Option
+                            value={`${page.slug}?pageId=${page?.id}`}
+                          >
                             {page.page_name_en}
                           </Select.Option>
                         ))}
@@ -583,7 +590,7 @@ const MenuItems = () => {
                   <p style={{ fontSize: "1.2em" }}>{menuItem.id} </p>
                 </Col>
                 <Col span={4}>
-                  {editingItemId === menuItem.id ? (
+                  {editingItemId === menuItem?.id ? (
                     <Input
                       allowClear
                       showSearch
@@ -727,7 +734,9 @@ const MenuItems = () => {
                             }
                           >
                             {pages?.map((page) => (
-                              <Select.Option value={page.slug}>
+                              <Select.Option
+                                value={`${page.slug}?pageId=${page?.id}`}
+                              >
                                 {page.page_name_en}
                               </Select.Option>
                             ))}
@@ -834,14 +843,14 @@ const MenuItems = () => {
                           marginRight: "1em",
                           paddingBottom: "1.8em",
                         }}
-                        onClick={(e) => handleEdit(menuItem.id, e)}
+                        onClick={(e) => handleEdit(menuItem?.id, e)}
                         icon={<EditOutlined />}
                       >
                         Edit
                       </Button>
                       <Popconfirm
                         title="Are you sure you want to delete this menu item?"
-                        onConfirm={() => handleDelete(menuItem.id)}
+                        onConfirm={() => handleDelete(menuItem?.id)}
                         okText="Sure"
                         cancelText="Cancel"
                         open={
@@ -882,7 +891,12 @@ const MenuItems = () => {
                 height: "50vh",
               }}
             >
-              <Loader />
+              {/* <Loader /> */}
+              {!loading && menuItems.length === 0 ? (
+                <h1>No Menu Items Found</h1>
+              ) : (
+                <Loader />
+              )}
             </div>
           )}{" "}
         </div>
