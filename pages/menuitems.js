@@ -493,7 +493,12 @@ const MenuItems = () => {
                       >
                         {pages?.map((page) => (
                           <Select.Option
-                            value={`${page.slug}?pageId=${page?.id}&pageName=${page?.page_name_en}`}
+                            value={`${page.slug}?pageId=${
+                              page?.id
+                            }&pageName=${page?.page_name_en.replace(
+                              /\s/g,
+                              "-"
+                            )}`}
                           >
                             {page.page_name_en}
                           </Select.Option>
@@ -735,7 +740,12 @@ const MenuItems = () => {
                           >
                             {pages?.map((page) => (
                               <Select.Option
-                                value={`${page.slug}?pageId=${page?.id}&pageName=${page?.page_name_en}`}
+                                value={`${page.slug}?pageId=${
+                                  page?.id
+                                }&pageName=${page?.page_name_en.replace(
+                                  /\s/g,
+                                  "-"
+                                )}`}
                               >
                                 {page.page_name_en}
                               </Select.Option>
