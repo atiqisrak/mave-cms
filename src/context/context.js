@@ -12,7 +12,15 @@ export function ContextProvider({ children }) {
   // const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
+    // if (!token) {
+    //   setContextToken(null);
+    //   router.replace("/");
+    // } else {
+    //   setContextToken(token);
+    // }
+    if (!token && router.pathname === "/zakat") {
+      router.push("/zakat");
+    } else if (!token) {
       setContextToken(null);
       router.replace("/");
     } else {
