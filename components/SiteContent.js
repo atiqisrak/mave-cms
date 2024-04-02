@@ -45,6 +45,7 @@ import {
   RightCircleOutlined,
   ArrowRightOutlined,
   QuestionCircleOutlined,
+  CalculatorOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -419,6 +420,13 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
                     >
                       Login
                     </Menu.Item>
+                    <Menu.Item
+                      key="99"
+                      icon={<CalculatorOutlined />}
+                      onClick={() => router.push("/zakat")}
+                    >
+                      Zakat Calculator
+                    </Menu.Item>
                   </>
                 )}
               </SubMenu>
@@ -539,6 +547,14 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
                           onClick={() => setIsModalOpen(true)}
                         >
                           Login
+                        </Menu.Item>
+
+                        <Menu.Item
+                          key="99"
+                          icon={<CalculatorOutlined />}
+                          onClick={() => router.push("/zakat")}
+                        >
+                          Zakat Calculator
                         </Menu.Item>
                       </>
                     )}
