@@ -493,7 +493,7 @@ const MenuItems = () => {
                       >
                         {pages?.map((page) => (
                           <Select.Option
-                            value={`${page.slug}?pageId=${page?.id}`}
+                            value={`${page.slug}?pageId=${page?.id}&pageName=${page?.page_name_en}`}
                           >
                             {page.page_name_en}
                           </Select.Option>
@@ -735,7 +735,7 @@ const MenuItems = () => {
                           >
                             {pages?.map((page) => (
                               <Select.Option
-                                value={`${page.slug}?pageId=${page?.id}`}
+                                value={`${page.slug}?pageId=${page?.id}&pageName=${page?.page_name_en}`}
                               >
                                 {page.page_name_en}
                               </Select.Option>
