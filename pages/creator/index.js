@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import {
   Layout,
+  Switch,
   Select,
   Button,
+  Collapse,
   Image,
   Input,
   message,
   Modal,
   Popconfirm,
+  Carousel,
   Spin,
 } from "antd";
 import { useRouter } from "next/router";
@@ -19,16 +22,22 @@ import {
   FormOutlined,
   FontSizeOutlined,
   BoxPlotOutlined,
+  SettingOutlined,
   ProfileOutlined,
   SwitcherOutlined,
   FileImageFilled,
   AlignLeftOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
   PlusSquareOutlined,
   CloseCircleFilled,
   PlusOutlined,
   CloseOutlined,
   CloudSyncOutlined,
 } from "@ant-design/icons";
+import Link from "next/link";
+const { Sider, Content } = Layout;
+const { Option } = Select;
 import RichTextEditor from "../../components/RichTextEditor";
 import instance from "../../axios";
 import bodyParser from "../../utils/sectionperser";
@@ -38,22 +47,23 @@ import moment from "moment";
 
 const Creator = () => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
+  const [collapsed, setCollapsed] = useState(false);
   const [creatorMode, setCreatorMode] = useState(null);
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
   const [mediaId, setMediaId] = useState([]);
-  const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(false);
   const Option = Select.Option;
   const [pageData, setPageData] = useState();
   const [showPageData, setShowPageData] = useState([]);
-  const [newSection, setNewSection] = useState();
   const [newSectionComponents, setNewSectionComponent] = useState([]);
+  const [updatedSectionData, setUpdatedSectionData] = useState([]);
   const [newData, setNewData] = useState(null);
   const [canvas, setCanvas] = useState(false);
   const [internalCanvas, setInternalCanvas] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editedSectionId, setEditedSectionId] = useState(null);
+  const [cards, setCards] = useState([]);
   // New members
   const [selectedComponentType, setSelectedComponentType] = useState(null);
   const [selectedExistingData, setSelectedExistingData] = useState(null);
@@ -93,6 +103,15 @@ const Creator = () => {
         slug: "description",
       },
     ],
+    /* [
+      "Inner Section",
+      {
+        type: "inner-section",
+        icon: SettingOutlined,
+        iconpath: "/images/icons/InnerSection.svg",
+        slug: "inner_sections",
+      },
+    ], */
     [
       "Media",
       {
@@ -183,7 +202,9 @@ const Creator = () => {
   });
 
   // Cancel Button
+
   const minidestroy = () => {
+    // newSectionComponents.pop();
     setSelectionMode(false);
   };
 
@@ -205,6 +226,7 @@ const Creator = () => {
 
   const pid = router.query.id;
 
+  // New section
   const handleFormChange = (fieldName, value, selectedType) => {
     const filteredArray = fetchedComponent?.filter((item) =>
       value.includes(item.id)
@@ -354,13 +376,10 @@ const Creator = () => {
     }
   };
 
-  const handleClickOfText = (selectedType) => {
+  const handleClickOkText = (selectedType) => {
     if (selectedType === "title") {
       setNewSectionComponent((prev) => [...prev, title]);
-      setSearchDefault(null);
-    }
-    if (selectedType === "description") {
-      setNewSectionComponent((prev) => [...prev, description]);
+      // setShowPageData([...showPageData, title]);
       setSearchDefault(null);
     }
   };
@@ -382,12 +401,6 @@ const Creator = () => {
     type: "",
     _category: "root",
     data: newSectionComponents,
-  };
-
-  const updateSectionData = (index, updatedComponent) => {
-    const updatedData = { ...sectionData };
-    updatedData.data[index] = updatedComponent;
-    sectionData = updatedData;
   };
 
   let postDataBody;
@@ -716,28 +729,6 @@ const Creator = () => {
     setUpdatedSection(updatedPageData);
   };
 
-  const handleGasSelect = (selectedGasId) => {
-    const updatedPageData = showPageData.map((section) => {
-      if (section._id === editedSectionId) {
-        const updatedData = section.data.map((item) => {
-          if (item.type === selectedGasId.type) {
-            return selectedGasId;
-          }
-          return item;
-        });
-
-        return {
-          ...section,
-          data: updatedData,
-        };
-      }
-      return section;
-    });
-
-    setUpdatedSection(updatedPageData);
-  };
-  // console.log("updatedSection", updatedSection);
-
   const handleFormSelect = (selectedFormId) => {
     const updatedPageData = showPageData.map((section) => {
       if (section._id === editedSectionId) {
@@ -854,6 +845,17 @@ const Creator = () => {
         <div className="ViewContentContainer">
           <center>
             <div>
+              {/* <div
+                // vertical line
+                style={{
+                  position: "absolute",
+                  left: "52%",
+                  top: "0",
+                  width: "4px",
+                  height: "20px",
+                  backgroundColor: "var(--themes)",
+                }}
+              /> */}
               <h2
                 style={{
                   color: "var(--themes)",
@@ -951,6 +953,7 @@ const Creator = () => {
                         setSectionData={setSectionUpdatedData}
                         setNewData={setNewData}
                         onDeleteComponent={handleDeleteComponent}
+                        updatedSectionData={updatedSectionData}
                       />
                       {editedSectionId === section?._id && (
                         <center>
@@ -1182,7 +1185,7 @@ const Creator = () => {
                                                         color: "#fff",
                                                       }}
                                                       onClick={() => {
-                                                        handleClickOfText(
+                                                        handleClickOkText(
                                                           selectedComponentType
                                                         );
                                                         setSelectionMode(false);
@@ -1234,7 +1237,7 @@ const Creator = () => {
                                                         color: "#fff",
                                                       }}
                                                       onClick={() => {
-                                                        handleClickOfText(
+                                                        handleClickOkText(
                                                           selectedComponentType
                                                         );
                                                         setSelectionMode(false);
@@ -1523,54 +1526,52 @@ const Creator = () => {
                                                           key={index}
                                                           value={card.id}
                                                         >
-                                                          {
-                                                            card &&
-                                                              card?.title_en
-                                                            // <div>
-                                                            //   <Carousel
-                                                            //     autoplay
-                                                            //     style={{
-                                                            //       width: "100%",
-                                                            //       height:
-                                                            //         "100%",
-                                                            //     }}
-                                                            //   >
-                                                            //     {card?.medias?.map(
-                                                            //       (
-                                                            //         media,
-                                                            //         index
-                                                            //       ) => (
-                                                            //         <div
-                                                            //           key={
-                                                            //             index
-                                                            //           }
-                                                            //         >
-                                                            //           <Image
-                                                            //             preview={
-                                                            //               false
-                                                            //             }
-                                                            //             src={`${MEDIA_URL}/${media?.file_path}`}
-                                                            //             alt={
-                                                            //               media?.file_path
-                                                            //             }
-                                                            //             width={
-                                                            //               "100%"
-                                                            //             }
-                                                            //             height={
-                                                            //               200
-                                                            //             }
-                                                            //             style={{
-                                                            //               objectFit:
-                                                            //                 "cover",
-                                                            //               borderRadius: 10,
-                                                            //             }}
-                                                            //           />
-                                                            //         </div>
-                                                            //       )
-                                                            //     )}
-                                                            //   </Carousel>
-                                                            // </div>
-                                                          }
+                                                          {card && (
+                                                            <div>
+                                                              <Carousel
+                                                                autoplay
+                                                                style={{
+                                                                  width: "100%",
+                                                                  height:
+                                                                    "100%",
+                                                                }}
+                                                              >
+                                                                {card?.medias?.map(
+                                                                  (
+                                                                    media,
+                                                                    index
+                                                                  ) => (
+                                                                    <div
+                                                                      key={
+                                                                        index
+                                                                      }
+                                                                    >
+                                                                      <Image
+                                                                        preview={
+                                                                          false
+                                                                        }
+                                                                        src={`${MEDIA_URL}/${media?.file_path}`}
+                                                                        alt={
+                                                                          media?.file_path
+                                                                        }
+                                                                        width={
+                                                                          "100%"
+                                                                        }
+                                                                        height={
+                                                                          200
+                                                                        }
+                                                                        style={{
+                                                                          objectFit:
+                                                                            "cover",
+                                                                          borderRadius: 10,
+                                                                        }}
+                                                                      />
+                                                                    </div>
+                                                                  )
+                                                                )}
+                                                              </Carousel>
+                                                            </div>
+                                                          )}
                                                         </Select.Option>
                                                       )
                                                     )}
@@ -2023,11 +2024,10 @@ const Creator = () => {
                                     onClick={() => {
                                       handleSubmit();
                                       setCanvas(false);
-                                      setInternalCanvas(false);
                                     }}
                                     icon={<CloudSyncOutlined />}
                                   >
-                                    Finish Section
+                                    Finish Sectionz
                                   </Button>
                                   <Button
                                     style={{
@@ -2188,7 +2188,7 @@ const Creator = () => {
                     }}
                   >
                     Section{" "}
-                    {showPageData?.length ? showPageData?.length + 1 : 1}
+                    {showPageData?.length ? showPageData?.length + 11 : 1}
                   </h1>
 
                   <ComponentParse section={sectionData?.data} />
@@ -2249,7 +2249,7 @@ const Creator = () => {
                                           color: "#fff",
                                         }}
                                         onClick={() => {
-                                          handleClickOfText(
+                                          handleClickOkText(
                                             selectedComponentType
                                           );
                                           setSelectionMode(false);
@@ -2307,7 +2307,7 @@ const Creator = () => {
                                           color: "#fff",
                                         }}
                                         onClick={() => {
-                                          handleClickOfText(
+                                          handleClickOkText(
                                             selectedComponentType
                                           );
                                           setSelectionMode(false);
@@ -2554,36 +2554,35 @@ const Creator = () => {
                                           key={index}
                                           value={card.id}
                                         >
-                                          {
-                                            card && card?.title_en
-                                            // <div>
-                                            //   <Carousel
-                                            //     autoplay
-                                            //     style={{
-                                            //       width: "100%",
-                                            //       height: "100%",
-                                            //     }}
-                                            //   >
-                                            //     {card?.medias?.map(
-                                            //       (media, index) => (
-                                            //         <div key={index}>
-                                            //           <Image
-                                            //             preview={false}
-                                            //             src={`${MEDIA_URL}/${media?.file_path}`}
-                                            //             alt={media?.file_path}
-                                            //             width={"100%"}
-                                            //             height={200}
-                                            //             style={{
-                                            //               objectFit: "cover",
-                                            //               borderRadius: 10,
-                                            //             }}
-                                            //           />
-                                            //         </div>
-                                            //       )
-                                            //     )}
-                                            //   </Carousel>
-                                            // </div>
-                                          }
+                                          {card && (
+                                            <div>
+                                              <Carousel
+                                                autoplay
+                                                style={{
+                                                  width: "100%",
+                                                  height: "100%",
+                                                }}
+                                              >
+                                                {card?.medias?.map(
+                                                  (media, index) => (
+                                                    <div key={index}>
+                                                      <Image
+                                                        preview={false}
+                                                        src={`${MEDIA_URL}/${media?.file_path}`}
+                                                        alt={media?.file_path}
+                                                        width={"100%"}
+                                                        height={200}
+                                                        style={{
+                                                          objectFit: "cover",
+                                                          borderRadius: 10,
+                                                        }}
+                                                      />
+                                                    </div>
+                                                  )
+                                                )}
+                                              </Carousel>
+                                            </div>
+                                          )}
                                         </Select.Option>
                                       ))}
                                     </Select>
@@ -3049,7 +3048,7 @@ const Creator = () => {
                       </Button>
 
                       <Popconfirm
-                        title="All changes will be lost."
+                        title="Are you sure to close without saving? All changes will be lost."
                         onConfirm={() => {
                           handleCloseSectionModal();
                         }}

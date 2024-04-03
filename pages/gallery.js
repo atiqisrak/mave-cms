@@ -17,6 +17,10 @@ import instance from "../axios";
 import { setPageTitle } from "../global/constants/pageTitle";
 import Loader from "../components/Loader";
 import {
+  CheckCircleTwoTone,
+  DeleteFilled,
+  DeleteOutlined,
+  EditOutlined,
   FilterOutlined,
   SyncOutlined,
   UploadOutlined,
@@ -38,6 +42,7 @@ const Gallery = () => {
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]);
   const [pdfs, setPdfs] = useState([]);
+  const [editMode, setEditMode] = useState(false);
 
   const [numPages, setNumPages] = useState();
   const [pageNumber, setPageNumber] = useState(1);
@@ -55,6 +60,7 @@ const Gallery = () => {
 
   const handleOk = () => {
     setIsModalVisible(false);
+    window.location.reload();
   };
 
   const handleCancel = () => {
@@ -122,7 +128,8 @@ const Gallery = () => {
   }, [mediaAssets]);
 
   const handleNewMediaUpload = () => {
-    fetchMediaAssets();
+    // fetchMediaAssets(currentPage, selectedMediaCount);
+    window.location.reload();
   };
 
   const onDelete = async (id) => {
@@ -186,6 +193,39 @@ const Gallery = () => {
     }
   };
 
+  const sizeFormatter = (size) => {
+    let sizeInKB = size / 1024;
+    return sizeInKB < 1024
+      ? `${sizeInKB.toFixed(0)} KB`
+      : `${(sizeInKB / 1024).toFixed(1)} MB`;
+  };
+
+  const [editMedia, setEditMedia] = useState([]);
+  const handleEditMode = ({ mediaId, mediaTitle }) => {
+    setEditMode(true);
+    setEditMedia({ mediaId, mediaTitle });
+  };
+
+  const handleSubmit = async () => {
+    setEditMode(false);
+    try {
+      const response = await instance.put(`/media/${editMedia?.mediaId}`, {
+        title: editMedia?.mediaTitle,
+      });
+      if (response.data) {
+        message.success("Media title updated successfully");
+        // fetchMediaAssets(currentPage, selectedMediaCount);
+        window.location.reload();
+      } else {
+        console.error("Error updating media title:", response.data.message);
+        message.error("Error updating media title");
+      }
+    } catch (error) {
+      console.error("Error updating media title:", error);
+      message.error("Error updating media title");
+    }
+  };
+
   return (
     <div className="login-page">
       <div className="ViewContainer ViewContentContainer media-area login-page-section">
@@ -237,7 +277,7 @@ const Gallery = () => {
           onOk={handleOk}
           onCancel={handleCancel}
         >
-          <UploadMedia onUploadSuccess={handleNewMediaUpload} />
+          <UploadMedia />
         </Modal>
 
         {isLoading ? (
@@ -344,52 +384,128 @@ const Gallery = () => {
                 flexWrap: "wrap",
               }}
             >
-              {images.map((image) => (
-                <Col
-                  key={image.id}
-                  xs={24}
-                  sm={12}
-                  md={8}
-                  lg={6}
-                  xl={4}
-                  style={{ marginBottom: "1rem" }}
-                >
-                  <div
+              {images &&
+                images?.map((image) => (
+                  <Col
+                    key={image.id}
+                    xs={24}
+                    sm={12}
+                    md={8}
+                    lg={6}
+                    xl={6}
                     style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
+                      marginBottom: "1rem",
                     }}
                   >
-                    <Image
-                      src={`${MEDIA_URL}/${image.file_path}`}
-                      alt={image.file_name}
-                      width={200}
-                      height={200}
-                      style={{ objectFit: "cover" }}
-                    />
-                    {bulkSelectionVisible && (
-                      <Input
-                        type="checkbox"
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: "white",
+                        padding: "1rem",
+                        borderRadius: "5px",
+                        boxShadow: "0 0 5px rgba(0, 0, 0, 0.1)",
+                        border: "1px solid rgba(0, 0, 0, 0.1)",
+                      }}
+                    >
+                      <Image
+                        src={`${MEDIA_URL}/${image.file_path}`}
+                        alt={image.file_name}
+                        width={400}
+                        height={200}
+                        objectFit="cover"
                         style={{
-                          position: "absolute",
-                          top: "10px",
-                          right: 0,
+                          borderRadius: "5px",
                         }}
                       />
-                    )}
-                    <Button
-                      type="primary"
-                      danger
-                      onClick={() => onDelete(image.id)}
-                      style={{ marginTop: "1rem" }}
-                    >
-                      Delete
-                    </Button>
-                  </div>
-                </Col>
-              ))}
+                      <div
+                        className="image-info"
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          marginTop: "1rem",
+                        }}
+                      >
+                        {editMode && image.id === editMedia.mediaId ? (
+                          <>
+                            Name:{""}
+                            <Input
+                              defaultValue={
+                                image?.title ? image.title : image.file_name
+                              }
+                              style={{ width: "100%" }}
+                              onChange={(e) =>
+                                setEditMedia({
+                                  ...editMedia,
+                                  mediaTitle: e.target.value,
+                                })
+                              }
+                            />
+                          </>
+                        ) : (
+                          <p>
+                            Name: {image?.title ? image.title : image.file_name}
+                          </p>
+                        )}
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <p>
+                            Size:
+                            {sizeFormatter(image.file_size)}
+                          </p>
+                          <p>Type: {image.file_type}</p>
+                        </div>
+                      </div>
+                      <div
+                        style={{
+                          marginTop: "1rem",
+                          display: "flex",
+                        }}
+                      >
+                        {editMode ? (
+                          <Button
+                            success
+                            icon={<CheckCircleTwoTone />}
+                            style={{
+                              marginRight: "6vw",
+                              backgroundColor: "green",
+                            }}
+                            onClick={() => handleSubmit()}
+                          />
+                        ) : (
+                          <Button
+                            type="primary"
+                            success
+                            icon={<EditOutlined />}
+                            style={{ marginRight: "6vw" }}
+                            onClick={() =>
+                              handleEditMode({
+                                mediaId: image.id,
+                                mediaTitle: image?.title
+                                  ? image.title
+                                  : image.file_name,
+                              })
+                            }
+                          />
+                        )}
+                        <Button
+                          type="primary"
+                          danger
+                          onClick={() => onDelete(image.id)}
+                          icon={<DeleteOutlined />}
+                        />
+                      </div>
+                    </div>
+                  </Col>
+                ))}
             </Row>
 
             <Pagination

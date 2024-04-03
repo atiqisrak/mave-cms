@@ -97,6 +97,7 @@ const MediaParser = ({ item, editMode, onMediaSelect, setMediaId }) => {
           <Button
             type="primary"
             style={{
+              marginTop: "3em",
               marginRight: "1rem",
               height: "inherit",
               backgroundColor: "var(--themes)",
