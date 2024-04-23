@@ -641,7 +641,7 @@ const Creator = () => {
   };
   // console.log("updatedSection", updatedSection);
 
-  const handleTitleChange = (index, value, type) => {
+  const handleTitleChange = (index, value, value_bn, type) => {
     const updatedPageData = showPageData.map((section) => {
       if (section._id === editedSectionId) {
         const updatedData = section.data.map((item, i) => {
@@ -649,6 +649,7 @@ const Creator = () => {
             return {
               type: type,
               value: value,
+              value_bn: value_bn,
             };
           }
           return item;
@@ -664,7 +665,7 @@ const Creator = () => {
     setUpdatedSection(updatedPageData);
   };
 
-  const handleDescriptionChange = (index, value, type) => {
+  const handleDescriptionChange = (index, value, value_bn, type) => {
     const updatedPageData = showPageData.map((section) => {
       if (section._id === editedSectionId) {
         const updatedData = section.data.map((item, i) => {
@@ -672,6 +673,7 @@ const Creator = () => {
             return {
               type: type,
               value: value,
+              value_bn: value_bn,
             };
           }
           return item;
