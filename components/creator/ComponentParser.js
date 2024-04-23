@@ -87,7 +87,9 @@ const ComponentParse = ({
             key={index}
             item={item}
             editMode={editMode}
-            onTitleChange={(value, type) => onTitleChange(index, value, type)}
+            onTitleChange={(value, value_bn, type) =>
+              onTitleChange(index, value, value_bn, type)
+            }
             onUpdateComponent={(updatedComponent) =>
               handleComponentChange(index, updatedComponent)
             }
@@ -100,8 +102,8 @@ const ComponentParse = ({
             item={item}
             editMode={editMode}
             setEditMode={setEditMode}
-            onDescriptionChange={(value, type) =>
-              onDescriptionChange(index, value, type)
+            onDescriptionChange={(value, value_bn, type) =>
+              onDescriptionChange(index, value, value_bn, type)
             }
             onUpdateComponent={(updatedComponent) =>
               handleComponentChange(index, updatedComponent)

@@ -1,5 +1,14 @@
 [
     {
+        "version": "v 0.2.38",
+        "date": "2024-04-22",
+        "changes": {
+            "Feature": [
+                "Added Dual title and Description in page edit mode"
+            ]
+        }
+    },
+    {
         "version": "v 0.2.36",
         "date": "2024-04-02",
         "changes": {
