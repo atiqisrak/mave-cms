@@ -7,8 +7,11 @@ import {
   Input,
   Modal,
   Popconfirm,
+  Radio,
   Row,
+  Select,
   Space,
+  Tabs,
   Typography,
   message,
   notification,
@@ -28,6 +31,7 @@ import {
 import { useRouter } from "next/router";
 import MediaSelectionModal from "../components/MediaSelectionModal";
 import CreateSliderComponent from "../components/CreateSliderComponent";
+import RichTextEditor from "../components/RichTextEditor";
 
 const Sliders = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -42,6 +46,8 @@ const Sliders = () => {
   const [responseData, setResponseData] = useState();
   const [showCreateSliderForm, setShowCreateSliderForm] = useState(false);
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
+  const [cards, setCards] = useState([]);
+  const [sliderType, setSliderType] = useState("image");
 
   const CustomPrevArrow = ({ onClick }) => (
     <Button
@@ -96,6 +102,25 @@ const Sliders = () => {
       }
     };
 
+    const fetchCards = async () => {
+      try {
+        setLoading(true);
+        const response = await instance.get("/cards");
+        if (response.data) {
+          setCards(response.data);
+          // console.log("Cards: ", response.data);
+          message.success("Cards fetched successfully");
+          setLoading(false);
+        } else {
+          // console.error("Error fetching cards:", response.data.message);
+          message.error("Cards couldn't be fetched");
+        }
+      } catch (error) {
+        // console.error("Error fetching cards:", error);
+        message.error("Cards couldn't be fetched");
+      }
+    };
+    fetchCards();
     fetchSliders();
   }, [responseData, response]);
   const showModal = () => {
@@ -149,7 +174,18 @@ const Sliders = () => {
     const previousTitleBn = sliders.find(
       (slider) => slider.id === editingItemId
     ).title_bn;
-    // media ids is a array of numbers
+    const previousDescriptionEn = sliders.find(
+      (slider) => slider.id === editingItemId
+    ).description_en;
+    const previousDescriptionBn = sliders.find(
+      (slider) => slider.id === editingItemId
+    ).description_bn;
+    const previousSliderType = sliders.find(
+      (slider) => slider.id === editingItemId
+    ).slider_type;
+    const previousCardsIds = sliders.find(
+      (slider) => slider.id === editingItemId
+    ).card_id;
     const previousMediaIds = sliders.find(
       (slider) => slider.id === editingItemId
     ).media_ids;
@@ -158,6 +194,16 @@ const Sliders = () => {
       const postData = {
         title_en: values.title_e ? values.title_e : previousTitleEn,
         title_bn: values.title_b ? values.title_b : previousTitleBn,
+        description_en: values.description_en
+          ? values.description_en
+          : previousDescriptionEn,
+        description_bn: values.description_bn
+          ? values.description_bn
+          : previousDescriptionBn,
+        slider_type: values.slider_type
+          ? values.slider_type
+          : previousSliderType,
+        card_id: values.card_id ? values.card_id : previousCardsIds,
         media_ids: selectedMedia?.length > 0 ? selectedMedia : previousMediaIds,
       };
       console.log("Sending data: ", postData);
@@ -226,6 +272,7 @@ const Sliders = () => {
                 response={response}
                 setResponse={setResponse}
                 setShowCreateSliderForm={setShowCreateSliderForm}
+                cards={cards}
               ></CreateSliderComponent>
             )}
 
@@ -271,16 +318,79 @@ const Sliders = () => {
                           </Form.Item>
                           <Form.Item
                             hasFeedback
-                            label="Select Media"
-                            name="media_items"
+                            label="Description English"
+                            name="description_en"
                           >
-                            <Button
-                              icon={<UploadOutlined />}
-                              onClick={showModal}
-                            >
-                              Click to Select
-                            </Button>
+                            <RichTextEditor
+                              value={asset.description_en}
+                              defaultValue={asset.description_en}
+                              editMode={true}
+                              onChange={(value) =>
+                                form.setFieldsValue({ description_en: value })
+                              }
+                            />
                           </Form.Item>
+                          <Form.Item
+                            hasFeedback
+                            label="Description Bangla"
+                            name="description_bn"
+                          >
+                            <RichTextEditor
+                              value={asset.description_bn}
+                              defaultValue={asset.description_bn}
+                              editMode={true}
+                              onChange={(value) =>
+                                form.setFieldsValue({ description_bn: value })
+                              }
+                            />
+                          </Form.Item>
+                          <Form.Item
+                            hasFeedback
+                            label="Slider type"
+                            name="slider_type"
+                          >
+                            <Tabs
+                              defaultActiveKey="image"
+                              onChange={(key) => setSliderType(key)}
+                            >
+                              <Tabs.TabPane
+                                tab="Image"
+                                key="image"
+                              ></Tabs.TabPane>
+                              <Tabs.TabPane
+                                tab="Card"
+                                key="card"
+                              ></Tabs.TabPane>
+                            </Tabs>
+                          </Form.Item>
+                          {sliderType === "card" ? (
+                            <Form.Item
+                              hasFeedback
+                              label="Select Card"
+                              name="card_id"
+                            >
+                              <Select
+                                mode="multiple"
+                                placeholder="Select a card"
+                                style={{ width: "100%" }}
+                              >
+                                {cards.map((card) => (
+                                  <Select.Option value={card.id} key={card.id}>
+                                    {card.title_en}
+                                  </Select.Option>
+                                ))}
+                              </Select>
+                            </Form.Item>
+                          ) : (
+                            <Form.Item hasFeedback label="Media" name="title_m">
+                              <Button
+                                icon={<UploadOutlined />}
+                                onClick={showModal}
+                              >
+                                Click to Select
+                              </Button>
+                            </Form.Item>
+                          )}
                           <Form.Item>
                             <Space>
                               <Button type="primary" htmlType="submit">
