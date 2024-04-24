@@ -1,5 +1,14 @@
 [
     {
+        "version": "v 0.2.40",
+        "date": "2024-04-24",
+        "changes": {
+            "Feature": [
+                "User can add section title in the page editor"
+            ]
+        }
+    },
+    {
         "version": "v 0.2.38",
         "date": "2024-04-22",
         "changes": {
