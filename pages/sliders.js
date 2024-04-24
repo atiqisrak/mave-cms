@@ -185,7 +185,7 @@ const Sliders = () => {
     ).slider_type;
     const previousCardsIds = sliders.find(
       (slider) => slider.id === editingItemId
-    ).card_id;
+    ).card_ids;
     const previousMediaIds = sliders.find(
       (slider) => slider.id === editingItemId
     ).media_ids;
@@ -203,7 +203,7 @@ const Sliders = () => {
         slider_type: values.slider_type
           ? values.slider_type
           : previousSliderType,
-        card_id: values.card_id ? values.card_id : previousCardsIds,
+        card_ids: values.card_ids ? values.card_ids : previousCardsIds,
         media_ids: selectedMedia?.length > 0 ? selectedMedia : previousMediaIds,
       };
       console.log("Sending data: ", postData);
@@ -367,7 +367,7 @@ const Sliders = () => {
                             <Form.Item
                               hasFeedback
                               label="Select Card"
-                              name="card_id"
+                              name="card_ids"
                             >
                               <Select
                                 mode="multiple"
