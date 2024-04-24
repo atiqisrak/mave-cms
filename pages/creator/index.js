@@ -71,6 +71,7 @@ const Creator = () => {
   const [selectionMode, setSelectionMode] = useState(false);
   const [updateResponse, setUpdateResponse] = useState();
   const [searchDefault, setSearchDefault] = useState();
+  const [sectionTitle, setSectionTitle] = useState();
   const [title, setTitle] = useState();
   const [description, setDescription] = useState();
   const [updatedSection, setUpdatedSection] = useState([]);
@@ -78,6 +79,7 @@ const Creator = () => {
   const [currentPageNameEn, setCurrentPageNameEn] = useState("");
   const [currentPageNameBn, setCurrentPageNameBn] = useState("");
   const [currentPageSlug, setCurrentPageSlug] = useState("");
+  const [sectionTitleFilled, setSectionTitleFilled] = useState(false);
 
   useEffect(() => {
     const localCreatormode = localStorage.getItem("creatorMode");
@@ -231,6 +233,9 @@ const Creator = () => {
     const filteredArray = fetchedComponent?.filter((item) =>
       value.includes(item.id)
     );
+
+    // setSectionTitle(value);
+
     if (selectedType === "title") {
       const takenTitle = {
         _id: generateRandomId(16),
@@ -382,6 +387,11 @@ const Creator = () => {
       // setShowPageData([...showPageData, title]);
       setSearchDefault(null);
     }
+    if (selectedType === "description") {
+      setNewSectionComponent((prev) => [...prev, description]);
+      // setShowPageData([...showPageData, description]);
+      setSearchDefault(null);
+    }
   };
 
   function generateRandomId(length) {
@@ -400,6 +410,7 @@ const Creator = () => {
     _id: generateRandomId(16),
     type: "",
     _category: "root",
+    sectionTitle: sectionTitle,
     data: newSectionComponents,
   };
 
@@ -477,6 +488,8 @@ const Creator = () => {
     setCanvas(false);
     setInternalCanvas(false);
     setShowPageData(showPageData);
+    setSectionTitleFilled(false);
+    setSectionTitle("");
   };
   const handleSave = async () => {
     const modifiedData = {
@@ -1040,7 +1053,13 @@ const Creator = () => {
                           marginBottom: 20,
                         }}
                       >
-                        <h1>Section {index + 1}</h1>
+                        {/* <h1>Section {index + 1}</h1> */}
+                        <h1>
+                          Section{" "}
+                          {section?.sectionTitle
+                            ? section?.sectionTitle
+                            : index + 1}
+                        </h1>
                         {editedSectionId !== section?._id && (
                           <>
                             <Button
@@ -1101,7 +1120,7 @@ const Creator = () => {
                       ) : (
                         // Update Section Data
                         <>
-                          {console.log("Section Data: ", showPageData)}
+                          {/* {console.log("Section Data: ", showPageData)} */}
                           <ComponentParse
                             sectionId={section?._id}
                             section={section?.data}
@@ -2190,7 +2209,8 @@ const Creator = () => {
                     }}
                   >
                     Section{" "}
-                    {showPageData?.length ? showPageData?.length + 11 : 1}
+                    {/* {showPageData?.length ? showPageData?.length + 1 : 1} */}
+                    {sectionTitle ? sectionTitle : showPageData?.length + 1}
                   </h1>
 
                   <ComponentParse section={sectionData?.data} />
@@ -3011,69 +3031,129 @@ const Creator = () => {
                     </div>
                   ) : (
                     <div>
-                      <Button
+                      <Input
+                        placeholder="Enter Section Title"
+                        onChange={(e) => setSectionTitle(e.target.value)}
                         style={{
-                          margin: "10px",
-                          backgroundColor: "var(--theme)",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: "40px",
-                          fontSize: "1.2rem",
-                          padding: "0.6rem 1rem",
-                          marginBottom: "3rem",
-                          height: "auto",
+                          display: sectionTitleFilled ? "none" : "block",
+                          width: "40vw",
+                          padding: "1em 2em",
                         }}
-                        onClick={() => {
-                          handleSubmit();
-                          setCanvas(false);
-                        }}
-                        icon={<CloudSyncOutlined />}
-                      >
-                        Finish Section
-                      </Button>
-                      <Button
+                      />
+                      <div
                         style={{
-                          margin: "10px",
-                          backgroundColor: "var(--themes)",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: "40px",
-                          fontSize: "1.2rem",
-                          padding: "0.6rem 1rem",
-                          marginBottom: "3rem",
-                          height: "auto",
+                          display: "flex",
+                          gap: "1rem",
                         }}
-                        icon={<PlusSquareOutlined />}
-                        onClick={() => setModalVisible(true)}
-                      >
-                        Add Components
-                      </Button>
-
-                      <Popconfirm
-                        title="Are you sure to close without saving? All changes will be lost."
-                        onConfirm={() => {
-                          handleCloseSectionModal();
-                        }}
-                        okText="Yes"
-                        cancelText="No"
                       >
                         <Button
-                          danger
+                          onClick={() => {
+                            setSectionTitleFilled(true);
+                          }}
+                          style={{
+                            backgroundColor: "var(--theme)",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "10px",
+                            fontSize: "1.2rem",
+                            padding: "0.4rem 3rem",
+                            marginBottom: "3rem",
+                            marginTop: "3rem",
+                            height: "auto",
+                            display: sectionTitleFilled ? "none" : "block",
+                          }}
+                        >
+                          Create Section
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            handleCloseSectionModal();
+                          }}
+                          style={{
+                            backgroundColor: "var(--themes)",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "10px",
+                            fontSize: "1.2rem",
+                            padding: "0.4rem 3rem",
+                            marginBottom: "3rem",
+                            marginTop: "3rem",
+                            height: "auto",
+                            display: sectionTitleFilled ? "none" : "block",
+                          }}
+                        >
+                          Cancel Section
+                        </Button>
+                      </div>
+                      <div
+                        style={{
+                          display: sectionTitleFilled ? "flex" : "none",
+                        }}
+                      >
+                        <Button
                           style={{
                             margin: "10px",
+                            backgroundColor: "var(--theme)",
+                            color: "#fff",
                             border: "none",
                             borderRadius: "40px",
                             fontSize: "1.2rem",
                             padding: "0.6rem 1rem",
                             marginBottom: "3rem",
                             height: "auto",
-                            border: "1px solid red",
                           }}
-                          icon={<CloseCircleFilled />}
+                          onClick={() => {
+                            handleSubmit();
+                            setCanvas(false);
+                          }}
+                          icon={<CloudSyncOutlined />}
                         >
-                          Close
+                          Finish Section
                         </Button>
-                      </Popconfirm>
+                        <Button
+                          style={{
+                            margin: "10px",
+                            backgroundColor: "var(--themes)",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "40px",
+                            fontSize: "1.2rem",
+                            padding: "0.6rem 1rem",
+                            marginBottom: "3rem",
+                            height: "auto",
+                          }}
+                          icon={<PlusSquareOutlined />}
+                          onClick={() => setModalVisible(true)}
+                        >
+                          Add Components
+                        </Button>
+
+                        <Popconfirm
+                          title="Are you sure to close without saving? All changes will be lost."
+                          onConfirm={() => {
+                            handleCloseSectionModal();
+                          }}
+                          okText="Yes"
+                          cancelText="No"
+                        >
+                          <Button
+                            danger
+                            style={{
+                              margin: "10px",
+                              border: "none",
+                              borderRadius: "40px",
+                              fontSize: "1.2rem",
+                              padding: "0.6rem 1rem",
+                              marginBottom: "3rem",
+                              height: "auto",
+                              border: "1px solid red",
+                            }}
+                            icon={<CloseCircleFilled />}
+                          >
+                            Close
+                          </Button>
+                        </Popconfirm>
+                      </div>
                     </div>
                   )}
                 </div>
