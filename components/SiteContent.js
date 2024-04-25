@@ -46,6 +46,8 @@ import {
   ArrowRightOutlined,
   QuestionCircleOutlined,
   CalculatorOutlined,
+  PlusCircleFilled,
+  PlusCircleOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -277,6 +279,18 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
             }}
           >
             Blogs
+          </Menu.Item>
+          <Menu.Item
+            key="56"
+            icon={<PlusCircleOutlined />}
+            onClick={() => router.push("/blogs/createblog")}
+            style={{
+              marginTop: "10%",
+              fontSize: "1.1em",
+              fontWeight: "bold",
+            }}
+          >
+            Create Blog
           </Menu.Item>
           {/* Tools */}
           {/* <Menu.Item
