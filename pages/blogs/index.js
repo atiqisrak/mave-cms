@@ -17,9 +17,7 @@ export default function index() {
     try {
       const response = await instance.get("/pages");
       if (response.status === 200) {
-        // setBlogs(response.data);
         response?.data?.map((blog, index) => {
-          // setBlogs((prev) => [...prev, blog]);
           blog?.type === "Blog" && setBlogs((prev) => [...prev, blog]);
         });
       }

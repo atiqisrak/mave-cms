@@ -1,5 +1,14 @@
 [
     {
+        "version": "v 0.2.42",
+        "date": "2024-04-25",
+        "changes": {
+            "Feature": [
+                "User can create and see blog posts in the CMS"
+            ]
+        }
+    },
+    {
         "version": "v 0.2.40",
         "date": "2024-04-24",
         "changes": {
