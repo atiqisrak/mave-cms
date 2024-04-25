@@ -6,6 +6,7 @@ import "../styles/globals.css";
 import Head from "next/head";
 import { MoonFilled, SunFilled } from "@ant-design/icons";
 import { Switch } from "antd";
+
 function MyApp({ Component, pageProps }) {
   const [collapsed, setCollapsed] = useState(true);
   const [darkmode, setDarkmode] = useState(true);
@@ -77,7 +78,7 @@ function MyApp({ Component, pageProps }) {
             >
               Ether Technologies
             </a>{" "}
-            | All rights reserved | Powered by
+            | All rights reserved | Powered by{" "}
             <a
               href="https://www.webable.digital"
               target="_blank"
