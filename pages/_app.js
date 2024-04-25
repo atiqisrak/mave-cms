@@ -4,12 +4,11 @@ import { setPageTitle } from "../global/constants/pageTitle";
 import { ContextProvider } from "../src/context/context";
 import "../styles/globals.css";
 import Head from "next/head";
-import { Switch } from "antd";
 import { MoonFilled, SunFilled } from "@ant-design/icons";
+import { Switch } from "antd";
 function MyApp({ Component, pageProps }) {
   const [collapsed, setCollapsed] = useState(true);
-  const [darkmode, setDarkmode] = useState(true);
-
+  const [darkmode, setDarkmode] = useState(false);
   useEffect(() => {
     // Use a state or context to track the current page name
     // This can be set whenever the page changes, e.g., in your route handling logic.
@@ -18,6 +17,15 @@ function MyApp({ Component, pageProps }) {
     // Set the dynamic page title
     setPageTitle(currentPageName);
   }, []);
+
+  // if darkmode is true, set the theme to dark
+  // if (darkmode) {
+  //   document.body.style.backgroundColor = "#1e1e1e";
+  //   document.body.style.color = "white";
+  // } else {
+  //   document.body.style.backgroundColor = "white";
+  //   document.body.style.color = "black";
+  // }
 
   return (
     <>
@@ -75,7 +83,6 @@ function MyApp({ Component, pageProps }) {
               target="_blank"
               rel="noopener noreferrer"
             >
-              {" "}
               Webable Digital
             </a>
           </p>
