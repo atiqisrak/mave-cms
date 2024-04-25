@@ -43,7 +43,10 @@ const Pages = () => {
       setLoading(true);
       const response = await instance.get("/pages");
       if (response.data) {
-        setPages(response.data);
+        // setPages(response.data);
+        response?.data?.map((page, index) => {
+          page?.type === "Page" && setPages((prev) => [...prev, page]);
+        });
         setLoading(false);
       } else {
         console.error("Error fetching pages:", response.data.message);
