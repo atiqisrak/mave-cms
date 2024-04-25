@@ -8,7 +8,7 @@ import { MoonFilled, SunFilled } from "@ant-design/icons";
 import { Switch } from "antd";
 function MyApp({ Component, pageProps }) {
   const [collapsed, setCollapsed] = useState(true);
-  const [darkmode, setDarkmode] = useState(false);
+  const [darkmode, setDarkmode] = useState(true);
   useEffect(() => {
     // Use a state or context to track the current page name
     // This can be set whenever the page changes, e.g., in your route handling logic.
