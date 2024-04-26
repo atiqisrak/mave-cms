@@ -4,6 +4,7 @@ import BlogEditor from "./BlogEditor";
 import TextArea from "antd/es/input/TextArea";
 import instance from "../../axios";
 import router from "next/router";
+import { RobotOutlined } from "@ant-design/icons";
 
 const BlogCreator = ({ creatorMode, setCreatorMode, fetchBlogs }) => {
   const blog_categories = [
@@ -193,6 +194,23 @@ const BlogCreator = ({ creatorMode, setCreatorMode, fetchBlogs }) => {
           gap: "1rem",
         }}
       >
+        <Button
+          icon={<RobotOutlined />}
+          style={{
+            width: "fit-content",
+            alignSelf: "flex-end",
+            backgroundColor: "var(--theme)",
+            color: "white",
+            fontSize: "1rem",
+            fontWeight: "bold",
+            border: "none",
+          }}
+          onClick={() => {
+            router.push("/write-ai");
+          }}
+        >
+          Write with AI
+        </Button>
         <Input
           placeholder="Enter blog title"
           style={{
