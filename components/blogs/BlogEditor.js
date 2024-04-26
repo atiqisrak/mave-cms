@@ -9,6 +9,7 @@ import "froala-editor/js/third_party/embedly.min.js";
 import "froala-editor/js/third_party/font_awesome.min.js";
 import "froala-editor/js/third_party/spell_checker.min.js";
 import "froala-editor/js/languages/en_gb";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 // ------------------------------------------------------------------------------------------------------------
 // PublishPostPage Component
 // ------------------------------------------------------------------------------------------------------------
@@ -22,6 +23,7 @@ const FroalaEditorComponent = dynamic(() => import("react-froala-wysiwyg"), {
 // ------------------------------------------------------------------------------------------------------------
 
 export default function BlogEditor({ content, setContent, onContentChange }) {
+  const GEMINI_API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
   const handleImageReplace = useCallback((img) => {
     if (img[0].hasAttribute("attachment-instanceid")) {
       img[0].removeAttribute("attachment-instanceid");
