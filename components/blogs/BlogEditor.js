@@ -10,6 +10,9 @@ import "froala-editor/js/third_party/font_awesome.min.js";
 import "froala-editor/js/third_party/spell_checker.min.js";
 import "froala-editor/js/languages/en_gb";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { Button, Modal } from "antd";
+import WriteWithAI from "./WriteWithAI";
+import { DeploymentUnitOutlined } from "@ant-design/icons";
 // ------------------------------------------------------------------------------------------------------------
 // PublishPostPage Component
 // ------------------------------------------------------------------------------------------------------------
@@ -24,11 +27,50 @@ const FroalaEditorComponent = dynamic(() => import("react-froala-wysiwyg"), {
 
 export default function BlogEditor({ content, setContent, onContentChange }) {
   const GEMINI_API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-  const handleImageReplace = useCallback((img) => {
-    if (img[0].hasAttribute("attachment-instanceid")) {
-      img[0].removeAttribute("attachment-instanceid");
-    }
-  }, []);
+  const IMAGEBB_API_KEY = process.env.NEXT_PUBLIC_IMAGEBB_API_KEY;
+  const [popupVisible, setPopupVisible] = useState(false);
+
+  // const handleImageReplace = useCallback((img) => {
+  //   if (img[0].hasAttribute("attachment-instanceid")) {
+  //     img[0].removeAttribute("attachment-instanceid");
+  //   }
+  // }, []);
+
+  const handleImageReplace = useCallback(
+    async (img) => {
+      if (img[0].hasAttribute("attachment-instanceid")) {
+        img[0].removeAttribute("attachment-instanceid");
+      }
+
+      const imageData = await img[0].files[0].arrayBuffer(); // Get image data
+      const formData = new FormData();
+      formData.append("image", imageData); // Add image data to form
+
+      try {
+        const response = await fetch(
+          "https://api.imgbb.com/1/upload?key=" + IMAGEBB_API_KEY,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        const data = await response.json();
+        if (data.success) {
+          const imageUrl = data.data.display_url; // Extract image URL
+          img[0].src = imageUrl; // Replace placeholder URL with ImageBB URL
+        } else {
+          console.error(
+            "Error uploading image to ImageBB:",
+            data.error.message
+          );
+        }
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
+    },
+    [IMAGEBB_API_KEY] // Dependency array for useCallback
+  );
 
   const [config] = useState(() => {
     return {
@@ -37,7 +79,8 @@ export default function BlogEditor({ content, setContent, onContentChange }) {
       charCounterCount: false,
       attribution: false,
       events: {
-        "image.replaced": handleImageReplace,
+        // "image.replaced": handleImageReplace,
+        "image.uploaded": handleImageReplace,
       },
       colorsText: [
         "#61BD6D",
@@ -240,10 +283,57 @@ export default function BlogEditor({ content, setContent, onContentChange }) {
   );
 
   return (
-    <FroalaEditorComponent
-      model={content}
-      config={config}
-      onModelChange={handleModelChange}
-    />
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "1rem",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
+        <Button
+          icon={<DeploymentUnitOutlined />}
+          onClick={() => {
+            setPopupVisible(!popupVisible);
+          }}
+          style={{
+            backgroundColor: "var(--theme)",
+            color: "white",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            padding: "0.5rem 2rem 0.5rem 1rem",
+          }}
+        />
+      </div>
+      <FroalaEditorComponent
+        model={content}
+        config={config}
+        onModelChange={handleModelChange}
+      />
+      {popupVisible && (
+        <div>
+          <Modal
+            title="AI Suggestions"
+            open={popupVisible}
+            onCancel={() => setPopupVisible(false)}
+            footer={null}
+            width={"60vw"}
+          >
+            <WriteWithAI
+              content={content}
+              setContent={setContent}
+              onContentChange={onContentChange}
+            />
+          </Modal>
+        </div>
+      )}
+    </div>
   );
 }
