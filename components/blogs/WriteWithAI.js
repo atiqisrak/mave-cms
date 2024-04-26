@@ -10,28 +10,38 @@ import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 export default function WriteWithAI() {
   const [GEMINI_API_KEY, setGEMINI_API_KEY] = useState("");
-
-  useEffect(() => {
-    const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-    setGEMINI_API_KEY(apiKey);
-  }, []);
-
-  const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
   const [prompt, setPrompt] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [responded, setResponded] = useState(false);
   const [lastPrompt, setLastPrompt] = useState(""); // State for last prompt
   const [theme, setTheme] = useState("dark");
+  const [conversation, setConversation] = useState([]);
+
+  useEffect(() => {
+    const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+    setGEMINI_API_KEY(apiKey);
+
+    // Load conversation history from local storage on initial render
+    const storedConversation = localStorage.getItem("writeWithAIConversation");
+    if (storedConversation) {
+      setConversation(JSON.parse(storedConversation));
+    }
+  }, []);
+
+  const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
   const handleGenerate = async () => {
     setLoading(true);
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
       const response = await model.generateContent(prompt);
-      response && setResponded(true);
-      setContent(response);
-      setLastPrompt(prompt);
+      response &&
+        setConversation((prevConversation) => [
+          ...prevConversation,
+          { prompt, response },
+        ]);
+      setPrompt("");
     } catch (error) {
       console.error("Error generating content:", error);
     } finally {
@@ -94,9 +104,65 @@ export default function WriteWithAI() {
         flexDirection: "column",
         alignItems: "center",
         gap: "1rem",
+        marginBottom: "5em",
       }}
     >
       <h1>Write with AI</h1>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "2rem",
+          width: "70vw",
+        }}
+      >
+        {conversation.map((item, index) => (
+          <div
+            key={index}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.6rem",
+              marginBottom: "2rem",
+            }}
+          >
+            <h2
+              style={{
+                color: "var(--theme)",
+                fontSize: "1.5rem",
+                fontWeight: "bold",
+              }}
+            >
+              You:{" "}
+              <span
+                style={{
+                  color: "#333",
+                  fontSize: "1.5rem",
+                  fontWeight: "bold",
+                }}
+              >
+                {item.prompt}
+              </span>
+            </h2>
+            <div
+              style={{
+                border: "1px solid #f0f0f0",
+                padding: "2rem",
+                borderRadius: "5px",
+                marginTop: "0.3rem",
+              }}
+            >
+              <Markdown
+                ref={contentRef}
+                remarkPlugins={[remarkGfm]}
+                components={renderer}
+              >
+                {contentText}
+              </Markdown>
+            </div>
+          </div>
+        ))}
+      </div>
       <TextArea
         placeholder="Enter a prompt..."
         value={prompt}
@@ -114,14 +180,19 @@ export default function WriteWithAI() {
         <Button onClick={handleGenerate} loading={loading} disabled={!prompt}>
           Generate
         </Button>
-        <Popover
+        {/* <Popover
           content={<p>Edit the last prompt you used.</p>}
           placement="top"
         >
-          <Button onClick={handleEditPrompt} disabled={!lastPrompt}>
+          <Button
+            onClick={() =>
+              setPrompt(conversation[conversation.length - 1]?.prompt)
+            }
+            disabled={!conversation.length}
+          >
             Edit Prompt
           </Button>
-        </Popover>
+        </Popover> */}
         <Select
           defaultValue={theme}
           options={themeOptions}
@@ -129,38 +200,6 @@ export default function WriteWithAI() {
           style={{ width: 80 }}
         />
       </div>
-
-      {responded && (
-        <div>
-          <h2>Content</h2>
-          <div
-            style={{
-              padding: "1rem",
-              border: "1px solid var(--theme)",
-              borderRadius: "0.5rem",
-              margin: "1rem 0",
-              width: "60vw",
-              backgroundColor: theme === "dark" ? "#2f3136" : "#fff",
-              color: theme === "dark" ? "#fff" : "#000",
-            }}
-          >
-            <Markdown
-              ref={contentRef}
-              remarkPlugins={[remarkGfm]}
-              components={renderer}
-            >
-              {contentText}
-            </Markdown>
-            <Popover content={copyPopoverContent} placement="right">
-              <Button
-                type="text"
-                icon={<CopyOutlined />}
-                onClick={handleCopy}
-              />
-            </Popover>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
