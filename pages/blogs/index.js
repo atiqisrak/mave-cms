@@ -46,7 +46,11 @@ export default function index() {
         >
           Welcome to blogs
         </h1>
-        <BlogShowcase blogs={blogs} />
+        <BlogShowcase
+          blogs={blogs}
+          setBlogs={setBlogs}
+          fetchBlogs={fetchBlogs}
+        />
       </center>
 
       {/* <BlogEditor /> */}

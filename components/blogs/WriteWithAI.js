@@ -174,7 +174,7 @@ export default function WriteWithAI() {
         style={{
           display: "flex",
           justifyContent: "space-between",
-          width: "60vw",
+          width: "40vw",
         }}
       >
         <Button onClick={handleGenerate} loading={loading} disabled={!prompt}>
