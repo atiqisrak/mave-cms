@@ -14,6 +14,7 @@
     "@google/generative-ai": "^0.8.0",
     "@react-pdf-viewer/core": "^3.12.0",
     "@react-pdf-viewer/thumbnail": "^3.12.0",
+    "@tinymce/tinymce-react": "^5.0.1",
     "antd": "^5.14.1",
     "axios": "^1.6.7",
     "croppie": "^2.6.5",
