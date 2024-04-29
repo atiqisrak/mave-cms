@@ -16,7 +16,8 @@ const BlogShowcase = ({ blogs, setBlogs, fetchBlogs }) => {
   const handleDelete = async (id) => {
     const response = await instance.delete(`/pages/${id}`);
     if (response.status === 200) {
-      fetchBlogs();
+      // reload page
+      window.location.reload();
     }
   };
 

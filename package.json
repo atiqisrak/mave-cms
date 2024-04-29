@@ -40,6 +40,7 @@
     "react-pdf": "^7.7.1",
     "react-quill": "^2.0.0",
     "react-syntax-highlighter": "^15.5.0",
+    "react-text-to-speech": "^0.14.5",
     "react-to-print": "^2.14.15",
     "react-virtualized": "^9.22.5",
     "remark-gfm": "^4.0.0",
