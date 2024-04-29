@@ -1,10 +1,11 @@
-import { Button, Input, Select, Spin, Switch } from "antd";
+import { Breadcrumb, Button, Input, Select, Spin, Switch } from "antd";
 import React, { useEffect, useState } from "react";
 import BlogEditor from "./BlogEditor";
-import TextArea from "antd/es/input/TextArea";
 import instance from "../../axios";
 import router from "next/router";
-import { RobotOutlined } from "@ant-design/icons";
+import { FileImageTwoTone, RobotOutlined } from "@ant-design/icons";
+import Image from "next/image";
+import SingleMediaSelect from "../SingleMediaSelect";
 
 const BlogCreator = ({ creatorMode, setCreatorMode, fetchBlogs }) => {
   const blog_categories = [
@@ -85,6 +86,11 @@ const BlogCreator = ({ creatorMode, setCreatorMode, fetchBlogs }) => {
   ];
   const [loading, setLoading] = useState(true);
   const [seoEnabled, setSeoEnabled] = useState(false);
+  const [featuredImage, setFeaturedImage] = useState(null); //featured image id
+  const [mediaSelectionVisible, setMediaSelectionVisible] = useState(false);
+  const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
+  const [hovered, setHovered] = useState(false);
+
   const [meta, setMeta] = useState({
     title_en: "",
     title_bn: "",
@@ -98,9 +104,27 @@ const BlogCreator = ({ creatorMode, setCreatorMode, fetchBlogs }) => {
   });
   const [content, setContent] = useState("");
 
+  const [mediaAssets, setMediaAssets] = useState(null);
+
+  const fetchMediaAssets = async () => {
+    try {
+      const response = await instance.get("/media");
+      if (response.status === 200) {
+        setMediaAssets(response.data);
+      } else {
+        console.error("Error fetching media assets: ", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching media assets: ", error);
+    }
+  };
+
   useEffect(() => {
+    fetchMediaAssets();
     setLoading(false);
-  }, []);
+  }, [mediaSelectionVisible]);
+
+  console.log("Media Assets: ", mediaAssets);
 
   const { title_en, title_bn, category, tags } = meta;
   const { seoTitle, seoDescription, seoKeywords } = seo;
@@ -149,13 +173,24 @@ const BlogCreator = ({ creatorMode, setCreatorMode, fetchBlogs }) => {
           {
             _id: generateId(18),
             type: "blog-content",
-            value: content,
+            _category: "root",
+            data: [
+              {
+                type: "description",
+                value: content,
+              },
+              {
+                type: "media",
+                id: featuredImage,
+              },
+            ],
           },
         ],
       });
       if (response.status === 200) {
         console.log("Blog created successfully: ", response.data);
         fetchBlogs();
+        router.push("/blogs");
       }
       console.log("Sending blog data: ", {
         title_en,
@@ -184,7 +219,13 @@ const BlogCreator = ({ creatorMode, setCreatorMode, fetchBlogs }) => {
   return (
     <div className="ViewContainer">
       <center>
-        <h1>Create a blog</h1>
+        <h1
+          style={{
+            color: "var(--themes)",
+          }}
+        >
+          Create a blog
+        </h1>
       </center>
       <div
         style={{
@@ -194,6 +235,34 @@ const BlogCreator = ({ creatorMode, setCreatorMode, fetchBlogs }) => {
           gap: "1rem",
         }}
       >
+        <Breadcrumb
+          style={{
+            alignSelf: "flex-start",
+            cursor: "pointer",
+          }}
+        >
+          <Breadcrumb.Item
+            onClick={() => {
+              router.push("/");
+            }}
+          >
+            Home
+          </Breadcrumb.Item>
+          <Breadcrumb.Item
+            onClick={() => {
+              router.push("/blogs");
+            }}
+          >
+            Blogs
+          </Breadcrumb.Item>
+          <Breadcrumb.Item
+            onClick={() => {
+              router.push("#");
+            }}
+          >
+            Create Blog
+          </Breadcrumb.Item>
+        </Breadcrumb>
         <Button
           icon={<RobotOutlined />}
           style={{
@@ -211,6 +280,82 @@ const BlogCreator = ({ creatorMode, setCreatorMode, fetchBlogs }) => {
         >
           Write with AI
         </Button>
+
+        {/* Create Blog */}
+        <div
+          className="Thumbnail"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "row-reverse",
+            gap: "1rem",
+          }}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+        >
+          <h2
+            style={{
+              position: "absolute",
+              zIndex: 1,
+              backgroundColor: "#ffffff90",
+              fontWeight: "500",
+              fontSize: "2rem",
+              textAlign: "center",
+              lineHeight: "2rem",
+              padding: "1rem 2rem",
+              borderRadius: "10px",
+              border: "1px solid #f0f0f0",
+              cursor: "pointer",
+              display: hovered ? "block" : "none",
+            }}
+            onClick={() => {
+              setMediaSelectionVisible(true);
+            }}
+          >
+            Select Feature Image
+          </h2>
+
+          <Image
+            src={
+              featuredImage
+                ? `${MEDIA_URL}/${
+                    featuredImage
+                      ? mediaAssets.find((item) => item.id === featuredImage)
+                          .file_path
+                      : "/images/Image_Placeholder.png"
+                  }`
+                : "/images/Image_Placeholder.png"
+            }
+            alt="Featured Image"
+            width={600}
+            height={300}
+            objectFit={featuredImage ? "cover" : "contain"}
+            style={{
+              borderRadius: "20px",
+              border: "1px solid var(--borderNormal)",
+              filter: hovered ? "brightness(0.7) blur(1px)" : "none",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              setMediaSelectionVisible(true);
+            }}
+          />
+        </div>
+
+        {mediaSelectionVisible && (
+          <SingleMediaSelect
+            visible={mediaSelectionVisible}
+            setVisible={setMediaSelectionVisible}
+            setSelectedMediaId={setFeaturedImage}
+            onMediaSelect={(mediaId) => {
+              setFeaturedImage(mediaId);
+            }}
+            onCancel={() => {
+              setMediaSelectionVisible(false);
+            }}
+          />
+        )}
         <Input
           placeholder="Enter blog title"
           style={{
@@ -309,7 +454,7 @@ const BlogCreator = ({ creatorMode, setCreatorMode, fetchBlogs }) => {
               }}
             />
 
-            <TextArea
+            <Input.TextArea
               placeholder="Enter SEO description"
               style={{
                 alignSelf: "flex-start",

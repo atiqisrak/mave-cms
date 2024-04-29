@@ -4,7 +4,13 @@
         "date": "2024-04-25",
         "changes": {
             "Feature": [
-                "User can create and see blog posts in the CMS"
+                "User can create and see blog posts in the CMS",
+                "User can update blog posts in the CMS",
+                "User can delete blog posts in the CMS",
+                "User can see the list of blog posts in the CMS",
+                "User can see the details of blog posts in the CMS",
+                "User can write with AI in the blog post editor",
+                "Blogs can be read in the CMS"
             ]
         }
     },

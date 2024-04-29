@@ -1,23 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { Input, Button, Space, Popover, Select } from "antd";
+import {
+  Input,
+  Button,
+  Space,
+  Popover,
+  Select,
+  message,
+  Popconfirm,
+} from "antd";
 import Markdown from "react-markdown";
-import TextArea from "antd/es/input/TextArea";
-import { CopyOutlined } from "@ant-design/icons";
-import remarkGfm from "remark-gfm"; // GFM for markdown support
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import remarkGfm from "remark-gfm";
+import { CopyTwoTone, RobotOutlined } from "@ant-design/icons";
+import Image from "next/image";
 
 export default function WriteWithAI() {
   const [GEMINI_API_KEY, setGEMINI_API_KEY] = useState("");
   const [prompt, setPrompt] = useState("");
-  const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
-  const [responded, setResponded] = useState(false);
-  const [lastPrompt, setLastPrompt] = useState(""); // State for last prompt
-  const [theme, setTheme] = useState("dark");
+  const [lastPrompt, setLastPrompt] = useState("");
   const [conversation, setConversation] = useState([]);
+  const [contentIsSafe, setContentIsSafe] = useState(true);
 
+  // Load the GEMINI API key from environment variables
   useEffect(() => {
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
     setGEMINI_API_KEY(apiKey);
@@ -26,21 +31,31 @@ export default function WriteWithAI() {
     const storedConversation = localStorage.getItem("writeWithAIConversation");
     if (storedConversation) {
       setConversation(JSON.parse(storedConversation));
+    } else {
+      setConversation([]);
     }
   }, []);
 
   const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
+  // Generate content based on the prompt
   const handleGenerate = async () => {
     setLoading(true);
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
       const response = await model.generateContent(prompt);
-      response &&
+      if (response) {
+        const newConversation = { prompt, response };
         setConversation((prevConversation) => [
           ...prevConversation,
-          { prompt, response },
+          newConversation,
         ]);
+        localStorage.setItem(
+          "writeWithAIConversation",
+          JSON.stringify(conversation)
+        );
+        setLastPrompt(prompt);
+      }
       setPrompt("");
     } catch (error) {
       console.error("Error generating content:", error);
@@ -49,52 +64,38 @@ export default function WriteWithAI() {
     }
   };
 
-  const handleEditPrompt = () => {
-    setResponded(false);
-    setPrompt(lastPrompt);
-  };
+  // Save the conversation history to local storage on every update
+  useEffect(() => {
+    localStorage.setItem(
+      "writeWithAIConversation",
+      JSON.stringify(conversation)
+    );
+  }, [conversation]);
 
-  const handleCopy = () => {
-    const contentElement = contentRef.current;
-    if (contentElement) {
-      const content = contentElement.innerText;
-      navigator.clipboard.writeText(content);
+  // Get the last response content
+  const contentRef = React.createRef();
+
+  // Copy content to clipboard
+  const copyContent = async (index) => {
+    try {
+      const con =
+        conversation[index]?.response?.response?.candidates[0]?.content
+          ?.parts[0]?.text || "";
+
+      // Get the rendered content from the Markdown component
+      const renderedContent = await renderMarkdown(con);
+      // console.log("Rendered content:", renderedContent?.props?.children);
+
+      await navigator.clipboard.writeText(renderedContent?.props?.children);
+      console.log("Content copied to clipboard");
+      message.success("Content copied to clipboard");
+    } catch (error) {
+      console.error("Error copying content to clipboard:", error);
     }
   };
 
-  const copyPopoverContent = (
-    <Space direction="vertical" size={8}>
-      <p>Content copied!</p>
-    </Space>
-  );
-
-  const contentText = content?.response?.candidates[0]?.content?.parts[0]?.text;
-
-  const contentRef = React.createRef();
-
-  const renderer = {
-    pre: ({ children }) => {
-      if (typeof children === "string") {
-        const code = children.trim();
-        const language = code.split("\n")[0].slice(3).trim(); // Extract language from code block (assuming JavaScript)
-        return (
-          <SyntaxHighlighter style={dark} language={language} PreTag="pre">
-            {code.slice(code.indexOf("\n") + 1)}
-          </SyntaxHighlighter>
-        );
-      } else {
-        return <pre>{children}</pre>;
-      }
-    },
-  };
-
-  const themeOptions = [
-    { value: "dark", label: "Dark" },
-    { value: "light", label: "Light" },
-  ];
-
-  const handleThemeChange = (value) => {
-    setTheme(value);
+  const renderMarkdown = async (content) => {
+    return <Markdown remarkPlugins={[remarkGfm]} children={content} />;
   };
 
   return (
@@ -116,7 +117,7 @@ export default function WriteWithAI() {
           width: "70vw",
         }}
       >
-        {conversation.map((item, index) => (
+        {conversation?.map((item, index) => (
           <div
             key={index}
             style={{
@@ -126,44 +127,97 @@ export default function WriteWithAI() {
               marginBottom: "2rem",
             }}
           >
-            <h2
+            <div
               style={{
-                color: "var(--theme)",
-                fontSize: "1.5rem",
-                fontWeight: "bold",
+                display: "flex",
+                gap: "1rem",
+                alignItems: "center",
               }}
             >
-              You:{" "}
-              <span
+              <Image
+                src="/images/profile_avatar.png"
+                alt="Google logo"
+                width={50}
+                height={50}
                 style={{
-                  color: "#333",
+                  borderRadius: "50%",
+                  border: "1px solid #f0f0f0",
+                }}
+              />
+              <h2
+                style={{
+                  color: "var(--theme)",
                   fontSize: "1.5rem",
                   fontWeight: "bold",
                 }}
               >
                 {item.prompt}
-              </span>
-            </h2>
+              </h2>
+            </div>
             <div
               style={{
                 border: "1px solid #f0f0f0",
-                padding: "2rem",
+                padding: "1rem 2rem 2rem 2rem",
                 borderRadius: "5px",
                 marginTop: "0.3rem",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
               }}
             >
-              <Markdown
+              <Popover content="Copy content" trigger="hover" placement="top">
+                <Button
+                  onClick={copyContent.bind(null, index)}
+                  style={{
+                    color: "white",
+                    border: "2px solid #f0f0f0",
+                    borderRadius: "5px",
+                    marginBottom: "1rem",
+                    position: "relative",
+                    left: "98%",
+                  }}
+                  icon={<CopyTwoTone />}
+                />
+              </Popover>
+
+              {/* {
+                item?.response?.response?.finishReason === "SAFETY" ? (
+                <p style={{ color: "red" }}>
+                  The content generated is not safe for work. Please try again
+                  with a different prompt.
+                </p>
+                ) : 
+                item?.response?.response?.finishReason === "SAFETY" ?
+                (
+                  <Markdown
                 ref={contentRef}
                 remarkPlugins={[remarkGfm]}
-                components={renderer}
-              >
-                {contentText}
-              </Markdown>
+                children={
+                  item?.response?.response?.candidates[0]?.content?.parts[0]
+                    ?.text
+                }
+              />
+                )
+              } */}
+              {item?.response?.response?.candidates[0]?.content?.parts[0]
+                ?.text ? (
+                <Markdown
+                  ref={contentRef}
+                  remarkPlugins={[remarkGfm]}
+                  children={
+                    item?.response?.response?.candidates[0]?.content?.parts[0]
+                      ?.text
+                  }
+                />
+              ) : (
+                <p style={{ color: "red" }}>
+                  The content generated is not safe for work. Please try again
+                  with a different prompt.
+                </p>
+              )}
             </div>
           </div>
         ))}
       </div>
-      <TextArea
+      <Input.TextArea
         placeholder="Enter a prompt..."
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
@@ -177,28 +231,35 @@ export default function WriteWithAI() {
           width: "40vw",
         }}
       >
-        <Button onClick={handleGenerate} loading={loading} disabled={!prompt}>
+        <Button
+          onClick={handleGenerate}
+          loading={loading}
+          disabled={!prompt}
+          icon={<RobotOutlined />}
+          style={{
+            backgroundColor: prompt ? "var(--themes)" : "gray",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            marginBottom: "1rem",
+          }}
+        >
           Generate
         </Button>
-        {/* <Popover
-          content={<p>Edit the last prompt you used.</p>}
-          placement="top"
+
+        <Popconfirm
+          title="Are you sure you want to clear the conversation?"
+          onConfirm={() => {
+            setConversation([]);
+            localStorage.removeItem("writeWithAIConversation");
+          }}
+          okText="Yes"
+          cancelText="No"
         >
-          <Button
-            onClick={() =>
-              setPrompt(conversation[conversation.length - 1]?.prompt)
-            }
-            disabled={!conversation.length}
-          >
-            Edit Prompt
+          <Button danger disabled={conversation.length === 0}>
+            Clear conversation
           </Button>
-        </Popover> */}
-        <Select
-          defaultValue={theme}
-          options={themeOptions}
-          onChange={handleThemeChange}
-          style={{ width: 80 }}
-        />
+        </Popconfirm>
       </div>
     </div>
   );
