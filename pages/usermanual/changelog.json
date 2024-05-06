@@ -1,5 +1,17 @@
 [
     {
+        "version": "v 0.2.43",
+        "date": "2024-05-06",
+        "changes": {
+            "BugFix": [
+                "Page editor mode shows the section title in the page editor",
+                "Fixed the issue where updating section did not close the editor mode",
+                "Edit Mode 2 is gone",
+                "Card multilingual title will only show if available"
+            ]
+        }
+    },
+    {
         "version": "v 0.2.40",
         "date": "2024-04-24",
         "changes": {

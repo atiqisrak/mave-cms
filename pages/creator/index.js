@@ -923,6 +923,21 @@ const Creator = () => {
                         }}
                       >
                         <h1>Section {index + 1}</h1>
+                        <Button
+                          style={{
+                            margin: "10px",
+                            backgroundColor: "var(--themes",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "5px",
+                            fontSize: "1.2rem",
+                            padding: "0.6rem 1rem",
+                            height: "auto",
+                          }}
+                          onClick={() => window.location.reload()}
+                        >
+                          Refresh Section
+                        </Button>
                         {editedSectionId !== section?._id && (
                           <>
                             <Button
@@ -938,7 +953,7 @@ const Creator = () => {
                               }}
                               onClick={() => handleEditClick(section?._id)}
                             >
-                              Edit Mode 2
+                              Edit Mode
                             </Button>
                           </>
                         )}
@@ -2045,10 +2060,14 @@ const Creator = () => {
                                     onClick={() => {
                                       handleSubmit();
                                       setCanvas(false);
+                                      setInternalCanvas(false);
+                                      setUpdatedSection([]);
+                                      setEditMode(false);
+                                      setEditedSectionId(null);
                                     }}
                                     icon={<CloudSyncOutlined />}
                                   >
-                                    Finish Sectionz
+                                    Finish Section
                                   </Button>
                                   <Button
                                     style={{
@@ -2123,7 +2142,7 @@ const Creator = () => {
                                   setInternalCanvas(true);
                                 }}
                               >
-                                Add Componentz
+                                Add Components
                               </Button>
                             )}
 
