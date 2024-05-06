@@ -48,6 +48,7 @@ import {
   CalculatorOutlined,
   PlusCircleFilled,
   PlusCircleOutlined,
+  CompassOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -353,6 +354,13 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
             onClick={() => router.push("/usermanual/support")}
           >
             Support
+          </Menu.Item>
+          <Menu.Item
+            key="22"
+            icon={<CompassOutlined />}
+            onClick={() => router.push("/compare")}
+          >
+            Compare
           </Menu.Item>
         </SubMenu>
       </>
