@@ -35,7 +35,7 @@ const CreateSliderComponent = ({
     description_en: "",
     description_bn: "",
   });
-  const [sliderType, setSliderType] = useState("image");
+  const [type, setType] = useState("image");
 
   const [form] = Form.useForm();
   const showModal = () => {
@@ -52,15 +52,19 @@ const CreateSliderComponent = ({
 
   const handleSubmit = async (values) => {
     setLoading(true);
+    const maveMedia = values.type === "image" ? selectedMedia : [];
+    const maveCard = values.type === "card" ? values.card_ids : [];
     try {
       const postData = {
         title_en: values.title_e,
         title_bn: values.title_b,
         description_en: values.description_en,
         description_bn: values.description_bn,
-        sliderType: values.sliderType,
-        media_ids: selectedMedia,
-        card_ids: values.card_ids,
+        type: values.type,
+        // media_ids: selectedMedia,
+        // card_ids: values.card_ids,
+        media_ids: maveMedia,
+        card_ids: maveCard,
       };
       const response = await instance.post("/sliders", postData);
       if (response.status === 201) {
@@ -128,17 +132,20 @@ const CreateSliderComponent = ({
                 }
               />
             </Form.Item>
-            <Form.Item hasFeedback label="Slider Type" name="sliderType">
+            <Form.Item hasFeedback label="Slider Type" name="type">
               <Tabs
                 defaultActiveKey="image"
-                onChange={(key) => setSliderType(key)}
+                onChange={(key) => {
+                  setType(key);
+                  form.setFieldsValue({ type: key });
+                }}
               >
                 <Tabs.TabPane tab="Image" key="image"></Tabs.TabPane>
                 <Tabs.TabPane tab="Card" key="card"></Tabs.TabPane>
               </Tabs>
             </Form.Item>
 
-            {sliderType === "card" ? (
+            {type === "card" ? (
               <Form.Item hasFeedback label="Card" name="card_ids">
                 <Select
                   mode="multiple"
