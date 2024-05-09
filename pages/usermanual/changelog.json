@@ -1,5 +1,19 @@
 [
     {
+        "version": "v 0.2.48",
+        "date": "2024-05-09",
+        "changes": {
+            "Feature": [
+                "Introduced tab view in Sliders Component",
+                "User can Create, Edit, Update & Delete Slider of cards in the CMS",
+                "MAVE Logo got a new look"
+            ],
+            "BugFix": [
+                "User turn image sliders into card sliders and vice versa"
+            ]
+        }
+    },
+    {
         "version": "v 0.2.43",
         "date": "2024-05-06",
         "changes": {
