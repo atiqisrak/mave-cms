@@ -1,13 +1,13 @@
-import React from 'react'
-import Site from '../components/Site'
-import dashboard from './dashboard'
+import React from "react";
 
 const index = () => {
   return (
     <>
-    <dashboard/>
+      <div className="ViewContainer">
+        <h1>Welcome</h1>
+      </div>
     </>
-  )
-}
+  );
+};
 
-export default index
+export default index;

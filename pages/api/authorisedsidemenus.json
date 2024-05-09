@@ -1,0 +1,123 @@
+[
+    {
+        "menu": "Components",
+        "icon": "BlockOutlined",
+        "submenu": [
+            {
+                "icon": "FileImageOutlined",
+                "link": "/gallery",
+                "title": "Media Library"
+            },
+            {
+                "icon": "FilePdfOutlined",
+                "link": "/documents",
+                "title": "Documents"
+            },
+            {
+                "icon": "MenuOutlined",
+                "link": "/menuitems",
+                "title": "Menu Items"
+            },
+            {
+                "icon": "MenuOutlined",
+                "link": "/menus",
+                "title": "Menus"
+            },
+            {
+                "icon": "PicCenterOutlined",
+                "link": "/navbars",
+                "title": "Navbars"
+            },
+            {
+                "icon": "SlidersOutlined",
+                "link": "/sliders",
+                "title": "Sliders"
+            },
+            {
+                "icon": "IdcardOutlined",
+                "link": "/cards",
+                "title": "Cards"
+            },
+            {
+                "icon": "ProfileOutlined",
+                "link": "/pressrelease",
+                "title": "Press Release"
+            },
+            {
+                "icon": "SwitcherOutlined",
+                "link": "/events",
+                "title": "Events"
+            },
+            {
+                "icon": "FormOutlined",
+                "link": "/forms",
+                "title": "Forms"
+            },
+            {
+                "icon": "BoxPlotOutlined",
+                "link": "/footer",
+                "title": "Footers"
+            }
+        ]
+    },
+    {
+        "menu": "Form Responses",
+        "icon": "MailOutlined",
+        "link": "/formresponses"
+    },
+    {
+        "menu": "Creator Studio",
+        "submenu": [
+            {
+                "icon": "DollarCircleOutlined",
+                "link": "/creator/pages",
+                "title": "Pages"
+            },
+            {
+                "icon": "AlignLeftOutlined",
+                "link": "/blogs",
+                "title": "Blogs"
+            },
+            {
+                "icon": "PlusCircleOutlined",
+                "link": "/blogs/createblog",
+                "title": "Create Blog"
+            }
+        ]
+    },
+    {
+        "menu": "User Manual",
+        "submenu": [
+            {
+                "icon": "ClockCircleOutlined",
+                "link": "/usermanual/changelog",
+                "title": "Changelog"
+            },
+            {
+                "icon": "FileTextOutlined",
+                "link": "/usermanual/documentation",
+                "title": "Documentation"
+            },
+            {
+                "icon": "VideoCameraOutlined",
+                "link": "/usermanual/userguide",
+                "title": "User Guide"
+            },
+            {
+                "icon": "QuestionCircleOutlined",
+                "link": "/usermanual/faq",
+                "title": "FAQ"
+            },
+            {
+                "icon": "MessageOutlined",
+                "link": "/usermanual/support",
+                "title": "Support"
+            },
+            {
+                "icon": "CompassOutlined",
+                "link": "/compare",
+                "title": "Compare"
+            }
+        ]
+    }
+]

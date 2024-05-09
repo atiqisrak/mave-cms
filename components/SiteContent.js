@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import {
   Layout,
   Menu,
@@ -12,7 +12,7 @@ import {
   Button,
   Modal,
 } from "antd";
-import {
+import Icon, {
   UserOutlined,
   LoginOutlined,
   DesktopOutlined,
@@ -54,13 +54,15 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Login from "./Login";
 import GLOBAL_CONTEXT from "../src/context/context";
-
+import iconsNames from "../public/data.js";
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 const { Panel } = Collapse;
 import Changelog from "../pages/usermanual/changelog.json";
+import { renderToString } from "react-dom/server";
+// import Icon from "@ant-design/icons/lib/components/Icon";
 
-export default function SiteContent({ children, collapsed, setCollapsed }) {
+const SiteContent = ({ children, collapsed, setCollapsed }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -71,6 +73,7 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
   const { setContextToken } = useContext(GLOBAL_CONTEXT);
   const [creatorMode, setCreatorMode] = useState(false);
   const [changeLogs, setChangeLogs] = useState([]);
+  const [sideMenuData, setSideMenuData] = useState([]);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -93,11 +96,8 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
     setSelectedMenuItem(item.key);
   };
 
-  // modal area
-
   const handleLogout = () => {
     message.success("Log out successfully");
-    // Clear the token from state and localStorage
     setToken(null);
     setContextToken(null);
     localStorage.removeItem("token");
@@ -137,6 +137,14 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
       </>
     );
   };
+
+  useEffect(() => {
+    fetch("/api/authorisedsidemenu")
+      .then((res) => res.json())
+      .then((data) => {
+        setSideMenuData(data);
+      });
+  }, []);
 
   const renderAuthorizedMenuItems = () => {
     return (
@@ -363,6 +371,56 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
             Compare
           </Menu.Item>
         </SubMenu>
+
+        <Menu.Item key="78">
+          <img src="/icons/outlined/account-book.svg" alt="Test Icon" />
+          Niloy
+        </Menu.Item>
+        {sideMenuData &&
+          sideMenuData.map((item, index) => {
+            return item?.submenu?.length > 0 ? (
+              <SubMenu
+                key={item.menu}
+                icon={<CalculatorOutlined />}
+                title={item.menu}
+                style={{
+                  marginTop: "10%",
+                  fontSize: "1.1em",
+                  fontWeight: "bold",
+                }}
+              >
+                {item?.submenu?.map((subItem, subIndex) => {
+                  return (
+                    <Menu.Item
+                      key={subItem.subMenu}
+                      icon={<CalculatorOutlined />}
+                      onClick={() => router.push(subItem.url)}
+                    >
+                      {subItem.title}
+                    </Menu.Item>
+                  );
+                })}
+              </SubMenu>
+            ) : item?.icon ? (
+              <Menu.Item
+                key={item.menu}
+                // icon={<Icon component={item?.icon} />}
+                onClick={() => router.push(item.url)}
+                style={{
+                  marginTop: "10%",
+                  fontSize: "1.1em",
+                  fontWeight: "bold",
+                }}
+              >
+                {React.createElement(iconsNames[item.icon])}
+                {console.log("Icon", item?.icon)}
+                {item.menu}
+              </Menu.Item>
+            ) : (
+              "not found"
+            );
+            // ""
+          })}
       </>
     );
   };
@@ -590,4 +648,5 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
       />
     </>
   );
-}
+};
+export default SiteContent;
