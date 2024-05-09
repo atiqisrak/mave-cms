@@ -1,5 +1,19 @@
 [
     {
+        "version": "v 0.2.48",
+        "date": "2024-05-09",
+        "changes": {
+            "Feature": [
+                "Introduced tab view in Sliders Component",
+                "User can Create, Edit, Update & Delete Slider of cards in the CMS",
+                "MAVE Logo got a new look"
+            ],
+            "BugFix": [
+                "User turn image sliders into card sliders and vice versa"
+            ]
+        }
+    },
+    {
         "version": "v 0.2.42",
         "date": "2024-04-25",
         "changes": {
@@ -11,6 +25,18 @@
                 "User can see the details of blog posts in the CMS",
                 "User can write with AI in the blog post editor",
                 "Blogs can be read in the CMS"
+            ]
+        }
+    },
+    {
+        "version": "v 0.2.43",
+        "date": "2024-05-06",
+        "changes": {
+            "BugFix": [
+                "Page editor mode shows the section title in the page editor",
+                "Fixed the issue where updating section did not close the editor mode",
+                "Edit Mode 2 is gone",
+                "Card multilingual title will only show if available"
             ]
         }
     },

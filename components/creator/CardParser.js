@@ -238,8 +238,8 @@ const CardParser = ({
             >
               <center>
                 <h3>
-                  {item?._mave && item?._mave?.title_en} ({" "}
-                  {item?._mave?.title_bn} )
+                  {item?._mave && item?._mave?.title_en}{" "}
+                  {item?._mave?.title_bn && `(${item?._mave?.title_bn})`}
                 </h3>
               </center>
 
