@@ -19,6 +19,7 @@ import {
 import Image from "next/image";
 import RichTextEditor from "./RichTextEditor";
 import MediaSelectionModal from "./MediaSelectionModal";
+import { useEffect } from "react";
 
 export default function CardSliders({
   sliders,
@@ -47,7 +48,12 @@ export default function CardSliders({
   const handleTypeChange = (value) => {
     setType(value);
     form.setFieldsValue({ type: value });
+    value === "image" && form.setFieldsValue({ card_ids: [], cards: [] });
   };
+
+  useEffect(() => {
+    setType("card");
+  }, []);
 
   return (
     <div>
@@ -121,7 +127,12 @@ export default function CardSliders({
                   </Form.Item>
                   <Form.Item hasFeedback label="Slider type" name="type">
                     <Tabs
-                      defaultActiveKey="image"
+                      hasFeedback
+                      label="Slider Type"
+                      name="type"
+                      animated
+                      centered
+                      defaultActiveKey="card"
                       onChange={(value) => handleTypeChange(value)}
                     >
                       <Tabs.TabPane
@@ -151,7 +162,7 @@ export default function CardSliders({
                       </Select>
                     </Form.Item>
                   ) : (
-                    <Form.Item hasFeedback label="Media" name="title_m">
+                    <Form.Item hasFeedback label="Media" name="media_ids">
                       <Button icon={<UploadOutlined />} onClick={showModal}>
                         Click to Select
                       </Button>
@@ -205,20 +216,6 @@ export default function CardSliders({
                     prevArrow={<CustomPrevArrow />}
                     nextArrow={<CustomNextArrow />}
                   >
-                    {/* {slider?.medias?.map((img, index) => (
-                      <div key={index}>
-                        <Image
-                          src={`${MEDIA_URL}/${img?.file_path}`}
-                          alt={slider.file_name}
-                          width={400}
-                          height={400}
-                          objectFit="contain"
-                          style={{
-                            borderRadius: 10,
-                          }}
-                        />
-                      </div>
-                    ))} */}
                     {slider?.cards?.map((card, index) => (
                       <div
                         key={index}

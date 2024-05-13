@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  Image,
   Space,
   Typography,
   Button,
@@ -18,6 +17,7 @@ import {
   RightOutlined,
 } from "@ant-design/icons";
 import instance from "../../axios";
+import Image from "next/image";
 
 const SliderParser = ({ item, editMode, onSliderSelect }) => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
@@ -34,15 +34,12 @@ const SliderParser = ({ item, editMode, onSliderSelect }) => {
       const response = await instance("/sliders");
       if (response.data) {
         setSliders(response.data);
-        // message.success("Sliders fetched successfully");
         setLoading(false);
       } else {
         message.error("Error fetching sliders");
-        // console.error("Error fetching sliders:", response.data.message);
       }
     } catch (error) {
       message.error("Error fetching sliders");
-      // console.error("Error fetching sliders:", error);
     }
   };
 
@@ -107,42 +104,69 @@ const SliderParser = ({ item, editMode, onSliderSelect }) => {
           </Select>
         </div>
       ) : (
-        <div>
+        <div
+          style={{
+            padding: "2rem",
+            border: "2px solid var(--themes)",
+            marginBottom: "2rem",
+            borderRadius: "1em",
+          }}
+        >
           <Carousel
             style={{ position: "relative" }}
             autoplay
             arrows
+            effect="fade"
             prevArrow={<CustomPrevArrow />}
             nextArrow={<CustomNextArrow />}
           >
-            {item?._mave?.medias?.map((media, index) => (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "50vh",
-                }}
-              >
-                <Image
-                  src={`${MEDIA_URL}/${media?.file_path}`}
-                  alt={media?.file_path}
-                  width={"100%"}
-                  height={400}
-                  style={{ objectFit: "cover", borderRadius: 10 }}
-                />
-              </div>
-            ))}
+            {item?._mave?.media_ids?.length > 0
+              ? item?._mave?.medias?.map((media) => (
+                  <div>
+                    <Image
+                      src={`${MEDIA_URL}/${media?.file_path}`}
+                      alt={item?._mave?.file_name}
+                      width={900}
+                      height={400}
+                      objectFit="cover"
+                      style={{
+                        borderRadius: "1em",
+                      }}
+                    />
+                  </div>
+                ))
+              : item?._mave?.cards?.map((card) => (
+                  <div>
+                    <Image
+                      src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
+                      alt={card?.media_files?.file_name}
+                      width={900}
+                      height={400}
+                      objectFit="cover"
+                      style={{
+                        borderRadius: "1em",
+                      }}
+                    />
+                  </div>
+                ))}
           </Carousel>
           <Space
             style={{
               display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
+              justifyContent: "space-evenly",
+              alignItems: "center",
             }}
           >
-            <Title level={4}>Title: {item?._mave?.title_en}</Title>
-            <Title level={5}>শিরোনাম: {item?._mave?.title_bn}</Title>
+            <div>
+              <Title level={4}>Title: {item?._mave?.title_en}</Title>
+              <Title level={5}>শিরোনাম: {item?._mave?.title_bn}</Title>
+            </div>
+            <div>
+              <Title level={5}>
+                Slider type:{" "}
+                {item?._mave?.media_ids?.length > 0 ? "Media" : "Card"}
+              </Title>
+            </div>
           </Space>
         </div>
       )}

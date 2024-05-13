@@ -19,6 +19,7 @@ import {
 import Image from "next/image";
 import RichTextEditor from "./RichTextEditor";
 import MediaSelectionModal from "./MediaSelectionModal";
+import { useEffect } from "react";
 
 export default function ImageSliders({
   sliders,
@@ -47,7 +48,12 @@ export default function ImageSliders({
   const handleTypeChange = (value) => {
     setType(value);
     form.setFieldsValue({ type: value });
+    value === "card" && form.setFieldsValue({ media_ids: [], medias: [] });
   };
+
+  useEffect(() => {
+    setType("image");
+  }, []);
 
   return (
     <div>
@@ -123,6 +129,11 @@ export default function ImageSliders({
                     <Tabs
                       defaultActiveKey="image"
                       onChange={(value) => handleTypeChange(value)}
+                      hasFeedback
+                      label="Slider Type"
+                      name="type"
+                      animated
+                      centered
                     >
                       <Tabs.TabPane
                         tab="Image"
@@ -151,7 +162,7 @@ export default function ImageSliders({
                       </Select>
                     </Form.Item>
                   ) : (
-                    <Form.Item hasFeedback label="Media" name="title_m">
+                    <Form.Item hasFeedback label="Media" name="media_ids">
                       <Button icon={<UploadOutlined />} onClick={showModal}>
                         Click to Select
                       </Button>
