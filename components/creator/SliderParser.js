@@ -34,15 +34,12 @@ const SliderParser = ({ item, editMode, onSliderSelect }) => {
       const response = await instance("/sliders");
       if (response.data) {
         setSliders(response.data);
-        // message.success("Sliders fetched successfully");
         setLoading(false);
       } else {
         message.error("Error fetching sliders");
-        // console.error("Error fetching sliders:", response.data.message);
       }
     } catch (error) {
       message.error("Error fetching sliders");
-      // console.error("Error fetching sliders:", error);
     }
   };
 
