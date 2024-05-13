@@ -4,56 +4,67 @@
         "icon": "BlockOutlined",
         "submenu": [
             {
+                "id": 1,
                 "icon": "FileImageOutlined",
                 "link": "/gallery",
                 "title": "Media Library"
             },
             {
+                "id": 2,
                 "icon": "FilePdfOutlined",
                 "link": "/documents",
                 "title": "Documents"
             },
             {
+                "id": 3,
                 "icon": "MenuOutlined",
                 "link": "/menuitems",
                 "title": "Menu Items"
             },
             {
+                "id": 4,
                 "icon": "MenuOutlined",
                 "link": "/menus",
                 "title": "Menus"
             },
             {
+                "id": 5,
                 "icon": "PicCenterOutlined",
                 "link": "/navbars",
                 "title": "Navbars"
             },
             {
+                "id": 6,
                 "icon": "SlidersOutlined",
                 "link": "/sliders",
                 "title": "Sliders"
             },
             {
+                "id": 7,
                 "icon": "IdcardOutlined",
                 "link": "/cards",
                 "title": "Cards"
             },
             {
+                "id": 8,
                 "icon": "ProfileOutlined",
                 "link": "/pressrelease",
                 "title": "Press Release"
             },
             {
+                "id": 9,
                 "icon": "SwitcherOutlined",
                 "link": "/events",
                 "title": "Events"
             },
             {
+                "id": 10,
                 "icon": "FormOutlined",
                 "link": "/forms",
                 "title": "Forms"
             },
             {
+                "id": 11,
                 "icon": "BoxPlotOutlined",
                 "link": "/footer",
                 "title": "Footers"
@@ -69,16 +80,19 @@
         "menu": "Creator Studio",
         "submenu": [
             {
+                "id": 12,
                 "icon": "DollarCircleOutlined",
                 "link": "/creator/pages",
                 "title": "Pages"
             },
             {
+                "id": 13,
                 "icon": "AlignLeftOutlined",
                 "link": "/blogs",
                 "title": "Blogs"
             },
             {
+                "id": 14,
                 "icon": "PlusCircleOutlined",
                 "link": "/blogs/createblog",
                 "title": "Create Blog"
@@ -89,31 +103,37 @@
         "menu": "User Manual",
         "submenu": [
             {
+                "id": 15,
                 "icon": "ClockCircleOutlined",
                 "link": "/usermanual/changelog",
                 "title": "Changelog"
             },
             {
+                "id": 16,
                 "icon": "FileTextOutlined",
                 "link": "/usermanual/documentation",
                 "title": "Documentation"
             },
             {
+                "id": 17,
                 "icon": "VideoCameraOutlined",
                 "link": "/usermanual/userguide",
                 "title": "User Guide"
             },
             {
+                "id": 18,
                 "icon": "QuestionCircleOutlined",
                 "link": "/usermanual/faq",
                 "title": "FAQ"
             },
             {
+                "id": 19,
                 "icon": "MessageOutlined",
                 "link": "/usermanual/support",
                 "title": "Support"
             },
             {
+                "id": 20,
                 "icon": "CompassOutlined",
                 "link": "/compare",
                 "title": "Compare"
