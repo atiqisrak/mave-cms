@@ -372,11 +372,7 @@ const SiteContent = ({ children, collapsed, setCollapsed }) => {
           </Menu.Item>
         </SubMenu>
 
-        <Menu.Item key="78">
-          <img src="/icons/outlined/account-book.svg" alt="Test Icon" />
-          Niloy
-        </Menu.Item>
-        {sideMenuData &&
+        {/* {sideMenuData &&
           sideMenuData.map((item, index) => {
             return item?.submenu?.length > 0 ? (
               <SubMenu
@@ -420,7 +416,7 @@ const SiteContent = ({ children, collapsed, setCollapsed }) => {
               "not found"
             );
             // ""
-          })}
+          })} */}
       </>
     );
   };
