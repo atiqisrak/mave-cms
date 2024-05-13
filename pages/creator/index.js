@@ -299,16 +299,30 @@ const Creator = () => {
 
     if (selectedType === "slider") {
       const resultArray = filteredArray.map(
-        ({ id, media_ids, medias, status, title_bn, title_en, type }) => ({
+        ({
+          id,
+          media_ids,
+          medias,
+          card_ids,
+          cards,
+          status,
+          title_bn,
+          title_en,
+          type,
+        }) => ({
           id,
           _mave: {
             media_ids,
             medias,
+            card_ids,
+            cards,
             status,
             title_bn,
             title_en,
+            slider_type: type && type,
           },
-          type: `${type ? type : selectedType}`,
+          // type: `${type ? type : selectedType}`,
+          type: "slider",
         })
       );
       setNewSectionComponent((prev) => [...prev, ...resultArray]);
@@ -384,12 +398,10 @@ const Creator = () => {
   const handleClickOkText = (selectedType) => {
     if (selectedType === "title") {
       setNewSectionComponent((prev) => [...prev, title]);
-      // setShowPageData([...showPageData, title]);
       setSearchDefault(null);
     }
     if (selectedType === "description") {
       setNewSectionComponent((prev) => [...prev, description]);
-      // setShowPageData([...showPageData, description]);
       setSearchDefault(null);
     }
   };
@@ -1557,57 +1569,12 @@ const Creator = () => {
                                                     }
                                                   >
                                                     {fetchedComponent?.map(
-                                                      (card, index) => (
+                                                      (slider, index) => (
                                                         <Select.Option
                                                           key={index}
-                                                          value={card.id}
+                                                          value={slider?.id}
                                                         >
-                                                          {card && (
-                                                            <div>
-                                                              <Carousel
-                                                                autoplay
-                                                                style={{
-                                                                  width: "100%",
-                                                                  height:
-                                                                    "100%",
-                                                                }}
-                                                              >
-                                                                {card?.medias?.map(
-                                                                  (
-                                                                    media,
-                                                                    index
-                                                                  ) => (
-                                                                    <div
-                                                                      key={
-                                                                        index
-                                                                      }
-                                                                    >
-                                                                      <Image
-                                                                        preview={
-                                                                          false
-                                                                        }
-                                                                        src={`${MEDIA_URL}/${media?.file_path}`}
-                                                                        alt={
-                                                                          media?.file_path
-                                                                        }
-                                                                        width={
-                                                                          "100%"
-                                                                        }
-                                                                        height={
-                                                                          200
-                                                                        }
-                                                                        style={{
-                                                                          objectFit:
-                                                                            "cover",
-                                                                          borderRadius: 10,
-                                                                        }}
-                                                                      />
-                                                                    </div>
-                                                                  )
-                                                                )}
-                                                              </Carousel>
-                                                            </div>
-                                                          )}
+                                                          {slider?.title_en}
                                                         </Select.Option>
                                                       )
                                                     )}
@@ -2164,7 +2131,6 @@ const Creator = () => {
                                 onClick={() => {
                                   setEditMode(false);
                                   setEditedSectionId(null);
-                                  console.log("three");
                                   handleUpdateSectionData(index, sectionData);
                                   handleSave();
                                 }}
@@ -2179,6 +2145,8 @@ const Creator = () => {
                                   setEditMode(false);
                                   setEditedSectionId(null);
                                   setCanvas(false);
+                                  setInternalCanvas(false);
+                                  setUpdatedSection([]);
                                 }}
                                 style={{
                                   margin: "10px",
@@ -2312,16 +2280,6 @@ const Creator = () => {
                               case "description":
                                 return (
                                   <div style={{ width: "40vw" }}>
-                                    {/* <RichTextEditor
-                                      editMode="true"
-                                      placeholder="Enter Description"
-                                      onChange={(e) =>
-                                        handleFormChange(
-                                          e.target.value,
-                                          selectedComponentType
-                                        )
-                                      }
-                                    /> */}
                                     <RichTextEditor
                                       editMode="true"
                                       placeholder="Enter Description"
@@ -2590,42 +2548,16 @@ const Creator = () => {
                                         )
                                       }
                                     >
-                                      {fetchedComponent?.map((card, index) => (
-                                        <Select.Option
-                                          key={index}
-                                          value={card.id}
-                                        >
-                                          {card && (
-                                            <div>
-                                              <Carousel
-                                                autoplay
-                                                style={{
-                                                  width: "100%",
-                                                  height: "100%",
-                                                }}
-                                              >
-                                                {card?.medias?.map(
-                                                  (media, index) => (
-                                                    <div key={index}>
-                                                      <Image
-                                                        preview={false}
-                                                        src={`${MEDIA_URL}/${media?.file_path}`}
-                                                        alt={media?.file_path}
-                                                        width={"100%"}
-                                                        height={200}
-                                                        style={{
-                                                          objectFit: "cover",
-                                                          borderRadius: 10,
-                                                        }}
-                                                      />
-                                                    </div>
-                                                  )
-                                                )}
-                                              </Carousel>
-                                            </div>
-                                          )}
-                                        </Select.Option>
-                                      ))}
+                                      {fetchedComponent?.map(
+                                        (slider, index) => (
+                                          <Select.Option
+                                            key={index}
+                                            value={slider.id}
+                                          >
+                                            {slider.title_en}
+                                          </Select.Option>
+                                        )
+                                      )}
                                     </Select>
                                     <div
                                       style={{
