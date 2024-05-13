@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   Button,
@@ -12,6 +12,7 @@ import {
   Select,
   Space,
   Tabs,
+  Tooltip,
 } from "antd";
 import instance from "../axios";
 import {
@@ -31,16 +32,18 @@ const CreateSliderComponent = ({
 }) => {
   const [selectedMedia, setSelectedMedia] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const [readyToSubmit, setReadyToSubmit] = useState(false);
+
   const [asset, setAsset] = useState({
     description_en: "",
     description_bn: "",
   });
-  const [type, setType] = useState("image");
+  const [type, setType] = useState();
 
   const [form] = Form.useForm();
   const showModal = () => {
     setIsModalVisible(true);
-    // router.push("/create-slider");
   };
   const handleOk = () => {
     setIsModalVisible(false);
@@ -50,31 +53,35 @@ const CreateSliderComponent = ({
     setIsModalVisible(false);
   };
 
+  useEffect(() => {
+    type && setReadyToSubmit(true);
+  }, [type]);
+
   const handleSubmit = async (values) => {
     setLoading(true);
-    const maveMedia = values.type === "image" ? selectedMedia : [];
-    const maveCard = values.type === "card" ? values.card_ids : [];
+    const maveMedia = values?.type === "image" ? selectedMedia : [];
+    const maveCard = values?.type === "card" ? values?.card_ids : [];
+    const maveSliderType = values?.type ? values?.type : "image";
+
     try {
       const postData = {
         title_en: values.title_e,
         title_bn: values.title_b,
         description_en: values.description_en,
         description_bn: values.description_bn,
-        type: values.type,
-        // media_ids: selectedMedia,
-        // card_ids: values.card_ids,
+        type: maveSliderType,
         media_ids: maveMedia,
         card_ids: maveCard,
       };
-      const response = await instance.post("/sliders", postData);
-      if (response.status === 201) {
-        setResponse(response);
-        setShowCreateSliderForm(false);
-        setLoading(false);
-      } else {
-        // Handle error response
-        console.error("Error creating slider:", response.data);
-      }
+      // const response = await instance.post("/sliders", postData);
+      // if (response.status === 201) {
+      //   setResponse(response);
+      //   setShowCreateSliderForm(false);
+      //   setLoading(false);
+      // } else {
+      //   console.error("Error creating slider:", response.data);
+      // }
+      console.log("postData: ", postData);
     } catch (error) {
       console.error("Error creating slider:", error);
     }
@@ -94,6 +101,9 @@ const CreateSliderComponent = ({
               marginTop: "10em",
               maxWidth: 600,
               margin: "0 auto",
+              display: "flex",
+              flexDirection: "column",
+              gap: "1.2rem",
             }}
             layout="vertical"
             autoComplete="off"
@@ -134,41 +144,50 @@ const CreateSliderComponent = ({
             </Form.Item>
             <Form.Item hasFeedback label="Slider Type" name="type">
               <Tabs
-                defaultActiveKey="image"
+                hasFeedback
+                label="Slider Type"
+                name="type"
+                animated
+                centered
+                defaultActiveKey="empty"
                 onChange={(key) => {
                   setType(key);
                   form.setFieldsValue({ type: key });
                 }}
               >
+                <Tabs.TabPane tab="Nothing" key="empty"></Tabs.TabPane>
                 <Tabs.TabPane tab="Image" key="image"></Tabs.TabPane>
                 <Tabs.TabPane tab="Card" key="card"></Tabs.TabPane>
               </Tabs>
             </Form.Item>
 
-            {type === "card" ? (
-              <Form.Item hasFeedback label="Card" name="card_ids">
-                <Select
-                  mode="multiple"
-                  allowClear
-                  style={{ width: "100%" }}
-                  placeholder="Please select"
-                  defaultValue={[]}
-                >
-                  {cards.map((card) => (
-                    <Select.Option key={card.id} value={card.id}>
-                      {card.title_en}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            ) : (
-              <Form.Item hasFeedback label="Media" name="title_m">
-                {/* <Collapse accordion ghost items={items}></Collapse> */}
-                <Button icon={<UploadOutlined />} onClick={showModal}>
-                  Click to Select
-                </Button>
-              </Form.Item>
-            )}
+            {type ? (
+              type === "card" ? (
+                <Form.Item hasFeedback label="Card" name="card_ids">
+                  <Select
+                    mode="multiple"
+                    allowClear
+                    style={{ width: "100%" }}
+                    placeholder="Please select"
+                    defaultValue={[]}
+                  >
+                    {cards.map((card) => (
+                      <Select.Option key={card.id} value={card.id}>
+                        {card.title_en}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              ) : (
+                type === "image" && (
+                  <Form.Item hasFeedback label="Media" name="media_ids">
+                    <Button icon={<UploadOutlined />} onClick={showModal}>
+                      Click to Select
+                    </Button>
+                  </Form.Item>
+                )
+              )
+            ) : null}
             <Form.Item>
               <div
                 style={{
@@ -178,24 +197,33 @@ const CreateSliderComponent = ({
                   gap: "1rem",
                 }}
               >
-                <Button
-                  icon={<ExportOutlined />}
-                  type="primary"
-                  htmlType="submit"
-                  style={{
-                    backgroundColor: "var(--theme)",
-                    borderColor: "var(--theme)",
-                    color: "var(--white)",
-                    borderRadius: "5px",
-                    fontSize: "1.2rem",
-                    padding: "0.5rem 2rem",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
+                <Tooltip
+                  title={
+                    !readyToSubmit
+                      ? "Please select a slider type to submit"
+                      : "Ready to submit"
+                  }
                 >
-                  Submit
-                </Button>
+                  <Button
+                    icon={<ExportOutlined />}
+                    type="primary"
+                    htmlType="submit"
+                    disabled={!readyToSubmit}
+                    style={{
+                      backgroundColor: readyToSubmit ? "var(--theme)" : "gray",
+                      borderColor: readyToSubmit ? "var(--theme)" : "gray",
+                      color: "var(--white)",
+                      borderRadius: "5px",
+                      fontSize: "1.2rem",
+                      padding: "0.5rem 2rem",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    Submit
+                  </Button>
+                </Tooltip>
                 <Button
                   danger
                   icon={<CloseCircleOutlined />}
@@ -218,7 +246,7 @@ const CreateSliderComponent = ({
                 <MediaSelectionModal
                   selectedMedia={selectedMedia}
                   setSelectedMedia={setSelectedMedia}
-                ></MediaSelectionModal>
+                />
               </Modal>
             </Form.Item>
           </Form>

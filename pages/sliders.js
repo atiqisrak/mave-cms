@@ -195,6 +195,10 @@ const Sliders = () => {
       (slider) => slider.id === editingItemId
     ).media_ids;
 
+    const finalCards = values.card_ids ? values.card_ids : previousCardsIds;
+    const finalMedia =
+      selectedMedia?.length > 0 ? selectedMedia : previousMediaIds;
+
     try {
       const postData = {
         title_en: values.title_e ? values.title_e : previousTitleEn,
@@ -206,19 +210,20 @@ const Sliders = () => {
           ? values.description_bn
           : previousDescriptionBn,
         type: values.type ? values.type : previousType,
-        card_ids: values.card_ids ? values.card_ids : previousCardsIds,
-        media_ids: selectedMedia?.length > 0 ? selectedMedia : previousMediaIds,
+        // card_ids: values.card_ids ? values.card_ids : previousCardsIds,
+        // media_ids: selectedMedia?.length > 0 ? selectedMedia : previousMediaIds,
+        card_ids: values.type === "card" ? finalCards : [],
+        media_ids: values.type === "image" ? finalMedia : [],
       };
+
+      console.log("Edit Data: ", postData);
+
       const response = await instance.put(
         `/sliders/${editingItemId}`,
         postData
       );
       if (response.status === 200) {
         if (response?.data) {
-          // api.info({
-          //   message: `${response?.data?.message}`,
-          //   top,
-          // });
           message.success("Slider updated successfully");
           setResponseData(response);
         }
@@ -284,7 +289,6 @@ const Sliders = () => {
             ) : (
               <>
                 <>
-                  {/* <Segmented defaultValue="1"> */}
                   <Tabs
                     defaultActiveKey="1"
                     type="card"
