@@ -76,7 +76,7 @@ const FormComponent = ({ formData }) => {
             name="status"
             // initialValue={form.status}
             disabled={!editMode}
-          // defaultValue={form.status}
+            // defaultValue={form.status}
           >
             <Select.Option value="1">Active</Select.Option>
             <Select.Option value="0">Inactive</Select.Option>
@@ -92,8 +92,11 @@ const FormComponent = ({ formData }) => {
                   initialValue={field.name}
                   disabled={!editMode}
                 />
-                <Select defaultValue={field.type} disabled={!editMode}
-                  showSearch>
+                <Select
+                  defaultValue={field.type}
+                  disabled={!editMode}
+                  showSearch
+                >
                   <Select.Option initialValue="text">Text</Select.Option>
                   <Select.Option initialValue="email">Email</Select.Option>
                   <Select.Option initialValue="textarea">

@@ -2,24 +2,32 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Button,
   Col,
-  Image,
+  Input,
   Modal,
   Pagination,
   Row,
   Select,
   Skeleton,
   Spin,
+  Tabs,
+  message,
 } from "antd";
 import UploadMedia from "../components/UploadMedia";
 import instance from "../axios";
 import { setPageTitle } from "../global/constants/pageTitle";
 import Loader from "../components/Loader";
 import {
+  CheckCircleTwoTone,
+  DeleteFilled,
+  DeleteOutlined,
+  EditOutlined,
   FilterOutlined,
   SyncOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
 const { Option } = Select;
+import { Document, Page } from "react-pdf";
+import Image from "next/image";
 
 const Gallery = () => {
   useEffect(() => {
@@ -31,6 +39,19 @@ const Gallery = () => {
   const [mediaAssets, setMediaAssets] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const [images, setImages] = useState([]);
+  const [videos, setVideos] = useState([]);
+  const [pdfs, setPdfs] = useState([]);
+  const [editMode, setEditMode] = useState(false);
+
+  const [numPages, setNumPages] = useState();
+  const [pageNumber, setPageNumber] = useState(1);
+
+  const [bulkSelectionVisible, setBulkSelectionVisible] = useState(false);
+
+  const onDocumentLoadSuccess = ({ numPages }) => {
+    setNumPages(numPages);
+  };
 
   const [currentPage, setCurrentPage] = useState(1);
   const showModal = () => {
@@ -39,6 +60,7 @@ const Gallery = () => {
 
   const handleOk = () => {
     setIsModalVisible(false);
+    window.location.reload();
   };
 
   const handleCancel = () => {
@@ -51,38 +73,6 @@ const Gallery = () => {
   const [sortBy, setSortBy] = useState("desc");
   const [settingsVisible, setSettingsVisible] = useState(false);
 
-  // const fetchMediaAssets = async (page, count) => {
-  //   setIsLoading(true);
-  //   try {
-  //     const response = await instance(
-  //       `/media/pageview?page=${page}&count=${count}`
-  //     );
-  //     if (Array.isArray(response.data.data)) {
-  //       const sortedMediaAssets = response.data.data.sort((a, b) => {
-  //         if (sortBy === "asc") {
-  //           return a.id - b.id;
-  //         } else {
-  //           return b.id - a.id;
-  //         }
-  //       });
-
-  //       setMediaAssets(sortedMediaAssets);
-  //       if (response.data.total) {
-  //         setTotalMediaAssets(response.data.total);
-
-  //         {
-  //           console.log("Total: ", response.data.total);
-  //         }
-  //       }
-  //     } else {
-  //       console.error("Error fetching media assets:", response.data.message);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching media assets:", error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
   const fetchMediaAssets = async (page, count) => {
     setIsLoading(true);
     try {
@@ -124,30 +114,23 @@ const Gallery = () => {
     fetchMediaAssets(currentPage, selectedMediaCount);
   }, [currentPage, selectedMediaCount, sortBy]);
 
-  const handleNewMediaUpload = () => {
-    fetchMediaAssets();
-  };
+  useEffect(() => {
+    mediaAssets &&
+      mediaAssets.map((asset) => {
+        if (asset.file_type.startsWith("image/")) {
+          setImages((prevImages) => [...prevImages, asset]);
+        } else if (asset.file_type.startsWith("video/")) {
+          setVideos((prevVideos) => [...prevVideos, asset]);
+        } else if (asset.file_type === "application/pdf") {
+          setPdfs((prevPdfs) => [...prevPdfs, asset]);
+        }
+      });
+  }, [mediaAssets]);
 
-  // const onDelete = async (id) => {
-  //   try {
-  //     Modal.confirm({
-  //       title: "Delete Media",
-  //       content: "Are you sure you want to delete this media?",
-  //       okText: "Yes",
-  //       cancelText: "No",
-  //       onOk: async () => {
-  //         const response = await instance.delete(`/media/${id}`);
-  //         if (response.data) {
-  //           fetchMediaAssets();
-  //         } else {
-  //           console.error("Error deleting media:", response.data.message);
-  //         }
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.error("Error deleting media:", error);
-  //   }
-  // };
+  const handleNewMediaUpload = () => {
+    // fetchMediaAssets(currentPage, selectedMediaCount);
+    window.location.reload();
+  };
 
   const onDelete = async (id) => {
     try {
@@ -167,14 +150,17 @@ const Gallery = () => {
             const response = await instance.delete(`/media/${id}`);
             if (response.data) {
               // Assuming the server request was successful, no need to update state again
-              console.log("Media deleted successfully");
+              // console.log("Media deleted successfully");
+              message.success("Media deleted successfully");
             } else {
               // Handle the case where the server request fails
-              console.error("Error deleting media:", response.data.message);
+              // console.error("Error deleting media:", response.data.message);
+              message.error("Error deleting media");
             }
           } catch (error) {
             // Handle errors that occur during the server request
-            console.error("Error deleting media:", error);
+            // console.error("Error deleting media:", error);
+            message.error("Error deleting media");
           }
         },
       });
@@ -190,6 +176,54 @@ const Gallery = () => {
 
   const handleFilterCancel = () => {
     setSettingsVisible(false);
+  };
+
+  const handleBulkDelete = async () => {
+    setBulkSelectionVisible(!bulkSelectionVisible);
+  };
+
+  const fetchVideos = async () => {
+    try {
+      const response = await instance("/media");
+      if (response?.data?.data) {
+        setVideos(response?.data?.data);
+      }
+    } catch (error) {
+      console.error("Error fetching videos:", error);
+    }
+  };
+
+  const sizeFormatter = (size) => {
+    let sizeInKB = size / 1024;
+    return sizeInKB < 1024
+      ? `${sizeInKB.toFixed(0)} KB`
+      : `${(sizeInKB / 1024).toFixed(1)} MB`;
+  };
+
+  const [editMedia, setEditMedia] = useState([]);
+  const handleEditMode = ({ mediaId, mediaTitle }) => {
+    setEditMode(true);
+    setEditMedia({ mediaId, mediaTitle });
+  };
+
+  const handleSubmit = async () => {
+    setEditMode(false);
+    try {
+      const response = await instance.put(`/media/${editMedia?.mediaId}`, {
+        title: editMedia?.mediaTitle,
+      });
+      if (response.data) {
+        message.success("Media title updated successfully");
+        // fetchMediaAssets(currentPage, selectedMediaCount);
+        window.location.reload();
+      } else {
+        console.error("Error updating media title:", response.data.message);
+        message.error("Error updating media title");
+      }
+    } catch (error) {
+      console.error("Error updating media title:", error);
+      message.error("Error updating media title");
+    }
   };
 
   return (
@@ -243,7 +277,7 @@ const Gallery = () => {
           onOk={handleOk}
           onCancel={handleCancel}
         >
-          <UploadMedia onUploadSuccess={handleNewMediaUpload} />
+          <UploadMedia />
         </Modal>
 
         {isLoading ? (
@@ -274,6 +308,26 @@ const Gallery = () => {
           <FilterOutlined />
           Filter
         </Button>
+
+        {/* Bulk Delete */}
+        {/* <Button
+          onClick={handleBulkDelete}
+          style={{
+            backgroundColor: "var(--themes)",
+            color: "var(--white)",
+            fontSize: "1.1rem",
+            padding: "1.2em 1.2em",
+            borderRadius: "10px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            position: "fixed",
+            top: "28%",
+            right: "10%",
+          }}
+        >
+          Bulk Delete
+        </Button> */}
 
         <Modal
           title="Filter Settings"
@@ -318,126 +372,219 @@ const Gallery = () => {
           </div>
         </Modal>
 
-        <Row
-          gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexWrap: "wrap",
-          }}
-        >
-          {mediaAssets.map((asset) => (
-            <Col
-              span={5}
+        {/* Tabs for Image, Video, PDF */}
+        <Tabs defaultActiveKey="1" centered>
+          <Tabs.TabPane tab="Images" key="1">
+            <Row
+              gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}
               style={{
-                marginTop: "1rem",
-                border: "1px solid var(--gray-dark)",
-                borderRadius: "10px",
-                padding: "0.6rem",
-                margin: "0.4em",
                 display: "flex",
-                flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                backgroundColor: "var(--white)",
+                flexWrap: "wrap",
               }}
-              key={asset.id}
             >
-              {asset.file_type.startsWith("image/") ? (
-                <>
-                  {isLoading ? (
-                    <Skeleton.Image />
-                  ) : (
-                    <Image
-                      src={`${MEDIA_URL}/${asset.file_path}`}
-                      alt={asset.file_name}
-                      style={{
-                        objectFit: "cover",
-                        borderRadius: 10,
-                        width: "12vw",
-                        height: "18vh",
-                      }}
-                    />
-                  )}
-                </>
-              ) : asset.file_type.startsWith("video/") ? (
-                <>
-                  <video
-                    autoPlay
-                    loop
-                    muted
+              {images &&
+                images?.map((image) => (
+                  <Col
+                    key={image.id}
+                    xs={24}
+                    sm={12}
+                    md={8}
+                    lg={6}
+                    xl={6}
                     style={{
-                      width: "12vw",
-                      height: "18vh",
+                      marginBottom: "1rem",
                     }}
                   >
-                    <source
-                      src={`${MEDIA_URL}/${asset.file_path}`}
-                      type={asset.file_type}
-                    />
-                    Your browser does not support the video tag.
-                  </video>
-                </>
-              ) : asset.file_type === "application/pdf" ? (
-                <iframe
-                  src={`${API_BASE_URL}/${asset.file_path}`}
-                  width={275}
-                  height={200}
-                ></iframe>
-              ) : (
-                <p>Unsupported file format: {asset.file_type}</p>
-              )}
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: "white",
+                        padding: "1rem",
+                        borderRadius: "5px",
+                        boxShadow: "0 0 5px rgba(0, 0, 0, 0.1)",
+                        border: "1px solid rgba(0, 0, 0, 0.1)",
+                      }}
+                    >
+                      <Image
+                        src={`${MEDIA_URL}/${image.file_path}`}
+                        alt={image.file_name}
+                        width={400}
+                        height={200}
+                        objectFit="cover"
+                        style={{
+                          borderRadius: "5px",
+                        }}
+                      />
+                      <div
+                        className="image-info"
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          marginTop: "1rem",
+                        }}
+                      >
+                        {editMode && image.id === editMedia.mediaId ? (
+                          <>
+                            Name:{""}
+                            <Input
+                              defaultValue={
+                                image?.title ? image.title : image.file_name
+                              }
+                              style={{ width: "100%" }}
+                              onChange={(e) =>
+                                setEditMedia({
+                                  ...editMedia,
+                                  mediaTitle: e.target.value,
+                                })
+                              }
+                            />
+                          </>
+                        ) : (
+                          <p>
+                            Name: {image?.title ? image.title : image.file_name}
+                          </p>
+                        )}
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <p>
+                            Size:
+                            {sizeFormatter(image.file_size)}
+                          </p>
+                          <p>Type: {image.file_type}</p>
+                        </div>
+                      </div>
+                      <div
+                        style={{
+                          marginTop: "1rem",
+                          display: "flex",
+                        }}
+                      >
+                        {editMode ? (
+                          <Button
+                            success
+                            icon={<CheckCircleTwoTone />}
+                            style={{
+                              marginRight: "6vw",
+                              backgroundColor: "green",
+                            }}
+                            onClick={() => handleSubmit()}
+                          />
+                        ) : (
+                          <Button
+                            type="primary"
+                            success
+                            icon={<EditOutlined />}
+                            style={{ marginRight: "6vw" }}
+                            onClick={() =>
+                              handleEditMode({
+                                mediaId: image.id,
+                                mediaTitle: image?.title
+                                  ? image.title
+                                  : image.file_name,
+                              })
+                            }
+                          />
+                        )}
+                        <Button
+                          type="primary"
+                          danger
+                          onClick={() => onDelete(image.id)}
+                          icon={<DeleteOutlined />}
+                        />
+                      </div>
+                    </div>
+                  </Col>
+                ))}
+            </Row>
 
-              <div
-                className="assetDescription"
-                style={{
-                  borderRadius: "10px",
-                  padding: "1rem",
-                  marginTop: "1rem",
-                  border: "1px solid var(--lite-dark)",
-                  overflow: "hidden",
-                }}
-              >
-                <h4
-                  style={{
-                    color: "var(--theme)",
-                    paddingBottom: "1rem",
-                  }}
+            <Pagination
+              current={currentPage}
+              pageSize={selectedMediaCount}
+              total={totalMediaAssets}
+              onChange={handlePaginationChange}
+              responsive={true}
+              showSizeChanger={false}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: "2rem",
+              }}
+            />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Videos" key="2">
+            <Row
+              gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              {videos.map((video) => (
+                <Col
+                  key={video.id}
+                  xs={24}
+                  sm={12}
+                  md={8}
+                  lg={6}
+                  xl={4}
+                  style={{ marginBottom: "1rem" }}
                 >
-                  File Type:
-                  {asset.file_type.startsWith("image/") ? (
-                    <span> Image</span>
-                  ) : asset.file_type.startsWith("video/") ? (
-                    <span> Video</span>
-                  ) : asset.file_type === "application/pdf" ? (
-                    <span> PDF</span>
-                  ) : (
-                    <span> Unsupported</span>
-                  )}
-                </h4>
-              </div>
-              <Button danger onClick={() => onDelete(asset.id)}>
-                Delete
-              </Button>
-            </Col>
-          ))}
-        </Row>
-
-        <Pagination
-          current={currentPage}
-          pageSize={selectedMediaCount}
-          total={totalMediaAssets}
-          onChange={handlePaginationChange}
-          responsive={true}
-          showSizeChanger={false}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: "2rem",
-          }}
-        />
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <video
+                      src={`${MEDIA_URL}/${video.file_path}`}
+                      controls
+                      width="200"
+                      height="200"
+                    />
+                    <Button
+                      type="primary"
+                      danger
+                      onClick={() => onDelete(video.id)}
+                      style={{ marginTop: "1rem" }}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </Col>
+              ))}
+            </Row>
+            <Pagination
+              current={currentPage}
+              pageSize={selectedMediaCount}
+              total={totalMediaAssets}
+              onChange={handlePaginationChange}
+              responsive={true}
+              showSizeChanger={false}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: "2rem",
+              }}
+            />
+          </Tabs.TabPane>
+        </Tabs>
       </div>
     </div>
   );

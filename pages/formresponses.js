@@ -6,26 +6,28 @@ import ContactUsResponses from "../components/ContactUsResponses";
 import SystemDemand from "../components/SystemDemand";
 
 const FormResponses = () => {
-
-    return (
-        <div className="ViewContainer">
-            <div className="ViewContentContainer">
-                <h1>Form Responses</h1>
-                <div style={{
-                    paddingTop: "3em",
-                }}>
-                    <Tabs defaultActiveKey="1" type="card" size="large">
+  return (
+    <div className="ViewContainer">
+      <div className="ViewContentContainer">
+        <h1>Form Responses</h1>
+        <div
+          style={{
+            paddingTop: "3em",
+          }}
+        >
+          {/* <Tabs defaultActiveKey="1" type="card" size="large">
                         <Tabs.TabPane tab="Contact Us" key="1">
                             <ContactUsResponses />
                         </Tabs.TabPane>
                         <Tabs.TabPane tab="System Demand" key="2">
                             <SystemDemand />
                         </Tabs.TabPane>
-                    </Tabs>
-                </div>
-            </div>
+                    </Tabs> */}
+          <ContactUsResponses />
         </div>
-    );
-}
+      </div>
+    </div>
+  );
+};
 
 export default FormResponses;

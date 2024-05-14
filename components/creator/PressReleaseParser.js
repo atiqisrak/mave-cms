@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import instance from "../../axios";
-import { Select } from "antd";
+import { Select, message } from "antd";
+import moment from "moment";
 
 const PressReleaseParser = ({ item, editMode, onPressReleaseSelect }) => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
@@ -12,17 +13,20 @@ const PressReleaseParser = ({ item, editMode, onPressReleaseSelect }) => {
   const fetchPressReleases = async () => {
     try {
       setLoading(true);
-      console.log("Item: ", item);
+      // console.log("Item: ", item);
       const response = await instance("/press_release");
       if (response.data) {
         setPressReleases(response.data);
-        console.log("Press Releases: ", response.data);
+        // console.log("Press Releases: ", response.data);
+        // message.success("Press Releases fetched successfully");
         setLoading(false);
       } else {
-        console.error("Error fetching media assets:", response.data.message);
+        // console.error("Error fetching media assets:", response.data.message);
+        message.error("Error fetching press releases");
       }
     } catch (error) {
-      console.error("Error fetching media assets:", error);
+      // console.error("Error fetching media assets:", error);
+      message.error("Error fetching press releases");
     }
   };
 
@@ -37,8 +41,15 @@ const PressReleaseParser = ({ item, editMode, onPressReleaseSelect }) => {
   // }
 
   const handlePressReleaseChange = (value) => {
+    const selectedPressRelease = pressReleases.find(
+      (pressRelease) => pressRelease.id === value
+    );
     setSelectedPressRelease(value);
-    onPressReleaseSelect(value);
+    onPressReleaseSelect({
+      _mave: selectedPressRelease,
+      type: "press_release",
+      id: value,
+    });
   };
 
   return (
@@ -53,7 +64,10 @@ const PressReleaseParser = ({ item, editMode, onPressReleaseSelect }) => {
             onChange={handlePressReleaseChange}
           >
             {pressReleases?.map((pressRelease) => (
-              <Option value={pressRelease?.id}>{pressRelease?.title}</Option>
+              <Option value={pressRelease?.id}>
+                {/* {pressRelease?.title} */}
+                {moment(pressRelease.created_at).format("Do MMMM YYYY")}
+              </Option>
             ))}
           </Select>
         </div>
@@ -98,6 +112,7 @@ const PressReleaseParser = ({ item, editMode, onPressReleaseSelect }) => {
                         src={`${MEDIA_URL}/${card?.media_files?.file_path}`}
                         alt={card?.media_files?.file_path}
                         style={{ width: "10vw", height: "auto" }}
+                        muted
                       />
                     ))}
                 </div>

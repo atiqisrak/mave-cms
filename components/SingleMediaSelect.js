@@ -8,6 +8,7 @@ import {
   Select,
   Pagination,
   Skeleton,
+  message,
 } from "antd";
 import instance from "../axios";
 import Loader from "./Loader";
@@ -16,12 +17,13 @@ import { FilterOutlined } from "@ant-design/icons";
 const SingleMediaSelect = ({ visible, onCancel, onMediaSelect, media }) => {
   const [mediaAssets, setMediaAssets] = useState([]);
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [loading, setLoading] = useState(false);
 
   // Pagination and Sorting
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortBy, setSortBy] = useState("asc");
+  const [sortBy, setSortBy] = useState("DESC");
   const [filterMode, setFilterMode] = useState(false);
   const [totalMediaAssets, setTotalMediaAssets] = useState(0);
 
@@ -94,6 +96,7 @@ const SingleMediaSelect = ({ visible, onCancel, onMediaSelect, media }) => {
   useEffect(() => {
     fetchMediaAssets(currentPage, sortBy);
     console.log("Media fetched from selector");
+    // message.success("Media fetched from selector");
   }, [currentPage, sortBy]);
 
   if (loading) {
@@ -193,10 +196,11 @@ const SingleMediaSelect = ({ visible, onCancel, onMediaSelect, media }) => {
                       src={`${MEDIA_URL}/${asset.file_path}`}
                       alt={asset.file_name}
                       style={{
-                        objectFit: "cover",
+                        objectFit: "contain",
                         borderRadius: 10,
                         width: "12vw",
                         height: "18vh",
+                        backgroundColor: "black",
                       }}
                     />
                   )}
@@ -220,11 +224,27 @@ const SingleMediaSelect = ({ visible, onCancel, onMediaSelect, media }) => {
                   </video>
                 </>
               ) : asset.file_type === "application/pdf" ? (
-                <iframe
-                  src={`${API_BASE_URL}/${asset.file_path}`}
-                  width={275}
-                  height={200}
-                ></iframe>
+                // <iframe
+                //   src={`${MEDIA_URL}/${asset.file_path}`}
+                //   width={275}
+                //   height={200}
+                // />
+                <>
+                  <img
+                    src="/images/pdf_file_type.png"
+                    alt="pdf"
+                    style={{
+                      width: "6vw",
+                      height: "auto",
+                      objectFit: "cover",
+                    }}
+                  />
+                  <p>
+                    {asset.file_name.length > 16
+                      ? asset.file_name.substring(0, 16) + "..."
+                      : asset.file_name}
+                  </p>
+                </>
               ) : (
                 <p>Unsupported file format: {asset.file_type}</p>
               )}

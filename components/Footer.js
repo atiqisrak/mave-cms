@@ -217,45 +217,49 @@ const Footer = () => {
     setSelectedMedia("");
   };
 
-  // footer get respose data area
+  const getFooters = async () => {
+    try {
+      setIsLoading(true);
+      const res = await instance.get("/footers");
+      setFooterData(res.data?.sort((a, b) => b.id - a.id));
+      setIsLoading(false);
+    } catch (error) {
+      message.error("Something went wrong");
+    }
+  };
+
+  const getMenus = async () => {
+    try {
+      setIsLoading(true);
+      const res = await instance.get("/menus");
+      setMenuData(res.data);
+      setIsLoading(false);
+    } catch (error) {
+      message.error("Something went wrong");
+    }
+  };
+
+  const getMedia = async () => {
+    try {
+      setIsLoading(true);
+      const res = await instance.get("/media");
+      setMediaList(res.data);
+      setIsLoading(false);
+    } catch (error) {
+      message.error("Something went wrong");
+    }
+  };
+
   useEffect(() => {
-    setIsLoading(true);
-    const getData = async () => {
-      try {
-        const res = await instance.get("/footers");
-        setFooterData(res.data);
-        setIsLoading(false);
-      } catch (error) {}
-    };
-    getData();
+    getFooters();
+    getMenus();
+    getMedia();
   }, []);
-  // footer get respose data area
-  useEffect(() => {
-    setIsLoading(true);
-    const getMenu = async () => {
-      try {
-        // const res = await instance.get("/menus");
-        setMenuData(res.data);
-        setIsLoading(false);
-      } catch (error) {}
-    };
-    getMenu();
-  }, []);
-  // footer get respose data area
-  useEffect(() => {
-    setIsLoading(true);
-    const getMenu = async () => {
-      try {
-        const res = await instance.get("/media");
-        setMediaList(res.data);
-        setIsLoading(false);
-      } catch (error) {}
-    };
-    getMenu();
-  }, []);
+
   // footer post respose data area
   const handlePost = async () => {
     try {
+      setIsLoading(true);
       // Send a put request to the API endpoint
       const res = await instance.post("/footers", formData);
       setData(res.data);
@@ -265,7 +269,9 @@ const Footer = () => {
           const res = await instance.get("/footers");
           setFooterData(res.data);
           setIsLoading(false);
-        } catch (error) {}
+        } catch (error) {
+          message.error("Something went wrong");
+        }
       };
       getData();
     } catch (error) {
@@ -276,18 +282,14 @@ const Footer = () => {
   // footer update respose data area
   const handleUpdate = async () => {
     try {
+      setIsLoading(true);
       // Send a put request to the API endpoint
       const res = await instance.put(`/footers/${id}`, formData);
       message.success("Footer Updated successfully");
       setData(res.data);
-      const getData = async () => {
-        try {
-          const res = await instance.get("/footers");
-          setFooterData(res.data);
-          setIsLoading(false);
-        } catch (error) {}
-      };
-      getData();
+      getFooters();
+      setIsLoading(false);
+      toggleCollapse(id);
     } catch (error) {
       // Handle errors, e.g., display an error message or log the error
       console.error("Error deleting data:", error);
@@ -505,6 +507,7 @@ const Footer = () => {
                       <br />
                       <div className="content">
                         <h3>Column2 Menu:</h3>
+                        {console.log("Menu List: ", menuData)}
                         <Select
                           showSearch
                           // mode="multiple"
@@ -719,7 +722,7 @@ const Footer = () => {
                     </div>
                   </Col>
                   <Col span={4}>
-                    <h2>Quick Links</h2>
+                    <h2>{items?.column2_menu?.name}</h2>
 
                     <h4 style={{ color: "#c3c3c3", marginTop: "1rem" }}>
                       {items?.column2_menu?.menu_items?.map((item) => (
@@ -731,7 +734,7 @@ const Footer = () => {
                     {/*  */}
                   </Col>
                   <Col span={6}>
-                    <h2>Can We Help?</h2>
+                    <h2>{items?.column3_menu?.name}</h2>
                     <h4 style={{ color: "#c3c3c3", marginTop: "1rem" }}>
                       {items?.column3_menu?.menu_items?.map((item) => (
                         <p style={{ color: "#fff", marginTop: "1rem" }}>
@@ -739,52 +742,10 @@ const Footer = () => {
                         </p>
                       ))}
                     </h4>
-                    {/* <h4 style={{ color: "#c3c3c3", marginTop: ".5rem" }}>Contact Us</h4>
-                                <h4 style={{ color: "#c3c3c3", marginTop: ".5rem" }}>F.A.Q</h4> */}
-                    <h2 style={{ marginTop: ".5rem" }}>Parent Sites</h2>
-                    <div
-                      className="img"
-                      style={{
-                        display: "flex",
-                        justifyItems: "center",
-                        columnGap: "1rem",
-                        marginTop: "1rem",
-                      }}
-                    >
-                      <img
-                        src={
-                          "https://unitedaygaz.com/assets/images/icons/united-footer.svg"
-                        }
-                        alt=""
-                        width={80}
-                      />
-                      <img
-                        src={
-                          "https://unitedaygaz.com/assets/images/icons/aygaz-footer.webp"
-                        }
-                        alt=""
-                        width={80}
-                      />
-                    </div>
-                    <img
-                      src={
-                        "https://unitedaygaz.com/assets/images/icons/koc-footer.webp"
-                      }
-                      alt=""
-                      style={{ marginTop: "1rem" }}
-                      width={80}
-                    />
                   </Col>
                   <Col span={6}>
                     <h2>Member Of</h2>
 
-                    <img
-                      src={
-                        "https://unitedaygaz.com/assets/images/icons/wlpg-footer.webp"
-                      }
-                      style={{ color: "#c3c3c3", marginTop: ".5rem" }}
-                      width={80}
-                    />
                     <p
                       style={{
                         marginTop: ".5rem",
@@ -793,16 +754,9 @@ const Footer = () => {
                         columnGap: "1rem",
                       }}
                     >
-                      <img
-                        src={
-                          "https://unitedaygaz.com/assets/images/icons/call.svg"
-                        }
-                        width={30}
-                      />{" "}
+                      {" "}
                       {items?.column4_description_en}
                     </p>
-
-                    {/* <p style={{ color: "#c3c3c3", marginTop: ".5rem" }}>{items?.column4_description_en}</p> */}
                   </Col>
                   <Col span={24} style={{ marginTop: "1rem" }}>
                     <hr style={{ backgroundColor: "#fff" }} />
@@ -815,7 +769,11 @@ const Footer = () => {
                         marginTop: "1rem",
                       }}
                     >
-                      <h4>© 2022 UNITED AYGAZ LPG LTD.</h4>
+                      {/* <h4>© 2022 UNITED AYGAZ LPG LTD.</h4>
+                       */}
+                      <center>
+                        <h4>{items?.column4_description_en}</h4>
+                      </center>
                       <h4
                         style={{
                           color: "#c3c3c3",
@@ -865,7 +823,7 @@ const Footer = () => {
                     }}
                     onClick={() => toggleCollapse(items.id, items)}
                   >
-                    {isCollapsed && id === items.id ? "Edit" : "Edit"}
+                    {isCollapsed && id === items.id ? "Edit" : "Update"}
                   </Button>
                 </div>
 

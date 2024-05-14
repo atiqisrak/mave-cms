@@ -1,34 +1,36 @@
 import React, { useState, useEffect } from "react";
 import instance from "../../axios";
-import { Select } from "antd";
+import { Select, message } from "antd";
 
-const EventParser = ({ item, editMode, onPressReleaseSelect }) => {
+const EventParser = ({ item, editMode, onEventSelect }) => {
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
   const { Option } = Select;
   const [loading, setLoading] = useState(false);
-  const [pressReleases, setPressReleases] = useState([]);
-  const [selectedPressRelease, setSelectedPressRelease] = useState(null);
+  const [events, setEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
-  const fetchPressReleases = async () => {
+  const fetchEvents = async () => {
     try {
       setLoading(true);
-      console.log("Item: ", item);
-      const response = await instance("/press_release");
+      const response = await instance("/events");
       if (response.data) {
-        setPressReleases(response.data);
-        console.log("Press Releases: ", response.data);
+        setEvents(response.data);
+        // console.log("Events: ", response.data);
+        // message.success("Events fetched successfully");
         setLoading(false);
       } else {
-        console.error("Error fetching media assets:", response.data.message);
+        // console.error("Error fetching events:", response.data.message);
+        message.error("Error fetching events");
       }
     } catch (error) {
-      console.error("Error fetching media assets:", error);
+      // console.error("Error fetching events:", error);
+      message.error("Error fetching events");
     }
   };
 
   useEffect(() => {
     if (editMode) {
-      fetchPressReleases();
+      fetchEvents();
     }
   }, [editMode]);
 
@@ -36,9 +38,10 @@ const EventParser = ({ item, editMode, onPressReleaseSelect }) => {
   //   fetchPressReleases();
   // }
 
-  const handlePressReleaseChange = (value) => {
-    setSelectedPressRelease(value);
-    onPressReleaseSelect(value);
+  const handleEventChange = (value) => {
+    const selectedEvent = events.find((event) => event.id === value);
+    setSelectedEvent(value);
+    onEventSelect({ _mave: selectedEvent, type: "event", id: value });
   };
 
   return (
@@ -47,13 +50,13 @@ const EventParser = ({ item, editMode, onPressReleaseSelect }) => {
         <div>
           <Select
             showSearch
-            style={{ width: 200 }}
-            placeholder="Select a press release"
+            style={{ width: "100%" }}
+            placeholder={item?._mave?.title_en}
             optionFilterProp="children"
-            onChange={handlePressReleaseChange}
+            onChange={handleEventChange}
           >
-            {pressReleases?.map((pressRelease) => (
-              <Option value={pressRelease?.id}>{pressRelease?.title}</Option>
+            {events?.map((event) => (
+              <Option value={event?.id}>{<h3>{event?.title_en}</h3>}</Option>
             ))}
           </Select>
         </div>
@@ -66,10 +69,47 @@ const EventParser = ({ item, editMode, onPressReleaseSelect }) => {
             padding: "2em 1em",
           }}
         >
-          <h3>Event Name (English): {item?._mave?.title_en}</h3>
-          <h3>Event Name (Bangla): {item?._mave?.title_bn}</h3>
-          <h3>Event Description (English): {item?._mave?.description_en}</h3>
-          <h3>Event Description (Bangla): {item?._mave?.description_bn}</h3>
+          <h3>
+            Event Name (English):{" "}
+            <span
+              style={{
+                color: "var(--themes",
+              }}
+            >
+              {item?._mave?.title_en}
+            </span>
+          </h3>
+          <h3>
+            Event Name (Bangla):{" "}
+            <span
+              style={{
+                color: "var(--themes",
+              }}
+            >
+              {item?._mave?.title_bn}
+            </span>
+          </h3>
+
+          {item?._mave?.description_en && (
+            <>
+              <h3>Event Description (English): </h3>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: item?._mave?.description_en,
+                }}
+              />
+            </>
+          )}
+          {item?._mave?.description_bn && (
+            <>
+              <h3>Event Description (Bangla): </h3>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: item?._mave?.description_bn,
+                }}
+              />
+            </>
+          )}
           <h3>Event Date: {item?._mave?.event_date}</h3>
           <div
             style={{
@@ -106,35 +146,25 @@ const EventParser = ({ item, editMode, onPressReleaseSelect }) => {
                         <img
                           src={`${MEDIA_URL}/${event?.file_path}`}
                           alt={event?.file_path}
-                          style={{ width: "10vw", height: "auto" }}
+                          style={{
+                            width: "250px",
+                            height: "200px",
+                            objectFit: "cover",
+                          }}
                         />
                       ) : (
                         <video
+                          muted
                           src={`${MEDIA_URL}/${event?.file_path}`}
                           alt={event?.file_path}
-                          style={{ width: "10vw", height: "auto" }}
+                          style={{
+                            width: "250px",
+                            height: "200px",
+                            objectFit: "cover",
+                          }}
                         />
                       ))}
                   </div>
-                  {/* <div className="contentContainer">
-                  <h3>{event?.title_en}</h3>
-                  <h3>{event?.title_bn}</h3>
-
-                  <div
-                    dangerouslySetInnerHTML={{ __html: event?.description_en }}
-                    style={{
-                      textAlign: "left",
-                      fontSize: "1em",
-                    }}
-                  />
-                  <div
-                    dangerouslySetInnerHTML={{ __html: event?.description_bn }}
-                    style={{
-                      textAlign: "left",
-                      fontSize: "1em",
-                    }}
-                  />
-                </div> */}
                 </div>
               </div>
             ))}
