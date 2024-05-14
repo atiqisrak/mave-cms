@@ -56,7 +56,8 @@ const Creator = () => {
   const Option = Select.Option;
   const [pageData, setPageData] = useState();
   const [showPageData, setShowPageData] = useState([]);
-  const [newSectionComponents, setNewSectionComponent] = useState([]);
+  const [newSectionComponents, setNewSectionComponent] = useState(null);
+  const [editSectionComponents, setEditSectionComponent] = useState([]);
   const [updatedSectionData, setUpdatedSectionData] = useState([]);
   const [newData, setNewData] = useState(null);
   const [canvas, setCanvas] = useState(false);
@@ -268,7 +269,11 @@ const Creator = () => {
           type: `${type ? type : selectedType}`,
         })
       );
-      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, ...resultArray]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      }
       setSearchDefault(null);
     }
     if (selectedType === "menu") {
@@ -277,7 +282,11 @@ const Creator = () => {
         _mave: resMenu,
         type: `${type ? type : selectedType}`,
       }));
-      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, ...resultArray]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      }
       setSearchDefault(null);
     }
     if (selectedType === "navbar") {
@@ -293,7 +302,11 @@ const Creator = () => {
           type: `${type ? type : selectedType}`,
         })
       );
-      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, ...resultArray]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      }
       setSearchDefault(null);
     }
 
@@ -325,7 +338,11 @@ const Creator = () => {
           type: "slider",
         })
       );
-      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, ...resultArray]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      }
       setSearchDefault(null);
     }
 
@@ -353,7 +370,11 @@ const Creator = () => {
           type: `${type ? type : selectedType}`,
         })
       );
-      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, ...resultArray]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      }
       setSearchDefault(null);
     }
 
@@ -363,7 +384,11 @@ const Creator = () => {
         _mave: formRest,
         type: `${type ? type : selectedType}`,
       }));
-      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, ...resultArray]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      }
       setSearchDefault(null);
     }
     if (selectedType === "footer") {
@@ -372,7 +397,11 @@ const Creator = () => {
         _mave: footerRest,
         type: `${type ? type : selectedType}`,
       }));
-      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, ...resultArray]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      }
       setSearchDefault(null);
     }
     if (selectedType === "press_release") {
@@ -381,7 +410,11 @@ const Creator = () => {
         _mave: pressRest,
         type: `${type ? type : selectedType}`,
       }));
-      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, ...resultArray]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      }
       setSearchDefault(null);
     }
     if (selectedType === "event") {
@@ -390,18 +423,30 @@ const Creator = () => {
         _mave: eventRest,
         type: `${type ? type : selectedType}`,
       }));
-      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, ...resultArray]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      }
       setSearchDefault(null);
     }
   };
 
   const handleClickOkText = (selectedType) => {
     if (selectedType === "title") {
-      setNewSectionComponent((prev) => [...prev, title]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, title]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, title]);
+      }
       setSearchDefault(null);
     }
     if (selectedType === "description") {
-      setNewSectionComponent((prev) => [...prev, description]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, description]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, description]);
+      }
       setSearchDefault(null);
     }
   };
@@ -428,13 +473,36 @@ const Creator = () => {
 
   let postDataBody;
   if (!newSectionComponents?.length) {
+    // console.log("demo 1", postDataBody);
     postDataBody = showPageData;
   }
   if (!showPageData?.length) {
+    // console.log("demo 2", postDataBody);
     postDataBody = [sectionData];
   } else {
-    postDataBody = [...showPageData, sectionData];
+    // let demoData = showPageData;
+    const foundObject = showPageData.find(
+      (item) => item?._id === editedSectionId
+    );
+    // const lalas = lala?.data?.concat(newSectionComponents);
+    if (foundObject) {
+      foundObject.data = [...foundObject.data, ...editSectionComponents];
+      foundObject.data = [...new Set(foundObject.data.map(JSON.stringify))].map(
+        JSON.parse
+      );
+      console.log("uniqueArray", showPageData);
+    }
+    if (sectionData?.data != null) {
+      postDataBody = [...showPageData, sectionData];
+    } else if (sectionData?.data === null) {
+      postDataBody = [...showPageData];
+    }
+    // postDataBody = lalas;
+    // console.log("demo 1", lala);
+    // console.log("demo 2", postDataBody);
+    console.log("demo 3", postDataBody);
   }
+  // console.log("postDataBody", postDataBody);
   const postData = {
     slug: currentPageSlug,
     type: "Page",
@@ -449,6 +517,7 @@ const Creator = () => {
     body: postDataBody,
   };
 
+  // this function triggers when you want to update a section.
   const handleSubmit = async () => {
     try {
       const response = await instance.put(`/pages/${pid}`, postData);
@@ -461,7 +530,11 @@ const Creator = () => {
       }
 
       fetchPageData();
-      setNewSectionComponent([]);
+      if (editedSectionId) {
+        setEditSectionComponent([]);
+      } else {
+        setNewSectionComponent(null);
+      }
     } catch (error) {
       message.error(error.message);
       // console.log("Error updating press release", error);
@@ -496,7 +569,11 @@ const Creator = () => {
   }, [pageData]);
 
   const handleCloseSectionModal = () => {
-    setNewSectionComponent([]);
+    if (editedSectionId) {
+      setEditSectionComponent([]);
+    } else {
+      setNewSectionComponent(null);
+    }
     setCanvas(false);
     setInternalCanvas(false);
     setShowPageData(showPageData);
@@ -554,7 +631,7 @@ const Creator = () => {
     const updatedPageData = showPageData.map((section) => {
       if (section._id === editedSectionId) {
         const updatedData = section.data.map((item) => {
-          if (item.type === selectedNavbarId.type) {
+          if (item?.type === selectedNavbarId?.type) {
             // console.log("selectedNavbarId", selectedNavbarId);
             return selectedNavbarId; // Replace the item with the selectedNavbarId data
           }
@@ -1020,7 +1097,11 @@ const Creator = () => {
                               handleUpdateSectionData(index, sectionData);
                               handleSave();
                               setSave(true);
-                              setNewSectionComponent([]);
+                              if (editedSectionId) {
+                                setEditSectionComponent([]);
+                              } else {
+                                setNewSectionComponent(null);
+                              }
                             }}
                             icon={<CloudSyncOutlined />}
                           >
@@ -1147,7 +1228,6 @@ const Creator = () => {
                       ) : (
                         // Update Section Data
                         <>
-                          {/* {console.log("Section Data: ", showPageData)} */}
                           <ComponentParse
                             sectionId={section?._id}
                             section={section?.data}
