@@ -9,6 +9,7 @@
   --gray-dark: #bababa;
   --theme: #9012ff;
   --themes: #f1612a;
+  --themes-light: #f1622a25;
   --success: #008f39;
 }
 
@@ -93,6 +94,25 @@ a:hover {
 .flexed-between {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.flexed-around {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.flexed-evenly {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.flexed-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
 }
 
@@ -341,4 +361,48 @@ a:hover {
 .components-gallery-item-icon {
   font-size: 1.3rem;
   color: var(--theme);
+}
+
+.mave-footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #001529;
+  color: rgb(219, 219, 219);
+  text-align: center;
+  padding: 10px 0;
+  /* box-shadow: 0px 0px 20px 0px #3a3a3a; */
+  z-index: 101;
+}
+
+.mave-footer a {
+  color: white;
+  font-weight: 500;
+}
+
+.mave-footer a:hover {
+  color: var(--themes);
+}
+
+.content {
+  margin: 3em 0;
+}
+
+.support-card {
+  color: #001529;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+  padding: 2em;
+  cursor: pointer;
+  border-radius: 25px;
+  border: 2px solid #f0f0f0;
+  background-color: white;
+}
+
+.support-card:hover {
+  color: #001529;
+  background-color: #9012ff20;
+  box-shadow: 0px 14px 14px rgba(0, 0, 0, 0.25);
 }

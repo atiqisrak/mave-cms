@@ -41,7 +41,7 @@ function UploadMedia() {
     name: "file[]",
     multiple: true,
     beforeUpload: beforeUpload,
-    action: `${API_BASE_URL}media/upload`,
+    action: `${API_BASE_URL}/media/upload`,
     onChange(info) {
       const { status } = info.file;
       if (status !== "uploading") {

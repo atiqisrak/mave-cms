@@ -26,12 +26,12 @@ const AllOrders = () => {
                 setAllOrders(response.data);
                 setLoading(false);
             } else {
-                console.log("Error: ", response);
+                // console.log("Error: ", response);
                 message.error("Error fetching data");
                 setLoading(false);
             }
         } catch (error) {
-            console.log("Error: ", error);
+            // console.log("Error: ", error);
             message.error("Error fetching data");
             setLoading(false);
         }
@@ -52,12 +52,12 @@ const AllOrders = () => {
                 setLoading(false);
                 setSelectedOrder(response.data);
             } else {
-                console.log("Error: ", response);
+                // console.log("Error: ", response);
                 message.error("Error fetching data");
                 setLoading(false);
             }
         } catch (error) {
-            console.log("Error: ", error);
+            // console.log("Error: ", error);
             message.error("Error fetching data");
             setLoading(false);
         }
@@ -75,13 +75,13 @@ const AllOrders = () => {
                 setEditMode(false);
                 fetchAllOrders();
             } else {
-                console.log("Error: ", response);
+                // console.log("Error: ", response);
                 message.error("Error updating order status");
                 setLoading(false);
                 setEditMode(false);
             }
         } catch (error) {
-            console.log("Error: ", error);
+            // console.log("Error: ", error);
             message.error("Error updating order status");
             setLoading(false);
             setEditMode(false);
@@ -225,9 +225,6 @@ const AllOrders = () => {
                                         padding: "1em 0",
 
                                     }}>
-                                        {
-                                            console.log("Order Details: ", orderDetails)
-                                        }
                                         <h4>Service Type: {
                                             orderDetails.order_details?.type_of_service ? orderDetails.order_details?.type_of_service : "N/A"
                                         }</h4>
@@ -309,7 +306,7 @@ const AllOrders = () => {
             return b.customer_mave?.full_name.localeCompare(a.customer_mave?.full_name);
         }
     }
-    
+
     // Sort by Order ID
     const sortById = (a, b) => {
         if (isAscending) {
@@ -372,7 +369,7 @@ const AllOrders = () => {
 
 
 
-            
+
 
 
 
@@ -380,194 +377,197 @@ const AllOrders = () => {
         <div>
             <div>
                 <div className="flexed-center" style={{
-                gap: "1em",
-            }}>
-                {/* Download CSV */}
-                <Button
-                    type="primary"
-                    onClick={() => exportToCSV()}
-                >
-                    Download CSV
-                </Button>
-                <Input
-                    style={{
-                        width: "20em",
-                    }}
-                    allowClear
-                    placeholder="Search by name"
-                    prefix={<SearchOutlined />}
-                    onChange={(e) => {
-                        setSearchValue(e.target.value);
-                        searchByNameOrPhone(e);
+                    gap: "1em",
+                }}>
+                    {/* Download CSV */}
+                    <Button
+                        type="primary"
+                        onClick={() => exportToCSV()}
+                    >
+                        Download CSV
+                    </Button>
+                    <Input
+                        style={{
+                            width: "20em",
+                        }}
+                        allowClear
+                        placeholder="Search by name"
+                        prefix={<SearchOutlined />}
+                        onChange={(e) => {
+                            setSearchValue(e.target.value);
+                            searchByNameOrPhone(e);
 
-                    }}
-                />
-                <Button
-                    type="primary"
-                    onClick={() => {
-                        setSearchValue("");
-                        setSearchMode(false);
-                        fetchAllOrders();
-                    }}
-                >
-                    Clear
-                </Button>
-            </div>
-                                <Row gutter={[16, 16]} style={{
-                                    paddingTop: "3em",
-                                }}>
-                                    <Col span={2}><h3>Order ID</h3>
-                                    <Switch
-                                            checkedChildren={<SortAscendingOutlined />}
-                                            unCheckedChildren={<SortDescendingOutlined />}
-                                            onChange={(checked) => 
-                                                {setAllOrders(allOrders.sort(sortById))
-                                                setIsAscending(checked)}}
-                                            style={{
-                                                marginLeft: "1em",
-                                            }}
-                                        />
+                        }}
+                    />
+                    <Button
+                        type="primary"
+                        onClick={() => {
+                            setSearchValue("");
+                            setSearchMode(false);
+                            fetchAllOrders();
+                        }}
+                    >
+                        Clear
+                    </Button>
+                </div>
+                <Row gutter={[16, 16]} style={{
+                    paddingTop: "3em",
+                }}>
+                    <Col span={2}><h3>Order ID</h3>
+                        <Switch
+                            checkedChildren={<SortAscendingOutlined />}
+                            unCheckedChildren={<SortDescendingOutlined />}
+                            onChange={(checked) => {
+                                setAllOrders(allOrders.sort(sortById))
+                                setIsAscending(checked)
+                            }}
+                            style={{
+                                marginLeft: "1em",
+                            }}
+                        />
 
-                                    </Col>
-                                    <Col span={5}><h3>Customer Name</h3>
-                                    <Switch
-                                            checkedChildren={<SortAscendingOutlined />}
-                                            unCheckedChildren={<SortDescendingOutlined />}
-                                            onChange={(checked) =>
-                                                {setAllOrders(allOrders.sort(sortByName))
-                                                setIsAscending(checked)}
-                                            }
-                                            style={{
-                                                marginLeft: "1em",
-                                            }}
-                                        />
-                                    </Col>
-                                    <Col span={4}><h3>Phone Number</h3></Col>
-                                    <Col span={4}><h3>Order Date</h3>
-                                    <Switch
-                                            checkedChildren={<SortAscendingOutlined />}
-                                            unCheckedChildren={<SortDescendingOutlined />}
-                                            onChange={(checked) =>
-                                                {setAllOrders(allOrders.sort(sortByDate))
-                                                setIsAscending(checked)}
-                                            }
-                                            style={{
-                                                marginLeft: "1em",
-                                            }}
-                                        />
-                                        </Col>
-                                    <Col span={3}><h3>Order Status</h3></Col>
-                                    <Col span={2}><h3>Order Details</h3></Col>
-                                    <Col span={4}><h3>Action</h3></Col>
-                                </Row>
+                    </Col>
+                    <Col span={5}><h3>Customer Name</h3>
+                        <Switch
+                            checkedChildren={<SortAscendingOutlined />}
+                            unCheckedChildren={<SortDescendingOutlined />}
+                            onChange={(checked) => {
+                                setAllOrders(allOrders.sort(sortByName))
+                                setIsAscending(checked)
+                            }
+                            }
+                            style={{
+                                marginLeft: "1em",
+                            }}
+                        />
+                    </Col>
+                    <Col span={4}><h3>Phone Number</h3></Col>
+                    <Col span={4}><h3>Order Date</h3>
+                        <Switch
+                            checkedChildren={<SortAscendingOutlined />}
+                            unCheckedChildren={<SortDescendingOutlined />}
+                            onChange={(checked) => {
+                                setAllOrders(allOrders.sort(sortByDate))
+                                setIsAscending(checked)
+                            }
+                            }
+                            style={{
+                                marginLeft: "1em",
+                            }}
+                        />
+                    </Col>
+                    <Col span={3}><h3>Order Status</h3></Col>
+                    <Col span={2}><h3>Order Details</h3></Col>
+                    <Col span={4}><h3>Action</h3></Col>
+                </Row>
 
 
-                                {allOrders.map((order) => (
-                                    <Row gutter={[16, 16]} key={order.id} style={{
-                                        borderBottom: "1px solid #ccc",
-                                        padding: "1em 0",
+                {allOrders.map((order) => (
+                    <Row gutter={[16, 16]} key={order.id} style={{
+                        borderBottom: "1px solid #ccc",
+                        padding: "1em 0",
+                    }}>
+                        <Col span={2}>
+                            <h3>
+                                {
+                                    order.id ? order.id : "N/A"
+                                }
+                            </h3>
+                        </Col>
+                        <Col span={5}>
+                            <p>
+                                {
+                                    order.customer_mave?.full_name ? order.customer_mave?.full_name : "N/A"
+                                }
+                            </p>
+                        </Col>
+                        <Col span={4}>
+                            <p>
+                                {
+                                    order.customer_mave?.phone ? order.customer_mave?.phone : "N/A"
+                                }
+                            </p>
+                        </Col>
+                        <Col span={4}>
+                            <h3>
+                                {
+                                    order.created_at ? moment(order.created_at).format("DD/MM/YYYY") : "N/A"
+                                }
+                            </h3>
+                        </Col>
+                        <Col span={3}>
+                            <h3
+                                style={{
+                                    color: order.order_status === "Approved" ? "green" : (
+                                        order.order_status === "Declined" ? "red" : "orange"
+                                    ),
+                                    backgroundColor: order.order_status === "Approved" ? "#e6ffe6" : (
+                                        order.order_status === "Declined" ? "#ffe6e6" : "#ffffcc"
+                                    ),
+                                    padding: "0.5em 1em",
+                                    borderRadius: "5px",
+                                    width: "fit-content",
+                                    border: "1px solid #ccc",
+                                }}
+                            >
+                                {
+                                    order.order_status ? order.order_status : "Pending"
+                                }
+                            </h3>
+                        </Col>
+                        <Col span={2}>
+                            <Button
+                                onClick={() => handleOrderClick(order.id)}
+                            >
+                                <EyeOutlined />
+                            </Button>
+                            {selectedOrder && (
+                                <OrderDetailModal
+                                    orderDetails={orderDetails}
+                                />
+                            )}
+                        </Col>
+                        <Col span={4}>
+                            {
+                                editMode ? (
+                                    <div style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        gap: "1em",
                                     }}>
-                                        <Col span={2}>
-                                            <h3>
-                                                {
-                                                    order.id ? order.id : "N/A"
-                                                }
-                                            </h3>
-                                        </Col>
-                                        <Col span={5}>
-                                            <p>
-                                                {
-                                                    order.customer_mave?.full_name ? order.customer_mave?.full_name : "N/A"
-                                                }
-                                            </p>
-                                        </Col>
-                                        <Col span={4}>
-                                            <p>
-                                                {
-                                                    order.customer_mave?.phone ? order.customer_mave?.phone : "N/A"
-                                                }
-                                            </p>
-                                        </Col>
-                                        <Col span={4}>
-                                            <h3>
-                                                {
-                                                    order.created_at ? moment(order.created_at).format("DD/MM/YYYY") : "N/A"
-                                                }
-                                            </h3>
-                                        </Col>
-                                        <Col span={3}>
-                                            <h3
-                                                style={{
-                                                    color: order.order_status === "Approved" ? "green" : (
-                                                        order.order_status === "Declined" ? "red" : "orange"
-                                                    ),
-                                                    backgroundColor: order.order_status === "Approved" ? "#e6ffe6" : (
-                                                        order.order_status === "Declined" ? "#ffe6e6" : "#ffffcc"
-                                                    ),
-                                                    padding: "0.5em 1em",
-                                                    borderRadius: "5px",
-                                                    width: "fit-content",
-                                                    border: "1px solid #ccc",
-                                                }}
-                                            >
-                                                {
-                                                    order.order_status ? order.order_status : "Pending"
-                                                }
-                                            </h3>
-                                        </Col>
-                                        <Col span={2}>
-                                            <Button
-                                                onClick={() => handleOrderClick(order.id)}
-                                            >
-                                                <EyeOutlined />
-                                            </Button>
-                                            {selectedOrder && (
-                                                <OrderDetailModal
-                                                    orderDetails={orderDetails}
-                                                />
-                                            )}
-                                        </Col>
-                                        <Col span={4}>
-                                            {
-                                                editMode ? (
-                                                    <div style={{
-                                                        display: "flex",
-                                                        flexDirection: "column",
-                                                        gap: "1em",
-                                                    }}>
-                                                        <Select
-                                                            defaultValue={order.order_status}
-                                                            style={{
-                                                                width: "100%",
-                                                            }}
-                                                            onChange={(value) => handleStatusChange(order.id, value)}
-                                                        >
-                                                            <Select.Option value="Approved">Approved</Select.Option>
-                                                            <Select.Option value="Declined">Declined</Select.Option>
-                                                            <Select.Option value="Pending">Pending</Select.Option>
-                                                        </Select>
-                                                        <Button danger
-                                                            onClick={() => setEditMode(false)}
-                                                        >
-                                                            <CloseCircleFilled />
-                                                            Cancel
-                                                        </Button>
-                                                    </div>
-                                                ) : (
-                                                    <Button style={{
-                                                        color: "orange",
-                                                        border: "1px solid orange",
-                                                    }}
-                                                        onClick={() => setEditMode(true)}
-                                                    ><EditOutlined />
-                                                        Edit
-                                                    </Button>
-                                                )
-                                            }
-                                        </Col>
-                                    </Row>
-                                ))}
-                            </div>
+                                        <Select
+                                            defaultValue={order.order_status}
+                                            style={{
+                                                width: "100%",
+                                            }}
+                                            onChange={(value) => handleStatusChange(order.id, value)}
+                                        >
+                                            <Select.Option value="Approved">Approved</Select.Option>
+                                            <Select.Option value="Declined">Declined</Select.Option>
+                                            <Select.Option value="Pending">Pending</Select.Option>
+                                        </Select>
+                                        <Button danger
+                                            onClick={() => setEditMode(false)}
+                                        >
+                                            <CloseCircleFilled />
+                                            Cancel
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <Button style={{
+                                        color: "orange",
+                                        border: "1px solid orange",
+                                    }}
+                                        onClick={() => setEditMode(true)}
+                                    ><EditOutlined />
+                                        Edit
+                                    </Button>
+                                )
+                            }
+                        </Col>
+                    </Row>
+                ))}
+            </div>
         </div>
     );
 }

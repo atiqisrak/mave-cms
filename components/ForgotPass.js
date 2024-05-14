@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Loader from './Loader'
 import instance from '../axios'
 
-const ForgotPass = ({open,setOpen}) => {
+const ForgotPass = ({ open, setOpen }) => {
   const [email, setEamil] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [token, setToken] = useState(null);
@@ -29,7 +29,7 @@ const ForgotPass = ({open,setOpen}) => {
     }
   }, []);
   const handlelogout = async () => {
-    const items = { email: email,}
+    const items = { email: email, }
     setIsLoading(true)
     try {
       // Send a put request to the API endpoint
@@ -39,11 +39,11 @@ const ForgotPass = ({open,setOpen}) => {
         setData(res.data);
         // setResponse(res)
         setIsLoading(false)
-       
+
         message.success(res?.data?.status);
 
       }
-      
+
     } catch (error) {
       // Handle errors, e.g., display an error message or log the error
       if (error?.response?.status === 500) {
@@ -56,22 +56,22 @@ const ForgotPass = ({open,setOpen}) => {
   if (isLoading) return <><Loader /></>
   return (
     <>
-      <Modal  open={open} onOk={setOpen} onCancel={()=>setOpen(false)} width={600} cancelButtonProps={{ style: { display: 'none' } }} okButtonProps={{ style: { display: 'none' } }}>
-      <div className="modalContiner">
-      <h1>Forgot Password</h1>
-      <p style={{marginTop:"1rem"}}>Lost your password? Please enter your username or email address. You will receive a link to create a new password via email.</p>
-      <div style={{marginTop:"1rem"}}>
-        <strong>Email</strong>
-        <Input placeholder='Email'onChange={(e) => handleChange(e, "email")} className='input-field' />
+      <Modal open={open} onOk={setOpen} onCancel={() => setOpen(false)} width={600} cancelButtonProps={{ style: { display: 'none' } }} okButtonProps={{ style: { display: 'none' } }}>
+        <div className="modalContiner">
+          <h1>Forgot Password</h1>
+          <p style={{ marginTop: "1rem" }}>Lost your password? Please enter your username or email address. You will receive a link to create a new password via email.</p>
+          <div style={{ marginTop: "1rem" }}>
+            <strong>Email</strong>
+            <Input placeholder='Email' onChange={(e) => handleChange(e, "email")} className='input-field' />
+          </div>
         </div>
-        </div>
-        <Space direction="vertical" style={{ width: '100%',marginTop:"1rem",}}>
-            
-    <Button type="primary" block className='buttons'onClick={() => handlelogout()} >
-      reset password
-    </Button>
-    </Space>
-    
+        <Space direction="vertical" style={{ width: '100%', marginTop: "1rem", }}>
+
+          <Button type="primary" block className='buttons' onClick={() => handlelogout()} >
+            reset password
+          </Button>
+        </Space>
+
       </Modal>
     </>
   )

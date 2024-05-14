@@ -26,6 +26,8 @@ import {
     DeleteOutlined,
     EditFilled,
     EditOutlined,
+    EyeFilled,
+    EyeOutlined,
     FilterOutlined,
     PlusCircleOutlined,
     RestOutlined
@@ -36,6 +38,8 @@ import CreateCardForm from '../components/CreateCardForm';
 import { setPageTitle } from '../global/constants/pageTitle';
 import Link from 'next/link';
 import RichTextEditor from '../components/RichTextEditor';
+import CardGridView from '../components/CardGridView';
+import MediaRenderEngine from '../components/MediaRenderEngine';
 
 const PressRelease = () => {
 
@@ -53,14 +57,23 @@ const PressRelease = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedMedia, setSelectedMedia] = useState(null);
     const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
+    const [cardsData, setCardsData] = useState([]);
+    const [pages, setPages] = useState([]);
 
     const fetchPressReleases = async () => {
-        setLoading(true);
-        const response = await instance.get('/press_release');
-        if (response && response.data) {
-            setPressReleases(response.data);
-            console.log("Press Releases", response.data);
-            setLoading(false);
+        try {
+            setLoading(true);
+            const response = await instance.get('/press_release');
+            if (response && response.data) {
+                setPressReleases(response.data);
+                console.log("Press Releases", response.data);
+                // message.success("Press Releases fetched successfully");
+                setLoading(false);
+            } else {
+                message.error("Press Releases couldn't be fetched");
+            }
+        } catch (error) {
+            message.error("Press Releases couldn't be fetched");
         }
     }
 
@@ -68,51 +81,39 @@ const PressRelease = () => {
         fetchPressReleases();
     }, []);
 
-    const fetchData = async () => {
-        setLoading(true);
-        const cardsResponse = await instance.get('/cards');
-        const mediaResponse = await instance.get('/media');
+    const fetchCards = async () => {
+        try {
+            setLoading(true);
+            const [cardsResponse, mediaResponse, pageResponse] = await Promise.all([
+                instance.get("/cards"),
+                instance.get("/media"),
+                instance.get("/pages"),
+            ]);
 
-        if (cardsResponse && cardsResponse.data) {
-            setCards(cardsResponse.data);
+            if (cardsResponse.status === 200 && mediaResponse.status === 200 && pageResponse.status === 200) {
+                setCardsData(cardsResponse.data);
+                setCards(cardsResponse.data);
+                setMedia(mediaResponse.data);
+                setPages(pageResponse.data);
+                setLoading(false);
+            }
+
+            else {
+                // message.error("Failed to fetch cards");
+                console.log("Failed to fetch cards");
+                setLoading(false);
+            }
         }
-
-        if (mediaResponse && mediaResponse.data) {
-            setMedia(mediaResponse.data);
+        catch (error) {
+            // message.error("Failed to fetch cards");
+            console.log("Failed to fetch cards", error);
+            setLoading(false);
         }
     }
 
     useEffect(() => {
-        fetchData();
+        fetchCards();
     }, [updateResponse]);
-
-    // get media id and render media
-    const renderMedia = (mediaId) => {
-        const selectedMedia = media.find(media => media.id === parseInt(mediaId));
-        if (selectedMedia) {
-            return (
-                <div>
-                    {
-                        selectedMedia.file_type.startsWith('image') ? (
-                            <Image
-                                width={200}
-                                height={200}
-                                src={`${MEDIA_URL}/${selectedMedia.file_path}`} />
-                        ) :
-                            selectedMedia.file_type.startsWith('video') ?
-                                (
-                                    <video width="320" height="240" autoPlay loop muted>
-                                        <source src={`${MEDIA_URL}/${selectedMedia.file_path}`} type="video/mp4" />
-                                        Your browser does not support the video tag.
-                                    </video>
-                                )
-                                : null
-                    }
-                </div>
-            );
-        }
-    }
-
 
     const handleExpand = (pressReleaseId) => {
         if (expandedPressRelease === pressReleaseId) {
@@ -128,7 +129,7 @@ const PressRelease = () => {
         setCreateMode(false);
 
         const selectedPressRelease = pressReleases.find(pressRelease => pressRelease.id === pressReleaseId);
-        
+
         if (selectedPressRelease) {
             setFormData({
                 card_ids: selectedPressRelease?.card_ids,
@@ -157,7 +158,7 @@ const PressRelease = () => {
             });
         } catch (error) {
             message.error(error.message);
-            console.log("Error deleting press release", error);
+            // console.log("Error deleting press release", error);
         }
     };
 
@@ -184,7 +185,7 @@ const PressRelease = () => {
             setFormData(null);
         } catch (error) {
             message.error(error.message);
-            console.log("Error updating press release", error);
+            // console.log("Error updating press release", error);
         }
     }
 
@@ -205,10 +206,219 @@ const PressRelease = () => {
             fetchPressReleases();
         } catch (error) {
             message.error(error.message);
-            console.log("Error creating press release", error);
+            // console.log("Error creating press release", error);
         }
     }
 
+    const PressReleaseViewer = ({
+        cardData,
+        media,
+        fetchCards,
+    }) => {
+        // View card details in modal
+        const [viewDetails, setViewDetails] = useState(false);
+        const [selectedCard, setSelectedCard] = useState(null);
+        const [editMode, setEditMode] = useState(false);
+        const [loading, setLoading] = useState(false);
+
+        const handleCardDetails = (card) => {
+            setSelectedCard(card);
+            setViewDetails(true);
+        }
+
+        // Media Select Modal
+        const [mediaSelectionVisible, setMediaSelectionVisible] = useState(false);
+        const [selectedCardId, setSelectedCardId] = useState(null);
+        const [editedCardId, setEditedCardId] = useState(null);
+        const [selectedMediaId, setSelectedMediaId] = useState(null);
+
+        const handleOpenMediaSelectionModal = (cardId) => {
+            setSelectedCardId(cardId);
+            setMediaSelectionVisible(true);
+        };
+
+        // fetch updated card data
+        const fetchUpdatedCardData = async () => {
+            try {
+                const res = await instance.get(`/cards/${selectedCard.id}`);
+                setSelectedCard(res.data);
+            } catch (error) {
+                // console.log(error);
+                message.error("Failed to fetch updated card data");
+            }
+        }
+
+        // Card edit form
+        const updateCard = async () => {
+            try {
+                setLoading(true);
+                const requestedData = {
+                    title_en: selectedCard.title_en,
+                    title_bn: selectedCard.title_bn,
+                    description_en: selectedCard.description_en,
+                    description_bn: selectedCard.description_bn,
+                };
+
+                if (selectedMediaId !== null) {
+                    requestedData.media_ids = selectedMediaId;
+                } else {
+                    requestedData.media_ids = selectedCard.media_files?.id;
+                }
+
+                const res = await instance.put(`/cards/${selectedCard.id}`, requestedData);
+
+                setLoading(false);
+                fetchUpdatedCardData();
+            } catch (error) {
+                // console.log(error);
+                message.error("Failed to update card");
+                setLoading(false);
+            }
+        };
+
+
+        return (
+            <div>
+                <Row gutter={[16, 16]}>
+                    {console.log("Card Data gg: ", cardData)}
+                    {cardData?.map((card) => (
+                        <Col key={card.id}>
+                            <div style={{
+                                textAlign: 'center',
+                                border: "1px solid var(--themes-light)",
+                                borderRadius: "10px",
+                                boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                                padding: "10px"
+                            }}>
+                                {card?.media_files ? (
+                                    <MediaRenderEngine item={card?.media_files} />
+                                ) : (
+                                    <Image
+                                        preview={false}
+                                        src="/images/Image_Placeholder.png"
+                                        alt={card.title_en}
+                                        width={200}
+                                        height={200}
+                                    />
+                                )
+                                }
+                                <div style={{
+                                    padding: "10px 0",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    gap: "10px"
+                                }}>
+                                    <h2 style={{
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: 1,
+                                        WebkitBoxOrient: 'vertical',
+                                    }}>
+                                        {card.title_en}
+                                    </h2>
+
+                                    <p
+                                        style={{
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            display: '-webkit-box',
+                                            WebkitLineClamp: 1,
+                                            WebkitBoxOrient: 'vertical',
+                                        }}
+                                        dangerouslySetInnerHTML={{
+                                            __html: card?.description_en,
+                                        }}
+                                    /></div>
+
+                                {/* View Action Buttons (View Details, Edit, Delete) on card hover */}
+                                <div style={{
+                                    display: "flex",
+                                    justifyContent: "space-evenly",
+                                    gap: "10px",
+                                    padding: "10px 0"
+                                }}>
+                                    <Button
+                                        icon={<EyeOutlined />}
+                                        style={{
+                                            backgroundColor: "var(--themes-light)",
+                                            color: "var(--themes)",
+                                            border: "1px solid transparent",
+                                            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)"
+                                        }}
+                                        onClick={() => handleCardDetails(card)}
+                                    />
+                                </div>
+                            </div>
+                        </Col>
+                    ))}
+                </Row>
+
+                {/* View Card Details Modal */}
+                <Modal
+                    width={800}
+                    title="Card Details"
+                    open={viewDetails}
+                    onCancel={() => setViewDetails(false)}
+                    footer={[
+                        // edit and close button
+                        <Button
+                            key="edit"
+                            style={{
+                                backgroundColor: "var(--theme)",
+                                color: "white"
+                            }}
+                            icon={editMode ? <CheckCircleFilled /> : <EditOutlined />}
+                            onClick={() => {
+                                if (editMode) {
+                                    updateCard();
+                                }
+                                setEditMode(!editMode);
+                            }
+                            }
+                        />,
+                        <Button
+                            key="close"
+                            style={{
+                                backgroundColor: "var(--themes)",
+                                color: "white"
+                            }}
+                            icon={<CloseCircleOutlined />}
+                            onClick={() => setViewDetails(false)}
+                        />,
+                    ]}>
+                    {
+                        <MediaRenderEngine item={selectedCard?.media_files} />
+                    }
+
+                    {
+                        <div>
+                            <h2>{selectedCard?.title_en}</h2>
+                            {
+                                selectedCard?.title_bn && (
+                                    <h2>{selectedCard?.title_bn}</h2>
+                                )
+                            }
+                            <p
+                                dangerouslySetInnerHTML={{
+                                    __html: selectedCard?.description_en,
+                                }}
+                            />
+                            {
+                                selectedCard?.description_bn && (
+                                    <p
+                                        dangerouslySetInnerHTML={{
+                                            __html: selectedCard?.description_bn,
+                                        }}
+                                    />
+                                )
+                            }
+                        </div>
+                    }
+                </Modal>
+            </div>
+        );
+    };
 
 
     return (
@@ -248,46 +458,64 @@ const PressRelease = () => {
                     {
                         createMode ? (
                             <div className="pageContainer">
-                                <div className="pageContainerHeader">
+                                <div className="pageContainerHeader" style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    gap: "2em"
+                                }}>
                                     <h2>Create New Press Release</h2>
-                                        <div className="formGroup">
-                                            <label>Card IDs</label>
-                                            <Select
-                                                mode="multiple"
-                                                allowClear
-                                                showSearch
-                                                filterOption={(input, option) =>
-                                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                                }
-                                                style={{ width: '100%' }}
-                                                placeholder="Select Tabs"
-                                                value={formData?.card_ids}
-                                                onChange={(value) => handleFormChange('card_ids', value)}
-                                            >
-                                                {
-                                                    cards?.map((card) => (
-                                                        <Select.Option key={card.id} value={card.id}>
-                                                            {card.title_en}
-                                                        </Select.Option>
-                                                    ))
-                                                }
-                                            </Select>
-                                        </div>
-                                        <Button type="primary"
-                                            style={{
-                                                backgroundColor: "var(--theme)",
-                                                borderColor: "var(--theme)",
-                                                color: "white",
-                                                borderRadius: "10px",
-                                                fontSize: "1.2em",
-                                                marginRight: "1em",
-                                                paddingBottom: "1.8em",
-                                            }}
-                                            onClick={handleCreatePressRelease}
+                                    <div className="formGroup" style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        gap: "2em"
+                                    }}>
+                                        <label>Card IDs</label>
+                                        <Select
+                                            mode="multiple"
+                                            allowClear
+                                            showSearch
+                                            filterOption={(input, option) =>
+                                                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                            }
+                                            style={{ width: '100%', height: "100px" }}
+                                            placeholder="Select Cards"
+                                            value={formData?.card_ids}
+                                            onChange={(value) => handleFormChange('card_ids', value)}
                                         >
-                                            Create
-                                        </Button>
-                            </div>
+                                            {
+                                                cards?.map((card) => (
+                                                    <Select.Option key={card.id} value={card.id}>
+                                                        {
+                                                            <div style={{
+                                                                display: "flex",
+                                                                gap: "1em",
+                                                            }}>
+                                                                <MediaRenderEngine item={card?.media_files}
+                                                                />
+                                                                <h3>{card.title_en}</h3>
+                                                            </div>
+                                                        }
+                                                    </Select.Option>
+                                                ))
+                                            }
+                                        </Select>
+                                    </div>
+                                    <center><Button type="primary"
+                                        style={{
+                                            width: "300px",
+                                            backgroundColor: "var(--theme)",
+                                            borderColor: "var(--theme)",
+                                            color: "white",
+                                            borderRadius: "10px",
+                                            fontSize: "1.2em",
+                                            marginRight: "1em",
+                                            paddingBottom: "1.8em",
+                                        }}
+                                        onClick={handleCreatePressRelease}
+                                    >
+                                        Create
+                                    </Button></center>
+                                </div>
                             </div>
                         ) : null
                     }
@@ -295,7 +523,7 @@ const PressRelease = () => {
                     <Row gutter={[16, 16]}>
                         {
                             pressReleases?.map((pressRelease) => (
-                                <Col key={pressRelease.id} xs={24} sm={24} md={24} lg={24} xl={24}>
+                                <Col key={pressRelease.id} span={24}>
                                     <Card
                                         title={`Press Release ID: ${pressRelease.id}`}
                                         extra={
@@ -306,8 +534,7 @@ const PressRelease = () => {
                                             </div>
                                         }
                                         style={{
-                                            marginBottom: "5em",
-                                            marginTop: "3em",
+                                            margin: "2em 0",
                                             border: "1px solid var(--theme)",
                                             borderRadius: 10,
                                         }}
@@ -391,10 +618,10 @@ const PressRelease = () => {
                                                                         filterOption={(input, option) =>
                                                                             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                                                         }
-                                                                        style={{ 
+                                                                        style={{
                                                                             width: '100%',
                                                                             borderRadius: 10,
-                                                                         }}
+                                                                        }}
                                                                         placeholder="Select Tabs"
                                                                         defaultValue={formData?.card_ids}
                                                                         value={formData?.card_ids}
@@ -413,83 +640,17 @@ const PressRelease = () => {
                                                             </>) : (
                                                                 <div style={{
                                                                     display: "grid",
-                                                                    gridTemplateColumns: "1fr 1fr",
-                                                                    gridGap: "1em",
+                                                                    gridAutoColumns: "1fr",
                                                                     marginTop: "1em",
                                                                 }}>
+                                                                    {console.log("Press Release", pressRelease)}
                                                                     {
-                                                                        pressRelease?.cards_mave?.map((card) => (
-                                                                            <div key={card.id} style={{
-                                                                                padding: "1em 0.5em",
-                                                                                display: "flex",
-                                                                                justifyContent: "space-between",
-                                                                                alignItems: "center",
-                                                                                border: "1px solid var(--theme)",
-                                                                                borderRadius: 10,
-                                                                            }}>
-                                                                                <div>
-                                                                                    <h3>{card.title_en}</h3>
-                                                                                    <h3>{card.title_bn}</h3>
-                                                                                    {/* Read more button open modal */}
-                                                                                    <Button type="primary" style={{
-                                                                                        backgroundColor: "transparent",
-                                                                                        borderColor: "transparent",
-                                                                                        color: "var(--theme)",
-                                                                                        borderRadius: "10px",
-                                                                                        fontSize: "1.2em",
-                                                                                        margin: "2em 0",
-                                                                                        paddingBottom: "1.8em",
-                                                                                    }} icon={<ArrowRightOutlined />}
-                                                                                    >
-                                                                                        Read More
-                                                                                    </Button>
-                                                                                </div>
-                                                                                {
-                                                                                    typeof card.media_ids === 'string' ? 
-                                                                                    renderMedia(card.media_ids)
-                                                                                        : 
-                                                                                        (
-                                                                                            <>
-                                                                                            {
-                                                                                            card?.media_mave?.file_type.startsWith('image') ? (
-                                                                                                <Image
-                                                                                                    src={`${MEDIA_URL}/${card?.media_mave?.file_path}`}
-                                                                                                    alt="Hero Image"
-                                                                                                    style={{
-                                                                                                        height: '200px',
-                                                                                                        width: '18vw',
-                                                                                                        objectFit: 'contain',
-                                                                                                        borderRadius: 10,
-                                                                                                    }}
-                                                                                                />
-                                                                                            ) : card?.media_mave?.file_type.startsWith('video') ? (
-                                                                                                <video
-                                                                                                    autoPlay
-                                                                                                    muted
-                                                                                                    width="30%"
-                                                                                                    height="auto"
-                                                                                                    objectFit="contain"
-                                                                                                    src={`${MEDIA_URL}/${card?.media_mave?.file_path}`}
-                                                                                                >
-                                                                                                    Your browser does not support the video tag.
-                                                                                                </video>
-                                                                                            ) : (
-                                                                                                <img
-                                                                                                    src="/images/Image_Placeholder.png"
-                                                                                                    style={{
-                                                                                                        height: "200px",
-                                                                                                        width: "18vw",
-                                                                                                        objectFit: 'cover',
-                                                                                                        borderRadius: 10,
-                                                                                                    }}
-                                                                                                />
-                                                                                            )
-                                                                                        }
-                                                                                            </>
-                                                                                        )
 
-                                                                                }
-                                                                            </div>))
+                                                                        <PressReleaseViewer
+                                                                            cardData={pressRelease?.cards_mave}
+                                                                            media={media}
+                                                                            fetchCards={fetchCards}
+                                                                        />
                                                                     }
                                                                 </div>
                                                             )

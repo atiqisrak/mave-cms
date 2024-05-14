@@ -4,9 +4,11 @@ import {
   CloseCircleOutlined,
   DeleteOutlined,
   EditOutlined,
+  MenuFoldOutlined,
+  MenuOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
-import { Button, Popconfirm, Select } from "antd";
+import { Button, Input, Modal, Popconfirm, Select, message } from "antd";
 
 import instance from "../axios";
 import SingleMediaSelect from "../components/SingleMediaSelect";
@@ -29,6 +31,9 @@ const Navbars = () => {
   const [editedNavbar, setEditedNavbar] = useState(null);
   const [editedNavbarId, setEditedNavbarId] = useState(null);
   const [selectedLogo, setSelectedLogo] = useState(null);
+  const [navbarTitleEn, setNavbarTitleEn] = useState(null);
+  const [navbarTitleBn, setNavbarTitleBn] = useState(null);
+  const [unfolded, setUnfolded] = useState(false);
   const [formData, setFormData] = useState({
     // logo_id: null,
     menu_id: null,
@@ -39,41 +44,37 @@ const Navbars = () => {
   const [selectedMediaId, setSelectedMediaId] = useState(null);
   const [selectedMenuId, setSelectedMenuId] = useState(null);
 
-  useEffect(() => {
-    // Set the dynamic page title for the Home page
-    setPageTitle("Navbars");
-  }, []);
+  const fetchData = async () => {
+    try {
+      setLoading(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
+      const [mediaResponse, menuResponse, navbarsResponse] = await Promise.all([
+        instance("/media"),
+        instance("/menus"),
+        instance("/navbars"),
+      ]);
 
-        const [mediaResponse, menuResponse, navbarsResponse] =
-          await Promise.all([
-            instance("/media"),
-            instance("/menus"),
-            instance("/navbars"),
-          ]);
-
-        if (mediaResponse.data && menuResponse.data && navbarsResponse.data) {
-          setMedia(mediaResponse.data);
-          setMenus(menuResponse.data);
-          setNavbars(navbarsResponse.data);
-
-          console.log("Media Data", mediaResponse.data);
-          console.log("Menu Data", menuResponse.data);
-          console.log("Navbar Data", navbarsResponse.data);
-        } else {
-          console.error("Error fetching data");
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
+      if (mediaResponse.data && menuResponse.data && navbarsResponse.data) {
+        setMedia(mediaResponse.data);
+        setMenus(menuResponse.data);
+        setNavbars(navbarsResponse?.data?.sort((a, b) => b.id - a.id));
+        // message.success("Data fetched successfully");
+        // console.log("Media Data", mediaResponse.data);
+        // console.log("Menu Data", menuResponse.data);
+        // console.log("Navbar Data", navbarsResponse.data);
+      } else {
+        // console.error("Error fetching data");
+        message.error("Data couldn't be fetched");
       }
-    };
+    } catch (error) {
+      // console.error("Error fetching data:", error);
+      message.error("Data couldn't be fetched");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -84,14 +85,9 @@ const Navbars = () => {
 
     updatedNavbar.logo_id = mediaId.id;
 
-    instance.put(`/navbars/${editedNavbar.id}`, updatedNavbar).then((res) => {
-      console.log("Update: ", res);
-      setEditedNavbar(null);
-      setEditedNavbarId(null);
-      instance.get("/navbars").then((res) => {
-        setNavbars(res.data);
-      });
-    });
+    setEditedNavbar(updatedNavbar);
+    setFormData({ logo_id: mediaId.id });
+    setMediaSelectionVisible(false);
   };
 
   const handleEditClick = (navbar) => {
@@ -108,15 +104,16 @@ const Navbars = () => {
 
   const handleUpdateNavbar = (navbar) => {
     const updatedData = {
+      title_en: navbarTitleEn,
       logo_id: formData.logo_id,
       menu_id: formData.menu_id,
     };
 
-    console.log("Updating Navbar ID:", navbar.id, "with data:", updatedData);
+    // console.log("Updating Navbar ID:", navbar.id, "with data:", updatedData);
     instance
       .put(`/navbars/${navbar.id}`, updatedData)
       .then((response) => {
-        console.log("Navbar updated successfully:", response.data);
+        message.success("Navbar updated successfully.");
         setEditMode(false);
         setEditedNavbar(null);
         setFormData({ logo_id: null, menu_id: null });
@@ -125,12 +122,15 @@ const Navbars = () => {
             const res = await instance.get("/navbars");
             setNavbars(res.data);
             setLoading(false);
-          } catch (error) {}
+          } catch (error) {
+            message.error("Error fetching data");
+          }
         };
         getData();
       })
       .catch((error) => {
-        console.error("Error updating navbar:", error);
+        // console.error("Error updating navbar:", error);
+        message.error("Error updating navbar");
       });
   };
 
@@ -138,6 +138,7 @@ const Navbars = () => {
     try {
       const response = await instance.delete(`/navbars/${navbarId}`);
       if (response.status === 200) {
+        message.success("Navbar deleted successfully.");
         setNavbars((prevNavbars) =>
           prevNavbars.filter((navbar) => navbar.id !== navbarId)
         );
@@ -157,24 +158,24 @@ const Navbars = () => {
   };
 
   const handleCreateNavbar = async (e) => {
-    // e.preventDefault();
+    e.preventDefault();
     if (!selectedMediaId || !selectedMenuId) {
       console.error("Please select both media and menu.");
       return;
     }
-    // e.preventDefault();
+    e.preventDefault();
     try {
       const newNavbar = {
+        title_en: navbarTitleEn,
+        title_bn: navbarTitleBn,
         logo_id: selectedMediaId,
         menu_id: selectedMenuId,
       };
-      console.log(newNavbar, "arif");
       const response = await instance.post("/navbars", newNavbar);
       if (response.status === 201) {
         setIsCreateNavbarFormVisible(false);
         setSelectedLogo(`${MEDIA_URL}/${selectedMediaId}`);
-
-        // fetchData();
+        message.success("Navbar created successfully.");
         const getData = async () => {
           try {
             const res = await instance.get("/navbars");
@@ -197,24 +198,6 @@ const Navbars = () => {
       menu_id: selectedMenuId,
     });
   };
-  useEffect(() => {
-    if (selectedMediaId && selectedMenuId) {
-      handleCreateNavbar();
-    }
-  }, [selectedMediaId, selectedMenuId]);
-  useEffect(() => {
-    if (selectedMediaId) {
-      const selectedMedia = media.find((item) => item.id === selectedMediaId);
-      if (selectedMedia) {
-        setSelectedLogo(`${MEDIA_URL}/${selectedMedia.file_path}`);
-      } else {
-        console.error(`Media with ID ${selectedMediaId} not found.`);
-        setSelectedLogo(null);
-      }
-    } else {
-      setSelectedLogo(null);
-    }
-  }, [selectedMediaId, media]);
 
   const toggleCreateNavbarForm = () => {
     setIsCreateNavbarFormVisible(!isCreateNavbarFormVisible);
@@ -271,9 +254,52 @@ const Navbars = () => {
                     border: "2px solid var(--theme)",
                     borderRadius: "10px",
                     marginBottom: "1em",
-                    backgroundColor: "#0d0d0d20",
                   }}
                 >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      flexDirection: "column",
+                      gap: "2em",
+                    }}
+                  >
+                    <div>
+                      <label>
+                        Navbar Title (English)
+                        <span style={{ color: "red" }}>*</span>
+                      </label>
+                      <Input
+                        style={{
+                          width: "50%",
+                        }}
+                        allowClear
+                        type="text"
+                        name="title_en"
+                        placeholder="Enter Navbar Title"
+                        value={navbarTitleEn}
+                        onChange={(e) => setNavbarTitleEn(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label>
+                        Navbar Title (Bangla)
+                        <span style={{ color: "red" }}>*</span>
+                      </label>
+                      <Input
+                        style={{
+                          width: "50%",
+                        }}
+                        allowClear
+                        type="text"
+                        name="title_bn"
+                        placeholder="Enter Navbar Title (Bangla)"
+                        value={navbarTitleBn}
+                        onChange={(e) => setNavbarTitleBn(e.target.value)}
+                      />
+                    </div>
+                  </div>
                   <div
                     style={{
                       display: "flex",
@@ -342,7 +368,6 @@ const Navbars = () => {
                       {menus?.map((menu) => (
                         <>
                           {" "}
-                          {console.log(formData, "kashfee")}
                           <Option key={menu.id} value={menu?.id}>
                             {menu.name}{" "}
                           </Option>
@@ -388,17 +413,131 @@ const Navbars = () => {
               </div>
             )}
 
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 5fr",
+                gap: "1em",
+                marginBottom: "1em",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "var(--theme)",
+                color: "white",
+                padding: "1em",
+                borderRadius: "10px",
+              }}
+            >
+              <h3>Navbar Names</h3>
+              <h3
+                style={{
+                  textAlign: "center",
+                  borderLeft: "1px solid white",
+                }}
+              >
+                Navbars
+              </h3>
+            </div>
             {loading ? (
               <Loader />
             ) : (
               <>
                 {navbars?.map((navbar) => (
-                  <div className="navbarContainer" key={navbar.id}>
+                  <div
+                    className="navbarContainer"
+                    key={navbar.id}
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 5fr",
+                      gap: "1em",
+                      marginBottom: "1em",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div>
+                      {editMode && editedNavbar?.id === navbar.id ? (
+                        <div className="editModeForm">
+                          <form>
+                            {/* <div
+                              style={{
+                                display: "flex",
+                                gap: "1em",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Input
+                                type="text"
+                                name="title_en"
+                                value={navbarTitleEn}
+                                onChange={(e) =>
+                                  setNavbarTitleEn(e.target.value)
+                                }
+                              />
+                            </div> */}
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                flexDirection: "column",
+                                gap: "2em",
+                              }}
+                            >
+                              <div>
+                                <label>
+                                  Navbar Title (English)
+                                  <span style={{ color: "red" }}>*</span>
+                                </label>
+                                <Input
+                                  style={{
+                                    width: "70%",
+                                  }}
+                                  allowClear
+                                  type="text"
+                                  name="title_en"
+                                  placeholder={navbar?.title_en}
+                                  defaultValue={navbar?.title_en}
+                                  value={navbarTitleEn}
+                                  onChange={(e) =>
+                                    setNavbarTitleEn(e.target.value)
+                                  }
+                                />
+                              </div>
+                              <div>
+                                <label>
+                                  Navbar Title (Bangla)
+                                  <span style={{ color: "red" }}>*</span>
+                                </label>
+                                <Input
+                                  style={{
+                                    width: "70%",
+                                  }}
+                                  allowClear
+                                  type="text"
+                                  name="title_bn"
+                                  placeholder={navbar?.title_bn}
+                                  defaultValue={navbar?.title_bn}
+                                  value={navbarTitleBn}
+                                  onChange={(e) =>
+                                    setNavbarTitleBn(e.target.value)
+                                  }
+                                />
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                      ) : (
+                        <div>
+                          <h3>{navbar.title_en}</h3>
+                          <h3>{navbar.title_bn}</h3>
+                        </div>
+                      )}
+                    </div>
                     <div
                       className="column"
                       style={{
                         display: "grid",
-                        gridTemplateColumns: "2fr 5fr 3fr",
+                        gridTemplateColumns: "2fr 3fr 3fr",
                         padding: "1em 2em",
                         marginBottom: "1em",
                         border: "1px solid var(--themes)",
@@ -423,6 +562,7 @@ const Navbars = () => {
                                     media[0].file_path.endsWith(".mp4") ? (
                                       <video
                                         controls
+                                        muted
                                         style={{
                                           height: "200px",
                                           width: "15vw",
@@ -550,12 +690,80 @@ const Navbars = () => {
                               justifyContent: "center",
                             }}
                           >
-                            {/* Render the menu items */}
-                            {navbar.menu.menu_items?.map((menuItem) => (
-                              <div key={menuItem.id}>
-                                <p>{menuItem.title}</p>
-                              </div>
-                            ))}{" "}
+                            {/* show menu items if more than 3 items, put dropdown */}
+                            {navbar.menu.menu_items.length > 4 ? (
+                              <>
+                                <Button
+                                  icon={<MenuOutlined />}
+                                  style={{
+                                    backgroundColor: "var(--themes)",
+                                    borderColor: "var(--themes)",
+                                    color: "white",
+                                    borderRadius: "10px",
+                                    fontSize: "1.2em",
+                                    padding: "1em 3em",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                  }}
+                                  onClick={() => {
+                                    setUnfolded((prevState) => ({
+                                      ...prevState,
+                                      [navbar.id]: !prevState[navbar.id],
+                                    }));
+                                  }}
+                                />
+                                {unfolded[navbar.id] && (
+                                  <div
+                                    style={{
+                                      position: "absolute",
+                                      backgroundColor: "var(--themes)",
+                                      color: "white",
+                                      borderRadius: "10px",
+                                      fontSize: "1.2em",
+                                      padding: "1em 3em",
+                                      zIndex: 1,
+                                      marginTop: "3em",
+                                    }}
+                                  >
+                                    {/* arrow triangle on top */}
+                                    <div
+                                      style={{
+                                        position: "absolute",
+                                        top: "-1em",
+                                        left: "5.5em",
+                                        width: 0,
+                                        height: 0,
+                                        borderLeft: "1em solid transparent",
+                                        borderRight: "1em solid transparent",
+                                        borderBottom: "1em solid var(--themes)",
+                                      }}
+                                    />
+
+                                    {navbar.menu.menu_items?.map((menuItem) => (
+                                      <div
+                                        key={menuItem.id}
+                                        style={{
+                                          display: "flex",
+                                          justifyContent: "center",
+                                          alignItems: "center",
+                                          borderBottom: "1px solid white",
+                                          padding: "1em 0",
+                                        }}
+                                      >
+                                        <p>{menuItem.title}</p>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </>
+                            ) : (
+                              navbar.menu.menu_items?.map((menuItem) => (
+                                <div key={menuItem.id}>
+                                  <p>{menuItem.title}</p>
+                                </div>
+                              ))
+                            )}
                           </div>
                         )}{" "}
                       </div>
@@ -586,6 +794,10 @@ const Navbars = () => {
                             type="primary"
                             icon={<EditOutlined />}
                             onClick={() => handleEditClick(navbar)}
+                            style={{
+                              marginRight: "1em",
+                              backgroundColor: "var(--theme)",
+                            }}
                           >
                             Edit
                           </Button>
@@ -606,7 +818,7 @@ const Navbars = () => {
                             okText="Yes"
                             cancelText="No"
                           >
-                            <Button type="danger" icon={<DeleteOutlined />}>
+                            <Button danger icon={<DeleteOutlined />}>
                               Delete
                             </Button>
                           </Popconfirm>

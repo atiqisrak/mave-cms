@@ -21,7 +21,7 @@ const ScrollToButton = () => {
       <Button
         style={{
           position: "fixed",
-          bottom: "50px",
+          bottom: "150px",
           right: "20px",
           padding: "5px 10px",
           backgroundColor: "var(--themes)",
@@ -39,7 +39,7 @@ const ScrollToButton = () => {
       <Button
         style={{
           position: "fixed",
-          bottom: "20px",
+          bottom: "120px",
           right: "20px",
           padding: "5px 10px",
           backgroundColor: "var(--themes)",

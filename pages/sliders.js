@@ -7,9 +7,14 @@ import {
   Input,
   Modal,
   Popconfirm,
+  Radio,
   Row,
+  Segmented,
+  Select,
   Space,
+  Tabs,
   Typography,
+  message,
   notification,
 } from "antd";
 import React, { useEffect, useState } from "react";
@@ -27,10 +32,15 @@ import {
 import { useRouter } from "next/router";
 import MediaSelectionModal from "../components/MediaSelectionModal";
 import CreateSliderComponent from "../components/CreateSliderComponent";
+import RichTextEditor from "../components/RichTextEditor";
+import ImageSliders from "../components/ImageSliders";
+import CardSliders from "../components/CardSliders";
 
 const Sliders = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [sliders, setSliders] = useState([]);
+  const [imageSliders, setImageSliders] = useState([]);
+  const [cardSliders, setCardSliders] = useState([]);
   const [loading, setLoading] = useState(false);
   const { Title } = Typography;
   const [selectedMedia, setSelectedMedia] = useState([]);
@@ -41,6 +51,8 @@ const Sliders = () => {
   const [responseData, setResponseData] = useState();
   const [showCreateSliderForm, setShowCreateSliderForm] = useState(false);
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
+  const [cards, setCards] = useState([]);
+  const [type, setType] = useState("image");
 
   const CustomPrevArrow = ({ onClick }) => (
     <Button
@@ -78,22 +90,45 @@ const Sliders = () => {
     const fetchSliders = async () => {
       try {
         setLoading(true);
-        // const response = await axios.get(`${API_BASE_URL}/media`);
         const response = await instance("/sliders");
         if (response.data) {
-          setSliders(response.data);
-          // console.log("Media Assets: ", response.data);
+          setSliders(response.data?.sort((a, b) => b.id - a.id));
+
+          response.data?.map((slider) => {
+            if (slider.type === "card") {
+              setCardSliders((prev) => [...prev, slider]);
+            } else {
+              setImageSliders((prev) => [...prev, slider]);
+            }
+          });
           setLoading(false);
         } else {
-          console.error("Error fetching media assets:", response.data.message);
+          message.error("Sliders couldn't be fetched");
         }
       } catch (error) {
-        console.error("Error fetching media assets:", error);
+        message.error("Sliders couldn't be fetched");
       }
     };
 
+    const fetchCards = async () => {
+      try {
+        setLoading(true);
+        const response = await instance.get("/cards");
+        if (response.data) {
+          setCards(response.data);
+          message.success("Cards fetched successfully");
+          setLoading(false);
+        } else {
+          message.error("Cards couldn't be fetched");
+        }
+      } catch (error) {
+        message.error("Cards couldn't be fetched");
+      }
+    };
+    fetchCards();
     fetchSliders();
   }, [responseData, response]);
+
   const showModal = () => {
     setIsModalVisible(true);
     // router.push("/create-slider");
@@ -111,20 +146,24 @@ const Sliders = () => {
   };
 
   const handDeleteSlider = async (e, id) => {
-    // console.log("your log output", id);
     try {
-      // setLoading(true);
+      setLoading(true);
       const response = await instance.delete(`/sliders/${id}`);
 
       if (response?.data) {
-        api.info({
-          message: `${response?.data?.message}`,
-          top,
-        });
         setResponseData(response?.data);
-        // setLoading(false);
+        message.success("Slider deleted successfully");
+        setLoading(false);
+      } else {
+        // console.error("Error deleting slider:", response.data);
+        message.error("Error deleting slider");
+        setLoading(false);
       }
-    } catch (e) { }
+    } catch (e) {
+      // console.error("Error deleting slider:", e);
+      message.error("Error deleting slider");
+      setLoading(false);
+    }
   };
   const handleEditClick = (itemId) => {
     setEditingItemId(itemId);
@@ -133,28 +172,65 @@ const Sliders = () => {
     setEditingItemId(null);
   };
   const handleSubmit = async (values) => {
-    // console.log('your log output',)
     setLoading(true);
+    const previousTitleEn = sliders.find(
+      (slider) => slider.id === editingItemId
+    ).title_en;
+    const previousTitleBn = sliders.find(
+      (slider) => slider.id === editingItemId
+    ).title_bn;
+    const previousDescriptionEn = sliders.find(
+      (slider) => slider.id === editingItemId
+    ).description_en;
+    const previousDescriptionBn = sliders.find(
+      (slider) => slider.id === editingItemId
+    ).description_bn;
+    const previousType = sliders.find(
+      (slider) => slider.id === editingItemId
+    ).type;
+    const previousCardsIds = sliders.find(
+      (slider) => slider.id === editingItemId
+    ).card_ids;
+    const previousMediaIds = sliders.find(
+      (slider) => slider.id === editingItemId
+    ).media_ids;
+
+    const finalCards = values.card_ids ? values.card_ids : previousCardsIds;
+    const finalMedia =
+      selectedMedia?.length > 0 ? selectedMedia : previousMediaIds;
+
     try {
       const postData = {
-        title_en: values.title_e,
-        title_bn: values.title_b,
-        media_ids: selectedMedia,
+        title_en: values.title_e ? values.title_e : previousTitleEn,
+        title_bn: values.title_b ? values.title_b : previousTitleBn,
+        description_en: values.description_en
+          ? values.description_en
+          : previousDescriptionEn,
+        description_bn: values.description_bn
+          ? values.description_bn
+          : previousDescriptionBn,
+        type: values.type ? values.type : previousType,
+        // card_ids: values.card_ids ? values.card_ids : previousCardsIds,
+        // media_ids: selectedMedia?.length > 0 ? selectedMedia : previousMediaIds,
+        card_ids: values.type === "card" ? finalCards : [],
+        media_ids: values.type === "image" ? finalMedia : [],
       };
+
+      console.log("Edit Data: ", postData);
+
       const response = await instance.put(
         `/sliders/${editingItemId}`,
         postData
       );
       if (response.status === 200) {
         if (response?.data) {
-          api.info({
-            message: `${response?.data?.message}`,
-            top,
-          });
+          message.success("Slider updated successfully");
           setResponseData(response);
         }
         setEditingItemId(null);
+        setSelectedMedia([]);
         setLoading(false);
+        window.location.reload();
       } else {
         console.error("Error creating slider:", response.data);
         setLoading(false);
@@ -204,147 +280,84 @@ const Sliders = () => {
                 response={response}
                 setResponse={setResponse}
                 setShowCreateSliderForm={setShowCreateSliderForm}
+                cards={cards}
               ></CreateSliderComponent>
             )}
 
-            {
-              loading ? (
-                <Loader />
-              ) : (
+            {loading ? (
+              <Loader />
+            ) : (
+              <>
                 <>
-                  <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-                    {sliders?.map((asset) => (
-                      <Col span={12} style={{ marginTop: "1rem" }} key={asset.id}>
-                        {editingItemId === asset.id ? (
-                          <Form
-                            form={form}
-                            name="createSlider"
-                            onFinish={handleSubmit}
-                            style={{
-                              marginTop: "10em",
-                              maxWidth: 600,
-                              margin: "0 auto",
-                            }}
-                            layout="vertical"
-                            autoComplete="off"
-                          >
-                            <Form.Item hasFeedback label="Title English" name="title_e">
-                              <Input placeholder="Enter title in English" />
-                            </Form.Item>
-                            <Form.Item hasFeedback label="Title Bangla" name="title_b">
-                              <Input placeholder="Enter title in Bangla" />
-                            </Form.Item>
-                            <Form.Item hasFeedback label="Select Media" name="title_m">
-                              {/* <Collapse accordion ghost items={items}></Collapse> */}
-                              <Button icon={<UploadOutlined />} onClick={showModal}>
-                                Click to Select
-                              </Button>
-                            </Form.Item>
-                            <Form.Item>
-                              <Space>
-                                <Button type="primary" htmlType="submit">
-                                  Submit
-                                </Button>
-                                <Button
-                                  onClick={() => handleCancelEdit()}
-                                  type="primary"
-                                  danger
-                                >
-                                  Cancel
-                                </Button>
-                              </Space>
-                              <Modal
-                                width={"40%"}
-                                title="Upload Media"
-                                open={isModalVisible}
-                                onOk={handleOk}
-                                onCancel={handleCancel}
-                                className="uploadMediaModal"
-                              >
-                                <MediaSelectionModal
-                                  selectedMedia={selectedMedia}
-                                  setSelectedMedia={setSelectedMedia}
-                                ></MediaSelectionModal>
-                              </Modal>
-                            </Form.Item>
-                          </Form>
-                        ) : (
-                          <div style={{
-                            marginBottom: "5rem",
-                            border: "1px solid #f0f0f0",
-                            borderRadius: "10px",
-                            padding: "2.4rem",
-                            boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-                          }}>
-                            <Carousel
-                              style={{ position: "relative" }}
-                              autoplay
-                              arrows={true}
-                              prevArrow={<CustomPrevArrow />}
-                              nextArrow={<CustomNextArrow />}
-                            >
-                              {asset?.medias?.map((img, index) => (
-                                <div key={index}>
-                                  <Image
-                                    src={`${MEDIA_URL}/${img?.file_path}`}
-                                    alt={asset.file_name}
-                                    width={"100%"}
-                                    height={400}
-                                    style={{ objectFit: "cover", borderRadius: 10 }}
-                                  />
-                                </div>
-                              ))}
-                            </Carousel>
-
-                            <Space
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "flex-start",
-                              }}
-                            >
-                              <Title level={4}>Title: {asset.title_en}</Title>
-                              <Title level={5}>শিরোনাম: {asset.title_bn}</Title>
-                            </Space>
-                            <Space
-                              style={{
-                                marginTop: "1em",
-                                display: "flex",
-                                justifyContent: "center",
-                                width: "100%",
-                              }}
-                            >
-                              <Button onClick={() => handleEditClick(asset.id)} style={{
-                                backgroundColor: "var(--theme)",
-                                borderColor: "var(--theme)",
-                                color: "white",
-                              }}>
-                                <EditOutlined /> Edit
-                              </Button>
-                              <Popconfirm
-                                title="Are you sure delete this slider?"
-                                okText="Yes"
-                                cancelText="No"
-                                onConfirm={(e) => handDeleteSlider(e, asset?.id)}
-                              >
-                                <Button danger
-                                ><DeleteOutlined /> Delete</Button>
-                              </Popconfirm>
-                            </Space>
-                          </div>
-                        )}
-                      </Col>
-                    ))}
-                  </Row>
+                  <Tabs
+                    defaultActiveKey="1"
+                    type="card"
+                    animated
+                    centered
+                    onChange={(key) => {
+                      console.log(key);
+                    }}
+                    style={{
+                      marginTop: "2rem",
+                    }}
+                  >
+                    <Tabs.TabPane tab="Image Sliders" key="1">
+                      <ImageSliders
+                        sliders={imageSliders}
+                        CustomNextArrow={CustomNextArrow}
+                        CustomPrevArrow={CustomPrevArrow}
+                        MEDIA_URL={MEDIA_URL}
+                        handleEditClick={handleEditClick}
+                        handleCancelEdit={handleCancelEdit}
+                        handDeleteSlider={handDeleteSlider}
+                        editingItemId={editingItemId}
+                        handleSubmit={handleSubmit}
+                        form={form}
+                        cards={cards}
+                        showModal={showModal}
+                        isModalVisible={isModalVisible}
+                        setIsModalVisible={setIsModalVisible}
+                        handleOk={handleOk}
+                        handleCancel={handleCancel}
+                        selectedMedia={selectedMedia}
+                        setSelectedMedia={setSelectedMedia}
+                        setType={setType}
+                        type={type}
+                      />
+                    </Tabs.TabPane>
+                    <Tabs.TabPane tab="Card Sliders" key="2">
+                      <CardSliders
+                        sliders={cardSliders}
+                        CustomNextArrow={CustomNextArrow}
+                        CustomPrevArrow={CustomPrevArrow}
+                        MEDIA_URL={MEDIA_URL}
+                        handleEditClick={handleEditClick}
+                        handleCancelEdit={handleCancelEdit}
+                        handDeleteSlider={handDeleteSlider}
+                        editingItemId={editingItemId}
+                        handleSubmit={handleSubmit}
+                        form={form}
+                        cards={cards}
+                        showModal={showModal}
+                        isModalVisible={isModalVisible}
+                        setIsModalVisible={setIsModalVisible}
+                        handleOk={handleOk}
+                        handleCancel={handleCancel}
+                        selectedMedia={selectedMedia}
+                        setSelectedMedia={setSelectedMedia}
+                        setType={setType}
+                        type={type}
+                      />
+                    </Tabs.TabPane>
+                  </Tabs>
+                  {/* </Segmented> */}
                 </>
-              )
-            }
-
+              </>
+            )}
           </div>
         </div>
       </div>
     </div>
-
   );
 };
 

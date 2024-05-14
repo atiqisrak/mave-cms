@@ -8,6 +8,7 @@ import {
   Input,
   Row,
   Space,
+  message,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import instance from "../axios";
@@ -85,12 +86,15 @@ const CreateSlider = () => {
         if (response.data) {
           setMediaAssets(response.data);
           // console.log("Media Assets: ", response.data);
+          // message.success("Media assets fetched successfully");
           setLoading(false);
         } else {
-          console.error("Error fetching media assets:", response.data.message);
+          // console.error("Error fetching media assets:", response.data.message);
+          message.error("Media files couldn't be fetched");
         }
       } catch (error) {
-        console.error("Error fetching media assets:", error);
+        // console.error("Error fetching media assets:", error);
+        message.error("Media files couldn't be fetched");
       }
     };
 
@@ -112,7 +116,6 @@ const CreateSlider = () => {
   };
 
   const handleSubmit = async (values) => {
-    // console.log('your log output',)
     setLoading(true);
     try {
       const postData = {
@@ -120,20 +123,20 @@ const CreateSlider = () => {
         title_bn: values.title_b,
         media_ids: selectedMedia, // Use the selectedMedia array in the POST data
       };
-
-      // console.log("your log output", postData);
       // return;
       const response = await instance.post("/sliders", postData);
       if (response.status === 201) {
         // Handle successful response (e.g., show a success message)
-        
+        message.success("Slider created successfully");
         setLoading(false);
       } else {
         // Handle error response
-        console.error("Error creating slider:", response.data);
+        // console.error("Error creating slider:", response.data);
+        message.error("Error creating slider");
       }
     } catch (error) {
-      console.error("Error creating slider:", error);
+      // console.error("Error creating slider:", error);
+      message.error("Error creating slider");
     }
   };
   if (loading) {
@@ -168,7 +171,11 @@ const CreateSlider = () => {
               <Collapse accordion ghost items={items}></Collapse>
             </Form.Item>
             <Form.Item>
-              <Button type="primary" htmlType="submit">
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ width: "100%", backgroundColor: "#1890ff" }}
+              >
                 Submit
               </Button>
             </Form.Item>
