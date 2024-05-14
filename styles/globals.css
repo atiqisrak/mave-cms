@@ -11,6 +11,8 @@
   --themes: #f1612a;
   --themes-light: #f1622a25;
   --success: #008f39;
+  --notwhite: #f7f8fa;
+  --mild-black: #7d8fb3;
 }
 
 * {
@@ -28,7 +30,14 @@ body {
 
 body {
   color: var(--black);
-  background: var(--white);
+  background: var(--notwhite);
+}
+
+/* scale down in laptop screen */
+@media (max-width: 1024px) {
+  body {
+    scale: 0.9;
+  }
 }
 
 :where(.css-dev-only-do-not-override-18iikkb).ant-menu-dark
@@ -92,6 +101,12 @@ a:hover {
 }
 
 .flexed-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flexed-among {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -405,4 +420,9 @@ a:hover {
   color: #001529;
   background-color: #9012ff20;
   box-shadow: 0px 14px 14px rgba(0, 0, 0, 0.25);
+}
+
+.counter-cards .ant-statistic-title {
+  font-size: 1.2rem;
+  color: #ffffff;
 }

@@ -162,19 +162,12 @@ const SiteContentV2 = ({ children, collapsed, setCollapsed }) => {
 
   return (
     <>
-      {/* <div>Let's welcome user</div> */}
       <Layout
         hasSider
         style={{
           height: "100%",
         }}
       >
-        {/* Header grid, 
-                1. Logo
-                2. Menu items tabs: Dashboard, Pages, Posts, Files, Users
-                3. Search bar
-                4. Notification bell, Messages, Analytics, Profile
-                */}
         <Header
           className="site-layout-background"
           style={{
@@ -207,7 +200,7 @@ const SiteContentV2 = ({ children, collapsed, setCollapsed }) => {
             style={{
               display: "flex",
               justifyContent: "flex-end",
-              alignItems: "center",
+              alignItems: "flex-end",
               gap: "20px",
             }}
           >

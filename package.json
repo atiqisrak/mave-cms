@@ -36,6 +36,7 @@
     "react-dom": "18.2.0",
     "react-easy-crop": "^5.0.5",
     "react-froala-wysiwyg": "^4.2.0",
+    "react-google-charts": "^4.0.1",
     "react-helmet": "^6.1.0",
     "react-markdown": "^9.0.1",
     "react-pdf": "^7.7.1",

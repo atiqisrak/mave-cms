@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import instance from "../axios";
 import CounterCards from "../components/dashboard/CounterCards";
+import UserStat from "../components/dashboard/UserStat";
+import SiteStat from "../components/dashboard/SiteStat";
+import LatestEvents from "../components/dashboard/LatestEvents";
+import SiteSpeed from "../components/dashboard/SiteSpeed";
 
 const index = () => {
   const [data, setData] = useState({});
@@ -61,8 +65,36 @@ const index = () => {
   return (
     <>
       <div className="ViewContainer">
-        <h1>Welcome</h1>
-        <CounterCards />
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            marginBottom: "6rem",
+            gap: "2rem",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "2rem",
+            }}
+          >
+            <CounterCards />
+            <UserStat />
+            <SiteStat />
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "2rem",
+            }}
+          >
+            <LatestEvents />
+            <SiteSpeed />
+          </div>
+        </div>
       </div>
     </>
   );
