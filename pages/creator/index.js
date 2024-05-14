@@ -56,7 +56,7 @@ const Creator = () => {
   const Option = Select.Option;
   const [pageData, setPageData] = useState();
   const [showPageData, setShowPageData] = useState([]);
-  const [newSectionComponents, setNewSectionComponent] = useState(null);
+  const [newSectionComponents, setNewSectionComponent] = useState([]);
   const [editSectionComponents, setEditSectionComponent] = useState([]);
   const [updatedSectionData, setUpdatedSectionData] = useState([]);
   const [newData, setNewData] = useState(null);
@@ -257,7 +257,7 @@ const Creator = () => {
     // console.log("description", description);
     if (selectedType === "media") {
       console.log("resultArray", resultArray);
-      const resultArray = filteredArray.map(
+      const resultArray = filteredArray?.map(
         ({ id, file_name, file_path, file_type, tags, type }) => ({
           id,
           _mave: {
@@ -277,11 +277,13 @@ const Creator = () => {
       setSearchDefault(null);
     }
     if (selectedType === "menu") {
-      const resultArray = filteredArray.map(({ id, type, ...resMenu }) => ({
-        id,
-        _mave: resMenu,
-        type: `${type ? type : selectedType}`,
-      }));
+      const resultArray = filteredArray?.map(
+        ({ id = 2, type, ...resMenu }) => ({
+          id,
+          _mave: resMenu,
+          type: `${type ? type : selectedType}`,
+        })
+      );
       if (editedSectionId) {
         setEditSectionComponent((prev) => [...prev, ...resultArray]);
       } else {
@@ -290,7 +292,7 @@ const Creator = () => {
       setSearchDefault(null);
     }
     if (selectedType === "navbar") {
-      const resultArray = filteredArray.map(
+      const resultArray = filteredArray?.map(
         ({ id, logo, logo_id, menu, menu_id, type }) => ({
           id,
           _mave: {
@@ -311,7 +313,7 @@ const Creator = () => {
     }
 
     if (selectedType === "slider") {
-      const resultArray = filteredArray.map(
+      const resultArray = filteredArray?.map(
         ({
           id,
           media_ids,
@@ -347,7 +349,7 @@ const Creator = () => {
     }
 
     if (selectedType === "card") {
-      const resultArray = filteredArray.map(
+      const resultArray = filteredArray?.map(
         ({
           id,
           media_files,
@@ -379,7 +381,7 @@ const Creator = () => {
     }
 
     if (selectedType === "form") {
-      const resultArray = filteredArray.map(({ id, type, ...formRest }) => ({
+      const resultArray = filteredArray?.map(({ id, type, ...formRest }) => ({
         id,
         _mave: formRest,
         type: `${type ? type : selectedType}`,
@@ -392,7 +394,7 @@ const Creator = () => {
       setSearchDefault(null);
     }
     if (selectedType === "footer") {
-      const resultArray = filteredArray.map(({ id, type, ...footerRest }) => ({
+      const resultArray = filteredArray?.map(({ id, type, ...footerRest }) => ({
         id,
         _mave: footerRest,
         type: `${type ? type : selectedType}`,
@@ -405,7 +407,7 @@ const Creator = () => {
       setSearchDefault(null);
     }
     if (selectedType === "press_release") {
-      const resultArray = filteredArray.map(({ id, type, ...pressRest }) => ({
+      const resultArray = filteredArray?.map(({ id, type, ...pressRest }) => ({
         id,
         _mave: pressRest,
         type: `${type ? type : selectedType}`,
@@ -418,7 +420,7 @@ const Creator = () => {
       setSearchDefault(null);
     }
     if (selectedType === "event") {
-      const resultArray = filteredArray.map(({ id, type, ...eventRest }) => ({
+      const resultArray = filteredArray?.map(({ id, type, ...eventRest }) => ({
         id,
         _mave: eventRest,
         type: `${type ? type : selectedType}`,
@@ -492,9 +494,9 @@ const Creator = () => {
       );
       console.log("uniqueArray", showPageData);
     }
-    if (sectionData?.data != null) {
+    if (sectionData?.data?.length > 0) {
       postDataBody = [...showPageData, sectionData];
-    } else if (sectionData?.data === null) {
+    } else if (sectionData?.data?.length < 0) {
       postDataBody = [...showPageData];
     }
     // postDataBody = lalas;
@@ -533,7 +535,7 @@ const Creator = () => {
       if (editedSectionId) {
         setEditSectionComponent([]);
       } else {
-        setNewSectionComponent(null);
+        setNewSectionComponent([]);
       }
     } catch (error) {
       message.error(error.message);
@@ -572,7 +574,7 @@ const Creator = () => {
     if (editedSectionId) {
       setEditSectionComponent([]);
     } else {
-      setNewSectionComponent(null);
+      setNewSectionComponent([]);
     }
     setCanvas(false);
     setInternalCanvas(false);
@@ -1100,7 +1102,7 @@ const Creator = () => {
                               if (editedSectionId) {
                                 setEditSectionComponent([]);
                               } else {
-                                setNewSectionComponent(null);
+                                setNewSectionComponent([]);
                               }
                             }}
                             icon={<CloudSyncOutlined />}
