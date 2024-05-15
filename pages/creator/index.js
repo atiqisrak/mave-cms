@@ -552,8 +552,8 @@ const Creator = () => {
         }
       }
     } catch (error) {
-      message.error("Error fetching page data");
-      // console.log(error);
+      // message.error("Error fetching page data");
+      console.log(error);
     } finally {
       setLoading(false);
     }

@@ -4,7 +4,8 @@
         "date": "2024-05-15",
         "changes": {
             "Feature": [
-                "Now user can add components in existing sections"
+                "Now user can add components in existing sections",
+                "User can get all types of media in the media library"
             ],
             "BugFix": [
                 "User can create sliders seamlessly",

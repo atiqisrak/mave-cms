@@ -154,15 +154,15 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
             icon={<FileImageOutlined />}
             onClick={() => router.push("/gallery")}
           >
-            Media Library
+            Gallery
           </Menu.Item>
-          <Menu.Item
+          {/* <Menu.Item
             key="32"
             icon={<FilePdfOutlined />}
             onClick={() => router.push("/documents")}
           >
             Documents
-          </Menu.Item>
+          </Menu.Item> */}
 
           <Menu.Item
             key="9"
