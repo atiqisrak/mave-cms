@@ -110,12 +110,13 @@ const SiteContentV2 = ({ children, collapsed, setCollapsed }) => {
             left: 0,
             top: 60,
             bottom: 0,
+            padding: "0 1rem",
+            border: "none",
           }}
         >
           <Menu
             theme="light"
             mode="inline"
-            // defaultSelectedKeys={["1"]}
             defaultSelectedKeys={selectedMenuItem?.id}
             selectedKeys={[selectedMenuItem]}
             style={{ marginTop: "10%" }}

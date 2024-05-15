@@ -7,6 +7,7 @@ import { Menu } from "antd";
 import React, { useEffect, useState } from "react";
 import router from "next/router";
 import iconsNames from "../../public/data.js";
+import Router from "next/router";
 
 const SideMenuItems = ({
   setSelectedMenuItem,
@@ -17,6 +18,7 @@ const SideMenuItems = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [sideMenuData, setSideMenuData] = useState([]);
+  const router = Router;
 
   const fetchAuthorisedSideMenuData = async () => {
     try {
@@ -63,24 +65,24 @@ const SideMenuItems = ({
           return item?.submenu?.length > 0 ? (
             <Menu.SubMenu
               key={item?.menu}
-              icon={<CalculatorOutlined />}
+              // icon={<CalculatorOutlined />}
               title={item?.menu}
               style={{
                 marginTop: "10%",
                 fontSize: "1.1em",
-                fontWeight: "bold",
               }}
             >
               {item?.submenu?.map((subItem) => {
                 return (
                   <Menu.Item
                     key={subItem.subMenu}
-                    icon={<CalculatorOutlined />}
+                    // icon={<CalculatorOutlined />}
                     onClick={() => {
                       setSelectedMenuItem(subItem.subMenu);
                       router.push(subItem.link);
                     }}
                   >
+                    {React.createElement(iconsNames[subItem.icon])}
                     {subItem.title}
                   </Menu.Item>
                 );
@@ -89,12 +91,10 @@ const SideMenuItems = ({
           ) : item?.icon ? (
             <Menu.Item
               key={item.menu}
-              // icon={<Icon component={item?.icon} />}
               onClick={() => router.push(item.url)}
               style={{
                 marginTop: "10%",
                 fontSize: "1.1em",
-                fontWeight: "bold",
               }}
             >
               {React.createElement(iconsNames[item.icon])}
