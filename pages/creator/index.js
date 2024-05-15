@@ -525,7 +525,7 @@ const Creator = () => {
       const response = await instance.put(`/pages/${pid}`, postData);
       if (response?.status === 200) {
         setUpdateResponse(response.data);
-        message.success("Page updated successfully");
+        console.log("Page updated successfully");
         // setTimeout(() => {
         //   window.location.reload();
         // }, 2000);
@@ -604,7 +604,7 @@ const Creator = () => {
       const response = await instance.put(`/pages/${pid}`, modifiedData);
       if (response?.status === 200) {
         setUpdateResponse(response.data);
-        message.success("Page updated successfully");
+        console.log("Page updated successfully");
         fetchPageData();
       }
     } catch (error) {
@@ -894,7 +894,7 @@ const Creator = () => {
       });
       if (response?.status === 200) {
         setUpdateResponse(response.data);
-        message.success("Page updated successfully");
+        console.log("Page updated successfully");
         fetchPageData();
       }
     } catch (error) {
@@ -933,7 +933,7 @@ const Creator = () => {
       });
       if (response?.status === 200) {
         setUpdateResponse(response.data);
-        message.success("Page updated successfully");
+        console.log("Page updated successfully");
         fetchPageData();
         setEditedSectionId(xSectionId);
         setEditMode(true);

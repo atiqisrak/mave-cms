@@ -63,7 +63,7 @@ const Documents = () => {
           try {
             const response = await instance.delete(`/media/${id}`);
             if (response.data) {
-              message.success("Document deleted successfully");
+              console.log("Document deleted successfully");
             } else {
               message.error("Error deleting document");
             }

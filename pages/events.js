@@ -65,7 +65,7 @@ const Events = () => {
       if (response && response.data) {
         setEvents(response.data);
         // console.log("Events", response.data);
-        // message.success('Events fetched successfully');
+        // console.log('Events fetched successfully');
         setLoading(false);
       } else {
         message.error("Error fetching events");
@@ -144,7 +144,7 @@ const Events = () => {
     try {
       const response = await instance.delete(`/events/${eventId}`);
       if (response && response.data) {
-        message.success("Event deleted successfully");
+        console.log("Event deleted successfully");
         setUpdateResponse(response.data);
         fetchEvents();
       }
@@ -160,7 +160,7 @@ const Events = () => {
         media_ids: selectedMediaIDs,
       });
       if (response && response.data) {
-        message.success("Event updated successfully");
+        console.log("Event updated successfully");
         setUpdateResponse(response.data);
         setEditMode(false);
         fetchEvents();
@@ -178,7 +178,7 @@ const Events = () => {
         media_ids: selectedMediaIDs,
       });
       if (response && response.data) {
-        message.success("Event created successfully");
+        console.log("Event created successfully");
         setUpdateResponse(response.data);
         setCreateMode(false);
         fetchEvents();

@@ -86,7 +86,7 @@ const CreateSlider = () => {
         if (response.data) {
           setMediaAssets(response.data);
           // console.log("Media Assets: ", response.data);
-          // message.success("Media assets fetched successfully");
+          // console.log("Media assets fetched successfully");
           setLoading(false);
         } else {
           // console.error("Error fetching media assets:", response.data.message);
@@ -127,7 +127,7 @@ const CreateSlider = () => {
       const response = await instance.post("/sliders", postData);
       if (response.status === 201) {
         // Handle successful response (e.g., show a success message)
-        message.success("Slider created successfully");
+        console.log("Slider created successfully");
         setLoading(false);
       } else {
         // Handle error response

@@ -82,7 +82,7 @@ const MenuItems = () => {
       if (response.data) {
         setPages(response.data);
         // console.log("Pages: ", response.data);
-        // message.success("Pages fetched successfully");
+        // console.log("Pages fetched successfully");
         setLoading(false);
       } else {
         // console.error("Error fetching pages:", response.data.message);

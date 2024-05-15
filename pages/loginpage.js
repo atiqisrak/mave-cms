@@ -67,7 +67,7 @@ const Loginpage = ({ open, setOpen, response, setResponse }) => {
         setToken(newToken);
         localStorage.setItem("user", user);
         localStorage.setItem("token", newToken);
-        message.success("Logged in successfully");
+        console.log("Logged in successfully");
         // Handle success, e.g., show a success message or update your UI
         // console.log("Data deleted successfully");
       }
@@ -151,10 +151,14 @@ const Loginpage = ({ open, setOpen, response, setResponse }) => {
             <p>
               New to Mave?{" "}
               {/* <span onClick={handleChangeState}>Create an Account</span>{" "} */}
-              <span onClick={() => {
-                // popup notification saying contact admin
-                message.info("Contact Admin");
-              }}>Create an Account</span>{" "}
+              <span
+                onClick={() => {
+                  // popup notification saying contact admin
+                  message.info("Contact Admin");
+                }}
+              >
+                Create an Account
+              </span>{" "}
             </p>
           </div>
         </div>

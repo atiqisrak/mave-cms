@@ -17,7 +17,7 @@ const NavbarParser = ({ item, editMode, onNavbarSelect }) => {
       if (response.data) {
         setNavbars(response.data);
         // console.log("Navbars: ", response.data);
-        // message.success("Navbars fetched successfully");
+        // console.log("Navbars fetched successfully");
         setLoading(false);
       } else {
         // console.error("Error fetching media assets:", response.data.message);
