@@ -88,7 +88,7 @@ const Pages = () => {
         slug: newPageTitleEn.toLowerCase().split(" ").join("-"),
       });
       if (response.status === 201) {
-        // message.success("New page added successfully");
+        // console.log("New page added successfully");
         closeAddNewPageCard();
         fetchPages();
         setCreateMode(false);
@@ -117,7 +117,7 @@ const Pages = () => {
               console.error("Error deleting page:", response.data.message);
             }
 
-            message.success("Page deleted successfully");
+            console.log("Page deleted successfully");
             fetchPages();
           });
         },
@@ -150,7 +150,7 @@ const Pages = () => {
         slug: pageSlug ? pageSlug : prevpslug,
       });
       if (response.status === 200) {
-        message.success("Page info updated successfully");
+        console.log("Page info updated successfully");
         setEditPageName(false);
         fetchPages();
       } else {

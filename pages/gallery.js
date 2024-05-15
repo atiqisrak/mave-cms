@@ -21,13 +21,17 @@ import {
   DeleteFilled,
   DeleteOutlined,
   EditOutlined,
+  FileImageOutlined,
+  FilePdfOutlined,
   FilterOutlined,
   SyncOutlined,
   UploadOutlined,
+  VideoCameraOutlined,
 } from "@ant-design/icons";
 const { Option } = Select;
 import { Document, Page } from "react-pdf";
 import Image from "next/image";
+import Documents from "./documents";
 
 const Gallery = () => {
   useEffect(() => {
@@ -82,7 +86,6 @@ const Gallery = () => {
       );
 
       if (Array.isArray(response.data.data)) {
-        // Assuming 'created_at' is the field to be used for sorting
         const sortedMediaAssets = response.data.data.sort((a, b) => {
           const timestampA = new Date(a.created_at).getTime();
           const timestampB = new Date(b.created_at).getTime();
@@ -128,7 +131,6 @@ const Gallery = () => {
   }, [mediaAssets]);
 
   const handleNewMediaUpload = () => {
-    // fetchMediaAssets(currentPage, selectedMediaCount);
     window.location.reload();
   };
 
@@ -140,32 +142,23 @@ const Gallery = () => {
         okText: "Yes",
         cancelText: "No",
         onOk: async () => {
-          // Update the local state to hide the media item
           setMediaAssets((prevAssets) =>
             prevAssets.filter((asset) => asset.id !== id)
           );
 
           try {
-            // Make the server request to delete the media
             const response = await instance.delete(`/media/${id}`);
             if (response.data) {
-              // Assuming the server request was successful, no need to update state again
-              // console.log("Media deleted successfully");
-              message.success("Media deleted successfully");
+              console.log("Media deleted successfully");
             } else {
-              // Handle the case where the server request fails
-              // console.error("Error deleting media:", response.data.message);
               message.error("Error deleting media");
             }
           } catch (error) {
-            // Handle errors that occur during the server request
-            // console.error("Error deleting media:", error);
             message.error("Error deleting media");
           }
         },
       });
     } catch (error) {
-      // Handle errors that occur during the modal confirmation
       console.error("Error deleting media:", error);
     }
   };
@@ -213,8 +206,7 @@ const Gallery = () => {
         title: editMedia?.mediaTitle,
       });
       if (response.data) {
-        message.success("Media title updated successfully");
-        // fetchMediaAssets(currentPage, selectedMediaCount);
+        console.log("Media title updated successfully");
         window.location.reload();
       } else {
         console.error("Error updating media title:", response.data.message);
@@ -229,27 +221,55 @@ const Gallery = () => {
   return (
     <div className="login-page">
       <div className="ViewContainer ViewContentContainer media-area login-page-section">
-        <h1 style={{ textAlign: "center" }}>Media Library</h1>
-        <hr style={{ marginBottom: "1rem", marginTop: ".5rem" }} />
+        {/* <h1 style={{ textAlign: "center" }}>Upload</h1> */}
+        {/* <hr style={{ marginBottom: "1rem", marginTop: ".5rem" }} /> */}
 
         <center>
-          <Button
-            type="primary"
+          <div
             onClick={showModal}
             style={{
+              cursor: "pointer",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
               marginBottom: "5rem",
-              marginTop: "1rem",
-              borderRadius: "5px",
-              border: "1px solid var(--lite-dark)",
-              backgroundColor: "var(--themes)",
-              fontSize: "1.5rem",
-              lineHeight: "1.5rem",
-              padding: "1em 2em 2em 2em",
+              backgroundColor: "#e2f3ff",
+              border: "1px dashed #006eff",
+              borderRadius: "15px",
+              padding: "3rem",
+              margin: "0 2rem 2rem",
             }}
           >
-            Upload Media
-            <UploadOutlined />
-          </Button>
+            <Image
+              src="/images/cloudupload.png"
+              alt="Upload"
+              width={300}
+              height={300}
+              style={{ cursor: "pointer" }}
+            />
+            <h1
+              style={{
+                color: "#006eff",
+                marginBottom: "1rem",
+              }}
+            >
+              Upload to Cloud Storage
+            </h1>
+            {/* warning info about size and dimension */}
+            <p
+              style={{
+                color: "var(--themes)",
+                fontSize: "1rem",
+                textAlign: "center",
+                fontWeight: 400,
+                lineHeight: "1.5",
+              }}
+            >
+              Maximum file size: 2MB <br /> Image/Video Maximum dimension:
+              1920x1080
+            </p>
+          </div>
         </center>
 
         <Button
@@ -309,26 +329,6 @@ const Gallery = () => {
           Filter
         </Button>
 
-        {/* Bulk Delete */}
-        {/* <Button
-          onClick={handleBulkDelete}
-          style={{
-            backgroundColor: "var(--themes)",
-            color: "var(--white)",
-            fontSize: "1.1rem",
-            padding: "1.2em 1.2em",
-            borderRadius: "10px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            position: "fixed",
-            top: "28%",
-            right: "10%",
-          }}
-        >
-          Bulk Delete
-        </Button> */}
-
         <Modal
           title="Filter Settings"
           open={settingsVisible}
@@ -373,8 +373,8 @@ const Gallery = () => {
         </Modal>
 
         {/* Tabs for Image, Video, PDF */}
-        <Tabs defaultActiveKey="1" centered>
-          <Tabs.TabPane tab="Images" key="1">
+        <Tabs defaultActiveKey="1" centered animated type="card">
+          <Tabs.TabPane icon={<FileImageOutlined />} tab="Images" key="1">
             <Row
               gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}
               style={{
@@ -523,66 +523,86 @@ const Gallery = () => {
               }}
             />
           </Tabs.TabPane>
-          <Tabs.TabPane tab="Videos" key="2">
-            <Row
-              gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                flexWrap: "wrap",
-              }}
-            >
-              {videos.map((video) => (
-                <Col
-                  key={video.id}
-                  xs={24}
-                  sm={12}
-                  md={8}
-                  lg={6}
-                  xl={4}
-                  style={{ marginBottom: "1rem" }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <video
-                      src={`${MEDIA_URL}/${video.file_path}`}
-                      controls
-                      width="200"
-                      height="200"
-                    />
-                    <Button
-                      type="primary"
-                      danger
-                      onClick={() => onDelete(video.id)}
-                      style={{ marginTop: "1rem" }}
+          <Tabs.TabPane tab="Videos" key="2" icon={<VideoCameraOutlined />}>
+            {isLoading ? (
+              <center>
+                <Spin size="large" />
+                <Skeleton active />
+              </center>
+            ) : (
+              <div>
+                {videos?.length > 0 ? (
+                  <div>
+                    <Row
+                      gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexWrap: "wrap",
+                      }}
                     >
-                      Delete
-                    </Button>
+                      {videos.map((video) => (
+                        <Col
+                          key={video.id}
+                          xs={24}
+                          sm={12}
+                          md={8}
+                          lg={6}
+                          xl={4}
+                          style={{ marginBottom: "1rem" }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            <video
+                              src={`${MEDIA_URL}/${video.file_path}`}
+                              controls
+                              width="200"
+                              height="200"
+                            />
+                            <Button
+                              type="primary"
+                              danger
+                              onClick={() => onDelete(video.id)}
+                              style={{ marginTop: "1rem" }}
+                            >
+                              Delete
+                            </Button>
+                          </div>
+                        </Col>
+                      ))}
+                    </Row>
+                    <Pagination
+                      current={currentPage}
+                      pageSize={selectedMediaCount}
+                      total={totalMediaAssets}
+                      onChange={handlePaginationChange}
+                      responsive={true}
+                      showSizeChanger={false}
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginTop: "2rem",
+                      }}
+                    />
                   </div>
-                </Col>
-              ))}
-            </Row>
-            <Pagination
-              current={currentPage}
-              pageSize={selectedMediaCount}
-              total={totalMediaAssets}
-              onChange={handlePaginationChange}
-              responsive={true}
-              showSizeChanger={false}
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: "2rem",
-              }}
-            />
+                ) : (
+                  <center>
+                    <h1>No Videos Available</h1>
+                  </center>
+                )}
+              </div>
+            )}
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Docs" key="3" icon={<FilePdfOutlined />}>
+            <Documents />
           </Tabs.TabPane>
         </Tabs>
       </div>

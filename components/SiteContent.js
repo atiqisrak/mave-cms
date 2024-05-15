@@ -97,7 +97,8 @@ const SiteContent = ({ children, collapsed, setCollapsed }) => {
   };
 
   const handleLogout = () => {
-    message.success("Log out successfully");
+    console.log("Log out successfully");
+    // Clear the token from state and localStorage
     setToken(null);
     setContextToken(null);
     localStorage.removeItem("token");
@@ -165,15 +166,15 @@ const SiteContent = ({ children, collapsed, setCollapsed }) => {
             icon={<FileImageOutlined />}
             onClick={() => router.push("/gallery")}
           >
-            Media Library
+            Gallery
           </Menu.Item>
-          <Menu.Item
+          {/* <Menu.Item
             key="32"
             icon={<FilePdfOutlined />}
             onClick={() => router.push("/documents")}
           >
             Documents
-          </Menu.Item>
+          </Menu.Item> */}
 
           <Menu.Item
             key="9"

@@ -73,14 +73,14 @@ const CreateSliderComponent = ({
         media_ids: maveMedia,
         card_ids: maveCard,
       };
-      // const response = await instance.post("/sliders", postData);
-      // if (response.status === 201) {
-      //   setResponse(response);
-      //   setShowCreateSliderForm(false);
-      //   setLoading(false);
-      // } else {
-      //   console.error("Error creating slider:", response.data);
-      // }
+      const response = await instance.post("/sliders", postData);
+      if (response.status === 201) {
+        setResponse(response);
+        setShowCreateSliderForm(false);
+        setLoading(false);
+      } else {
+        console.error("Error creating slider:", response.data);
+      }
       console.log("postData: ", postData);
     } catch (error) {
       console.error("Error creating slider:", error);

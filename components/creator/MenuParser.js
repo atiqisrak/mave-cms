@@ -15,7 +15,7 @@ const MenuParser = ({ item, editMode, onMenuSelect }) => {
       if (response.data) {
         setMenus(response.data);
         // console.log("Menus: ", response.data);
-        // message.success("Menus fetched successfully");
+        // console.log("Menus fetched successfully");
         setLoading(false);
       } else {
         console.error("Error fetching media assets:", response.data.message);

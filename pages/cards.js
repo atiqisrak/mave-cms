@@ -84,7 +84,7 @@ const Cards = () => {
   const handleCreateCard = (createdCard) => {
     setLoading(true);
     setCardsData([...cardsData, createdCard]);
-    message.success("Card created successfully");
+    console.log("Card created successfully");
     // setIsCreateCardFormVisible(false);
     setLoading(false);
   };

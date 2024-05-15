@@ -70,7 +70,7 @@ const CMSComponentGallery = ({ children, router }) => {
   // modal area
 
   const handleLogout = () => {
-    message.success("Log out successfully");
+    console.log("Log out successfully");
     // Clear the token from state and localStorage
     setToken(null);
     setContextToken(null);
