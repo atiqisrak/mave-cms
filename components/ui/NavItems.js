@@ -5,10 +5,9 @@ import {
   SearchOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Image, Input, List, Space } from "antd";
+import { Image, Input, List, Space, Layout } from "antd";
 import { useState } from "react";
-import router from "next/router";
-import { Header } from "antd/es/layout/layout";
+const { Header } = Layout;
 export default function NavItems() {
   const [hovered, setHovered] = useState(false);
   const [selectedMenuItem, setSelectedMenuItem] = useState("Home");
