@@ -151,7 +151,7 @@ const Gallery = () => {
             if (response.data) {
               // Assuming the server request was successful, no need to update state again
               // console.log("Media deleted successfully");
-              message.success("Media deleted successfully");
+              console.log("Media deleted successfully");
             } else {
               // Handle the case where the server request fails
               // console.error("Error deleting media:", response.data.message);
@@ -213,7 +213,7 @@ const Gallery = () => {
         title: editMedia?.mediaTitle,
       });
       if (response.data) {
-        message.success("Media title updated successfully");
+        console.log("Media title updated successfully");
         // fetchMediaAssets(currentPage, selectedMediaCount);
         window.location.reload();
       } else {

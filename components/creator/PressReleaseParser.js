@@ -18,7 +18,7 @@ const PressReleaseParser = ({ item, editMode, onPressReleaseSelect }) => {
       if (response.data) {
         setPressReleases(response.data);
         // console.log("Press Releases: ", response.data);
-        // message.success("Press Releases fetched successfully");
+        // console.log("Press Releases fetched successfully");
         setLoading(false);
       } else {
         // console.error("Error fetching media assets:", response.data.message);
