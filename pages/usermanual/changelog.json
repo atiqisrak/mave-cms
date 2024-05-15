@@ -5,7 +5,8 @@
         "changes": {
             "Feature": [
                 "Now user can add components in existing sections",
-                "User can get all types of media in the media library"
+                "User can get all types of media in the media library",
+                "Gallary got a new look"
             ],
             "BugFix": [
                 "User can create sliders seamlessly",
