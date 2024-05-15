@@ -60,7 +60,7 @@ const index = () => {
     fetchData();
   }, []);
 
-  console.log("Data: ", data);
+  // console.log("Data: ", data);
 
   return (
     <>

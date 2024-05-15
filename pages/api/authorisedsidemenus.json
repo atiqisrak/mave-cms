@@ -1,70 +1,79 @@
 [
     {
+        "id": 1,
+        "menu": "Home",
+        "title": "Home",
+        "icon": "HomeOutlined",
+        "link": "/"
+    },
+    {
+        "id": 2,
         "menu": "Components",
-        "icon": "BlockOutlined",
+        "title": "Components",
+        "icon": "AppstoreOutlined",
         "submenu": [
             {
-                "id": 1,
+                "id": 3,
                 "icon": "FileImageOutlined",
                 "link": "/gallery",
                 "title": "Media Library"
             },
             {
-                "id": 2,
+                "id": 4,
                 "icon": "FilePdfOutlined",
                 "link": "/documents",
                 "title": "Documents"
             },
             {
-                "id": 3,
+                "id": 5,
                 "icon": "MenuOutlined",
                 "link": "/menuitems",
                 "title": "Menu Items"
             },
             {
-                "id": 4,
+                "id": 6,
                 "icon": "MenuOutlined",
                 "link": "/menus",
                 "title": "Menus"
             },
             {
-                "id": 5,
+                "id": 7,
                 "icon": "PicCenterOutlined",
                 "link": "/navbars",
                 "title": "Navbars"
             },
             {
-                "id": 6,
+                "id": 8,
                 "icon": "SlidersOutlined",
                 "link": "/sliders",
                 "title": "Sliders"
             },
             {
-                "id": 7,
+                "id": 9,
                 "icon": "IdcardOutlined",
                 "link": "/cards",
                 "title": "Cards"
             },
             {
-                "id": 8,
+                "id": 10,
                 "icon": "ProfileOutlined",
                 "link": "/pressrelease",
                 "title": "Press Release"
             },
             {
-                "id": 9,
+                "id": 11,
                 "icon": "SwitcherOutlined",
                 "link": "/events",
                 "title": "Events"
             },
             {
-                "id": 10,
+                "id": 12,
                 "icon": "FormOutlined",
                 "link": "/forms",
                 "title": "Forms"
             },
             {
-                "id": 11,
+                "id": 13,
                 "icon": "BoxPlotOutlined",
                 "link": "/footer",
                 "title": "Footers"
@@ -72,27 +81,31 @@
         ]
     },
     {
+        "id": 14,
         "menu": "Form Responses",
+        "title": "Form Responses",
         "icon": "MailOutlined",
         "link": "/formresponses"
     },
     {
+        "id": 15,
         "menu": "Creator Studio",
+        "title": "Creator Studio",
         "submenu": [
             {
-                "id": 12,
+                "id": 16,
                 "icon": "DollarCircleOutlined",
                 "link": "/creator/pages",
                 "title": "Pages"
             },
             {
-                "id": 13,
+                "id": 17,
                 "icon": "AlignLeftOutlined",
                 "link": "/blogs",
                 "title": "Blogs"
             },
             {
-                "id": 14,
+                "id": 18,
                 "icon": "PlusCircleOutlined",
                 "link": "/blogs/createblog",
                 "title": "Create Blog"
@@ -100,40 +113,42 @@
         ]
     },
     {
+        "id": 19,
         "menu": "User Manual",
+        "title": "User Manual",
         "submenu": [
             {
-                "id": 15,
+                "id": 20,
                 "icon": "ClockCircleOutlined",
                 "link": "/usermanual/changelog",
                 "title": "Changelog"
             },
             {
-                "id": 16,
+                "id": 21,
                 "icon": "FileTextOutlined",
                 "link": "/usermanual/documentation",
                 "title": "Documentation"
             },
             {
-                "id": 17,
+                "id": 22,
                 "icon": "VideoCameraOutlined",
                 "link": "/usermanual/userguide",
                 "title": "User Guide"
             },
             {
-                "id": 18,
+                "id": 23,
                 "icon": "QuestionCircleOutlined",
                 "link": "/usermanual/faq",
                 "title": "FAQ"
             },
             {
-                "id": 19,
+                "id": 24,
                 "icon": "MessageOutlined",
                 "link": "/usermanual/support",
                 "title": "Support"
             },
             {
-                "id": 20,
+                "id": 25,
                 "icon": "CompassOutlined",
                 "link": "/compare",
                 "title": "Compare"
