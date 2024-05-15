@@ -31,7 +31,7 @@ const SystemDemand = () => {
         setMessages(response.data);
         setLoading(false);
         // console.log("System Demand: ", response.data);
-        // message.success("System Demands fetched successfully");
+        // console.log("System Demands fetched successfully");
       } else {
         // console.log("Error: ", response);
         message.error("Error fetching data");
@@ -56,7 +56,7 @@ const SystemDemand = () => {
         selectedMessage
       );
       if (response.status === 200) {
-        message.success("Message updated successfully");
+        console.log("Message updated successfully");
         setModalVisible(false);
         fetchMessages();
         setLoading(false);
@@ -79,7 +79,7 @@ const SystemDemand = () => {
         status: value,
       });
       if (response.status === 200) {
-        message.success("Status updated successfully");
+        console.log("Status updated successfully");
         fetchMessages();
         setEditMode(false);
         setLoading(false);

@@ -70,7 +70,7 @@ const Profile = () => {
     try {
       const response = await instance.post("/admin/register", items);
       if (response.status === 200) {
-        message.success("User created successfully");
+        console.log("User created successfully");
         setCreateUser(false);
         setIsLoading(false);
         window.location.reload();
@@ -159,7 +159,7 @@ const Profile = () => {
         .then((response) => {
           // console.log("Response: ", response?.data?.user);
           if (response.status === 200) {
-            message.success("Profile Updated Successfully");
+            console.log("Profile Updated Successfully");
             setUserData(updatedData);
             setModifyMode(false);
             localStorage.setItem("user", JSON.stringify(updatedData));
@@ -205,7 +205,7 @@ const Profile = () => {
         .then((response) => {
           // console.log("Response: ", response?.data?.user);
           if (response.status === 200) {
-            message.success("User Updated Successfully");
+            console.log("User Updated Successfully");
             setUsers(
               users.map((user) => (user.id === id ? updatedUser : user))
             );
@@ -245,7 +245,7 @@ const Profile = () => {
         .then((response) => {
           // console.log("Response: ", response?.data?.user);
           if (response.status === 200) {
-            message.success("User Deleted Successfully");
+            console.log("User Deleted Successfully");
             setUsers(users.filter((user) => user.id !== id));
           }
         })
@@ -671,7 +671,7 @@ const Profile = () => {
                               <Popconfirm
                                 title="Are you sure to delete this user?"
                                 onConfirm={() => {
-                                  message.success("User deleted successfully");
+                                  console.log("User deleted successfully");
                                   handleDeleteUser(user?.id);
                                 }}
                                 onCancel={() =>

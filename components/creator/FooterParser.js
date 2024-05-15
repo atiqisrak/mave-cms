@@ -35,7 +35,7 @@ const FooterParser = ({ item, editMode, onFooterSelect }) => {
       if (response.data) {
         setFooters(response.data);
         // console.log("Footers: ", response.data);
-        // message.success("Footers fetched successfully");
+        // console.log("Footers fetched successfully");
         setLoading(false);
       } else {
         message.error("Error fetching footers");

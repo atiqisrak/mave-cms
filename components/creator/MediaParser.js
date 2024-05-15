@@ -25,7 +25,7 @@ const MediaParser = ({ item, editMode, onMediaSelect, setMediaId }) => {
         setTotalMediaAssets(response?.data?.length);
         // console.log("TotalMediaAssets: ", setTotalMediaAssets);
         // console.log("Medias: ", response.data);
-        // message.success("Media assets fetched successfully");
+        // console.log("Media assets fetched successfully");
         setLoading(false);
       } else {
         // console.error("Error fetching media assets:", response.data.message);

@@ -66,7 +66,7 @@ const Login = ({ open, setOpen, response, setResponse }) => {
         setToken(newToken);
         localStorage.setItem("user", user);
         localStorage.setItem("token", newToken);
-        message.success("Login successfully");
+        console.log("Login successfully");
       }
     } catch (error) {
       // Handle errors, e.g., display an error message or log the error

@@ -63,7 +63,7 @@ const Documents = () => {
           try {
             const response = await instance.delete(`/media/${id}`);
             if (response.data) {
-              message.success("Document deleted successfully");
+              console.log("Document deleted successfully");
             } else {
               message.error("Error deleting document");
             }
@@ -77,22 +77,18 @@ const Documents = () => {
     }
   };
 
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <div className="login-page">
       <div className="ViewContainer ViewContentContainer media-area login-page-section">
-        <h1 style={{ textAlign: "center" }}>Document Library</h1>
-        {console.log("Documents: ", documents)}
-
         <div>
           {documents && documents.length > 0 ? (
             <Row gutter={[16, 16]}>
               {documents.map((document, index) => (
-                <Col
-                  key={index}
-                  style={{
-                    marginTop: "40px",
-                  }}
-                >
+                <Col key={index}>
                   <div
                     className="media-card"
                     style={{
@@ -107,22 +103,10 @@ const Documents = () => {
                       gap: "20px",
                     }}
                   >
-                    {/* <img
-                                                src="/images/pdf_file_type.png"
-                                                alt="pdf"
-                                                style={{
-                                                    width: "auto",
-                                                    height: "18vh",
-                                                }}
-                                                onClick={() => window.open(`${DOC_URL}/${document?.file_path}`)}
-                                            /> */}
-                    {
-                      console.log(
-                        "Document: ",
-                        `${DOC_URL}/${document?.file_path}`
-                      )
-                      // if space in file name, replace with %20
-                    }
+                    {console.log(
+                      "Document: ",
+                      `${DOC_URL}/${document?.file_path}`
+                    )}
                     <iframe
                       src={`${DOC_URL}/${document?.file_path}`}
                       style={{

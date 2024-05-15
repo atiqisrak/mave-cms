@@ -49,7 +49,7 @@ const Menus = () => {
         if (response.data) {
           setMenus(response.data?.sort((a, b) => b.id - a.id));
           // console.log("Menus", response.data);
-          // message.success("Menus fetched successfully");
+          // console.log("Menus fetched successfully");
           setLoading(false);
         } else {
           // console.log("Error fetching menus", response.data.message);
@@ -73,7 +73,7 @@ const Menus = () => {
         if (response.data) {
           setMenuItems(response.data);
           // console.log("MenuItems", response.data);
-          // message.success("Menu items fetched successfully");
+          // console.log("Menu items fetched successfully");
           setLoading(false);
         } else {
           // console.log("Error fetching menu items", response.data.message);
@@ -202,7 +202,7 @@ const Menus = () => {
           ...menus,
         ];
         setMenus(updatedMenus);
-        message.success("Menu created successfully");
+        console.log("Menu created successfully");
         // Reset input fields and exit add menu mode
         setEditedMenuName("");
         setEditedMenuItemsIds([]);

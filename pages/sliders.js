@@ -116,7 +116,7 @@ const Sliders = () => {
         const response = await instance.get("/cards");
         if (response.data) {
           setCards(response.data);
-          message.success("Cards fetched successfully");
+          console.log("Cards fetched successfully");
           setLoading(false);
         } else {
           message.error("Cards couldn't be fetched");
@@ -152,7 +152,7 @@ const Sliders = () => {
 
       if (response?.data) {
         setResponseData(response?.data);
-        message.success("Slider deleted successfully");
+        console.log("Slider deleted successfully");
         setLoading(false);
       } else {
         // console.error("Error deleting slider:", response.data);
@@ -224,7 +224,7 @@ const Sliders = () => {
       );
       if (response.status === 200) {
         if (response?.data) {
-          message.success("Slider updated successfully");
+          console.log("Slider updated successfully");
           setResponseData(response);
         }
         setEditingItemId(null);
