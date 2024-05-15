@@ -6,11 +6,22 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Image, Input, List, Space, Layout } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 const { Header } = Layout;
+import router from "next/router";
+
 export default function NavItems() {
   const [hovered, setHovered] = useState(false);
+  const [topNavData, setTopNavData] = useState([]);
   const [selectedMenuItem, setSelectedMenuItem] = useState("Home");
+
+  useEffect(() => {
+    fetch("/api/topnavdata")
+      .then((res) => res.json())
+      .then((data) => {
+        setTopNavData(data);
+      });
+  }, []);
 
   return (
     <Header
@@ -65,20 +76,10 @@ export default function NavItems() {
           paddingTop: "1vh",
         }}
       >
-        <List
-          grid={{
-            gutter: 40,
-            column: 5,
-          }}
-          dataSource={[
-            { name: "Home", link: "/" },
-            { name: "Dashboard", link: "/dashboard" },
-            { name: "Pages", link: "/creator/pages" },
-            { name: "Posts", link: "/posts" },
-            { name: "Files", link: "/files" },
-          ]}
-          renderItem={(item) => (
-            <List.Item
+        {topNavData &&
+          topNavData.map((item) => (
+            <div
+              key={item.id}
               style={{
                 fontSize: "clamp(0.8em, 1.5vw, 1.1em)",
                 color:
@@ -97,9 +98,8 @@ export default function NavItems() {
               }}
             >
               {item.name}
-            </List.Item>
-          )}
-        />
+            </div>
+          ))}
       </Space>
 
       {/* Search bar */}
@@ -114,8 +114,8 @@ export default function NavItems() {
           placeholder="Try searching «Headless CMS»"
           suffix={<SearchOutlined />}
           style={{
-            width: "80%",
-            height: "5vh",
+            width: "100%",
+            height: "4vh",
             borderRadius: "20px",
             padding: "0 20px",
             backgroundColor: "white",

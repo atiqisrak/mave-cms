@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "name": "Home",
+        "link": "/"
+    },
+    {
+        "id": 2,
+        "name": "Dashboard",
+        "link": "/dashboard"
+    },
+    {
+        "id": 3,
+        "name": "Pages",
+        "link": "/pages"
+    },
+    {
+        "id": 4,
+        "name": "Blogs",
+        "link": "/blogs"
+    },
+    {
+        "id": 5,
+        "name": "Chat with AI",
+        "link": "/write-ai"
+    }
+]
