@@ -31,7 +31,7 @@ const ContactUsResponses = () => {
         setMessages(response.data);
         setLoading(false);
         // console.log("Messages: ", response.data);
-        // message.success("Messages fetched successfully");
+        // console.log("Messages fetched successfully");
       } else {
         // console.log("Error: ", response);
         message.error("Error fetching data");
@@ -56,7 +56,7 @@ const ContactUsResponses = () => {
         selectedMessage
       );
       if (response.status === 200) {
-        message.success("Message updated successfully");
+        console.log("Message updated successfully");
         setModalVisible(false);
         fetchMessages();
         setLoading(false);
@@ -79,7 +79,7 @@ const ContactUsResponses = () => {
         status: value,
       });
       if (response.status === 200) {
-        message.success("Status updated successfully");
+        console.log("Status updated successfully");
         fetchMessages();
         setEditMode(false);
         setLoading(false);

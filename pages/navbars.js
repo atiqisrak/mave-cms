@@ -58,7 +58,7 @@ const Navbars = () => {
         setMedia(mediaResponse.data);
         setMenus(menuResponse.data);
         setNavbars(navbarsResponse?.data?.sort((a, b) => b.id - a.id));
-        // message.success("Data fetched successfully");
+        // console.log("Data fetched successfully");
         // console.log("Media Data", mediaResponse.data);
         // console.log("Menu Data", menuResponse.data);
         // console.log("Navbar Data", navbarsResponse.data);
@@ -113,7 +113,7 @@ const Navbars = () => {
     instance
       .put(`/navbars/${navbar.id}`, updatedData)
       .then((response) => {
-        message.success("Navbar updated successfully.");
+        console.log("Navbar updated successfully.");
         setEditMode(false);
         setEditedNavbar(null);
         setFormData({ logo_id: null, menu_id: null });
@@ -138,7 +138,7 @@ const Navbars = () => {
     try {
       const response = await instance.delete(`/navbars/${navbarId}`);
       if (response.status === 200) {
-        message.success("Navbar deleted successfully.");
+        console.log("Navbar deleted successfully.");
         setNavbars((prevNavbars) =>
           prevNavbars.filter((navbar) => navbar.id !== navbarId)
         );
@@ -175,7 +175,7 @@ const Navbars = () => {
       if (response.status === 201) {
         setIsCreateNavbarFormVisible(false);
         setSelectedLogo(`${MEDIA_URL}/${selectedMediaId}`);
-        message.success("Navbar created successfully.");
+        console.log("Navbar created successfully.");
         const getData = async () => {
           try {
             const res = await instance.get("/navbars");
