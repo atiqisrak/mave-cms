@@ -32,11 +32,6 @@ const Dashboard = () => {
   return (
     <>
       <div className="ViewContainer ViewContentContainer">
-        {/* <center>
-          <h1>Welcome to Mave CMS</h1>
-          <br /><br />
-          <Image src="/images/mave_logo_horizontal.png" width={800} alt="" />
-          </center> */}
         {user && token ? (
           <>
             <div className="dashboard-area">

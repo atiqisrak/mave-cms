@@ -28,7 +28,7 @@ function Forms() {
       if (response.data) {
         setForms(response.data);
         // console.log("Forms: ", response.data);
-        // message.success("Forms fetched successfully");
+        // console.log("Forms fetched successfully");
         setLoading(false);
       } else {
         console.error("Error fetching forms:", response.data.message);

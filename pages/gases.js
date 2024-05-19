@@ -42,7 +42,7 @@ const Gases = () => {
       if (res.status === 200) {
         setGases(res.data);
         // console.log("Gases", res.data);
-        // message.success("Gases fetched successfully");
+        // console.log("Gases fetched successfully");
       } else {
         message.error("Unable to fetch gases");
       }
@@ -80,7 +80,7 @@ const Gases = () => {
     try {
       const res = await instance.delete(`/gas/${id}/`);
       if (res.status === 204) {
-        message.success("Gas deleted successfully");
+        console.log("Gas deleted successfully");
         setUpdateResponse(res);
       } else {
         message.error("Unable to delete gas");
@@ -95,7 +95,7 @@ const Gases = () => {
     try {
       const res = await instance.post("/gas", formData);
       if (res.status === 201) {
-        message.success("Gas created successfully");
+        console.log("Gas created successfully");
         setUpdateResponse(res);
         setCreateMode(false);
       } else {
@@ -111,7 +111,7 @@ const Gases = () => {
     try {
       const res = await instance.put(`/gas/${id}/`, formData);
       if (res.status === 200) {
-        message.success("Gas updated successfully");
+        console.log("Gas updated successfully");
         setUpdateResponse(res);
         setEditMode(false);
       } else {

@@ -57,6 +57,7 @@ const Creator = () => {
   const [pageData, setPageData] = useState();
   const [showPageData, setShowPageData] = useState([]);
   const [newSectionComponents, setNewSectionComponent] = useState([]);
+  const [editSectionComponents, setEditSectionComponent] = useState([]);
   const [updatedSectionData, setUpdatedSectionData] = useState([]);
   const [newData, setNewData] = useState(null);
   const [canvas, setCanvas] = useState(false);
@@ -256,7 +257,7 @@ const Creator = () => {
     // console.log("description", description);
     if (selectedType === "media") {
       console.log("resultArray", resultArray);
-      const resultArray = filteredArray.map(
+      const resultArray = filteredArray?.map(
         ({ id, file_name, file_path, file_type, tags, type }) => ({
           id,
           _mave: {
@@ -268,20 +269,30 @@ const Creator = () => {
           type: `${type ? type : selectedType}`,
         })
       );
-      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, ...resultArray]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      }
       setSearchDefault(null);
     }
     if (selectedType === "menu") {
-      const resultArray = filteredArray.map(({ id, type, ...resMenu }) => ({
-        id,
-        _mave: resMenu,
-        type: `${type ? type : selectedType}`,
-      }));
-      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      const resultArray = filteredArray?.map(
+        ({ id = 2, type, ...resMenu }) => ({
+          id,
+          _mave: resMenu,
+          type: `${type ? type : selectedType}`,
+        })
+      );
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, ...resultArray]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      }
       setSearchDefault(null);
     }
     if (selectedType === "navbar") {
-      const resultArray = filteredArray.map(
+      const resultArray = filteredArray?.map(
         ({ id, logo, logo_id, menu, menu_id, type }) => ({
           id,
           _mave: {
@@ -293,30 +304,52 @@ const Creator = () => {
           type: `${type ? type : selectedType}`,
         })
       );
-      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, ...resultArray]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      }
       setSearchDefault(null);
     }
 
     if (selectedType === "slider") {
-      const resultArray = filteredArray.map(
-        ({ id, media_ids, medias, status, title_bn, title_en, type }) => ({
+      const resultArray = filteredArray?.map(
+        ({
+          id,
+          media_ids,
+          medias,
+          card_ids,
+          cards,
+          status,
+          title_bn,
+          title_en,
+          type,
+        }) => ({
           id,
           _mave: {
             media_ids,
             medias,
+            card_ids,
+            cards,
             status,
             title_bn,
             title_en,
+            slider_type: type && type,
           },
-          type: `${type ? type : selectedType}`,
+          // type: `${type ? type : selectedType}`,
+          type: "slider",
         })
       );
-      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, ...resultArray]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      }
       setSearchDefault(null);
     }
 
     if (selectedType === "card") {
-      const resultArray = filteredArray.map(
+      const resultArray = filteredArray?.map(
         ({
           id,
           media_files,
@@ -339,57 +372,83 @@ const Creator = () => {
           type: `${type ? type : selectedType}`,
         })
       );
-      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, ...resultArray]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      }
       setSearchDefault(null);
     }
 
     if (selectedType === "form") {
-      const resultArray = filteredArray.map(({ id, type, ...formRest }) => ({
+      const resultArray = filteredArray?.map(({ id, type, ...formRest }) => ({
         id,
         _mave: formRest,
         type: `${type ? type : selectedType}`,
       }));
-      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, ...resultArray]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      }
       setSearchDefault(null);
     }
     if (selectedType === "footer") {
-      const resultArray = filteredArray.map(({ id, type, ...footerRest }) => ({
+      const resultArray = filteredArray?.map(({ id, type, ...footerRest }) => ({
         id,
         _mave: footerRest,
         type: `${type ? type : selectedType}`,
       }));
-      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, ...resultArray]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      }
       setSearchDefault(null);
     }
     if (selectedType === "press_release") {
-      const resultArray = filteredArray.map(({ id, type, ...pressRest }) => ({
+      const resultArray = filteredArray?.map(({ id, type, ...pressRest }) => ({
         id,
         _mave: pressRest,
         type: `${type ? type : selectedType}`,
       }));
-      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, ...resultArray]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      }
       setSearchDefault(null);
     }
     if (selectedType === "event") {
-      const resultArray = filteredArray.map(({ id, type, ...eventRest }) => ({
+      const resultArray = filteredArray?.map(({ id, type, ...eventRest }) => ({
         id,
         _mave: eventRest,
         type: `${type ? type : selectedType}`,
       }));
-      setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, ...resultArray]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, ...resultArray]);
+      }
       setSearchDefault(null);
     }
   };
 
   const handleClickOkText = (selectedType) => {
     if (selectedType === "title") {
-      setNewSectionComponent((prev) => [...prev, title]);
-      // setShowPageData([...showPageData, title]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, title]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, title]);
+      }
       setSearchDefault(null);
     }
     if (selectedType === "description") {
-      setNewSectionComponent((prev) => [...prev, description]);
-      // setShowPageData([...showPageData, description]);
+      if (editedSectionId) {
+        setEditSectionComponent((prev) => [...prev, description]);
+      } else {
+        setNewSectionComponent((prev) => [...prev, description]);
+      }
       setSearchDefault(null);
     }
   };
@@ -416,13 +475,36 @@ const Creator = () => {
 
   let postDataBody;
   if (!newSectionComponents?.length) {
+    // console.log("demo 1", postDataBody);
     postDataBody = showPageData;
   }
   if (!showPageData?.length) {
+    // console.log("demo 2", postDataBody);
     postDataBody = [sectionData];
   } else {
-    postDataBody = [...showPageData, sectionData];
+    // let demoData = showPageData;
+    const foundObject = showPageData.find(
+      (item) => item?._id === editedSectionId
+    );
+    // const lalas = lala?.data?.concat(newSectionComponents);
+    if (foundObject) {
+      foundObject.data = [...foundObject.data, ...editSectionComponents];
+      foundObject.data = [...new Set(foundObject.data.map(JSON.stringify))].map(
+        JSON.parse
+      );
+      console.log("uniqueArray", showPageData);
+    }
+    if (sectionData?.data?.length > 0) {
+      postDataBody = [...showPageData, sectionData];
+    } else if (sectionData?.data?.length < 0) {
+      postDataBody = [...showPageData];
+    }
+    // postDataBody = lalas;
+    // console.log("demo 1", lala);
+    // console.log("demo 2", postDataBody);
+    console.log("demo 3", postDataBody);
   }
+  // console.log("postDataBody", postDataBody);
   const postData = {
     slug: currentPageSlug,
     type: "Page",
@@ -437,19 +519,24 @@ const Creator = () => {
     body: postDataBody,
   };
 
+  // this function triggers when you want to update a section.
   const handleSubmit = async () => {
     try {
       const response = await instance.put(`/pages/${pid}`, postData);
       if (response?.status === 200) {
         setUpdateResponse(response.data);
-        message.success("Page updated successfully");
+        console.log("Page updated successfully");
         // setTimeout(() => {
         //   window.location.reload();
         // }, 2000);
       }
 
       fetchPageData();
-      setNewSectionComponent([]);
+      if (editedSectionId) {
+        setEditSectionComponent([]);
+      } else {
+        setNewSectionComponent([]);
+      }
     } catch (error) {
       message.error(error.message);
       // console.log("Error updating press release", error);
@@ -465,8 +552,8 @@ const Creator = () => {
         }
       }
     } catch (error) {
-      message.error("Error fetching page data");
-      // console.log(error);
+      // message.error("Error fetching page data");
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -484,7 +571,11 @@ const Creator = () => {
   }, [pageData]);
 
   const handleCloseSectionModal = () => {
-    setNewSectionComponent([]);
+    if (editedSectionId) {
+      setEditSectionComponent([]);
+    } else {
+      setNewSectionComponent([]);
+    }
     setCanvas(false);
     setInternalCanvas(false);
     setShowPageData(showPageData);
@@ -513,7 +604,7 @@ const Creator = () => {
       const response = await instance.put(`/pages/${pid}`, modifiedData);
       if (response?.status === 200) {
         setUpdateResponse(response.data);
-        message.success("Page updated successfully");
+        console.log("Page updated successfully");
         fetchPageData();
       }
     } catch (error) {
@@ -542,7 +633,7 @@ const Creator = () => {
     const updatedPageData = showPageData.map((section) => {
       if (section._id === editedSectionId) {
         const updatedData = section.data.map((item) => {
-          if (item.type === selectedNavbarId.type) {
+          if (item?.type === selectedNavbarId?.type) {
             // console.log("selectedNavbarId", selectedNavbarId);
             return selectedNavbarId; // Replace the item with the selectedNavbarId data
           }
@@ -803,7 +894,7 @@ const Creator = () => {
       });
       if (response?.status === 200) {
         setUpdateResponse(response.data);
-        message.success("Page updated successfully");
+        console.log("Page updated successfully");
         fetchPageData();
       }
     } catch (error) {
@@ -842,7 +933,7 @@ const Creator = () => {
       });
       if (response?.status === 200) {
         setUpdateResponse(response.data);
-        message.success("Page updated successfully");
+        console.log("Page updated successfully");
         fetchPageData();
         setEditedSectionId(xSectionId);
         setEditMode(true);
@@ -923,6 +1014,21 @@ const Creator = () => {
                         }}
                       >
                         <h1>Section {index + 1}</h1>
+                        <Button
+                          style={{
+                            margin: "10px",
+                            backgroundColor: "var(--themes",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "5px",
+                            fontSize: "1.2rem",
+                            padding: "0.6rem 1rem",
+                            height: "auto",
+                          }}
+                          onClick={() => window.location.reload()}
+                        >
+                          Refresh Section
+                        </Button>
                         {editedSectionId !== section?._id && (
                           <>
                             <Button
@@ -938,7 +1044,7 @@ const Creator = () => {
                               }}
                               onClick={() => handleEditClick(section?._id)}
                             >
-                              Edit Mode 2
+                              Edit Mode
                             </Button>
                           </>
                         )}
@@ -993,7 +1099,11 @@ const Creator = () => {
                               handleUpdateSectionData(index, sectionData);
                               handleSave();
                               setSave(true);
-                              setNewSectionComponent([]);
+                              if (editedSectionId) {
+                                setEditSectionComponent([]);
+                              } else {
+                                setNewSectionComponent([]);
+                              }
                             }}
                             icon={<CloudSyncOutlined />}
                           >
@@ -1120,7 +1230,6 @@ const Creator = () => {
                       ) : (
                         // Update Section Data
                         <>
-                          {/* {console.log("Section Data: ", showPageData)} */}
                           <ComponentParse
                             sectionId={section?._id}
                             section={section?.data}
@@ -1542,57 +1651,12 @@ const Creator = () => {
                                                     }
                                                   >
                                                     {fetchedComponent?.map(
-                                                      (card, index) => (
+                                                      (slider, index) => (
                                                         <Select.Option
                                                           key={index}
-                                                          value={card.id}
+                                                          value={slider?.id}
                                                         >
-                                                          {card && (
-                                                            <div>
-                                                              <Carousel
-                                                                autoplay
-                                                                style={{
-                                                                  width: "100%",
-                                                                  height:
-                                                                    "100%",
-                                                                }}
-                                                              >
-                                                                {card?.medias?.map(
-                                                                  (
-                                                                    media,
-                                                                    index
-                                                                  ) => (
-                                                                    <div
-                                                                      key={
-                                                                        index
-                                                                      }
-                                                                    >
-                                                                      <Image
-                                                                        preview={
-                                                                          false
-                                                                        }
-                                                                        src={`${MEDIA_URL}/${media?.file_path}`}
-                                                                        alt={
-                                                                          media?.file_path
-                                                                        }
-                                                                        width={
-                                                                          "100%"
-                                                                        }
-                                                                        height={
-                                                                          200
-                                                                        }
-                                                                        style={{
-                                                                          objectFit:
-                                                                            "cover",
-                                                                          borderRadius: 10,
-                                                                        }}
-                                                                      />
-                                                                    </div>
-                                                                  )
-                                                                )}
-                                                              </Carousel>
-                                                            </div>
-                                                          )}
+                                                          {slider?.title_en}
                                                         </Select.Option>
                                                       )
                                                     )}
@@ -2045,10 +2109,14 @@ const Creator = () => {
                                     onClick={() => {
                                       handleSubmit();
                                       setCanvas(false);
+                                      setInternalCanvas(false);
+                                      setUpdatedSection([]);
+                                      setEditMode(false);
+                                      setEditedSectionId(null);
                                     }}
                                     icon={<CloudSyncOutlined />}
                                   >
-                                    Finish Sectionz
+                                    Finish Section
                                   </Button>
                                   <Button
                                     style={{
@@ -2123,7 +2191,7 @@ const Creator = () => {
                                   setInternalCanvas(true);
                                 }}
                               >
-                                Add Componentz
+                                Add Components
                               </Button>
                             )}
 
@@ -2145,7 +2213,6 @@ const Creator = () => {
                                 onClick={() => {
                                   setEditMode(false);
                                   setEditedSectionId(null);
-                                  console.log("three");
                                   handleUpdateSectionData(index, sectionData);
                                   handleSave();
                                 }}
@@ -2160,6 +2227,8 @@ const Creator = () => {
                                   setEditMode(false);
                                   setEditedSectionId(null);
                                   setCanvas(false);
+                                  setInternalCanvas(false);
+                                  setUpdatedSection([]);
                                 }}
                                 style={{
                                   margin: "10px",
@@ -2293,16 +2362,6 @@ const Creator = () => {
                               case "description":
                                 return (
                                   <div style={{ width: "40vw" }}>
-                                    {/* <RichTextEditor
-                                      editMode="true"
-                                      placeholder="Enter Description"
-                                      onChange={(e) =>
-                                        handleFormChange(
-                                          e.target.value,
-                                          selectedComponentType
-                                        )
-                                      }
-                                    /> */}
                                     <RichTextEditor
                                       editMode="true"
                                       placeholder="Enter Description"
@@ -2571,42 +2630,16 @@ const Creator = () => {
                                         )
                                       }
                                     >
-                                      {fetchedComponent?.map((card, index) => (
-                                        <Select.Option
-                                          key={index}
-                                          value={card.id}
-                                        >
-                                          {card && (
-                                            <div>
-                                              <Carousel
-                                                autoplay
-                                                style={{
-                                                  width: "100%",
-                                                  height: "100%",
-                                                }}
-                                              >
-                                                {card?.medias?.map(
-                                                  (media, index) => (
-                                                    <div key={index}>
-                                                      <Image
-                                                        preview={false}
-                                                        src={`${MEDIA_URL}/${media?.file_path}`}
-                                                        alt={media?.file_path}
-                                                        width={"100%"}
-                                                        height={200}
-                                                        style={{
-                                                          objectFit: "cover",
-                                                          borderRadius: 10,
-                                                        }}
-                                                      />
-                                                    </div>
-                                                  )
-                                                )}
-                                              </Carousel>
-                                            </div>
-                                          )}
-                                        </Select.Option>
-                                      ))}
+                                      {fetchedComponent?.map(
+                                        (slider, index) => (
+                                          <Select.Option
+                                            key={index}
+                                            value={slider.id}
+                                          >
+                                            {slider.title_en}
+                                          </Select.Option>
+                                        )
+                                      )}
                                     </Select>
                                     <div
                                       style={{

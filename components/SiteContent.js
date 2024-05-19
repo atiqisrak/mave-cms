@@ -93,7 +93,7 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
   // modal area
 
   const handleLogout = () => {
-    message.success("Log out successfully");
+    console.log("Log out successfully");
     // Clear the token from state and localStorage
     setToken(null);
     setContextToken(null);
@@ -154,15 +154,15 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
             icon={<FileImageOutlined />}
             onClick={() => router.push("/gallery")}
           >
-            Media Library
+            Gallery
           </Menu.Item>
-          <Menu.Item
+          {/* <Menu.Item
             key="32"
             icon={<FilePdfOutlined />}
             onClick={() => router.push("/documents")}
           >
             Documents
-          </Menu.Item>
+          </Menu.Item> */}
 
           <Menu.Item
             key="9"
@@ -420,13 +420,6 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
                     >
                       Login
                     </Menu.Item>
-                    <Menu.Item
-                      key="99"
-                      icon={<CalculatorOutlined />}
-                      onClick={() => router.push("/zakat")}
-                    >
-                      Zakat Calculator
-                    </Menu.Item>
                   </>
                 )}
               </SubMenu>
@@ -478,15 +471,16 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
                       <h3
                         style={{
                           color: "var(--theme)",
-                          fontSize: "1em",
+                          fontSize: collapsed ? "1em" : "1.2em",
                           fontWeight: "bold",
                           backgroundColor: "white",
-                          padding: "5px",
+                          padding: "8px 10px",
                           borderRadius: "5px 0 5px 0",
                           position: collapsed ? "relative" : "absolute",
                           zIndex: 1,
-                          right: collapsed ? "" : 20,
-                          top: collapsed ? "" : 80,
+                          right: collapsed ? "" : 5,
+                          top: collapsed ? "" : 70,
+                          cursor: "pointer",
                         }}
                       >
                         {changeLogs && changeLogs.length > 0
@@ -500,18 +494,23 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
                     {collapsed ? (
                       <Image
                         className="sitelogo"
-                        src="/images/mave_logo.png"
-                        width={40} // Adjust the collapsed logo width
-                        height={40} // Adjust the collapsed logo height
+                        // src="/images/mave_logo.png"
+                        src="/images/mave_favicon.svg"
+                        width={40}
+                        height={40}
                         resizeMode="contain"
                         preview={false}
                       />
                     ) : (
                       <Image
                         className="sitelogo"
-                        src="/images/mave_logo_horizontal.png"
-                        width={629 / 4}
-                        height={301 / 4}
+                        // src="/images/mave_logo_horizontal.png"
+                        // src="/images/mave_logo_horizontal_core.png"
+                        // width={629 / 4}
+                        // height={301 / 4}
+                        src="/images/mave_logo_vertical.png"
+                        width={950 / 4}
+                        height={871 / 4}
                         resizeMode="contain"
                         preview={false}
                       />
@@ -547,14 +546,6 @@ export default function SiteContent({ children, collapsed, setCollapsed }) {
                           onClick={() => setIsModalOpen(true)}
                         >
                           Login
-                        </Menu.Item>
-
-                        <Menu.Item
-                          key="99"
-                          icon={<CalculatorOutlined />}
-                          onClick={() => router.push("/zakat")}
-                        >
-                          Zakat Calculator
                         </Menu.Item>
                       </>
                     )}

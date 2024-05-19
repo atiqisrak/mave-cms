@@ -28,7 +28,7 @@ const CardParser = ({
         setCards(response.data);
         setCardsFetched(true);
         setLoading(false);
-        // message.success("Cards fetched successfully");
+        // console.log("Cards fetched successfully");
       } else {
         // console.error("Error fetching card assets nn:", response.data.message);
         message.error("Error fetching card assets");
@@ -238,8 +238,8 @@ const CardParser = ({
             >
               <center>
                 <h3>
-                  {item?._mave && item?._mave?.title_en} ({" "}
-                  {item?._mave?.title_bn} )
+                  {item?._mave && item?._mave?.title_en}{" "}
+                  {item?._mave?.title_bn && `(${item?._mave?.title_bn})`}
                 </h3>
               </center>
 

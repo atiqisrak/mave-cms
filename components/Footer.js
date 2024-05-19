@@ -263,7 +263,7 @@ const Footer = () => {
       // Send a put request to the API endpoint
       const res = await instance.post("/footers", formData);
       setData(res.data);
-      message.success("Footer Added successfully");
+      console.log("Footer Added successfully");
       const getData = async () => {
         try {
           const res = await instance.get("/footers");
@@ -285,7 +285,7 @@ const Footer = () => {
       setIsLoading(true);
       // Send a put request to the API endpoint
       const res = await instance.put(`/footers/${id}`, formData);
-      message.success("Footer Updated successfully");
+      console.log("Footer Updated successfully");
       setData(res.data);
       getFooters();
       setIsLoading(false);
@@ -300,7 +300,7 @@ const Footer = () => {
     try {
       // Send a DELETE request to the API endpoint
       const res = await instance.delete(`/footers/${id}`);
-      message.success("Footer deleted successfully");
+      console.log("Footer deleted successfully");
       const getData = async () => {
         try {
           const res = await instance.get("/footers");
