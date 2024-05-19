@@ -307,7 +307,7 @@ const MenuItems = () => {
               alignItems: "center",
             }}
           >
-            <Col
+            {/* <Col
               span={8}
               style={{
                 display: "flex",
@@ -338,9 +338,9 @@ const MenuItems = () => {
               >
                 Clear
               </Button>
-            </Col>
+            </Col> */}
             <Col
-              span={8}
+              // span={8}
               style={{
                 display: "flex",
                 justifyContent: "flex-end",
