@@ -445,7 +445,7 @@ const MenuItems = () => {
                         .indexOf(input.toLowerCase()) >= 0
                     }
                   >
-                    <Select.Option>No Parent</Select.Option>
+                    <Select.Option value={null}>No Parent</Select.Option>
                     {menuItems?.map((menuItem) => (
                       <Select.Option value={menuItem.id}>
                         {menuItem.title}
@@ -655,12 +655,15 @@ const MenuItems = () => {
                             .indexOf(input.toLowerCase()) >= 0
                         }
                       >
-                        <Select.Option>No Parent</Select.Option>
-                        {menuItems?.map((menuItem) => (
-                          <Select.Option value={menuItem.id}>
-                            {menuItem.title}
-                          </Select.Option>
-                        ))}
+                        <Select.Option value={null}>No Parent</Select.Option>
+                        {menuItems?.map(
+                          (menuItem) =>
+                            menuItem.id !== editingItemId && (
+                              <Select.Option value={menuItem.id}>
+                                {menuItem.title}
+                              </Select.Option>
+                            )
+                        )}
                       </Select>
                     </>
                   ) : (
