@@ -13,13 +13,15 @@ import {
   Row,
   Select,
   Space,
+  Spin,
   Tabs,
   Typography,
 } from "antd";
 import Image from "next/image";
 import RichTextEditor from "./RichTextEditor";
 import MediaSelectionModal from "./MediaSelectionModal";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import instance from "../axios";
 
 export default function CardSliders({
   sliders,
@@ -31,7 +33,6 @@ export default function CardSliders({
   handDeleteSlider,
   editingItemId,
   form,
-  handleSubmit,
   cards,
   showModal,
   isModalVisible,
@@ -42,8 +43,12 @@ export default function CardSliders({
   setSelectedMedia,
   setType,
   type,
+  fetchSliders,
 }) {
   const { Title } = Typography;
+  const [loading, setLoading] = useState(false);
+  const [response, setResponse] = useState();
+  const [editMode, setEditMode] = useState(false);
 
   const handleTypeChange = (value) => {
     setType(value);
@@ -54,6 +59,59 @@ export default function CardSliders({
   useEffect(() => {
     setType("card");
   }, []);
+
+  const handleSubmit = async ({ slider, values }) => {
+    setLoading(true);
+    const maveMedia = values?.type === "image" ? selectedMedia : [];
+    // const maveCard = values?.type === "card" ? values?.card_ids : [];
+    const maveCard = values?.card_ids
+      ? values?.card_ids
+      : slider?.cards?.map((card) => card.id);
+    const maveSliderType = values?.type ? values?.type : "card";
+
+    try {
+      const postData = {
+        title_en: values.title_en ? values.title_en : slider?.title_en,
+        title_bn: values.title_bn ? values.title_bn : slider?.title_bn,
+        description_en: values.description_en
+          ? values.description_en
+          : slider?.description_en,
+        description_bn: values.description_bn
+          ? values.description_bn
+          : slider?.description_bn,
+        type: maveSliderType,
+      };
+
+      const sendData = {
+        ...postData,
+        media_ids: maveMedia,
+        card_ids: maveCard,
+      };
+      const response = await instance.put(
+        "/sliders/" + editingItemId,
+        sendData
+      );
+      if (response.status === 200) {
+        setResponse(response);
+        setEditMode(false);
+        setLoading(false);
+        window.location.reload();
+      } else {
+        console.error("Error creating slider:", response.data);
+      }
+      // console.log("Media ids: ", selectedMedia);
+      // console.log("Card ids: ", values.card_ids);
+      // console.log("postData: ", postData);
+      // console.log("sendData: ", sendData);
+    } catch (error) {
+      console.error("Error creating slider:", error);
+    }
+  };
+
+  // if loading is true, show loading spinner
+  if (loading) {
+    return <Spin />;
+  }
 
   return (
     <div>
@@ -68,11 +126,15 @@ export default function CardSliders({
         {sliders &&
           sliders.map((slider, index) => (
             <div>
-              {editingItemId === slider.id ? (
+              {editMode && editingItemId === slider.id ? (
                 <Form
                   form={form}
-                  name="createSlider"
-                  onFinish={handleSubmit}
+                  name="edit_slider"
+                  onFinish={
+                    handleSubmit
+                      ? (values) => handleSubmit({ slider, values })
+                      : null
+                  }
                   style={{
                     marginTop: "10em",
                     maxWidth: 600,
@@ -85,16 +147,16 @@ export default function CardSliders({
                   layout="vertical"
                   autoComplete="off"
                 >
-                  <Form.Item hasFeedback label="Title English" name="title_e">
+                  <Form.Item hasFeedback label="Title English" name="title_en">
                     <Input
                       placeholder="Enter title in English"
-                      defaultValue={slider.title_en}
+                      defaultValue={slider?.title_en}
                     />
                   </Form.Item>
-                  <Form.Item hasFeedback label="Title Bangla" name="title_b">
+                  <Form.Item hasFeedback label="Title Bangla" name="title_bn">
                     <Input
                       placeholder="Enter title in Bangla"
-                      defaultValue={slider.title_bn}
+                      defaultValue={slider?.title_bn}
                     />
                   </Form.Item>
                   <Form.Item
@@ -155,18 +217,20 @@ export default function CardSliders({
                         style={{ width: "100%" }}
                       >
                         {cards?.map((card) => (
-                          <Select.Option value={card.id} key={card.id}>
-                            {card.title_en}
+                          <Select.Option value={card?.id} key={card?.id}>
+                            {card?.title_en}
                           </Select.Option>
                         ))}
                       </Select>
                     </Form.Item>
                   ) : (
-                    <Form.Item hasFeedback label="Media" name="media_ids">
-                      <Button icon={<UploadOutlined />} onClick={showModal}>
-                        Click to Select
-                      </Button>
-                    </Form.Item>
+                    type === "image" && (
+                      <Form.Item hasFeedback label="Media" name="media_ids">
+                        <Button icon={<UploadOutlined />} onClick={showModal}>
+                          Click to Select
+                        </Button>
+                      </Form.Item>
+                    )
                   )}
                   <Form.Item>
                     <Space>
@@ -193,8 +257,8 @@ export default function CardSliders({
                         currentMedia={slider?.medias}
                         selectedMedia={selectedMedia}
                         setSelectedMedia={setSelectedMedia}
-                        isModalVisible={isModalVisible}
-                        setIsModalVisible={setIsModalVisible}
+                        // isModalVisible={isModalVisible}
+                        // setIsModalVisible={setIsModalVisible}
                       />
                     </Modal>
                   </Form.Item>
@@ -268,7 +332,10 @@ export default function CardSliders({
                     }}
                   >
                     <Button
-                      onClick={() => handleEditClick(slider.id)}
+                      onClick={() => {
+                        setEditMode(true);
+                        handleEditClick(slider.id);
+                      }}
                       style={{
                         backgroundColor: "var(--theme)",
                         borderColor: "var(--theme)",

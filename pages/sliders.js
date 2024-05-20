@@ -86,45 +86,46 @@ const Sliders = () => {
     ></Button>
   );
 
-  useEffect(() => {
-    const fetchSliders = async () => {
-      try {
-        setLoading(true);
-        const response = await instance("/sliders");
-        if (response.data) {
-          setSliders(response.data?.sort((a, b) => b.id - a.id));
+  const fetchSliders = async () => {
+    try {
+      setLoading(true);
+      const response = await instance("/sliders");
+      if (response.data) {
+        setSliders(response.data?.sort((a, b) => b.id - a.id));
 
-          response.data?.map((slider) => {
-            if (slider.type === "card") {
-              setCardSliders((prev) => [...prev, slider]);
-            } else {
-              setImageSliders((prev) => [...prev, slider]);
-            }
-          });
-          setLoading(false);
-        } else {
-          message.error("Sliders couldn't be fetched");
-        }
-      } catch (error) {
+        response.data?.map((slider) => {
+          if (slider.type === "card") {
+            setCardSliders((prev) => [...prev, slider]);
+          } else {
+            setImageSliders((prev) => [...prev, slider]);
+          }
+        });
+        setLoading(false);
+      } else {
         message.error("Sliders couldn't be fetched");
       }
-    };
+    } catch (error) {
+      message.error("Sliders couldn't be fetched");
+    }
+  };
 
-    const fetchCards = async () => {
-      try {
-        setLoading(true);
-        const response = await instance.get("/cards");
-        if (response.data) {
-          setCards(response.data);
-          console.log("Cards fetched successfully");
-          setLoading(false);
-        } else {
-          message.error("Cards couldn't be fetched");
-        }
-      } catch (error) {
+  const fetchCards = async () => {
+    try {
+      setLoading(true);
+      const response = await instance.get("/cards");
+      if (response.data) {
+        setCards(response.data);
+        console.log("Cards fetched successfully");
+        setLoading(false);
+      } else {
         message.error("Cards couldn't be fetched");
       }
-    };
+    } catch (error) {
+      message.error("Cards couldn't be fetched");
+    }
+  };
+
+  useEffect(() => {
     fetchCards();
     fetchSliders();
   }, [responseData, response]);
@@ -323,6 +324,7 @@ const Sliders = () => {
                         setSelectedMedia={setSelectedMedia}
                         setType={setType}
                         type={type}
+                        fetchSliders={fetchSliders}
                       />
                     </Tabs.TabPane>
                     <Tabs.TabPane tab="Card Sliders" key="2">
@@ -347,6 +349,7 @@ const Sliders = () => {
                         setSelectedMedia={setSelectedMedia}
                         setType={setType}
                         type={type}
+                        fetchSliders={fetchSliders}
                       />
                     </Tabs.TabPane>
                   </Tabs>

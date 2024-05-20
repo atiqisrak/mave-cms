@@ -1,5 +1,17 @@
 [
     {
+        "version": "v 0.2.56",
+        "date": "2024-05-20",
+        "changes": {
+            "Feature": [
+                "User can see pages and Sub pages in the CMS Pages Gallery"
+            ],
+            "BugFix": [
+                "Fixed the slider of cards issue. Users can modify fluently"
+            ]
+        }
+    },
+    {
         "version": "v 0.2.52",
         "date": "2024-05-15",
         "changes": {
