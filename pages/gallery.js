@@ -18,6 +18,7 @@ import { setPageTitle } from "../global/constants/pageTitle";
 import Loader from "../components/Loader";
 import {
   CheckCircleTwoTone,
+  CloseCircleOutlined,
   DeleteFilled,
   DeleteOutlined,
   EditOutlined,
@@ -401,8 +402,6 @@ const Gallery = () => {
                       style={{
                         display: "flex",
                         flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
                         backgroundColor: "white",
                         padding: "1rem",
                         borderRadius: "5px",
@@ -414,10 +413,14 @@ const Gallery = () => {
                         src={`${MEDIA_URL}/${image.file_path}`}
                         alt={image.file_name}
                         width={400}
-                        height={200}
+                        height={400}
                         objectFit="cover"
                         style={{
                           borderRadius: "5px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => {
+                          window.open(`${MEDIA_URL}/${image.file_path}`);
                         }}
                       />
                       <div
@@ -425,14 +428,13 @@ const Gallery = () => {
                         style={{
                           display: "flex",
                           flexDirection: "column",
-                          justifyContent: "center",
-                          alignItems: "center",
                           marginTop: "1rem",
+                          paddingLeft: "1rem",
                         }}
                       >
                         {editMode && image.id === editMedia.mediaId ? (
                           <>
-                            Name:{""}
+                            <strong>Name:{""}</strong>
                             <Input
                               defaultValue={
                                 image?.title ? image.title : image.file_name
@@ -448,38 +450,47 @@ const Gallery = () => {
                           </>
                         ) : (
                           <p>
-                            Name: {image?.title ? image.title : image.file_name}
+                            <strong> Name:</strong>{" "}
+                            {/* {image?.title ? image.title : image.file_name} */}
+                            {/* make name shorter and ... if more than 10 */}
+                            {image?.title
+                              ? image.title.length > 18
+                                ? image.title.substring(0, 18) + "..."
+                                : image.title
+                              : image.file_name.length > 18
+                              ? image.file_name.substring(0, 18) + "..."
+                              : image.file_name}
                           </p>
                         )}
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                          }}
-                        >
+                        <div>
                           <p>
-                            Size:
+                            <strong> Size:</strong>
                             {sizeFormatter(image.file_size)}
                           </p>
-                          <p>Type: {image.file_type}</p>
+                          <p>
+                            <strong> Type: </strong> {image.file_type}
+                          </p>
                         </div>
                       </div>
                       <div
                         style={{
                           marginTop: "1rem",
                           display: "flex",
+                          justifyContent: "space-between",
                         }}
                       >
                         {editMode ? (
-                          <Button
-                            success
-                            icon={<CheckCircleTwoTone />}
-                            style={{
-                              marginRight: "6vw",
-                              backgroundColor: "green",
-                            }}
-                            onClick={() => handleSubmit()}
-                          />
+                          <>
+                            <Button
+                              success
+                              icon={<CheckCircleTwoTone />}
+                              style={{
+                                marginRight: "6vw",
+                                backgroundColor: "green",
+                              }}
+                              onClick={() => handleSubmit()}
+                            />
+                          </>
                         ) : (
                           <Button
                             type="primary"
@@ -496,12 +507,20 @@ const Gallery = () => {
                             }
                           />
                         )}
-                        <Button
-                          type="primary"
-                          danger
-                          onClick={() => onDelete(image.id)}
-                          icon={<DeleteOutlined />}
-                        />
+                        {!editMode ? (
+                          <Button
+                            type="primary"
+                            danger
+                            onClick={() => onDelete(image.id)}
+                            icon={<DeleteOutlined />}
+                          />
+                        ) : (
+                          <Button
+                            danger
+                            icon={<CloseCircleOutlined />}
+                            onClick={() => setEditMode(false)}
+                          />
+                        )}
                       </div>
                     </div>
                   </Col>

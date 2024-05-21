@@ -17,10 +17,15 @@ import {
   message,
   Popconfirm,
   Table,
+  Switch,
+  Radio,
+  Tabs,
+  Spin,
 } from "antd";
 import React, { useState, useEffect } from "react";
 import instance from "../../axios";
 import { useRouter } from "next/router";
+import Renderpages from "../../components/creator/Renderpages";
 
 const Pages = () => {
   const [pages, setPages] = useState([]);
@@ -35,7 +40,11 @@ const Pages = () => {
   const [pageNameEn, setPageNameEn] = useState("");
   const [pageNameBn, setPageNameBn] = useState("");
   const [pageSlug, setPageSlug] = useState("");
-  const [editPageName, setEditPageName] = useState(false);
+  const [editPageInfo, setEditPageInfo] = useState(false);
+  const [editPageType, setEditPageType] = useState(false);
+  const [pageType, setPageType] = useState("");
+  const [typePages, setTypePages] = useState([]);
+  const [typeSubpages, setTypeSubpages] = useState([]);
   const router = useRouter();
 
   const fetchPages = async () => {
@@ -59,6 +68,27 @@ const Pages = () => {
   useEffect(() => {
     fetchPages();
   }, []);
+
+  const filterPages = (pages) => {
+    const mainPages = pages?.filter(
+      (page) =>
+        page?.additional === null || page?.additional[0]?.pageType === "Page"
+    );
+    const subPages = pages?.filter(
+      (page) =>
+        page?.additional !== null && page?.additional[0]?.pageType === "Subpage"
+    );
+    setTypePages(mainPages);
+    setTypeSubpages(subPages);
+  };
+
+  useEffect(() => {
+    filterPages(pages);
+  }, [pages]);
+
+  // console.log("Pages:", pages);
+  // console.log("Type Pages:", typePages);
+  // console.log("Type Subpages:", typeSubpages);
 
   const handleExpand = (pageId) => {
     if (expandedPageId === pageId) {
@@ -84,7 +114,6 @@ const Pages = () => {
         page_name_bn: newPageTitleBn,
         type: "Page",
         favicon_id: 10,
-        // slug = lowercased page_name_en, if space then hyphen
         slug: newPageTitleEn.toLowerCase().split(" ").join("-"),
       });
       if (response.status === 201) {
@@ -142,16 +171,27 @@ const Pages = () => {
     setEditingItemId(null);
   };
 
-  const handleEditPageName = async ({ id, prevpen, prevpbn, prevpslug }) => {
+  const handleEditPageInfo = async ({
+    id,
+    prevpen,
+    prevpbn,
+    prevpslug,
+    prevptype,
+  }) => {
     try {
       const response = await instance.put(`/pages/${id}`, {
         page_name_en: pageNameEn ? pageNameEn : prevpen,
         page_name_bn: pageNameBn ? pageNameBn : prevpbn,
         slug: pageSlug ? pageSlug : prevpslug,
+        additional: [
+          {
+            pageType: pageType ? pageType : prevptype,
+          },
+        ],
       });
       if (response.status === 200) {
         console.log("Page info updated successfully");
-        setEditPageName(false);
+        setEditPageInfo(false);
         fetchPages();
       } else {
         console.error("Error updating page info:", response.data.message);
@@ -163,7 +203,6 @@ const Pages = () => {
 
   // filter pages
   const handlePageSearch = async (searchText) => {
-    // filter pages by page_name_en
     try {
       searchText === "" ? fetchPages() : null;
 
@@ -175,6 +214,27 @@ const Pages = () => {
       console.error("Error filtering pages:", error);
     }
   };
+
+  // spin on loading
+  if (loading) {
+    return (
+      <div className="ViewContainer">
+        <div className="ViewContentContainer">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+              height: "100vh",
+            }}
+          >
+            <Spin size="large" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="ViewContainer">
@@ -234,6 +294,7 @@ const Pages = () => {
             </Button>
           )}
         </div>
+
         <div>
           <div className="pageContainers">
             <div className="pageContainer">
@@ -344,363 +405,61 @@ const Pages = () => {
                 </>
               ) : null}
 
-              <Row gutter={[16, 16]}>
-                {pages?.map((page) => (
-                  <Col key={page?.id} xs={24}>
-                    <Card
-                      title={`Page ID-${page?.id} : ${page?.page_name_en}`}
-                      // title={page?.page_name_en}
-                      extra={
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: "2em",
-                          }}
-                        >
-                          <Button
-                            style={{
-                              backgroundColor: "var(--themes)",
-                              borderColor: "var(--themes)",
-                              color: "white",
-                              borderRadius: "10px",
-                              fontSize: "1.2em",
-                              paddingBottom: "1.8em",
-                            }}
-                            onClick={() => handleEditPage(page.id)}
-                            icon={<EditOutlined />}
-                          >
-                            Edit Page
-                          </Button>
-                          <Button
-                            style={{
-                              backgroundColor: "var(--theme)",
-                              borderColor: "var(--theme)",
-                              color: "white",
-                              borderRadius: "10px",
-                              fontSize: "1.2em",
-                              paddingBottom: "1.8em",
-                            }}
-                            onClick={() => handleExpand(page?.id)}
-                          >
-                            {expandedPageId === page.id ? "Collapse" : "Expand"}
-                            {expandedPageId === page.id ? (
-                              <CloseCircleFilled />
-                            ) : (
-                              <PlusCircleOutlined />
-                            )}
-                          </Button>
-                        </div>
-                      }
-                      style={{
-                        marginBottom: "5em",
-                        marginTop: "3em",
-                        border: "1px solid var(--theme)",
-                        borderRadius: 10,
-                      }}
-                    >
-                      {expandedPageId === page?.id && (
-                        <div>
-                          <center>
-                            {editMode ? (
-                              <>
-                                <Button
-                                  danger
-                                  style={{
-                                    borderRadius: "10px",
-                                    fontSize: "1.2em",
-                                    marginRight: "1em",
-                                    paddingBottom: "1.8em",
-                                  }}
-                                  icon={<CloseCircleFilled />}
-                                  onClick={() => {
-                                    setEditMode(false);
-                                  }}
-                                >
-                                  Cancel Edit
-                                </Button>
-                                <Button
-                                  type="primary"
-                                  style={{
-                                    backgroundColor: "var(--theme)",
-                                    borderColor: "var(--theme)",
-                                    color: "white",
-                                    borderRadius: "10px",
-                                    fontSize: "1.2em",
-                                    marginRight: "1em",
-                                    paddingBottom: "1.8em",
-                                  }}
-                                  icon={<CheckCircleFilled />}
-                                  onClick={handleSubmit}
-                                >
-                                  Submit
-                                </Button>
-                              </>
-                            ) : (
-                              <>
-                                <Button
-                                  type="primary"
-                                  style={{
-                                    backgroundColor: "var(--theme)",
-                                    borderColor: "var(--theme)",
-                                    color: "white",
-                                    borderRadius: "10px",
-                                    fontSize: "1.2em",
-                                    marginRight: "1em",
-                                    paddingBottom: "1.8em",
-                                  }}
-                                  icon={<EditOutlined />}
-                                  onClick={() => {
-                                    handleEditPage(page.id);
-                                  }}
-                                >
-                                  Edit Page
-                                </Button>
-                                <Button
-                                  danger
-                                  style={{
-                                    borderRadius: "10px",
-                                    fontSize: "1.2em",
-                                    marginRight: "1em",
-                                    paddingBottom: "1.8em",
-                                  }}
-                                  icon={<DeleteFilled />}
-                                  onClick={() => {
-                                    handleDeletePage(page.id);
-                                  }}
-                                >
-                                  Delete Page
-                                </Button>
-                              </>
-                            )}
-                            <div
-                              className="pageContainer flexed-center"
-                              style={{
-                                padding: "2em 0",
-                                gap: "2em",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  gap: "2em",
-                                  marginBottom: "2em",
-                                  flexDirection: "column",
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "2em",
-                                  }}
-                                >
-                                  {editPageName ? (
-                                    <Input
-                                      allowClear
-                                      defaultValue={page.page_name_en}
-                                      placeholder={page.page_name_en}
-                                      value={pageNameEn}
-                                      onChange={(e) =>
-                                        setPageNameEn(e.target.value)
-                                      }
-                                      style={{
-                                        width: "16vw",
-                                        height: "2.8em",
-                                        borderRadius: "10px",
-                                        fontSize: "1.2em",
-                                        padding: "0 1em",
-                                      }}
-                                    />
-                                  ) : (
-                                    <h1>
-                                      <span
-                                        style={{
-                                          color: "var(--themes)",
-                                        }}
-                                      >
-                                        Page Name:
-                                      </span>{" "}
-                                      {page.page_name_en}
-                                    </h1>
-                                  )}
-                                </div>
-
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "2em",
-                                  }}
-                                >
-                                  {editPageName ? (
-                                    <Input
-                                      allowClear
-                                      defaultValue={page.page_name_bn}
-                                      placeholder={page.page_name_bn}
-                                      value={pageNameBn}
-                                      onChange={(e) =>
-                                        setPageNameBn(e.target.value)
-                                      }
-                                      style={{
-                                        width: "16vw",
-                                        height: "2.8em",
-                                        borderRadius: "10px",
-                                        fontSize: "1.2em",
-                                        padding: "0 1em",
-                                      }}
-                                    />
-                                  ) : (
-                                    <h1>
-                                      <span
-                                        style={{
-                                          color: "var(--themes)",
-                                        }}
-                                      >
-                                        পৃষ্ঠার নাম:
-                                      </span>{" "}
-                                      {page.page_name_bn}
-                                    </h1>
-                                  )}
-                                </div>
-
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "2em",
-                                  }}
-                                >
-                                  {editPageName ? (
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        gap: "1em",
-                                      }}
-                                    >
-                                      <Input
-                                        allowClear
-                                        defaultValue={page.slug}
-                                        placeholder={page.slug}
-                                        value={pageSlug}
-                                        onChange={(e) =>
-                                          setPageSlug(e.target.value)
-                                        }
-                                        style={{
-                                          width: "16vw",
-                                          height: "2.8em",
-                                          borderRadius: "10px",
-                                          fontSize: "1.2em",
-                                          padding: "0 1em",
-                                        }}
-                                      />
-                                      <p
-                                        style={{
-                                          fontSize: "0.8em",
-                                          color: "var(--themes)",
-                                          textAlign: "left",
-                                        }}
-                                      >
-                                        *Use only lowercase letters
-                                        <br />
-                                        *No spaces, use hyphen
-                                        <br />
-                                        *no special characters
-                                        <br />
-                                        <span style={{ color: "var(--theme)" }}>
-                                          *Example: about-us
-                                        </span>
-                                      </p>
-                                    </div>
-                                  ) : (
-                                    <h1>
-                                      <span
-                                        style={{
-                                          color: "var(--themes)",
-                                        }}
-                                      >
-                                        Link:{" "}
-                                      </span>
-                                      <a
-                                        href="#"
-                                        style={{
-                                          color: "var(--theme)",
-                                        }}
-                                      >
-                                        /{page.slug}
-                                      </a>
-                                    </h1>
-                                  )}
-                                </div>
-                              </div>
-                              {editPageName ? (
-                                <div>
-                                  <Popconfirm
-                                    title="Are you sure you want to edit this page name?"
-                                    onConfirm={() =>
-                                      handleEditPageName({
-                                        id: page?.id,
-                                        prevpen: page?.page_name_en,
-                                        prevpbn: page?.page_name_bn,
-                                        prevpslug: page?.slug,
-                                      })
-                                    }
-                                    okText="Yes"
-                                    cancelText="No"
-                                  >
-                                    <Button
-                                      type="primary"
-                                      icon={<CheckCircleFilled />}
-                                      style={{
-                                        backgroundColor: "green",
-                                        borderColor: "green",
-                                        color: "white",
-                                        borderRadius: "10px",
-                                        fontSize: "1.2em",
-                                        paddingBottom: "1.8em",
-                                        marginRight: "1em",
-                                      }}
-                                    >
-                                      Submit
-                                    </Button>
-                                  </Popconfirm>
-
-                                  <Button
-                                    icon={<CloseCircleFilled />}
-                                    danger
-                                    onClick={() =>
-                                      setEditPageName(!editPageName)
-                                    }
-                                  >
-                                    Cancel
-                                  </Button>
-                                </div>
-                              ) : (
-                                <Button
-                                  type="primary"
-                                  icon={<EditOutlined />}
-                                  style={{
-                                    backgroundColor: "var(--themes)",
-                                    borderColor: "var(--themes)",
-                                    color: "white",
-                                    borderRadius: "10px",
-                                    fontSize: "1.2em",
-                                    paddingBottom: "1.8em",
-                                  }}
-                                  onClick={() => setEditPageName(!editPageName)}
-                                >
-                                  Edit Page Name
-                                </Button>
-                              )}
-                            </div>
-                          </center>
-                        </div>
-                      )}
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
+              {/* Pages and Subpages */}
+              <Tabs
+                centered
+                animated
+                defaultActiveKey="1"
+                type="card"
+                style={{
+                  marginTop: "2em",
+                }}
+              >
+                <Tabs.TabPane tab="Pages" key="1">
+                  <Renderpages
+                    webpages={typePages}
+                    handleEditPage={handleEditPage}
+                    handleExpand={handleExpand}
+                    expandedPageId={expandedPageId}
+                    editMode={editMode}
+                    setEditMode={setEditMode}
+                    handleSubmit={handleEditPageInfo}
+                    handleDeletePage={handleDeletePage}
+                    pageNameEn={pageNameEn}
+                    setPageNameEn={setPageNameEn}
+                    pageNameBn={pageNameBn}
+                    setPageNameBn={setPageNameBn}
+                    pageSlug={pageSlug}
+                    setPageSlug={setPageSlug}
+                    setPageType={setPageType}
+                    editPageInfo={editPageInfo}
+                    setEditPageInfo={setEditPageInfo}
+                    handleEditPageInfo={handleEditPageInfo}
+                  />
+                </Tabs.TabPane>
+                <Tabs.TabPane tab="Subpages" key="2">
+                  <Renderpages
+                    webpages={typeSubpages}
+                    handleEditPage={handleEditPage}
+                    handleExpand={handleExpand}
+                    expandedPageId={expandedPageId}
+                    editMode={editMode}
+                    setEditMode={setEditMode}
+                    handleSubmit={handleEditPageInfo}
+                    handleDeletePage={handleDeletePage}
+                    pageNameEn={pageNameEn}
+                    setPageNameEn={setPageNameEn}
+                    pageNameBn={pageNameBn}
+                    setPageNameBn={setPageNameBn}
+                    pageSlug={pageSlug}
+                    setPageSlug={setPageSlug}
+                    setPageType={setPageType}
+                    editPageInfo={editPageInfo}
+                    setEditPageInfo={setEditPageInfo}
+                    handleEditPageInfo={handleEditPageInfo}
+                  />
+                </Tabs.TabPane>
+              </Tabs>
             </div>
           </div>
         </div>

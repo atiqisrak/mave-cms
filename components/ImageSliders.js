@@ -13,13 +13,15 @@ import {
   Row,
   Select,
   Space,
+  Spin,
   Tabs,
   Typography,
 } from "antd";
 import Image from "next/image";
 import RichTextEditor from "./RichTextEditor";
 import MediaSelectionModal from "./MediaSelectionModal";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import instance from "../axios";
 
 export default function ImageSliders({
   sliders,
@@ -31,7 +33,6 @@ export default function ImageSliders({
   handDeleteSlider,
   editingItemId,
   form,
-  handleSubmit,
   cards,
   showModal,
   isModalVisible,
@@ -42,8 +43,12 @@ export default function ImageSliders({
   setSelectedMedia,
   setType,
   type,
+  fetchSliders,
 }) {
   const { Title } = Typography;
+  const [loading, setLoading] = useState(false);
+  const [response, setResponse] = useState();
+  const [editMode, setEditMode] = useState(false);
 
   const handleTypeChange = (value) => {
     setType(value);
@@ -54,6 +59,62 @@ export default function ImageSliders({
   useEffect(() => {
     setType("image");
   }, []);
+
+  const handleSubmit = async ({ slider, values }) => {
+    setLoading(true);
+    // const maveMedia = values?.type === "image" ? selectedMedia : [];
+    const maveMedia = selectedMedia
+      ? selectedMedia
+      : slider?.media_ids?.map((media) => media.id);
+
+    // const maveCard = values?.card_ids
+    //   ? values?.card_ids
+    //   : slider?.cards?.map((card) => card.id);
+    const maveCard = values?.type === "card" ? values?.card_ids : [];
+    const maveSliderType = values?.type ? values?.type : "image";
+
+    try {
+      const postData = {
+        title_en: values.title_en ? values.title_en : slider?.title_en,
+        title_bn: values.title_bn ? values.title_bn : slider?.title_bn,
+        description_en: values.description_en
+          ? values.description_en
+          : slider?.description_en,
+        description_bn: values.description_bn
+          ? values.description_bn
+          : slider?.description_bn,
+        type: maveSliderType,
+      };
+
+      const sendData = {
+        ...postData,
+        media_ids: maveMedia,
+        card_ids: maveCard,
+      };
+      const response = await instance.put(
+        "/sliders/" + editingItemId,
+        sendData
+      );
+      if (response.status === 200) {
+        setResponse(response);
+        setEditMode(false);
+        setLoading(false);
+        window.location.reload();
+      } else {
+        console.error("Error creating slider:", response.data);
+      }
+      // console.log("Media ids: ", selectedMedia);
+      // console.log("Card ids: ", values.card_ids);
+      // console.log("postData: ", postData);
+      // console.log("sendData: ", sendData);
+    } catch (error) {
+      console.error("Error creating slider:", error);
+    }
+  };
+
+  if (loading) {
+    return <Spin />;
+  }
 
   return (
     <div>
@@ -68,11 +129,15 @@ export default function ImageSliders({
         {sliders &&
           sliders.map((slider, index) => (
             <div>
-              {editingItemId === slider.id ? (
+              {editMode && editingItemId === slider.id ? (
                 <Form
                   form={form}
-                  name="createSlider"
-                  onFinish={handleSubmit}
+                  name="edit_slider"
+                  onFinish={
+                    handleSubmit
+                      ? (values) => handleSubmit({ slider, values })
+                      : null
+                  }
                   style={{
                     marginTop: "10em",
                     maxWidth: 600,
@@ -85,13 +150,13 @@ export default function ImageSliders({
                   layout="vertical"
                   autoComplete="off"
                 >
-                  <Form.Item hasFeedback label="Title English" name="title_e">
+                  <Form.Item hasFeedback label="Title English" name="title_en">
                     <Input
                       placeholder="Enter title in English"
                       defaultValue={slider.title_en}
                     />
                   </Form.Item>
-                  <Form.Item hasFeedback label="Title Bangla" name="title_b">
+                  <Form.Item hasFeedback label="Title Bangla" name="title_bn">
                     <Input
                       placeholder="Enter title in Bangla"
                       defaultValue={slider.title_bn}
@@ -162,11 +227,13 @@ export default function ImageSliders({
                       </Select>
                     </Form.Item>
                   ) : (
-                    <Form.Item hasFeedback label="Media" name="media_ids">
-                      <Button icon={<UploadOutlined />} onClick={showModal}>
-                        Click to Select
-                      </Button>
-                    </Form.Item>
+                    type === "image" && (
+                      <Form.Item hasFeedback label="Media" name="media_ids">
+                        <Button icon={<UploadOutlined />} onClick={showModal}>
+                          Click to Select
+                        </Button>
+                      </Form.Item>
+                    )
                   )}
                   <Form.Item>
                     <Space>
@@ -193,8 +260,8 @@ export default function ImageSliders({
                         currentMedia={slider?.medias}
                         selectedMedia={selectedMedia}
                         setSelectedMedia={setSelectedMedia}
-                        isModalVisible={isModalVisible}
-                        setIsModalVisible={setIsModalVisible}
+                        // isModalVisible={isModalVisible}
+                        // setIsModalVisible={setIsModalVisible}
                       />
                     </Modal>
                   </Form.Item>
@@ -239,8 +306,8 @@ export default function ImageSliders({
                       alignItems: "flex-start",
                     }}
                   >
-                    <Title level={4}>Title: {slider.title_en}</Title>
-                    <Title level={5}>শিরোনাম: {slider.title_bn}</Title>
+                    <Title level={4}>Title: {slider?.title_en}</Title>
+                    <Title level={5}>শিরোনাম: {slider?.title_bn}</Title>
                   </Space>
                   <Space
                     style={{
@@ -251,7 +318,10 @@ export default function ImageSliders({
                     }}
                   >
                     <Button
-                      onClick={() => handleEditClick(slider.id)}
+                      onClick={() => {
+                        setEditMode(true);
+                        handleEditClick(slider.id);
+                      }}
                       style={{
                         backgroundColor: "var(--theme)",
                         borderColor: "var(--theme)",
