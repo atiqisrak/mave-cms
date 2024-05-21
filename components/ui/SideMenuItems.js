@@ -8,6 +8,7 @@ import React, { useEffect, useState } from "react";
 import router from "next/router";
 import iconsNames from "../../public/data.js";
 import Router from "next/router";
+import Image from "next/image.js";
 
 const SideMenuItems = ({
   setSelectedMenuItem,
@@ -60,62 +61,115 @@ const SideMenuItems = ({
 
   return (
     <div>
+      <Menu.Item
+        key="home"
+        onClick={() => router.push("/")}
+        style={{
+          marginTop: "10%",
+          fontSize: "1.1em",
+          fontWeight: "bold",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            gap: "10px",
+            alignItems: "center",
+          }}
+        >
+          <Image
+            src="/icons/mave_icons/home.svg"
+            alt="logo"
+            width={30}
+            height={30}
+          />
+          <strong>Home</strong>
+        </div>
+      </Menu.Item>
       {sideMenuData && sideMenuData?.length > 0 ? (
-        sideMenuData?.map((item) => {
-          return item?.submenu?.length > 0 ? (
-            <Menu.SubMenu
-              key={item?.menu}
-              // icon={<CalculatorOutlined />}
-              title={item?.menu}
-              style={{
-                marginTop: "10%",
-                fontSize: "1.1em",
-              }}
-            >
-              {item?.submenu?.map((subItem) => {
-                return (
-                  <Menu.Item
-                    key={subItem.subMenu}
-                    // icon={<CalculatorOutlined />}
-                    onClick={() => {
-                      setSelectedMenuItem(subItem.subMenu);
-                      router.push(subItem.link);
-                    }}
-                  >
-                    {React.createElement(iconsNames[subItem.icon])}
-                    {subItem.title}
-                  </Menu.Item>
-                );
-              })}
-            </Menu.SubMenu>
-          ) : item?.icon ? (
+        sideMenuData?.map((item) =>
+          item?.subMenu?.length > 0 ? (
             <Menu.Item
-              key={item.menu}
-              onClick={() => router.push(item.url)}
+              key={item.id}
+              onClick={() => setSelectedMenuItem(item.id)}
               style={{
                 marginTop: "10%",
                 fontSize: "1.1em",
+                fontWeight: "bold",
               }}
             >
-              {React.createElement(iconsNames[item.icon])}
-              {item.menu}
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  alignItems: "center",
+                }}
+              >
+                <Image
+                  src={iconsNames[item.icon]}
+                  alt="logo"
+                  width={30}
+                  height={30}
+                />
+                <strong>{item.name}</strong>
+              </div>
             </Menu.Item>
           ) : (
-            "not found"
-          );
-        })
+            // sub menu under the main menu
+            <Menu.SubMenu
+              key={item.id}
+              title={
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "10px",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image
+                    src={iconsNames[item.icon]}
+                    alt="logo"
+                    width={30}
+                    height={30}
+                  />
+                  <strong>{item.name}</strong>
+                </div>
+              }
+            >
+              {item?.subMenu?.map((subItem) => (
+                <Menu.Item
+                  key={subItem.id}
+                  onClick={() => setSelectedMenuItem(subItem.id)}
+                  style={{
+                    marginTop: "10%",
+                    fontSize: "1.1em",
+                    fontWeight: "bold",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "10px",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Image
+                      src={iconsNames[subItem.icon]}
+                      alt="logo"
+                      width={30}
+                      height={30}
+                    />
+                    <strong>{subItem.name}</strong>
+                  </div>
+                </Menu.Item>
+              ))}
+            </Menu.SubMenu>
+          )
+        )
       ) : (
         <Menu.Item key="no-data">No data found</Menu.Item>
       )}
-      {user ? (
-        <Menu.Item
-          key="logout"
-          icon={<LogoutOutlined />}
-          onClick={handleLogout}
-        >
-          Logout
-        </Menu.Item>
-      ) : (
+      {user ? null : ( // </Menu.Item> //   Logout // > //   onClick={handleLogout} //   icon={<LogoutOutlined />} //   key="logout" // <Menu.Item
         <Menu.Item
           key="login"
           icon={<LoginOutlined />}
