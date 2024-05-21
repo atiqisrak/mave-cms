@@ -284,7 +284,6 @@ const PressRelease = () => {
     return (
       <div>
         <Row gutter={[16, 16]}>
-          {console.log("Card Data gg: ", cardData)}
           {cardData?.map((card) => (
             <Col key={card.id}>
               <div

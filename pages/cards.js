@@ -34,6 +34,7 @@ const Cards = () => {
   const [viewType, setViewType] = useState("grid");
   const [isCreateCardFormVisible, setIsCreateCardFormVisible] = useState(false);
   const [pages, setPages] = useState([]);
+  const [pageNames, setPageNames] = useState([]);
 
   // Fetch Cards
   const fetchCards = async () => {
@@ -71,10 +72,21 @@ const Cards = () => {
   }, [setCardsData, setLoading, setIsCreateCardFormVisible]);
 
   // Pages names
-  const pageNames = pages?.map((page) => ({
-    name: page?.page_name_en,
-    value: page?.slug ? page?.slug : page?.page_name_en,
-  }));
+  // const pageNames = pages?.map((page) => ({
+  //   name: page?.page_name_en,
+  //   value: page?.slug ? page?.slug : page?.page_name_en,
+  // }));
+
+  useEffect(() => {
+    setPageNames(
+      pages?.map((page) => ({
+        name: page?.page_name_en,
+        value: page?.slug ? page?.slug : page?.page_name_en,
+      }))
+    );
+  }, [pages]);
+
+  console.log("pageNames from cards: ", pageNames);
 
   // Create card
   const toggleCreateCardForm = () => {
@@ -325,6 +337,7 @@ const Cards = () => {
                     onCancel={toggleCreateCardForm}
                     media={media}
                     pages={pages}
+                    pageNames={pageNames}
                     fetchCards={fetchCards}
                     setIsCreateCardFormVisible={setIsCreateCardFormVisible}
                   />
@@ -338,12 +351,15 @@ const Cards = () => {
                       cardData={displayedCards}
                       media={media}
                       fetchCards={fetchCards}
+                      pages={pageNames}
                     />
                   ) : (
                     <CardListView
                       cardData={filteredCards}
                       media={media}
                       fetchCards={fetchCards}
+                      pages={pages}
+                      pagesNames={pageNames}
                     />
                   )}
                 </div>
