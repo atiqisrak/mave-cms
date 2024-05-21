@@ -9,6 +9,7 @@ import SiteSpeed from "../components/dashboard/SiteSpeed";
 const index = () => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
+  const [userData, setUserData] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -58,44 +59,55 @@ const index = () => {
 
   useEffect(() => {
     fetchData();
+    localStorage.getItem("user")
+      ? setUserData(JSON.parse(localStorage.getItem("user")))
+      : setUserData(null);
   }, []);
 
   // console.log("Data: ", data);
 
   return (
     <>
-      <div className="ViewContainer">
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            marginBottom: "6rem",
-            gap: "2rem",
-          }}
-        >
+      {userData ? (
+        <div className="ViewContainer">
           <div
+            // className="ViewContentContainer"
             style={{
-              display: "flex",
-              flexDirection: "column",
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
+              marginBottom: "6rem",
               gap: "2rem",
+              marginLeft: "5%",
             }}
           >
-            <CounterCards />
-            <UserStat />
-            <SiteStat />
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "2rem",
-            }}
-          >
-            <LatestEvents />
-            <SiteSpeed />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "2rem",
+              }}
+            >
+              <CounterCards />
+              <UserStat />
+              <SiteStat />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "2rem",
+              }}
+            >
+              <LatestEvents />
+              <SiteSpeed />
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div>
+          <h1>Dashboard</h1>
+        </div>
+      )}
     </>
   );
 };

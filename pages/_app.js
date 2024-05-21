@@ -30,17 +30,15 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <>
-      <Head>
-        
-      </Head>
+      <Head></Head>
       <ContextProvider>
         <div
           className="darkmode"
           style={{
             position: "fixed",
-            top: "1rem",
+            top: "2rem",
             right: "1rem",
-            zIndex: "1000",
+            zIndex: "1100",
           }}
         >
           <Switch
@@ -57,10 +55,11 @@ function MyApp({ Component, pageProps }) {
           style={{
             marginLeft: collapsed ? "2%" : "6%",
             transition: "margin-left 0.5s",
-            height: "100vh",
+            // height: "100vh",
             overflow: "auto",
             backgroundColor: darkmode ? "var(--notwhite)" : "#1e1e1e",
             color: darkmode ? "black" : "white",
+            marginTop: "5vh",
           }}
         >
           <Component {...pageProps} />
