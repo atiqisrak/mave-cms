@@ -1,4 +1,4 @@
-import { Button, Col, Image, Input, Modal, Row, message } from "antd";
+import { Button, Col, Image, Input, Modal, Row, Select, message } from "antd";
 import React, { useEffect, useState } from "react";
 import MediaRenderEngine from "./MediaRenderEngine";
 import {
@@ -15,7 +15,7 @@ import instance from "../axios";
 
 const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
 
-const CardGridView = ({ cardData, media, fetchCards }) => {
+const CardGridView = ({ cardData, media, fetchCards, pages }) => {
   // View card details in modal
   const [viewDetails, setViewDetails] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
@@ -125,7 +125,6 @@ const CardGridView = ({ cardData, media, fetchCards }) => {
   return (
     <div>
       <Row gutter={[16, 16]}>
-        {console.log("Card Data gg: ", cardData)}
         {cardData?.map((card) => (
           <Col xs={24} sm={12} md={8} lg={6} key={card.id}>
             <div
@@ -140,13 +139,6 @@ const CardGridView = ({ cardData, media, fetchCards }) => {
               {card?.media_files ? (
                 <MediaRenderEngine item={card?.media_files} />
               ) : (
-                // <Image
-                //     preview={false}
-                //     src="/images/Image_Placeholder.png"
-                //     alt={card.title_en}
-                //     width={200}
-                //     height={200}
-                // />
                 <Image
                   preview={false}
                   src="/images/Image_Placeholder.png"
@@ -371,9 +363,61 @@ const CardGridView = ({ cardData, media, fetchCards }) => {
                 });
               }}
             />
+
+            {/* <div
+              style={{
+                display: "flex",
+                gap: "10px",
+              }}
+            >
+              <strong>Page Name:</strong> {selectedCard?.page_name}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+              }}
+            >
+              <strong>Link URL:</strong> {selectedCard?.link_url}
+            </div> */}
+
+            {console.log("Page Names nn: ", pages)}
+            <strong>Page:</strong>
+            <Select
+              defaultValue={selectedCard?.page_name}
+              style={{ width: "100%" }}
+              options={pages.map((page) => ({
+                label: page.name,
+                value: page.name,
+              }))}
+              onChange={(value) => {
+                setSelectedCard({
+                  ...selectedCard,
+                  page_name: value,
+                });
+              }}
+            />
+
+            <strong>Link URL</strong>
+            <Input
+              defaultValue={selectedCard?.link_url}
+              value={selectedCard?.link_url}
+              onChange={(e) => {
+                setSelectedCard({
+                  ...selectedCard,
+                  link_url: e.target.value,
+                });
+              }}
+            />
           </div>
         ) : (
-          <div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+            }}
+          >
             <h2>{selectedCard?.title_en}</h2>
             {selectedCard?.title_bn && <h2>{selectedCard?.title_bn}</h2>}
             <p
@@ -388,6 +432,22 @@ const CardGridView = ({ cardData, media, fetchCards }) => {
                 }}
               />
             )}
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+              }}
+            >
+              <strong>Page Name:</strong> {selectedCard?.page_name}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+              }}
+            >
+              <strong>Link URL:</strong> {selectedCard?.link_url}
+            </div>
           </div>
         )}
       </Modal>
