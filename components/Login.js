@@ -67,6 +67,7 @@ const Login = ({ open, setOpen, response, setResponse }) => {
         localStorage.setItem("user", user);
         localStorage.setItem("token", newToken);
         console.log("Login successfully");
+        window.location.reload();
       }
     } catch (error) {
       // Handle errors, e.g., display an error message or log the error

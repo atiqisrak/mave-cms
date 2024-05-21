@@ -24,7 +24,7 @@ import {
 import SideMenuItems from "./ui/SideMenuItems.js";
 import NavItems from "./ui/NavItems.js";
 
-const SiteContentV2 = ({ children, collapsed, setCollapsed }) => {
+const SiteContentV2 = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,6 +37,7 @@ const SiteContentV2 = ({ children, collapsed, setCollapsed }) => {
   const [changeLogs, setChangeLogs] = useState([]);
   const [sideMenuData, setSideMenuData] = useState(null);
   const [hovered, setHovered] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
 
   // Fetch User Data
@@ -72,6 +73,10 @@ const SiteContentV2 = ({ children, collapsed, setCollapsed }) => {
     setChangeLogs(Changelog);
   }, []);
 
+  const handleCollapse = () => {
+    setCollapsed(!collapsed);
+  };
+
   // console.log("Side Menu Data: ", sideMenuData);
 
   return (
@@ -82,7 +87,52 @@ const SiteContentV2 = ({ children, collapsed, setCollapsed }) => {
           height: "100%",
         }}
       >
-        <NavItems />
+        <div
+          className="collapse-button"
+          style={{
+            position: "fixed",
+            top: 90,
+            left: collapsed ? 10 : 190,
+            cursor: "pointer",
+            zIndex: 1200,
+            color: "#fff",
+          }}
+          onClick={() => handleCollapse(!collapsed)}
+        >
+          {/* {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} */}
+          {collapsed ? (
+            <Image
+              src="/icons/mave_icons/expand.svg"
+              alt="Mave Logo"
+              preview={false}
+              style={{
+                height: "4vh",
+                marginLeft: "10px",
+                objectFit: "contain",
+              }}
+              onClick={() => handleCollapse(!collapsed)}
+            />
+          ) : (
+            <Image
+              src="/icons/mave_icons/collapse.svg"
+              alt="Mave Logo"
+              preview={false}
+              style={{
+                height: "4vh",
+                marginLeft: "10px",
+                objectFit: "contain",
+              }}
+              onClick={() => handleCollapse(!collapsed)}
+            />
+          )}
+        </div>
+        <NavItems
+          user={user}
+          token={token}
+          handleLogout={handleLogout}
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+        />
         <Layout
           className="site-layout"
           style={{
@@ -95,7 +145,7 @@ const SiteContentV2 = ({ children, collapsed, setCollapsed }) => {
         <Sider
           breakpoint="lg"
           theme="light"
-          collapsedWidth="0"
+          collapsedWidth={90}
           onBreakpoint={(broken) => {
             console.log(broken);
           }}
@@ -103,37 +153,30 @@ const SiteContentV2 = ({ children, collapsed, setCollapsed }) => {
           collapsed={collapsed}
           onCollapse={() => setCollapsed(!collapsed)}
           trigger={null}
-          width={collapsed ? 80 : 250}
+          width={250}
           style={{
             overflow: "auto",
             position: "fixed",
             left: 0,
-            top: 60,
+            top: 0,
             bottom: 0,
             padding: "0 1rem",
             border: "none",
+            paddingTop: "7%",
           }}
         >
-          <Menu
-            theme="light"
-            mode="inline"
-            defaultSelectedKeys={selectedMenuItem?.id}
-            selectedKeys={[selectedMenuItem]}
-            style={{ marginTop: "10%" }}
-          >
-            <SideMenuItems
-              sideMenuData={sideMenuData}
-              setSelectedMenuItem={setSelectedMenuItem}
-              setLoading={setLoading}
-              token={token}
-              user={user}
-              loading={loading}
-              setSideMenuData={setSideMenuData}
-              handleLogout={handleLogout}
-              isModalOpen={isModalOpen}
-              setIsModalOpen={setIsModalOpen}
-            />
-          </Menu>
+          <SideMenuItems
+            sideMenuData={sideMenuData}
+            setLoading={setLoading}
+            token={token}
+            user={user}
+            loading={loading}
+            setSideMenuData={setSideMenuData}
+            handleLogout={handleLogout}
+            isModalOpen={isModalOpen}
+            setIsModalOpen={setIsModalOpen}
+            collapsed={collapsed}
+          />
         </Sider>
       </Layout>
       <Login
