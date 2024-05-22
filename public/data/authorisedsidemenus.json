@@ -1,0 +1,148 @@
+[
+    {
+        "id": 1,
+        "menu": "Home",
+        "title": "Home",
+        "icon": "/icons/mave_icons/home.svg",
+        "link": "/"
+    },
+    {
+        "id": 2,
+        "menu": "Components",
+        "title": "Components",
+        "icon": "/icons/mave_icons/component.svg",
+        "submenu": [
+            {
+                "id": 3,
+                "icon": "/icons/mave_icons/gallery.svg",
+                "link": "/gallery",
+                "title": "Media Library"
+            },
+            {
+                "id": 4,
+                "icon": "/icons/mave_icons/menuitem.svg",
+                "link": "/menuitems",
+                "title": "Menu Items"
+            },
+            {
+                "id": 6,
+                "icon": "/icons/mave_icons/menu.svg",
+                "link": "/menus",
+                "title": "Menus"
+            },
+            {
+                "id": 7,
+                "icon": "/icons/mave_icons/navbar.svg",
+                "link": "/navbars",
+                "title": "Navbars"
+            },
+            {
+                "id": 8,
+                "icon": "/icons/mave_icons/carousel.svg",
+                "link": "/sliders",
+                "title": "Sliders"
+            },
+            {
+                "id": 9,
+                "icon": "/icons/mave_icons/card.svg",
+                "link": "/cards",
+                "title": "Cards"
+            },
+            {
+                "id": 10,
+                "icon": "/icons/mave_icons/press.svg",
+                "link": "/pressrelease",
+                "title": "Press Release"
+            },
+            {
+                "id": 11,
+                "icon": "/icons/mave_icons/event.svg",
+                "link": "/events",
+                "title": "Events"
+            },
+            {
+                "id": 12,
+                "icon": "/icons/mave_icons/form.svg",
+                "link": "/forms",
+                "title": "Forms"
+            },
+            {
+                "id": 13,
+                "icon": "/icons/mave_icons/footer.svg",
+                "link": "/footer",
+                "title": "Footers"
+            }
+        ]
+    },
+    {
+        "id": 14,
+        "menu": "Form Responses",
+        "title": "Form Responses",
+        "icon": "/icons/mave_icons/formresponse.svg",
+        "link": "/formresponses"
+    },
+    {
+        "id": 15,
+        "menu": "Creator Studio",
+        "title": "Creator Studio",
+        "icon": "/icons/mave_icons/creatorstudio.svg",
+        "submenu": [
+            {
+                "id": 16,
+                "icon": "/icons/mave_icons/page.svg",
+                "link": "/creator/pages",
+                "title": "Pages"
+            },
+            {
+                "id": 17,
+                "icon": "/icons/mave_icons/blog.svg",
+                "link": "/blogs",
+                "title": "Blogs"
+            },
+            {
+                "id": 18,
+                "icon": "/icons/mave_icons/createblog.svg",
+                "link": "/blogs/createblog",
+                "title": "Create Blog"
+            }
+        ]
+    },
+    {
+        "id": 19,
+        "menu": "User Manual",
+        "title": "User Manual",
+        "icon": "/icons/mave_icons/usermanual.svg",
+        "submenu": [
+            {
+                "id": 20,
+                "icon": "/icons/mave_icons/changelog.svg",
+                "link": "/usermanual/changelog",
+                "title": "Changelog"
+            },
+            {
+                "id": 21,
+                "icon": "/icons/mave_icons/documentation.svg",
+                "link": "/usermanual/documentation",
+                "title": "Documentation"
+            },
+            {
+                "id": 22,
+                "icon": "/icons/mave_icons/userguide.svg",
+                "link": "/usermanual/userguide",
+                "title": "User Guide"
+            },
+            {
+                "id": 23,
+                "icon": "/icons/mave_icons/faq.svg",
+                "link": "/usermanual/faq",
+                "title": "FAQ"
+            },
+            {
+                "id": 24,
+                "icon": "/icons/mave_icons/support.svg",
+                "link": "/usermanual/support",
+                "title": "Support"
+            }
+        ]
+    }
+]

@@ -11,6 +11,8 @@ const { Header } = Layout;
 import router from "next/router";
 import Login from "../Login";
 
+import TopNavData from "/public/data/topnavdata.json";
+
 export default function NavItems({
   user,
   token,
@@ -22,13 +24,13 @@ export default function NavItems({
   const [topNavData, setTopNavData] = useState([]);
   const [selectedMenuItem, setSelectedMenuItem] = useState("Home");
 
-  useEffect(() => {
-    fetch("/api/topnavdata")
-      .then((res) => res.json())
-      .then((data) => {
-        setTopNavData(data);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch("/api/topnavdata")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setTopNavData(data);
+  //     });
+  // }, []);
 
   // const handleMenuClick = (item) => {
   //   setSelectedMenuItem(item.key);
@@ -39,6 +41,10 @@ export default function NavItems({
   //     router.push(selectedItem.link);
   //   }
   // };
+
+  useEffect(() => {
+    TopNavData && setTopNavData(TopNavData);
+  }, [TopNavData]);
 
   return (
     <Header
@@ -69,7 +75,8 @@ export default function NavItems({
         <Image
           placeholder
           className="sitelogo"
-          src="/images/mave_logo_horizontal_core.png"
+          // src="/images/mave_logo_horizontal.png"
+          src="/icons/mave_icons/mave_logo.png"
           alt="Mave Logo"
           // resizeMode="contain"
           onError={(e) => {
@@ -78,9 +85,10 @@ export default function NavItems({
           }}
           preview={false}
           style={{
-            height: "6vh",
+            height: "3vh",
             marginLeft: "10px",
             objectFit: "contain",
+            backgroundColor: "white",
           }}
         />
       </Space>

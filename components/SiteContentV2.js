@@ -92,7 +92,7 @@ const SiteContentV2 = ({ children }) => {
           style={{
             position: "fixed",
             top: 90,
-            left: collapsed ? 10 : 190,
+            left: collapsed ? 10 : 250,
             cursor: "pointer",
             zIndex: 1200,
             color: "#fff",
@@ -153,7 +153,7 @@ const SiteContentV2 = ({ children }) => {
           collapsed={collapsed}
           onCollapse={() => setCollapsed(!collapsed)}
           trigger={null}
-          width={250}
+          width={290}
           style={{
             overflow: "auto",
             position: "fixed",

@@ -1,5 +1,14 @@
 [
     {
+        "version": "v 0.3.1",
+        "date": "2024-05-21",
+        "changes": {
+            "Feature": [
+                "New UI appear if you are super admin"
+            ]
+        }
+    },
+    {
         "version": "v 0.2.56",
         "date": "2024-05-20",
         "changes": {
