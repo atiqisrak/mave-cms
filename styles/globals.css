@@ -34,6 +34,20 @@ body {
   background: var(--notwhite);
 }
 
+/* scrollbar color change */
+body::-webkit-scrollbar {
+  width: 10px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #ffa17c;
+  border-radius: 10px;
+}
+
+body::-webkit-scrollbar-track {
+  background-color: var(--notwhite);
+}
+
 /* scale down in laptop screen */
 @media (max-width: 1024px) {
   body {
@@ -426,4 +440,20 @@ a:hover {
 .counter-cards .ant-statistic-title {
   font-size: 1.2rem;
   color: #ffffff;
+}
+
+.ant-menu-light .ant-menu-item-selected,
+.ant-menu-light > .ant-menu .ant-menu-item-selected {
+  background-color: #f1622a;
+}
+
+.ant-menu-light .ant-menu-item-selected,
+.ant-menu-light > .ant-menu .ant-menu-item-selected {
+  color: #fff;
+}
+/* icon color svg white */
+.sidebaricon:hover {
+  color: #fff;
+  fill: #fff;
+  filter: grayscale(100%);
 }

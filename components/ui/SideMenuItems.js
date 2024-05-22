@@ -6,6 +6,8 @@ import {
 import { Image, Menu } from "antd";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import AuthorizedSideMenuData from "/public/data/authorisedsidemenus.json";
+import UnAuthorizedSideMenuData from "/public/data/unauthorisedsidemenu.json";
 
 const SideMenuItems = ({
   token,
@@ -19,39 +21,47 @@ const SideMenuItems = ({
   const [selectedMenuItem, setSelectedMenuItem] = useState("1");
   const router = useRouter();
 
-  const fetchAuthorisedSideMenuData = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch("/api/authorisedsidemenu");
+  // const fetchAuthorisedSideMenuData = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const response = await fetch("/api/authorisedsidemenu");
 
-      if (response?.status === 304 || response?.status === 200) {
-        const data = await response.json();
-        setSideMenuData(data);
-      }
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
-  };
+  //     if (response?.status === 304 || response?.status === 200) {
+  //       const data = await response.json();
+  //       setSideMenuData(data);
+  //     }
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.error(error);
+  //     setLoading(false);
+  //   }
+  // };
 
-  const fetchUnauthorisedSideMenuData = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch("/api/unauthorisedsidemenu");
-      setSideMenuData(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
-  };
+  // const fetchUnauthorisedSideMenuData = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const response = await fetch("/api/unauthorisedsidemenu");
+  //     setSideMenuData(response.data);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.error(error);
+  //     setLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (token && user) {
+  //     fetchAuthorisedSideMenuData();
+  //   } else {
+  //     fetchUnauthorisedSideMenuData();
+  //   }
+  // }, [token, user]);
 
   useEffect(() => {
     if (token && user) {
-      fetchAuthorisedSideMenuData();
+      setSideMenuData(AuthorizedSideMenuData);
     } else {
-      fetchUnauthorisedSideMenuData();
+      setSideMenuData(UnAuthorizedSideMenuData);
     }
   }, [token, user]);
 
@@ -104,6 +114,7 @@ const SideMenuItems = ({
                   >
                     {collapsed ? (
                       <Image
+                        className="sidebaricon"
                         preview={false}
                         src={item.icon
                           .replace("collapsed", "expand")
@@ -112,13 +123,14 @@ const SideMenuItems = ({
                       />
                     ) : (
                       <Image
+                        className="sidebaricon"
                         preview={false}
                         src={item.icon
                           .replace("expand", "collapsed")
                           .replace("light", "dark")}
                         alt="logo"
-                        width={30}
-                        height={30}
+                        width={25}
+                        height={25}
                       />
                     )}
                     {!collapsed && <strong>{item.title}</strong>}
@@ -144,15 +156,16 @@ const SideMenuItems = ({
                       style={{
                         display: "flex",
                         gap: "10px",
-                        alignItems: "center",
+                        // alignItems: "center",
                       }}
                     >
                       <Image
+                        className="sidebaricon"
                         preview={false}
                         src={subItem.icon}
                         alt="logo"
-                        width={30}
-                        height={30}
+                        width={25}
+                        height={25}
                       />
                       <strong>{subItem.title}</strong>
                     </div>
@@ -176,15 +189,16 @@ const SideMenuItems = ({
                   style={{
                     display: "flex",
                     gap: "10px",
-                    alignItems: "center",
+                    // alignItems: "center",
                   }}
                 >
                   <Image
+                    className="sidebaricon"
                     preview={false}
                     src={item.icon}
                     alt="logo"
-                    width={30}
-                    height={30}
+                    width={25}
+                    height={25}
                   />
                   {!collapsed && <strong>{item.title}</strong>}
                 </div>
@@ -204,11 +218,6 @@ const SideMenuItems = ({
           </Menu.Item>
         )}
       </Menu>
-      <style jsx>{`
-        .ant-menu-item-selected {
-          background-color: #f1612a;
-        }
-      `}</style>
     </div>
   );
 };
