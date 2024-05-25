@@ -1,0 +1,27 @@
+type: section
+title: Section 1
+content: [
+    {
+        type: text
+        content: "This is a text block"
+    },
+    {
+        type: image
+        url: "https://via.placeholder.com/150"
+        width: 150
+        height: 150
+    }
+]
+
+type: section
+title: Section 2
+content: [
+    {
+        type: text
+        content: "This is another text block"
+    },
+    {
+        type: description
+        content: "<p>This is a description block</p>"
+    }
+]
