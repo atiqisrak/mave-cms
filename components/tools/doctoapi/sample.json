@@ -1,0 +1,69 @@
+[
+    {
+        "_id": "NNN5T906XTQo7Huy",
+        "_category": "root",
+        "sectionTitle": "Section 1",
+        "data": [
+            {
+                "_id": "CW0nj1xMazQ8bCCQ",
+                "type": "title",
+                "content": "This is a text block"
+            },
+            {
+                "type": "image",
+                "medias": [
+                    {
+                        "url": "https://via.placeholder.com/150",
+                        "type": "image",
+                        "name": "150x150.png",
+                        "size": 0.1,
+                        "width": 150,
+                        "height": 150
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "_category": "root",
+        "sectionTitle": "Section 2",
+        "data": [
+            {
+                "type": "text",
+                "content": "This is another text block"
+            },
+            {
+                "type": "description",
+                "content": "<p>This is a description block</p>"
+            }
+        ]
+    }
+]
+// rendered doc
+type: section
+title: Section 1
+content: [
+    {
+        type: text
+        content: "This is a text block"
+    },
+    {
+        type: image
+        url: "https://via.placeholder.com/150"
+        width: 150
+        height: 150
+    }
+]
+
+type: section
+title: Section 2
+content: [
+    {
+        type: text
+        content: "This is another text block"
+    },
+    {
+        type: description
+        content: "<p>This is a description block</p>"
+    }
+]

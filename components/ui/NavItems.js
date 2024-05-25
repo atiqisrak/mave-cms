@@ -4,6 +4,7 @@ import {
   MessageOutlined,
   SearchOutlined,
   UserOutlined,
+  LoginOutlined,
 } from "@ant-design/icons";
 import { Image, Input, List, Space, Layout, Menu } from "antd";
 import { useEffect, useState } from "react";
@@ -11,7 +12,7 @@ const { Header } = Layout;
 import router from "next/router";
 import Login from "../Login";
 
-import TopNavData from "/public/data/topnavdata.json";
+import TopNavData from "../../src/data/topnavdata.json";
 
 export default function NavItems({
   user,
