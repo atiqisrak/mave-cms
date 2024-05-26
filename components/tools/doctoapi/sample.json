@@ -10,6 +10,31 @@
                 "content": "This is a text block"
             }
         ]
+    },
+    {
+        "_id": "NNN5T906XTQo7Huy",
+        "_category": "root",
+        "sectionTitle": "Section 2",
+        "data": [
+            {
+                "_id": "CW0nj1xMazQ8bCCQ",
+                "type": "paragraph",
+                "content": "<p>This is a paragraph</p><ul><li>Item 1</li><li>Item 2</li></ul>"
+            }
+        ]
+    },
+    {
+        "_id": "NNN5T906XTQo7Huy",
+        "_category": "root",
+        "sectionTitle": "Section 3",
+        "data": [
+            {
+                "_id": "CW0nj1xMazQ8bCCQ",
+                "type": "image",
+                "src": "http://example.com/image.jpg",
+                "alt": "An image"
+            }
+        ]
     }
 ]
 // rendered doc
