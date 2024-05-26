@@ -148,7 +148,7 @@ const CMSComponentGallery = ({ children, router }) => {
                   src="/images/mave_logo.png"
                   width={40} // Adjust the collapsed logo width
                   height={40} // Adjust the collapsed logo height
-                  resizeMode="contain"
+                  resizemode="contain"
                   preview={false}
                 />
               ) : (
@@ -161,7 +161,7 @@ const CMSComponentGallery = ({ children, router }) => {
                   src="/images/mave_logo_vertical.png"
                   width={950 / 4}
                   height={871 / 4}
-                  resizeMode="contain"
+                  resizemode="contain"
                   preview={false}
                 />
               )}

@@ -71,12 +71,6 @@ const Cards = () => {
     fetchCards();
   }, [setCardsData, setLoading, setIsCreateCardFormVisible]);
 
-  // Pages names
-  // const pageNames = pages?.map((page) => ({
-  //   name: page?.page_name_en,
-  //   value: page?.slug ? page?.slug : page?.page_name_en,
-  // }));
-
   useEffect(() => {
     setPageNames(
       pages?.map((page) => ({
@@ -85,8 +79,6 @@ const Cards = () => {
       }))
     );
   }, [pages]);
-
-  console.log("pageNames from cards: ", pageNames);
 
   // Create card
   const toggleCreateCardForm = () => {
@@ -351,7 +343,7 @@ const Cards = () => {
                       cardData={displayedCards}
                       media={media}
                       fetchCards={fetchCards}
-                      pages={pageNames}
+                      pages={pages}
                     />
                   ) : (
                     <CardListView
