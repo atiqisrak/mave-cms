@@ -1211,6 +1211,20 @@ const Creator = () => {
                                 Delete Section
                               </Button>
                             </Popconfirm>
+
+                            {/* Rearrange Section */}
+                            {/* <Image
+                              src="/images/icons/sort.svg"
+                              alt="Reorder"
+                              style={{
+                                position: "absolute",
+                                right: "-75px",
+                                top: "-20px",
+                                width: "30px",
+                                height: "30px",
+                                cursor: "pointer",
+                              }}
+                            /> */}
                           </>
                         )}
                       </div>
