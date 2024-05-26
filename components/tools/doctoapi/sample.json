@@ -8,33 +8,6 @@
                 "_id": "CW0nj1xMazQ8bCCQ",
                 "type": "title",
                 "content": "This is a text block"
-            },
-            {
-                "type": "image",
-                "medias": [
-                    {
-                        "url": "https://via.placeholder.com/150",
-                        "type": "image",
-                        "name": "150x150.png",
-                        "size": 0.1,
-                        "width": 150,
-                        "height": 150
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "_category": "root",
-        "sectionTitle": "Section 2",
-        "data": [
-            {
-                "type": "text",
-                "content": "This is another text block"
-            },
-            {
-                "type": "description",
-                "content": "<p>This is a description block</p>"
             }
         ]
     }
@@ -46,24 +19,27 @@ content: [
     {
         type: text
         content: "This is a text block"
-    },
-    {
-        type: image
-        url: "https://via.placeholder.com/150"
-        width: 150
-        height: 150
     }
 ]
-
 type: section
 title: Section 2
 content: [
     {
-        type: text
-        content: "This is another text block"
-    },
+        type: paragraph
+        content: "<p>This is a paragraph</p>
+        <ul>
+            <li>Item 1</li>
+            <li>Item 2</li>
+        </ul>
+        "
+    }
+]
+type: section
+title: Section 3
+content: [
     {
-        type: description
-        content: "<p>This is a description block</p>"
+        type: image
+        src: "http://example.com/image.jpg"
+        alt: "An image"
     }
 ]
