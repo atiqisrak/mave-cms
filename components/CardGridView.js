@@ -91,7 +91,6 @@ const CardGridView = ({ cardData, media, fetchCards, pages }) => {
       // console.log("Card sending: ", requestedData);
       console.log("Card updated successfully");
       setLoading(false);
-      // console.log("Card updated successfully");
       fetchUpdatedCardData();
     } catch (error) {
       // console.log(error);
@@ -139,15 +138,27 @@ const CardGridView = ({ cardData, media, fetchCards, pages }) => {
     return selectedMedia;
   };
 
-  // Page change
   const handlePageChange = (page) => {
-    setSelectedCard({
-      ...selectedCard,
-      page_name: page?.page_name_en,
-      link_url: `/${page.slug}?page_id=${
-        page.id
-      }&pageName=${page.page_name_en.replace(/\s/g, "-")}`,
-    });
+    console.log("Selected page 55: ", page);
+    console.log("Pages 2345: ", pages);
+    if (page && page?.slug && page?.page_name_en) {
+      const selectedPage = pages.find(
+        (p) => p?.page_name_en === page?.page_name_en
+      );
+      if (selectedPage) {
+        setSelectedCard((prevCard) => ({
+          ...prevCard,
+          page_name: selectedPage.page_name_en,
+          link_url: `/${selectedPage.slug}?page_id=${
+            selectedPage.id
+          }&pageName=${selectedPage.page_name_en.replace(/\s/g, "-")}`,
+        }));
+      } else {
+        console.error("Selected page not found in the pages array:", page);
+      }
+    } else {
+      console.error("Invalid page data:", page);
+    }
   };
 
   useEffect(() => {
@@ -415,19 +426,39 @@ const CardGridView = ({ cardData, media, fetchCards, pages }) => {
               {pages.map((page) => (
                 <Select.Option key={page.id} value={page.page_name_en}>
                   {page.page_name_en}
+                  {/* {console.log("Page Name: ", page)} */}
                 </Select.Option>
               ))}
             </Select>
             <div>
               <strong>Link URL</strong>
               <Radio.Group
+                defaultValue={
+                  selectedCard?.link_url.includes("page_id")
+                    ? "page"
+                    : "independent"
+                }
                 onChange={(e) => {
                   setLinkType(e.target.value);
+                  console.log("Selected Card: ", selectedCard);
+                  console.log(
+                    "Pages: ",
+                    pages?.map((page) => page.page_name_en)
+                  );
+                  const pageNames = pages?.map((page) => page.page_name_en);
                   if (e.target.value === "page") {
                     const selectedPage = pages?.find(
-                      (page) => page.name === selectedCard?.page_name
+                      (page) => page?.page_name_en === selectedCard?.page_name
                     );
-                    handlePageChange(selectedPage?.name);
+
+                    if (selectedPage) {
+                      console.log("Page Found: ", selectedPage);
+                      handlePageChange(selectedPage);
+                    } else if (!selectedPage)
+                      console.error("Selected page not found");
+
+                    console.log("Selected Page nn: ", selectedPage);
+                    // handlePageChange(selectedPage);
                   } else if (e.target.value === "independent") {
                     setSelectedCard({
                       ...selectedCard,
