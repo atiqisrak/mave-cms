@@ -1,5 +1,17 @@
 [
     {
+        "version": "v 0.2.57",
+        "date": "2024-05-26",
+        "changes": {
+            "Feature": [
+                "User can create and update cards assigning pages and links"
+            ],
+            "BugFix": [
+                "Fixed the issue where user could not match their current pages with links"
+            ]
+        }
+    },
+    {
         "version": "v 0.2.56",
         "date": "2024-05-20",
         "changes": {
