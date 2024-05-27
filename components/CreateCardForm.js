@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Input, Select, message } from "antd";
+import { Button, Input, Radio, Select, Switch, message } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import SingleMediaSelect from "./SingleMediaSelect";
 import RichTextEditor from "./RichTextEditor";
@@ -26,6 +26,8 @@ const CreateCardForm = ({
 
   const [mediaSelectionVisible, setMediaSelectionVisible] = useState(false);
   const [selectedMediaId, setSelectedMediaId] = useState(null);
+  const [pageSelected, setPageSelected] = useState(false);
+  const [linkType, setLinkType] = useState("page");
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
 
   const handleFieldChange = (fieldName, value) => {
@@ -33,6 +35,18 @@ const CreateCardForm = ({
       ...formData,
       [fieldName]: value,
     });
+  };
+
+  const handlePageChange = (page) => {
+    setPageSelected(true);
+    setLinkType("page");
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      page_name: page.page_name_en,
+      link_url: `/${page.slug}?page_id=${
+        page.id
+      }&pageName=${page.page_name_en.replace(/\s/g, "-")}`,
+    }));
   };
 
   const handleCreateCard = async () => {
@@ -55,10 +69,10 @@ const CreateCardForm = ({
       } else {
         console.error("Error creating card:", response.data.message);
       }
+      // console.log("Sending data: ", formData);
     } catch (error) {
       console.error("Error creating card:", error);
     }
-    // onCancel();
     fetchCards();
     setIsCreateCardFormVisible(false);
   };
@@ -87,8 +101,8 @@ const CreateCardForm = ({
       ]}
       width={1200}
     >
+      {console.log("Pages: ", pages)}
       <h2>Title</h2>
-      {console.log("Pages: ", pages[0]?.page_name_en)}
       <Input
         placeholder="Title (English)"
         value={formData.title_en}
@@ -118,7 +132,12 @@ const CreateCardForm = ({
         style={{ width: "100%", margin: "1em 0" }}
         placeholder="Select a page"
         optionFilterProp="children"
-        onChange={(value) => handleFieldChange("page_name", value)}
+        onChange={(value) => {
+          const selectedPage = pages.find(
+            (page) => page.page_name_en === value
+          );
+          handlePageChange(selectedPage);
+        }}
       >
         {pages.map((page) => (
           <Select.Option key={page.id} value={page.page_name_en}>
@@ -126,12 +145,38 @@ const CreateCardForm = ({
           </Select.Option>
         ))}
       </Select>
-      <h2>Link URL</h2>
-      <Input
-        placeholder="/home"
-        value={formData.link_url}
-        onChange={(e) => handleFieldChange("link_url", e.target.value)}
-      />
+
+      {pageSelected && (
+        <div>
+          <h2>Link URL</h2>
+          <Radio.Group
+            onChange={(e) => {
+              setLinkType(e.target.value);
+              if (e.target.value === "page") {
+                const selectedPage = pages.find(
+                  (page) => page.page_name_en === formData.page_name
+                );
+                handlePageChange(selectedPage);
+              } else if (e.target.value === "independent") {
+                handleFieldChange("link_url", "https://");
+              }
+            }}
+            value={linkType}
+          >
+            <Radio value="page">Page Link</Radio>
+            <Radio value="independent">Independent Link</Radio>
+          </Radio.Group>
+
+          {linkType === "independent" && (
+            <Input
+              placeholder="https://"
+              value={formData.link_url}
+              onChange={(e) => handleFieldChange("link_url", e.target.value)}
+            />
+          )}
+        </div>
+      )}
+
       <br />
       <br />
       <br />

@@ -575,7 +575,7 @@ const SiteContent = ({ children, collapsed, setCollapsed }) => {
                         src="/images/mave_favicon.svg"
                         width={40}
                         height={40}
-                        resizeMode="contain"
+                        resizemode="contain"
                         preview={false}
                       />
                     ) : (
@@ -588,7 +588,7 @@ const SiteContent = ({ children, collapsed, setCollapsed }) => {
                         src="/images/mave_logo_vertical.png"
                         width={950 / 4}
                         height={871 / 4}
-                        resizeMode="contain"
+                        resizemode="contain"
                         preview={false}
                       />
                     )}
