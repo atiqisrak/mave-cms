@@ -1,4 +1,14 @@
-import { Button, Col, Image, Input, Modal, Row, message } from "antd";
+import {
+  Button,
+  Col,
+  Image,
+  Input,
+  Modal,
+  Radio,
+  Row,
+  Select,
+  message,
+} from "antd";
 import React, { useEffect, useState } from "react";
 import MediaRenderEngine from "./MediaRenderEngine";
 import {
@@ -15,15 +25,20 @@ import instance from "../axios";
 
 const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
 
-const CardGridView = ({ cardData, media, fetchCards }) => {
+const CardGridView = ({ cardData, media, fetchCards, pages }) => {
   // View card details in modal
   const [viewDetails, setViewDetails] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [linkType, setLinkType] = useState(
+    selectedCard?.link_url?.includes("page_id") ? "page" : "independent"
+  );
+  // const [selectedPage, setSelectedPage] = useState(null);
 
   const handleCardDetails = (card) => {
     setSelectedCard(card);
+    setLinkType(card?.link_url?.includes("page_id") ? "page" : "independent");
     setViewDetails(true);
   };
 
@@ -58,6 +73,8 @@ const CardGridView = ({ cardData, media, fetchCards }) => {
         title_bn: selectedCard.title_bn,
         description_en: selectedCard.description_en,
         description_bn: selectedCard.description_bn,
+        link_url: selectedCard.link_url,
+        page_name: linkType === "page" ? selectedCard.page_name : "",
       };
 
       if (selectedMediaId !== null) {
@@ -71,10 +88,9 @@ const CardGridView = ({ cardData, media, fetchCards }) => {
         requestedData
       );
 
-      // console.log("Card updated: ", res.data);
+      // console.log("Card sending: ", requestedData);
       console.log("Card updated successfully");
       setLoading(false);
-      console.log("Card updated successfully");
       fetchUpdatedCardData();
     } catch (error) {
       // console.log(error);
@@ -122,10 +138,40 @@ const CardGridView = ({ cardData, media, fetchCards }) => {
     return selectedMedia;
   };
 
+  const handlePageChange = (page) => {
+    console.log("Selected page 55: ", page);
+    console.log("Pages 2345: ", pages);
+    if (page && page?.slug && page?.page_name_en) {
+      const selectedPage = pages.find(
+        (p) => p?.page_name_en === page?.page_name_en
+      );
+      if (selectedPage) {
+        setSelectedCard((prevCard) => ({
+          ...prevCard,
+          page_name: selectedPage.page_name_en,
+          link_url: `/${selectedPage.slug}?page_id=${
+            selectedPage.id
+          }&pageName=${selectedPage.page_name_en.replace(/\s/g, "-")}`,
+        }));
+      } else {
+        console.error("Selected page not found in the pages array:", page);
+      }
+    } else {
+      console.error("Invalid page data:", page);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedCard) {
+      setLinkType(
+        selectedCard?.link_url.includes("page_id") ? "page" : "independent"
+      );
+    }
+  }, [selectedCard]);
+
   return (
     <div>
       <Row gutter={[16, 16]}>
-        {console.log("Card Data gg: ", cardData)}
         {cardData?.map((card) => (
           <Col xs={24} sm={12} md={8} lg={6} key={card.id}>
             <div
@@ -140,13 +186,6 @@ const CardGridView = ({ cardData, media, fetchCards }) => {
               {card?.media_files ? (
                 <MediaRenderEngine item={card?.media_files} />
               ) : (
-                // <Image
-                //     preview={false}
-                //     src="/images/Image_Placeholder.png"
-                //     alt={card.title_en}
-                //     width={200}
-                //     height={200}
-                // />
                 <Image
                   preview={false}
                   src="/images/Image_Placeholder.png"
@@ -371,9 +410,91 @@ const CardGridView = ({ cardData, media, fetchCards }) => {
                 });
               }}
             />
+            <strong>Page:</strong>
+            <Select
+              defaultValue={selectedCard?.page_name}
+              style={{ width: "100%" }}
+              placeholder="Select a page"
+              optionFilterProp="children"
+              onChange={(value) => {
+                const selectedPage = pages?.find(
+                  (page) => page.page_name_en === value
+                );
+                handlePageChange(selectedPage);
+              }}
+            >
+              {pages.map((page) => (
+                <Select.Option key={page.id} value={page.page_name_en}>
+                  {page.page_name_en}
+                  {/* {console.log("Page Name: ", page)} */}
+                </Select.Option>
+              ))}
+            </Select>
+            <div>
+              <strong>Link URL</strong>
+              <Radio.Group
+                defaultValue={
+                  selectedCard?.link_url.includes("page_id")
+                    ? "page"
+                    : "independent"
+                }
+                onChange={(e) => {
+                  setLinkType(e.target.value);
+                  console.log("Selected Card: ", selectedCard);
+                  console.log(
+                    "Pages: ",
+                    pages?.map((page) => page.page_name_en)
+                  );
+                  const pageNames = pages?.map((page) => page.page_name_en);
+                  if (e.target.value === "page") {
+                    const selectedPage = pages?.find(
+                      (page) => page?.page_name_en === selectedCard?.page_name
+                    );
+
+                    if (selectedPage) {
+                      console.log("Page Found: ", selectedPage);
+                      handlePageChange(selectedPage);
+                    } else if (!selectedPage)
+                      console.error("Selected page not found");
+
+                    console.log("Selected Page nn: ", selectedPage);
+                    // handlePageChange(selectedPage);
+                  } else if (e.target.value === "independent") {
+                    setSelectedCard({
+                      ...selectedCard,
+                      link_url: "https://",
+                      page_name: "",
+                    });
+                  }
+                }}
+                value={linkType}
+              >
+                <Radio value="page">Page Link</Radio>
+                <Radio value="independent">Independent Link</Radio>
+              </Radio.Group>
+
+              {linkType === "independent" && (
+                <Input
+                  placeholder="https://"
+                  value={selectedCard?.link_url}
+                  onChange={(e) => {
+                    setSelectedCard({
+                      ...selectedCard,
+                      link_url: e.target.value,
+                    });
+                  }}
+                />
+              )}
+            </div>
           </div>
         ) : (
-          <div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+            }}
+          >
             <h2>{selectedCard?.title_en}</h2>
             {selectedCard?.title_bn && <h2>{selectedCard?.title_bn}</h2>}
             <p
@@ -388,6 +509,22 @@ const CardGridView = ({ cardData, media, fetchCards }) => {
                 }}
               />
             )}
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+              }}
+            >
+              <strong>Page Name:</strong> {selectedCard?.page_name}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+              }}
+            >
+              <strong>Link URL:</strong> {selectedCard?.link_url}
+            </div>
           </div>
         )}
       </Modal>
