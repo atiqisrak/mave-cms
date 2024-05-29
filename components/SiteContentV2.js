@@ -146,9 +146,6 @@ const SiteContentV2 = ({ children }) => {
           breakpoint="lg"
           theme="light"
           collapsedWidth={90}
-          onBreakpoint={(broken) => {
-            console.log(broken);
-          }}
           collapsible
           collapsed={collapsed}
           onCollapse={() => setCollapsed(!collapsed)}

@@ -17,7 +17,7 @@ export default function Site({ children, collapsed, setCollapsed }) {
       : setUserData(null);
   }, []);
 
-  console.log("userData", userData);
+  // console.log("userData", userData);
 
   return (
     <>

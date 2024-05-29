@@ -8,13 +8,13 @@ import { MoonFilled, SunFilled } from "@ant-design/icons";
 import { Switch } from "antd";
 
 function MyApp({ Component, pageProps }) {
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   const [darkmode, setDarkmode] = useState(true);
   useEffect(() => {
     // Use a state or context to track the current page name
     // This can be set whenever the page changes, e.g., in your route handling logic.
     const currentPageName = "Home Page";
-
+    setCollapsed(false);
     // Set the dynamic page title
     setPageTitle(currentPageName);
   }, []);
@@ -53,7 +53,7 @@ function MyApp({ Component, pageProps }) {
         <Site collapsed={collapsed} setCollapsed={setCollapsed} />
         <div
           style={{
-            marginLeft: collapsed ? "2%" : "6%",
+            paddingLeft: collapsed ? "2%" : "7%",
             transition: "margin-left 0.5s",
             // height: "100vh",
             overflow: "auto",
