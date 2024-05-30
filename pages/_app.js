@@ -4,26 +4,37 @@ import { setPageTitle } from "../global/constants/pageTitle";
 import { ContextProvider } from "../src/context/context";
 import "../styles/globals.css";
 import Head from "next/head";
-import { Switch } from "antd";
+import { message, Switch } from "antd";
 import { MoonFilled, SunFilled } from "@ant-design/icons";
 function MyApp({ Component, pageProps }) {
   const [collapsed, setCollapsed] = useState(true);
   const [darkmode, setDarkmode] = useState(true);
+  const [niloy, setNiloy] = useState(
+    "y$vtw#*tPECXug7SBeUqNSMVd2!TS!YkjL%#sbtBEPkxS65NtDxm&F$5mKhX(kUP"
+  );
 
   useEffect(() => {
-    // Use a state or context to track the current page name
-    // This can be set whenever the page changes, e.g., in your route handling logic.
     const currentPageName = "Home Page";
-
-    // Set the dynamic page title
     setPageTitle(currentPageName);
+
+    if (
+      localStorage.getItem("niloy") === null ||
+      localStorage.getItem("niloy") !== niloy
+    ) {
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      localStorage.removeItem("niloy");
+      message.error("Please login to continue");
+    } else if (localStorage.getItem("niloy") === niloy) {
+      localStorage.setItem("niloy", niloy);
+    } else {
+      console.log("Error");
+    }
   }, []);
 
   return (
     <>
-      <Head>
-        
-      </Head>
+      <Head></Head>
       <ContextProvider>
         <div
           className="darkmode"
