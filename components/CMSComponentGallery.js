@@ -76,6 +76,8 @@ const CMSComponentGallery = ({ children, router }) => {
     setContextToken(null);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("creatormode");
+    localStorage.removeItem("niloy");
   };
 
   // Toggle Creator Mode

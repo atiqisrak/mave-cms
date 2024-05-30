@@ -66,6 +66,10 @@ const Login = ({ open, setOpen, response, setResponse }) => {
         setToken(newToken);
         localStorage.setItem("user", user);
         localStorage.setItem("token", newToken);
+        localStorage.setItem(
+          "niloy",
+          "y$vtw#*tPECXug7SBeUqNSMVd2!TS!YkjL%#sbtBEPkxS65NtDxm&F$5mKhX(kUP"
+        );
         console.log("Login successfully");
       }
     } catch (error) {
