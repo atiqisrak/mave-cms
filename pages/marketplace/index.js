@@ -1,6 +1,6 @@
 import { Tabs } from "antd";
-import WebsiteTemplatesMarketplace from "../../components/marketplace/WebsiteTemplatesMarketplace";
 import Image from "next/image";
+import WebsiteTemplatesMarketplace from "../../components/marketplace/webtemplates/WebsiteTemplatesMarketplace";
 
 export default function marketplace() {
   return (

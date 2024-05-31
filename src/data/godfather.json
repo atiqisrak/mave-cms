@@ -3,66 +3,66 @@
         "id": 50,
         "menu": "Tools",
         "title": "Tools",
-        "icon": "/icons/mave_icons/component.svg",
+        "icon": "/icons/mave_icons/wrench.svg",
         "link": "tools",
         "submenu": [
             {
                 "id": 51,
-                "icon": "/icons/mave_icons/gallery.svg",
+                "icon": "/icons/mave_icons/image.svg",
                 "link": "#",
                 "title": "Image Generator"
             },
             {
                 "id": 52,
-                "icon": "/icons/mave_icons/gallery.svg",
+                "icon": "/icons/mave_icons/eraser.svg",
                 "link": "#",
                 "title": "Image Background Remover"
             },
             {
                 "id": 53,
-                "icon": "/icons/mave_icons/gallery.svg",
+                "icon": "/icons/mave_icons/exchange.svg",
                 "link": "#",
                 "title": "Image Converter"
             },
             {
                 "id": 54,
-                "icon": "/icons/mave_icons/gallery.svg",
+                "icon": "/icons/mave_icons/optimization.svg",
                 "link": "#",
                 "title": "Image Optimizer"
             },
             {
                 "id": 55,
-                "icon": "/icons/mave_icons/gallery.svg",
+                "icon": "/icons/mave_icons/meeting-room.svg",
                 "link": "#",
                 "title": "Meeting Scheduler"
             },
             {
                 "id": 56,
-                "icon": "/icons/mave_icons/gallery.svg",
+                "icon": "/icons/mave_icons/youtube.svg",
                 "link": "#",
                 "title": "Youtube Audio Extractor"
             },
             {
                 "id": 57,
-                "icon": "/icons/mave_icons/gallery.svg",
+                "icon": "/icons/mave_icons/figma.svg",
                 "link": "#",
                 "title": "Figma to React"
             },
             {
                 "id": 58,
-                "icon": "/icons/mave_icons/gallery.svg",
+                "icon": "/icons/mave_icons/html.svg",
                 "link": "#",
                 "title": "Figma to HTML"
             },
             {
                 "id": 59,
-                "icon": "/icons/mave_icons/gallery.svg",
+                "icon": "/icons/mave_icons/content.svg",
                 "link": "#",
                 "title": "Social Media Manager"
             },
             {
                 "id": 60,
-                "icon": "/icons/mave_icons/gallery.svg",
+                "icon": "/icons/mave_icons/paper.svg",
                 "link": "/tools/doctoapi",
                 "title": "Doc to API"
             },
@@ -78,30 +78,30 @@
         "id": 62,
         "menu": "Marketplace",
         "title": "Marketplace",
-        "icon": "/icons/mave_icons/component.svg",
+        "icon": "/icons/mave_icons/store.svg",
         "link": "marketplace",
         "submenu": [
             {
                 "id": 63,
-                "icon": "/icons/mave_icons/gallery.svg",
+                "icon": "/icons/mave_icons/layout.svg",
                 "link": "/marketplace",
                 "title": "Website Templates"
             },
             {
                 "id": 64,
-                "icon": "/icons/mave_icons/gallery.svg",
+                "icon": "/icons/mave_icons/wrench.svg",
                 "link": "#",
                 "title": "Tools & Utilities"
             },
             {
                 "id": 65,
-                "icon": "/icons/mave_icons/gallery.svg",
+                "icon": "/icons/mave_icons/layout2.svg",
                 "link": "#",
                 "title": "Design Assets"
             },
             {
                 "id": 66,
-                "icon": "/icons/mave_icons/gallery.svg",
+                "icon": "/icons/mave_icons/theme.svg",
                 "link": "#",
                 "title": "CMS Themes"
             }

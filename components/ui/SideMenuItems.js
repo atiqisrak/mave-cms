@@ -22,42 +22,6 @@ const SideMenuItems = ({
   const [selectedMenuItem, setSelectedMenuItem] = useState("1");
   const router = useRouter();
 
-  // const fetchAuthorisedSideMenuData = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const response = await fetch("/api/authorisedsidemenu");
-
-  //     if (response?.status === 304 || response?.status === 200) {
-  //       const data = await response.json();
-  //       setSideMenuData(data);
-  //     }
-  //     setLoading(false);
-  //   } catch (error) {
-  //     console.error(error);
-  //     setLoading(false);
-  //   }
-  // };
-
-  // const fetchUnauthorisedSideMenuData = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const response = await fetch("/api/unauthorisedsidemenu");
-  //     setSideMenuData(response.data);
-  //     setLoading(false);
-  //   } catch (error) {
-  //     console.error(error);
-  //     setLoading(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (token && user) {
-  //     fetchAuthorisedSideMenuData();
-  //   } else {
-  //     fetchUnauthorisedSideMenuData();
-  //   }
-  // }, [token, user]);
-
   useEffect(() => {
     if (token && user) {
       setSideMenuData(AuthorizedSideMenuData);
