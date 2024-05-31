@@ -8,7 +8,7 @@ const nextConfig = {
   },
   images: {
     reactStrictMode: true,
-    domains: ["mave-almuslim.etherstaging.xyz"],
+    domains: ["mave.etherstaging.xyz"],
     unoptimized: true,
   },
 };
