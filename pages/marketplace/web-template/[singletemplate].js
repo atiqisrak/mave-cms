@@ -42,9 +42,9 @@ export default function SingleTemplate() {
         <title>Marketplace - {product.blurb}</title>
         <meta name="description" content={product.blurb} />
       </Head>
-      <div className="ViewContainer">
+      <>
         <SingleWebTemplate product={product} />
-      </div>
+      </>
     </>
   );
 }

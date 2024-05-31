@@ -94,8 +94,8 @@ const SiteContentV2 = ({ children }) => {
             top: 90,
             left: collapsed ? 10 : 250,
             cursor: "pointer",
-            zIndex: 1200,
             color: "#fff",
+            zIndex: 1200,
           }}
           onClick={() => handleCollapse(!collapsed)}
         >
@@ -121,6 +121,7 @@ const SiteContentV2 = ({ children }) => {
                 height: "4vh",
                 marginLeft: "10px",
                 objectFit: "contain",
+                zIndex: 1201,
               }}
               onClick={() => handleCollapse(!collapsed)}
             />
