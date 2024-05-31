@@ -53,7 +53,7 @@ function MyApp({ Component, pageProps }) {
         <Site collapsed={collapsed} setCollapsed={setCollapsed} />
         <div
           style={{
-            paddingLeft: collapsed ? "2%" : "7%",
+            // paddingLeft: collapsed ? "2%" : "7%",
             transition: "margin-left 0.5s",
             // height: "100vh",
             overflow: "auto",
