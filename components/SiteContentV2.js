@@ -38,7 +38,20 @@ const SiteContentV2 = ({ children }) => {
   const [sideMenuData, setSideMenuData] = useState(null);
   const [hovered, setHovered] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [theme, setTheme] = useState(
+    localStorage.getItem("darkmode") === "true" ? "dark" : "light"
+  );
   const router = useRouter();
+
+  // Set Theme
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const theme =
+        localStorage.getItem("darkmode") === "true" ? "dark" : "light";
+      setTheme(theme);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Fetch User Data
   const fetchUserData = async () => {
@@ -92,10 +105,11 @@ const SiteContentV2 = ({ children }) => {
           style={{
             position: "fixed",
             top: 90,
-            left: collapsed ? 10 : 250,
+            left: collapsed ? 30 : 250,
             cursor: "pointer",
             color: "#fff",
             zIndex: 1200,
+            transition: "left 0.5s",
           }}
           onClick={() => handleCollapse(!collapsed)}
         >
@@ -133,6 +147,8 @@ const SiteContentV2 = ({ children }) => {
           handleLogout={handleLogout}
           isModalOpen={isModalOpen}
           setIsModalOpen={setIsModalOpen}
+          theme={theme}
+          setTheme={setTheme}
         />
         <Layout
           className="site-layout"
@@ -145,8 +161,8 @@ const SiteContentV2 = ({ children }) => {
         </Layout>
         <Sider
           breakpoint="lg"
-          theme="light"
-          collapsedWidth={90}
+          theme={theme}
+          collapsedWidth={130}
           collapsible
           collapsed={collapsed}
           onCollapse={() => setCollapsed(!collapsed)}
@@ -159,8 +175,9 @@ const SiteContentV2 = ({ children }) => {
             top: 0,
             bottom: 0,
             padding: "0 1rem",
-            border: "none",
+            border: "1px solid transparent",
             paddingTop: "7%",
+            transition: "all 0.5s",
           }}
         >
           <SideMenuItems
@@ -174,6 +191,8 @@ const SiteContentV2 = ({ children }) => {
             isModalOpen={isModalOpen}
             setIsModalOpen={setIsModalOpen}
             collapsed={collapsed}
+            theme={theme}
+            setTheme={setTheme}
           />
         </Sider>
       </Layout>

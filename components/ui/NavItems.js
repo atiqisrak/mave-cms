@@ -20,28 +20,12 @@ export default function NavItems({
   handleLogout,
   isModalOpen,
   setIsModalOpen,
+  theme,
+  setTheme,
 }) {
   const [hovered, setHovered] = useState(false);
   const [topNavData, setTopNavData] = useState([]);
   const [selectedMenuItem, setSelectedMenuItem] = useState("Home");
-
-  // useEffect(() => {
-  //   fetch("/api/topnavdata")
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       setTopNavData(data);
-  //     });
-  // }, []);
-
-  // const handleMenuClick = (item) => {
-  //   setSelectedMenuItem(item.key);
-  //   const selectedItem = sideMenuData
-  //     ? sideMenuData.find((menuItem) => menuItem.id === item.key)
-  //     : null;
-  //   if (selectedItem) {
-  //     router.push(selectedItem.link);
-  //   }
-  // };
 
   useEffect(() => {
     TopNavData && setTopNavData(TopNavData);
@@ -55,13 +39,13 @@ export default function NavItems({
         width: "100vw",
         height: "8vh",
         display: "grid",
-        // justifyContent: "space-between",
         alignItems: "center",
         gridTemplateColumns: "1fr 3fr 2fr 2fr",
         gridGap: "3rem",
         padding: "0 20px",
-        backgroundColor: "white",
-        boxShadow: "0 2px 8px #f0f1f2",
+        backgroundColor: theme === "dark" ? "#001529" : "white",
+        boxShadow:
+          theme === "dark" ? "0 2px 8px #f0f1f250" : "0 2px 8px #f0f1f2",
         zIndex: 1000,
       }}
     >
@@ -74,12 +58,13 @@ export default function NavItems({
         }}
       >
         <Image
-          placeholder
           className="sitelogo"
-          // src="/images/mave_logo_horizontal.png"
-          src="/icons/mave_icons/mave_logo.png"
+          src={
+            theme === "dark"
+              ? "/images/Mave_Logo_Dark.png"
+              : "/images/Mave_Logo_Lite.png"
+          }
           alt="Mave Logo"
-          // resizeMode="contain"
           onError={(e) => {
             e.target.onerror = null;
             e.target.src = "/images/mave_logo_horizontal_core.png";
@@ -89,7 +74,8 @@ export default function NavItems({
             height: "3vh",
             marginLeft: "10px",
             objectFit: "contain",
-            backgroundColor: "white",
+            backgroundColor: theme === "dark" ? "#001529" : "white",
+            marginLeft: "2vw",
           }}
         />
       </Space>
@@ -102,7 +88,7 @@ export default function NavItems({
               display: "flex",
               justifyContent: "flex-end",
               alignItems: "flex-end",
-              gap: "1vw",
+              gap: "0.5vw",
               paddingTop: "1vh",
             }}
           >
@@ -112,13 +98,20 @@ export default function NavItems({
                   key={item.id}
                   style={{
                     fontSize: "clamp(0.8em, 1.5vw, 1.1em)",
+                    lineHeight: "1.5",
                     color:
-                      selectedMenuItem === item.name
+                      theme === "dark"
+                        ? selectedMenuItem === item.name
+                          ? "#1677ff"
+                          : "white"
+                        : selectedMenuItem === item.name
                         ? "var(--theme)"
                         : "#6B7A99",
                     fontWeight: 600,
-                    borderRadius: "5px",
-                    padding: "5px",
+                    borderRadius: "16px",
+                    padding: "5px 20px",
+                    backgroundColor:
+                      selectedMenuItem === item.name ? "white" : "",
                     cursor: "pointer",
                     display: "flex",
                     justifyContent: "center",
@@ -150,8 +143,9 @@ export default function NavItems({
                 height: "4vh",
                 borderRadius: "20px",
                 padding: "0 20px",
-                backgroundColor: "white",
-                color: "black",
+                marginBottom: "10px",
+                backgroundColor: theme === "dark" ? "#001529" : "white",
+                color: theme === "dark" ? "white" : "black",
                 border: "1px solid #f0f1f2",
                 boxShadow: "inset 0 0 10px #f0f1f280",
               }}
@@ -184,15 +178,17 @@ export default function NavItems({
                   justifyContent: "center",
                   alignItems: "center",
                   borderRadius: "50%",
-                  backgroundColor: hovered ? "#f6ebff" : "white",
+                  backgroundColor: theme === "dark" ? "#001529" : "white",
                 }}
                 onMouseEnter={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
               >
-                <BellOutlined
+                <Image
+                  src="/icons/mave_icons/bell-ring.svg"
+                  preview={false}
                   style={{
-                    fontSize: "clamp(1em, 2vw, 1.5em)",
-                    color: "var(--iconmagic)",
+                    width: "clamp(1em, 2vw, 2em)",
+                    height: "clamp(1em, 2vw, 2em)",
                   }}
                 />
               </Space>
@@ -204,15 +200,17 @@ export default function NavItems({
                   justifyContent: "center",
                   alignItems: "center",
                   borderRadius: "50%",
-                  backgroundColor: hovered ? "#f6ebff" : "white",
+                  backgroundColor: theme === "dark" ? "#001529" : "white",
                 }}
                 onMouseEnter={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
               >
-                <MessageOutlined
+                <Image
+                  src="/icons/mave_icons/chatting.svg"
+                  preview={false}
                   style={{
-                    fontSize: "clamp(1em, 2vw, 1.5em)",
-                    color: "var(--iconmagic)",
+                    width: "clamp(1em, 2vw, 2em)",
+                    height: "clamp(1em, 2vw, 2em)",
                   }}
                 />
               </Space>
@@ -224,15 +222,17 @@ export default function NavItems({
                   justifyContent: "center",
                   alignItems: "center",
                   borderRadius: "50%",
-                  backgroundColor: hovered ? "#f6ebff" : "white",
+                  backgroundColor: theme === "dark" ? "#001529" : "white",
                 }}
                 onMouseEnter={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
               >
-                <BarChartOutlined
+                <Image
+                  src="/icons/mave_icons/wrench.svg"
+                  preview={false}
                   style={{
-                    fontSize: "clamp(1em, 2vw, 1.5em)",
-                    color: "var(--iconmagic)",
+                    width: "clamp(1em, 2vw, 1.6em)",
+                    height: "clamp(1em, 2vw, 1.6em)",
                   }}
                 />
               </Space>
@@ -244,19 +244,19 @@ export default function NavItems({
                   justifyContent: "center",
                   alignItems: "center",
                   borderRadius: "50%",
+                  backgroundColor: theme === "dark" ? "#001529" : "white",
                 }}
                 onMouseEnter={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
               >
                 <Menu
-                  theme="light"
+                  theme={theme}
                   defaultSelectedKeys={[selectedMenuItem]}
-                  // onClick={handleMenuClick}
                   collapsible={true}
                   collapsedWidth={80}
                   style={{ border: "none" }}
+                  mode="vertical"
                 >
-                  {/* MAVE Admin */}
                   <Menu.SubMenu
                     key="mave-admin"
                     icon={
@@ -264,18 +264,19 @@ export default function NavItems({
                         src="/icons/mave_icons/user.svg"
                         preview={false}
                         style={{
-                          borderRadius: "50%",
+                          width: "clamp(1em, 2vw, 1.6em)",
+                          height: "clamp(1em, 2vw, 1.6em)",
                         }}
                       />
                     }
                     style={{
                       width: "80px",
                       height: "auto",
+                      paddingTop: "10px",
                     }}
                   >
                     {token ? (
                       <>
-                        {/* profile, dashboard, logout */}
                         <Menu.Item
                           key="1"
                           icon={<UserOutlined />}
