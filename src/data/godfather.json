@@ -104,6 +104,12 @@
                 "icon": "/icons/mave_icons/theme.svg",
                 "link": "#",
                 "title": "CMS Themes"
+            },
+            {
+                "id": 67,
+                "icon": "/icons/mave_icons/play.svg",
+                "link": "/marketplace/influencer-marketplace",
+                "title": "Infleuncer Marketplace"
             }
         ]
     }

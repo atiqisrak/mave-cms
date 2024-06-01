@@ -62,7 +62,7 @@ const SideMenuItems = ({
         collapsedWidth={collapsed ? 80 : 250}
         defaultSelectedKeys={[selectedMenuItem]}
         onClick={handleMenuClick}
-        style={{ marginTop: "10%", border: "1px solid transparent" }}
+        style={{ margin: 0, border: "1px solid transparent" }}
       >
         {sideMenuData && sideMenuData?.length > 0 ? (
           sideMenuData?.map((item) =>
