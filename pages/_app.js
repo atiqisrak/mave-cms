@@ -9,15 +9,22 @@ import { Switch } from "antd";
 
 function MyApp({ Component, pageProps }) {
   const [collapsed, setCollapsed] = useState(false);
-  const [darkmode, setDarkmode] = useState(true);
+  const [darkmode, setDarkmode] = useState();
   useEffect(() => {
     const currentPageName = "Home Page";
     setCollapsed(false);
     setPageTitle(currentPageName);
   }, []);
+
+  useEffect(() => {
+    setDarkmode(localStorage.getItem("darkmode") === "true");
+  }, []);
+
   return (
     <>
-      <Head></Head>
+      <Head>
+        <title>Mave CMS</title>
+      </Head>
       <ContextProvider>
         <div
           className="darkmode"
@@ -32,7 +39,7 @@ function MyApp({ Component, pageProps }) {
             size="large"
             checkedChildren={<SunFilled />}
             unCheckedChildren={<MoonFilled />}
-            defaultChecked
+            defaultChecked={darkmode}
             onChange={() => {
               setDarkmode(!darkmode);
               localStorage.setItem("darkmode", !darkmode);

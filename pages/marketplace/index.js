@@ -1,8 +1,23 @@
 import { Tabs } from "antd";
 import Image from "next/image";
 import WebsiteTemplatesMarketplace from "../../components/marketplace/webtemplates/WebsiteTemplatesMarketplace";
+import CMSThemeMarketplace from "../../components/marketplace/CMSThemeMarketplace";
+import ToolsMarketplace from "../../components/marketplace/ToolsMarketplace";
+import { useEffect, useState } from "react";
 
 export default function marketplace() {
+  const [theme, setTheme] = useState();
+
+  // Set Theme
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const theme =
+        localStorage.getItem("darkmode") === "true" ? "dark" : "light";
+      setTheme(theme);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div
       style={{
@@ -38,7 +53,7 @@ export default function marketplace() {
             style={{
               fontSize: "3rem",
               fontWeight: "600",
-              color: "black",
+              color: theme === "dark" ? "white" : "black",
               marginBottom: "1rem",
             }}
           >
@@ -46,7 +61,7 @@ export default function marketplace() {
           </h1>
           <p
             style={{
-              color: "black",
+              color: theme === "dark" ? "white" : "black",
               fontSize: "1.5rem",
               fontWeight: 400,
               margin: "2rem 0 4rem 0",
@@ -61,7 +76,11 @@ export default function marketplace() {
           type="card"
           size="large"
           tabBarGutter={16}
-          tabBarStyle={{ color: "black", fontWeight: "500" }}
+          defaultActiveKey="4"
+          tabBarStyle={{
+            color: theme === "dark" ? "white" : "black",
+            fontWeight: "500",
+          }}
         >
           <Tabs.TabPane tab="Website Templates" key="1">
             <div>
@@ -69,13 +88,21 @@ export default function marketplace() {
             </div>
           </Tabs.TabPane>
           <Tabs.TabPane tab="CMS Themes" key="2">
-            <div>
-              <h1>Welcome to the CMS Theme Marketplace!</h1>
-            </div>
+            <CMSThemeMarketplace />
           </Tabs.TabPane>
           <Tabs.TabPane tab="Tools" key="3">
-            <div>
-              <h1>Welcome to the Tools Marketplace!</h1>
+            <ToolsMarketplace />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Influencer" key="4">
+            <div
+              style={{
+                paddingBottom: "60vh",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <h1>Coming Soon!</h1>
             </div>
           </Tabs.TabPane>
         </Tabs>

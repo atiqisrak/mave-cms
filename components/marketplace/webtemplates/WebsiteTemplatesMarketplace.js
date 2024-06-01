@@ -96,7 +96,7 @@ export default function WebsiteTemplatesMarketplace() {
                           : product.name}
                       </h3>
                     </Popover>
-                    <h3>${product.price / 100}</h3>
+                    <h3>${20 + product.price / 100}</h3>
                   </div>
                   <div
                     style={{
