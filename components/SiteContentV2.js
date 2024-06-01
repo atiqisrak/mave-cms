@@ -162,7 +162,7 @@ const SiteContentV2 = ({ children }) => {
         <Sider
           breakpoint="lg"
           theme={theme}
-          collapsedWidth={130}
+          collapsedWidth={135}
           collapsible
           collapsed={collapsed}
           onCollapse={() => setCollapsed(!collapsed)}
@@ -178,6 +178,8 @@ const SiteContentV2 = ({ children }) => {
             border: "1px solid transparent",
             paddingTop: "7%",
             transition: "all 0.5s",
+            borderRight: "5px solid #f0f0f0",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.6)",
           }}
         >
           <SideMenuItems

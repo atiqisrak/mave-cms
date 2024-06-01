@@ -33,9 +33,9 @@ export default function SingleWebTemplate({ product }) {
         }}
       >
         <div
+          className="single-web-template-header"
           style={{
             padding: "10rem 4vw 17em 10vw",
-            // backgroundColor: "rgba(0, 0, 0, 0.9)",
             backgroundColor:
               theme === "dark"
                 ? "rgba(0, 0, 0, 0.9)"
@@ -87,29 +87,20 @@ export default function SingleWebTemplate({ product }) {
               <RightOutlined />
               <span>{product?.category[0]?.name}</span>
             </div>
-            <div>
+            <>
               <Button
-                type="primary"
+                className="request-purchase-button"
                 size="large"
-                style={{
-                  marginTop: "2rem",
-                  borderRadius: "1.5rem",
-                  padding: "0.5rem 1rem 2.2rem 1rem",
-                  fontSize: "1.1rem",
-                  fontWeight: 600,
-                  backgroundColor: "#2D68FF",
-                  border: "2px solid #2D68FF",
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "white";
-                  e.target.style.color = "black";
-                  e.target.style.border = "2px solid white";
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "#2D68FF";
-                  e.target.style.color = "white";
-                  e.target.style.border = "2px solid #2D68FF";
-                }}
+                // onMouseEnter={(e) => {
+                //   e.target.style.backgroundColor = "white";
+                //   e.target.style.color = "black";
+                //   e.target.style.border = "2px solid white";
+                // }}
+                // onMouseLeave={(e) => {
+                //   e.target.style.backgroundColor = "#2D68FF";
+                //   e.target.style.color = "white";
+                //   e.target.style.border = "2px solid #2D68FF";
+                // }}
                 onClick={() => {
                   window.location.href =
                     "https://wa.me/+8801400893882?text=I%20want%20to%20purchase%20this%20product%20" +
@@ -120,15 +111,16 @@ export default function SingleWebTemplate({ product }) {
                     window.location.href;
                 }}
               >
-                Request Purchase ${product?.price / 100}
+                Request Purchase ${20 + product?.price / 100}
               </Button>
-            </div>
+            </>
           </div>
         </div>
       </div>
       <div
         style={{
-          // backgroundColor: "#121212",
+          boxShadow: "0 0 20px rgba(0, 0, 0, 0.2)",
+          borderTop: "2px solid #f0f0f0",
           backgroundColor: theme === "dark" ? "#121212" : "white",
           width: "100%",
           margin: "0 auto",
