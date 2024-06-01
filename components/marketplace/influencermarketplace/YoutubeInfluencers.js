@@ -7,6 +7,7 @@ import { SearchOutlined } from "@ant-design/icons";
 export default function YoutubeInfluencers() {
   const [searchQuery, setSearchQuery] = useState("");
   const [influencerData, setInfluencerData] = useState([]);
+  const [searchField, setSearchField] = useState("");
   const YOUTUBE_API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
 
   const fetchChannels = async (query) => {
@@ -45,18 +46,33 @@ export default function YoutubeInfluencers() {
 
   return (
     <div>
-      <Input.Search
-        prefix={<SearchOutlined />}
-        placeholder="Search YouTube Channels by topic"
+      <div
         style={{
-          width: "80%",
+          display: "flex",
+          justifyContent: "center",
           marginBottom: "1rem",
-          border: "1px solid #ccc",
-          borderRadius: "25px",
         }}
-        enterButton="Search"
-        onSearch={handleSearch}
-      />
+      >
+        <Input
+          suffix={
+            <SearchOutlined style={{ fontSize: "1.7em", color: "#ccc" }} />
+          }
+          placeholder="Search YouTube Channels by topic"
+          style={{
+            width: "50%",
+            marginBottom: "1rem",
+            border: "1px solid #ccc",
+            padding: "0.6em 0.9em 0.6em 2em",
+            borderRadius: "2em",
+            fontSize: "1.2em",
+            fontWeight: 600,
+          }}
+          // onSearch={handleSearch}
+          onChange={(e) => setSearchField(e.target.value)}
+          // submit on enter
+          onPressEnter={() => handleSearch(searchField)}
+        />
+      </div>
       {influencerData.length > 0 ? (
         <List
           itemLayout="horizontal"
@@ -64,13 +80,18 @@ export default function YoutubeInfluencers() {
           renderItem={(channel) => (
             <List.Item
               style={{
-                display: "flex",
+                display: "grid",
+                gridTemplateColumns: "4fr 1fr 1fr",
                 alignItems: "center",
               }}
             >
               <List.Item.Meta
                 title={channel.snippet.title}
-                description={channel.snippet.description}
+                description={
+                  channel.snippet.description.length > 100
+                    ? channel.snippet.description.slice(0, 100) + "..."
+                    : channel.snippet.description
+                }
                 avatar={
                   <Image
                     src={channel.snippet.thumbnails.default.url}
@@ -84,25 +105,47 @@ export default function YoutubeInfluencers() {
                   />
                 }
               />
-              <div
+              <p
                 style={{
-                  marginLeft: "auto",
-                  display: "flex",
-                  gap: "1rem",
-                  alignItems: "center",
+                  fontSize: "1.2em",
+                  fontWeight: 600,
                 }}
               >
-                <p>Subscribers: {channel.statistics.subscriberCount}</p>
-                <p>Views: {channel.statistics.viewCount}</p>
-                <Button
+                {/* Subscribers: {channel.statistics.subscriberCount} */}
+                {/* Numbers in K(Thousands), M(Millions) */}
+                Subscribers:{" "}
+                {channel.statistics.subscriberCount > 999999
+                  ? (channel.statistics.subscriberCount / 1000000).toFixed(1) +
+                    "M"
+                  : channel.statistics.subscriberCount > 999
+                  ? (channel.statistics.subscriberCount / 1000).toFixed(1) + "K"
+                  : channel.statistics.subscriberCount}
+              </p>
+              <p
+                style={{
+                  fontSize: "1.2em",
+                  fontWeight: 600,
+                }}
+              >
+                {/* Views: {channel.statistics.viewCount} */}
+                {/* Numbers in K(Thousands), M(Millions), B(Billions) */}
+                Views:{" "}
+                {channel.statistics.viewCount > 999999999
+                  ? (channel.statistics.viewCount / 1000000000).toFixed(1) + "B"
+                  : channel.statistics.viewCount > 999999
+                  ? (channel.statistics.viewCount / 1000000).toFixed(1) + "M"
+                  : channel.statistics.viewCount > 999
+                  ? (channel.statistics.viewCount / 1000).toFixed(1) + "K"
+                  : channel.statistics.viewCount}
+              </p>
+              {/* <Button
                   type="primary"
                   onClick={() =>
                     (window.location.href = `mailto:?subject=Contact YouTube Channel ${channel.snippet.title}&body=I would like to contact you regarding your YouTube channel.`)
                   }
                 >
                   Contact
-                </Button>
-              </div>
+                </Button> */}
             </List.Item>
           )}
         />
