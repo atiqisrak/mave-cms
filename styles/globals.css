@@ -457,3 +457,10 @@ a:hover {
   fill: #fff;
   filter: grayscale(100%);
 }
+:where(.css-dev-only-do-not-override-1r287do).ant-menu-dark.ant-menu-inline
+  .ant-menu-sub.ant-menu-inline,
+:where(.css-dev-only-do-not-override-1r287do).ant-menu-dark
+  > .ant-menu.ant-menu-inline
+  .ant-menu-sub.ant-menu-inline {
+  background-color: transparent;
+}

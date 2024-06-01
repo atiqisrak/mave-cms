@@ -16,6 +16,8 @@ const SideMenuItems = ({
   handleLogout,
   setIsModalOpen,
   collapsed,
+  theme,
+  setTheme,
 }) => {
   const [loading, setLoading] = useState(false);
   const [sideMenuData, setSideMenuData] = useState([]);
@@ -54,13 +56,13 @@ const SideMenuItems = ({
   return (
     <div>
       <Menu
-        theme="light"
+        theme={theme === "dark" ? "dark" : "light"}
         mode="inline"
         collapsible
         collapsedWidth={collapsed ? 80 : 250}
         defaultSelectedKeys={[selectedMenuItem]}
         onClick={handleMenuClick}
-        style={{ marginTop: "10%" }}
+        style={{ marginTop: "10%", border: "1px solid transparent" }}
       >
         {sideMenuData && sideMenuData?.length > 0 ? (
           sideMenuData?.map((item) =>
@@ -85,6 +87,8 @@ const SideMenuItems = ({
                           .replace("collapsed", "expand")
                           .replace("dark", "light")}
                         alt="logo"
+                        width={25}
+                        height={25}
                       />
                     ) : (
                       <Image
