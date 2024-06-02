@@ -29,8 +29,6 @@
     "marked": "^12.0.2",
     "moment": "^2.29.4",
     "next": "^12.3.4",
-    "pdf-thumbnail": "^1.0.6",
-    "pdfjs-dist": "^3.4.120",
     "prismjs": "^1.29.0",
     "quill": "^1.3.7",
     "react": "18.2.0",
@@ -48,9 +46,7 @@
     "react-text-to-speech": "^0.14.5",
     "react-to-print": "^2.14.15",
     "react-virtualized": "^9.22.5",
-    "remark-gfm": "^4.0.0",
-    "youtube-dl-exec": "^2.5.7",
-    "ytdl-core": "^4.11.5"
+    "remark-gfm": "^4.0.0"
   },
   "devDependencies": {
     "eslint": "8.49.0",
