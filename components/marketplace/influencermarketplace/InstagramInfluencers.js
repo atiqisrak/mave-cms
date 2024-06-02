@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import topyoutubers from "/src/data/topyoutubers.json";
+import topinstagramers from "/src/data/topinstagramers.json";
 import { Table } from "antd";
 import Image from "next/image";
 
-export default function YoutubeInfluencers() {
+export default function InstagramInfluencers() {
   const [influencerData, setInfluencerData] = useState([]);
 
   const fetchInfluencerData = async () => {
     try {
-      setInfluencerData(topyoutubers);
+      setInfluencerData(topinstagramers);
     } catch (error) {
       console.error("Error fetching influencer data:", error);
     }
@@ -38,7 +38,7 @@ export default function YoutubeInfluencers() {
           return record.rank <= 1000;
         }
       },
-      sorter: (a, b) => parseInt(a.rank) - parseInt(b.rank),
+      sorter: (a, b) => a.rank - b.rank,
     },
     {
       title: "Image",
@@ -72,7 +72,7 @@ export default function YoutubeInfluencers() {
       dataIndex: "followers",
       key: "followers",
       showSorterTooltip: false,
-      sorter: (a, b) => parseFloat(a.followers) - parseFloat(b.followers),
+      sorter: (a, b) => parseInt(a.followers) - parseInt(b.followers),
     },
     {
       title: "Engagement Rate",
@@ -85,12 +85,13 @@ export default function YoutubeInfluencers() {
     //   title: "Country",
     //   dataIndex: "country",
     //   key: "country",
+    //   showSorterTooltip: false,
+    //   sorter: (a, b) => a.country.localeCompare(b.country),
     // },
     {
-      title: "Topic",
+      title: "Topics",
       dataIndex: "topic",
       key: "topic",
-      render: (topic) => topic.join(", "),
     },
     {
       title: "Potential Reach",
@@ -101,6 +102,7 @@ export default function YoutubeInfluencers() {
         parseFloat(a.potentialReach) - parseFloat(b.potentialReach),
     },
   ];
+
   return (
     <div>
       <Table
