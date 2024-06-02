@@ -9,6 +9,8 @@ import {
   YoutubeFilled,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
+import ParseData from "../../../components/marketplace/influencermarketplace/ParseData";
+import InstagramInfluencers from "../../../components/marketplace/influencermarketplace/InstagramInfluencers";
 
 export default function InfluencerMarketplace() {
   const [theme, setTheme] = useState();
@@ -79,11 +81,12 @@ export default function InfluencerMarketplace() {
             centered
             animated
             type="card"
-            defaultActiveKey="1"
+            defaultActiveKey="6"
             tabBarStyle={{ fontWeight: 600 }}
           >
             <Tabs.TabPane tab="All Influencers" key="1">
               <p>All Influencers</p>
+              {/* <ParseData /> */}
             </Tabs.TabPane>
             <Tabs.TabPane tab="Top" key="2">
               <p>Top Influencers</p>
@@ -110,7 +113,8 @@ export default function InfluencerMarketplace() {
               key="6"
               icon={<InstagramFilled style={{ color: "orangered" }} />}
             >
-              <p>Instagram Influencers</p>
+              {/* <p>Instagram Influencers</p> */}
+              <InstagramInfluencers />
             </Tabs.TabPane>
             <Tabs.TabPane
               tab="Facebook"
