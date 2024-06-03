@@ -11,6 +11,9 @@
   --themes: #f1612a;
   --themes-light: #f1622a25;
   --success: #008f39;
+  --lightorange: rgba(255, 108, 50, 0.2);
+  --lightblue: #9012ff20;
+  --transparentwhite: rgba(255, 255, 255, 0.7);
 }
 
 * {

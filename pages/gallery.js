@@ -5,6 +5,7 @@ import {
   Input,
   Modal,
   Pagination,
+  Popover,
   Row,
   Select,
   Skeleton,
@@ -19,12 +20,17 @@ import Loader from "../components/Loader";
 import {
   CheckCircleTwoTone,
   CloseCircleOutlined,
+  CopyOutlined,
   DeleteFilled,
   DeleteOutlined,
+  DownloadOutlined,
   EditOutlined,
+  EyeOutlined,
   FileImageOutlined,
   FilePdfOutlined,
   FilterOutlined,
+  InfoCircleTwoTone,
+  MoreOutlined,
   SyncOutlined,
   UploadOutlined,
   VideoCameraOutlined,
@@ -234,9 +240,9 @@ const Gallery = () => {
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
-              marginBottom: "5rem",
-              backgroundColor: "#e2f3ff",
-              border: "1px dashed #006eff",
+              marginBottom: "0 5rem 5rem",
+              // backgroundColor: "#e2f3ff",
+              // border: "1px dashed #006eff",
               borderRadius: "15px",
               padding: "3rem",
               margin: "0 2rem 2rem",
@@ -403,12 +409,213 @@ const Gallery = () => {
                         display: "flex",
                         flexDirection: "column",
                         backgroundColor: "white",
-                        padding: "1rem",
+                        padding: "0",
                         borderRadius: "5px",
                         boxShadow: "0 0 5px rgba(0, 0, 0, 0.1)",
                         border: "1px solid rgba(0, 0, 0, 0.1)",
                       }}
                     >
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          position: "absolute",
+                          width: "88%",
+                          margin: "10px 10px 0 10px",
+                        }}
+                      >
+                        <Popover
+                          placement="rightBottom"
+                          title="Media Info"
+                          content={
+                            editMode && image.id === editMedia.mediaId ? (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                }}
+                              >
+                                {/* edit image info */}
+                                <Input
+                                  defaultValue={
+                                    image?.title ? image.title : image.file_name
+                                  }
+                                  style={{ width: "100%" }}
+                                  onChange={(e) =>
+                                    setEditMedia({
+                                      ...editMedia,
+                                      mediaTitle: e.target.value,
+                                    })
+                                  }
+                                />
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    marginTop: "1rem",
+                                  }}
+                                >
+                                  {/* cancel and submit button */}
+                                  <Button
+                                    type="primary"
+                                    danger
+                                    onClick={() => setEditMode(false)}
+                                    icon={<CloseCircleOutlined />}
+                                  />
+                                  <Button
+                                    type="primary"
+                                    onClick={() => handleSubmit()}
+                                    icon={<CheckCircleTwoTone />}
+                                  />
+                                </div>
+                              </div>
+                            ) : (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                }}
+                              >
+                                <p>
+                                  <strong>File Name:</strong>{" "}
+                                  {image.title ? image.title : image.file_name}
+                                </p>
+                                <p>
+                                  <strong>File Type:</strong> {image.file_type}
+                                </p>
+                                <p>
+                                  <strong>File Size:</strong>{" "}
+                                  {sizeFormatter(image.file_size)}
+                                </p>
+                                <p>
+                                  <strong>Uploaded:</strong>{" "}
+                                  {new Date(
+                                    image.created_at
+                                  ).toLocaleDateString("en-US", {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                  })}
+                                </p>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    marginTop: "1rem",
+                                  }}
+                                >
+                                  <Button
+                                    type="primary"
+                                    danger
+                                    onClick={() => onDelete(image.id)}
+                                    icon={<DeleteOutlined />}
+                                    style={{ marginRight: "1rem" }}
+                                  />
+                                  <Button
+                                    type="primary"
+                                    onClick={() =>
+                                      handleEditMode({
+                                        mediaId: image.id,
+                                        mediaTitle: image?.title
+                                          ? image.title
+                                          : image.file_name,
+                                      })
+                                    }
+                                    icon={<EditOutlined />}
+                                  />
+                                </div>
+                              </div>
+                            )
+                          }
+                        >
+                          <Button
+                            icon={<InfoCircleTwoTone />}
+                            style={{
+                              border: "1px solid transparent",
+                              borderRadius: "50%",
+                              backgroundColor: "var(--transparentwhite)",
+                              zIndex: 10,
+                            }}
+                          />
+                        </Popover>
+                        <Popover
+                          placement="rightBottom"
+                          title="Options"
+                          // copy image link, view image, download image
+                          content={
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                              }}
+                            >
+                              <Button
+                                type="primary"
+                                icon={<CopyOutlined />}
+                                style={{
+                                  marginBottom: "1rem",
+                                  fontSize: "1rem",
+                                  fontWeight: "500",
+                                  backgroundColor: "var(--theme)",
+                                }}
+                                onClick={() => {
+                                  navigator.clipboard.writeText(
+                                    `${MEDIA_URL}/${image.file_path}`
+                                  );
+                                  message.success("Link copied to clipboard");
+                                }}
+                              >
+                                Copy Link
+                              </Button>
+                              <Button
+                                type="primary"
+                                icon={<DownloadOutlined />}
+                                style={{
+                                  marginBottom: "1rem",
+                                  fontSize: "1rem",
+                                  fontWeight: "500",
+                                  backgroundColor: "var(--theme)",
+                                }}
+                                onClick={() => {
+                                  window.open(
+                                    `${MEDIA_URL}/${image.file_path}`
+                                  );
+                                }}
+                              >
+                                Download
+                              </Button>
+                              <Button
+                                type="primary"
+                                icon={<EyeOutlined />}
+                                style={{
+                                  marginBottom: "1rem",
+                                  fontSize: "1rem",
+                                  fontWeight: "500",
+                                  backgroundColor: "var(--theme)",
+                                }}
+                                onClick={() => {
+                                  window.open(
+                                    `${MEDIA_URL}/${image.file_path}`
+                                  );
+                                }}
+                              >
+                                View
+                              </Button>
+                            </div>
+                          }
+                        >
+                          <Button
+                            icon={<MoreOutlined />}
+                            style={{
+                              border: "1px solid transparent",
+                              borderRadius: "50%",
+                              backgroundColor: "var(--transparentwhite)",
+                              zIndex: 10,
+                            }}
+                          />
+                        </Popover>
+                      </div>
                       <Image
                         src={`${MEDIA_URL}/${image.file_path}`}
                         alt={image.file_name}
@@ -423,105 +630,6 @@ const Gallery = () => {
                           window.open(`${MEDIA_URL}/${image.file_path}`);
                         }}
                       />
-                      <div
-                        className="image-info"
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          marginTop: "1rem",
-                          paddingLeft: "1rem",
-                        }}
-                      >
-                        {editMode && image.id === editMedia.mediaId ? (
-                          <>
-                            <strong>Name:{""}</strong>
-                            <Input
-                              defaultValue={
-                                image?.title ? image.title : image.file_name
-                              }
-                              style={{ width: "100%" }}
-                              onChange={(e) =>
-                                setEditMedia({
-                                  ...editMedia,
-                                  mediaTitle: e.target.value,
-                                })
-                              }
-                            />
-                          </>
-                        ) : (
-                          <p>
-                            <strong> Name:</strong>{" "}
-                            {/* {image?.title ? image.title : image.file_name} */}
-                            {/* make name shorter and ... if more than 10 */}
-                            {image?.title
-                              ? image.title.length > 18
-                                ? image.title.substring(0, 18) + "..."
-                                : image.title
-                              : image.file_name.length > 18
-                              ? image.file_name.substring(0, 18) + "..."
-                              : image.file_name}
-                          </p>
-                        )}
-                        <div>
-                          <p>
-                            <strong> Size:</strong>
-                            {sizeFormatter(image.file_size)}
-                          </p>
-                          <p>
-                            <strong> Type: </strong> {image.file_type}
-                          </p>
-                        </div>
-                      </div>
-                      <div
-                        style={{
-                          marginTop: "1rem",
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        {editMode ? (
-                          <>
-                            <Button
-                              success
-                              icon={<CheckCircleTwoTone />}
-                              style={{
-                                marginRight: "6vw",
-                                backgroundColor: "green",
-                              }}
-                              onClick={() => handleSubmit()}
-                            />
-                          </>
-                        ) : (
-                          <Button
-                            type="primary"
-                            success
-                            icon={<EditOutlined />}
-                            style={{ marginRight: "6vw" }}
-                            onClick={() =>
-                              handleEditMode({
-                                mediaId: image.id,
-                                mediaTitle: image?.title
-                                  ? image.title
-                                  : image.file_name,
-                              })
-                            }
-                          />
-                        )}
-                        {!editMode ? (
-                          <Button
-                            type="primary"
-                            danger
-                            onClick={() => onDelete(image.id)}
-                            icon={<DeleteOutlined />}
-                          />
-                        ) : (
-                          <Button
-                            danger
-                            icon={<CloseCircleOutlined />}
-                            onClick={() => setEditMode(false)}
-                          />
-                        )}
-                      </div>
                     </div>
                   </Col>
                 ))}
