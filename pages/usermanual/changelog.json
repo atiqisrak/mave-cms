@@ -9,6 +9,16 @@
         }
     },
     {
+        "version": "v 0.2.62",
+        "date": "2024-06-03",
+        "changes": {
+            "Feature": [
+                "Updated the Galler view",
+                "User can copy, view and download the media"
+            ]
+        }
+    },
+    {
         "version": "v 0.2.57",
         "date": "2024-05-26",
         "changes": {
