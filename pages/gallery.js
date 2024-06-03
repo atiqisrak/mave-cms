@@ -235,10 +235,10 @@ const Gallery = () => {
               justifyContent: "center",
               alignItems: "center",
               marginBottom: "5rem",
-              backgroundColor: "#e2f3ff",
-              border: "1px dashed #006eff",
+              // backgroundColor: "#e2f3ff",
+              // border: "1px dashed #006eff",
               borderRadius: "15px",
-              padding: "3rem",
+              padding: "0 3rem 3rem",
               margin: "0 2rem 2rem",
             }}
           >
@@ -247,7 +247,9 @@ const Gallery = () => {
               alt="Upload"
               width={300}
               height={300}
-              style={{ cursor: "pointer" }}
+              style={{
+                cursor: "pointer",
+              }}
             />
             <h1
               style={{
