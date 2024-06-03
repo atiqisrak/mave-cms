@@ -103,6 +103,8 @@ const SiteContent = ({ children, collapsed, setCollapsed }) => {
     setContextToken(null);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("creatormode");
+    localStorage.removeItem("niloy");
   };
 
   const GoCreatorMode = () => {

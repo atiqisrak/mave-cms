@@ -4,20 +4,33 @@ import { setPageTitle } from "../global/constants/pageTitle";
 import { ContextProvider } from "../src/context/context";
 import "../styles/globals.css";
 import Head from "next/head";
+import { message, Switch } from "antd";
 import { MoonFilled, SunFilled } from "@ant-design/icons";
-import { Switch } from "antd";
 
 function MyApp({ Component, pageProps }) {
-  const [collapsed, setCollapsed] = useState(false);
-  const [darkmode, setDarkmode] = useState();
-  useEffect(() => {
-    const currentPageName = "Home Page";
-    setCollapsed(false);
-    setPageTitle(currentPageName);
-  }, []);
+  const [collapsed, setCollapsed] = useState(true);
+  const [darkmode, setDarkmode] = useState(true);
+  const [niloy, setNiloy] = useState(
+    "y$vtw#*tPECXug7SBeUqNSMVd2!TS!YkjL%#sbtBEPkxS65NtDxm&F$5mKhX(kUP"
+  );
 
   useEffect(() => {
-    setDarkmode(localStorage.getItem("darkmode") === "true");
+    const currentPageName = "Home Page";
+    setPageTitle(currentPageName);
+
+    if (
+      localStorage.getItem("niloy") === null ||
+      localStorage.getItem("niloy") !== niloy
+    ) {
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      localStorage.removeItem("niloy");
+      message.error("Please login to continue");
+    } else if (localStorage.getItem("niloy") === niloy) {
+      localStorage.setItem("niloy", niloy);
+    } else {
+      console.log("Error");
+    }
   }, []);
 
   return (
