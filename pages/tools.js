@@ -12,11 +12,6 @@ const Tools = () => {
     <div className="ViewContainer">
       <div className="ViewContentContainer">
         <h1>Tools</h1>
-
-        {/* <ToolsMarketplace
-                /> */}
-
-        {/* Radio */}
         <center>
           <Radio.Group
             onChange={(e) => setPlatinumUser(e.target.value)}
