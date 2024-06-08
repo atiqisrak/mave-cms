@@ -24,18 +24,15 @@ const Tools = () => {
             <Radio value={true}>Premium</Radio>
           </Radio.Group>
         </center>
-        {
-          // platinumUser ? <ToolsMarketplace /> : <center><h1>Coming soon...</h1></center>
-          platinumUser ? (
-            <center>
-              <h1>Coming soon...</h1>
-            </center>
-          ) : (
-            <center>
-              <h1>Coming soon...</h1>
-            </center>
-          )
-        }
+        {platinumUser ? (
+          <center>
+            <h1>Coming soon...</h1>
+          </center>
+        ) : (
+          <center>
+            <h1>Coming soon...</h1>
+          </center>
+        )}
         {/* <YoutubeAudioExtractor /> */}
       </div>
     </div>
