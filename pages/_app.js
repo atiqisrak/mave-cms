@@ -9,7 +9,7 @@ import { MoonFilled, SunFilled } from "@ant-design/icons";
 
 function MyApp({ Component, pageProps }) {
   const [collapsed, setCollapsed] = useState(true);
-  const [darkmode, setDarkmode] = useState(true);
+  const [darkmode, setDarkmode] = useState(false);
   const [niloy, setNiloy] = useState(
     "y$vtw#*tPECXug7SBeUqNSMVd2!TS!YkjL%#sbtBEPkxS65NtDxm&F$5mKhX(kUP"
   );
