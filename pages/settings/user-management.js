@@ -34,7 +34,6 @@ const UserManagementPage = () => {
             backgroundColor: "#fff",
           }}
         >
-          <h1>User Management Settings</h1>
           <UserManagement />
         </Content>
       </Layout>
