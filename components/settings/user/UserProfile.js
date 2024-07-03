@@ -118,16 +118,47 @@ const UserProfile = () => {
                   border: "4px solid var(--theme)",
                 }}
               />
-              <Button
-                type="primary"
-                onClick={() => setModifyMode(!modifyMode)}
-                style={{
-                  backgroundColor: "var(--theme)",
-                  borderColor: "var(--theme)",
-                }}
-              >
-                {modifyMode ? "Submit" : "Edit Profile"}
-              </Button>
+              {modifyMode ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "1rem",
+                  }}
+                >
+                  <Button
+                    type="primary"
+                    onClick={handleUpdateProfile}
+                    style={{
+                      backgroundColor: "var(--theme)",
+                      borderColor: "var(--theme)",
+                    }}
+                  >
+                    Save
+                  </Button>
+                  <Button
+                    type="primary"
+                    onClick={() => setModifyMode(false)}
+                    style={{
+                      backgroundColor: "var(--themes)",
+                      borderColor: "var(--themes)",
+                    }}
+                  >
+                    Discard
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  type="primary"
+                  onClick={() => setModifyMode(true)}
+                  style={{
+                    backgroundColor: "var(--theme)",
+                    borderColor: "var(--theme)",
+                  }}
+                >
+                  Edit Profile
+                </Button>
+              )}
             </div>
           </Col>
         </Row>
@@ -140,10 +171,9 @@ const UserProfile = () => {
             {
               key: 1,
               label: "Name",
-              // value: userData?.name,
               value: modifyMode ? (
                 <Input
-                  placeholder="Name"
+                  placeholder={userData?.name}
                   value={modifiedData?.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
                   style={{ width: "100%" }}
@@ -151,55 +181,13 @@ const UserProfile = () => {
               ) : (
                 userData?.name
               ),
-              // action: modifyMode ? (
-              //   <div
-              //     style={{
-              //       display: "flex",
-              //       justifyContent: "space-between",
-              //       width: "100px",
-              //     }}
-              //   >
-              //     <CheckOutlined
-              //       style={{
-              //         color: "var(--theme)",
-              //         cursor: "pointer",
-              //         padding: "10px",
-              //         backgroundColor: "var(--gray)",
-              //         borderRadius: "5px",
-              //       }}
-              //       onClick={handleUpdateProfile}
-              //     />
-              //     <CloseOutlined
-              //       style={{
-              //         color: "var(--themes)",
-              //         cursor: "pointer",
-              //         padding: "10px",
-              //         backgroundColor: "var(--gray)",
-              //         borderRadius: "5px",
-              //       }}
-              //       onClick={() => setModifyMode(false)}
-              //     />
-              //   </div>
-              // ) : (
-              //   <EditOutlined
-              //     style={{
-              //       color: "var(--themes)",
-              //       cursor: "pointer",
-              //       padding: "10px",
-              //       backgroundColor: "var(--gray)",
-              //       borderRadius: "5px",
-              //     }}
-              //     onClick={() => setModifyMode(true)}
-              //   />
-              // ),
             },
             {
               key: 2,
               label: "Email",
-              // value: userData?.email,
               value: modifyMode ? (
                 <Input
-                  placeholder="Email"
+                  placeholder={userData?.email}
                   value={modifiedData?.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
                   onBlur={(e) => emailValidation(e.target.value)}
@@ -213,21 +201,32 @@ const UserProfile = () => {
                 </div>
               ),
             },
+            // const [roles, setRoles] = useState([
+            //   { id: 1, name: "Super Admin" },
+            //   { id: 2, name: "Admin" },
+            //   { id: 3, name: "Editor" },
+            //   { id: 4, name: "User" },
+            //   { id: 5, name: "Guest" },
+            // ]);
             {
               key: 3,
               label: "Role",
               value:
-                userData?.role_id === "1"
-                  ? "Super Admin"
-                  : userData?.role_id === "2"
-                  ? "Admin"
-                  : userData?.role_id === "3"
-                  ? "Editor"
-                  : userData?.role_id === "4"
-                  ? "User"
-                  : userData?.role_id === "5"
-                  ? "Guest"
-                  : "",
+                // modifyMode ? (
+                //   <Select
+                //     defaultValue={userData?.role_id}
+                //     style={{ width: "100%" }}
+                //     onChange={(value) => handleInputChange("role_id", value)}
+                //   >
+                //     {roles?.map((role) => (
+                //       <Select.Option key={role.id} value={role.id}>
+                //         {role.name}
+                //       </Select.Option>
+                //     ))}
+                //   </Select>
+                // ) : (
+                roles?.find((role) => role.id == userData?.role_id)?.name,
+              // ),
             },
             {
               key: 4,
@@ -244,12 +243,12 @@ const UserProfile = () => {
           ]}
           columns={[
             {
-              title: "Label",
+              title: "Fields",
               dataIndex: "label",
               key: "label",
             },
             {
-              title: "Value",
+              title: "Information",
               dataIndex: "value",
               key: "value",
             },
