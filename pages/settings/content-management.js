@@ -2,9 +2,20 @@ import React from "react";
 import { Layout, Breadcrumb } from "antd";
 import ContentManagement from "../../components/settings/contentManagement";
 import { HomeOutlined } from "@ant-design/icons";
+import Link from "next/link";
 
 const { Content } = Layout;
-
+const menuItems = [
+  {
+    key: "1",
+    label: <Link href="/settings/general-settings">General Settings</Link>,
+  },
+  {
+    key: "2",
+    label: <Link href="/settings/user-management">User Management</Link>,
+  },
+  { key: "3", label: <Link href="/settings/seo-settings">SEO Settings</Link> },
+];
 const ContentManagementPage = () => {
   return (
     <div className="ViewContainer">
@@ -16,6 +27,7 @@ const ContentManagementPage = () => {
         }}
       >
         <Breadcrumb
+          separator=">"
           items={[
             {
               title: <HomeOutlined style={{ fontSize: "1.2rem" }} />,
@@ -24,6 +36,9 @@ const ContentManagementPage = () => {
             { title: "Settings", href: "/settings" },
             {
               title: "Content Management",
+              menu: {
+                items: menuItems,
+              },
             },
           ]}
           style={{ marginBottom: "2rem", fontSize: "1.2rem" }}

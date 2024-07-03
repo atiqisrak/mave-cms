@@ -14,26 +14,9 @@ import UserList from "./user/UserList";
 import UserForm from "./user/UserForm";
 import instance from "../../axios";
 import UserProfile from "./user/UserProfile";
+import Loader from "../Loader";
 
 const { Content } = Layout;
-
-const initialUsers = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "john@example.com",
-    role: "Admin",
-    permissions: ["create", "edit", "delete"],
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    email: "jane@example.com",
-    role: "Editor",
-    permissions: ["edit", "view"],
-  },
-  // Add more users as needed
-];
 
 const initialLogs = [
   {
@@ -134,98 +117,103 @@ const UserManagement = () => {
   console.log("Users: ", users);
 
   return (
-    <Layout
-      style={{
-        width: "100%",
-        backgroundColor: "transparent",
-      }}
-    >
-      <Content
-        style={{
-          margin: 0,
-          minHeight: 280,
-          backgroundColor: "#fff",
-        }}
-      >
-        <Tabs
-          defaultActiveKey="1"
-          type="card"
-          style={{ marginBottom: 16, fontSize: 16 }}
-          tabPosition="left"
-          tabBarGutter={6}
+    <>
+      {users ? (
+        <Layout
+          style={{
+            width: "100%",
+            backgroundColor: "transparent",
+          }}
         >
-          <Tabs.TabPane tab="User Profile" key="1">
-            <h1>User Profile</h1>
-            <UserProfile />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="User Management" key="2">
-            <h1>User Management</h1>
-            <Button
-              type="primary"
-              onClick={handleAddUser}
-              style={{ marginBottom: 16 }}
+          <Content
+            style={{
+              margin: 0,
+              minHeight: 280,
+              backgroundColor: "#fff",
+            }}
+          >
+            <Tabs
+              defaultActiveKey="1"
+              type="card"
+              style={{ marginBottom: 16, fontSize: 16 }}
+              tabPosition="left"
+              tabBarGutter={6}
             >
-              Add User
-            </Button>
-            <UserList
-              users={users}
-              onEdit={handleEditUser}
-              onDelete={handleDeleteUser}
-              fetchUsers={fetchUsers}
-            />
-            <UserForm
-              visible={isModalVisible}
-              onCreate={handleCreateOrUpdateUser}
-              onCancel={handleCancel}
-              initialValues={editingUser}
-            />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Registration Settings" key="3">
-            <h2>Registration Settings</h2>
-            <RegistrationSettings />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Email Verification Settings" key="4">
-            <h2>Email Verification Settings</h2>
-            <EmailVerificationSettings />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Password Management Settings" key="5">
-            <h2>Password Management Settings</h2>
-            <PasswordManagementSettings />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Profile Management" key="6">
-            <h2>Profile Management</h2>
-            <ProfileManagement user={users[0]} />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Activity Log" key="7">
-            <h2>Activity Log</h2>
-            <ActivityLog logs={logs} />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Access Control Settings" key="8">
-            <h2>Access Control Settings</h2>
-            <AccessControlSettings />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Authentication Methods" key="9">
-            <h2>Authentication Methods</h2>
-            <AuthenticationMethods />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="User Notifications" key="10">
-            <h2>User Notifications</h2>
-            <UserNotifications />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Bulk User Actions" key="11">
-            <h2>Bulk User Actions</h2>
-            <BulkUserActions
-              onBulkDelete={handleBulkDelete}
-              onBulkChangeRole={handleBulkChangeRole}
-            />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Import/Export Users" key="12">
-            <h2>Import/Export Users</h2>
-            <ImportExportUsers users={users} onImport={handleImport} />
-          </Tabs.TabPane>
-        </Tabs>
-      </Content>
-    </Layout>
+              <Tabs.TabPane tab="User Profile" key="1">
+                <UserProfile />
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="User Management" key="2">
+                <h1>User Management</h1>
+                <Button
+                  type="primary"
+                  onClick={handleAddUser}
+                  style={{ marginBottom: 16 }}
+                >
+                  Add User
+                </Button>
+                <UserList
+                  users={users}
+                  onEdit={handleEditUser}
+                  onDelete={handleDeleteUser}
+                  fetchUsers={fetchUsers}
+                />
+                <UserForm
+                  visible={isModalVisible}
+                  onCreate={handleCreateOrUpdateUser}
+                  onCancel={handleCancel}
+                  initialValues={editingUser}
+                />
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="Registration Settings" key="3">
+                <h2>Registration Settings</h2>
+                <RegistrationSettings />
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="Email Verification Settings" key="4">
+                <h2>Email Verification Settings</h2>
+                <EmailVerificationSettings />
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="Password Management Settings" key="5">
+                <h2>Password Management Settings</h2>
+                <PasswordManagementSettings />
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="Profile Management" key="6">
+                <h2>Profile Management</h2>
+                <ProfileManagement user={users[0]} />
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="Activity Log" key="7">
+                <h2>Activity Log</h2>
+                <ActivityLog logs={logs} />
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="Access Control Settings" key="8">
+                <h2>Access Control Settings</h2>
+                <AccessControlSettings />
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="Authentication Methods" key="9">
+                <h2>Authentication Methods</h2>
+                <AuthenticationMethods />
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="User Notifications" key="10">
+                <h2>User Notifications</h2>
+                <UserNotifications />
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="Bulk User Actions" key="11">
+                <h2>Bulk User Actions</h2>
+                <BulkUserActions
+                  onBulkDelete={handleBulkDelete}
+                  onBulkChangeRole={handleBulkChangeRole}
+                />
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="Import/Export Users" key="12">
+                <h2>Import/Export Users</h2>
+                <ImportExportUsers users={users} onImport={handleImport} />
+              </Tabs.TabPane>
+            </Tabs>
+          </Content>
+        </Layout>
+      ) : (
+        <Loader />
+      )}
+    </>
   );
 };
 

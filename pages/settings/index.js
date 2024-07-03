@@ -1,6 +1,7 @@
 import { HomeOutlined } from "@ant-design/icons";
 import { Breadcrumb } from "antd";
 import Link from "next/link";
+import router from "next/router";
 
 export default function Settings() {
   return (
@@ -23,66 +24,70 @@ export default function Settings() {
           gap: "1rem",
         }}
       >
-        <Link href="/settings/general-settings">
-          <div
-            className="Card"
-            style={{
-              backgroundColor: "#f0f0f0",
-              padding: "4rem 1rem",
-              borderRadius: "0.5rem",
-              textAlign: "center",
-              cursor: "pointer",
-            }}
-          >
-            <h2>General Settings</h2>
-            <p>Configure general settings for your site.</p>
-          </div>
-        </Link>
-        <Link href="/settings/content-management">
-          <div
-            className="Card"
-            style={{
-              backgroundColor: "#f0f0f0",
-              padding: "4rem 1rem",
-              borderRadius: "0.5rem",
-              textAlign: "center",
-              cursor: "pointer",
-            }}
-          >
-            <h2>Content Management</h2>
-            <p>Configure content management settings.</p>
-          </div>
-        </Link>
-        <Link href="/settings/user-management">
-          <div
-            className="Card"
-            style={{
-              backgroundColor: "#f0f0f0",
-              padding: "4rem 1rem",
-              borderRadius: "0.5rem",
-              textAlign: "center",
-              cursor: "pointer",
-            }}
-          >
-            <h2>User Management</h2>
-            <p>Configure user management settings.</p>
-          </div>
-        </Link>
-        <Link href="/settings/seo-settings">
-          <div
-            className="Card"
-            style={{
-              backgroundColor: "#f0f0f0",
-              padding: "4rem 1rem",
-              borderRadius: "0.5rem",
-              textAlign: "center",
-              cursor: "pointer",
-            }}
-          >
-            <h2>SEO Settings</h2>
-            <p>Configure SEO settings for your site.</p>
-          </div>
-        </Link>
+        <div
+          className="Card"
+          style={{
+            backgroundColor: "#f0f0f0",
+            padding: "4rem 1rem",
+            borderRadius: "0.5rem",
+            textAlign: "center",
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            router.push("/settings/general-settings");
+          }}
+        >
+          <h2>General Settings</h2>
+          <p>Configure general settings for your site.</p>
+        </div>
+        <div
+          className="Card"
+          style={{
+            backgroundColor: "#f0f0f0",
+            padding: "4rem 1rem",
+            borderRadius: "0.5rem",
+            textAlign: "center",
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            router.push("/settings/content-management");
+          }}
+        >
+          <h2>Content Management</h2>
+          <p>Configure content management settings.</p>
+        </div>
+        <div
+          className="Card"
+          style={{
+            backgroundColor: "#f0f0f0",
+            padding: "4rem 1rem",
+            borderRadius: "0.5rem",
+            textAlign: "center",
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            router.push("/settings/user-management");
+          }}
+        >
+          <h2>User Management</h2>
+          <p>Configure user management settings.</p>
+        </div>
+        <div
+          className="Card"
+          style={{
+            backgroundColor: "#f0f0f0",
+            padding: "4rem 1rem",
+            borderRadius: "0.5rem",
+            textAlign: "center",
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            router.push("/settings/seo-settings");
+          }}
+        >
+          <h2>SEO Settings</h2>
+          <p>Configure SEO settings for your site.</p>
+        </div>
       </div>
     </div>
   );
