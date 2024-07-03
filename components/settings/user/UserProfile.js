@@ -5,10 +5,21 @@ import {
   EyeInvisibleOutlined,
   EyeOutlined,
 } from "@ant-design/icons";
-import { Button, Col, Input, Row, Select, message } from "antd";
+import {
+  Avatar,
+  Button,
+  Col,
+  Input,
+  Row,
+  Select,
+  Table,
+  Typography,
+  message,
+} from "antd";
 import { useContext, useState, useEffect } from "react";
 import GLOBAL_CONTEXT from "../../../src/context/context";
 import instance from "../../../axios";
+import moment from "moment/moment";
 
 const UserProfile = () => {
   const { user } = useContext(GLOBAL_CONTEXT);
@@ -87,189 +98,163 @@ const UserProfile = () => {
   return (
     <div className="profileContainer" style={{ marginTop: "1rem" }}>
       <div>
-        <Col>
-          <Row
-            gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}
-            style={{ display: "flex", alignItems: "center" }}
-          >
-            <Col span={24}>
-              <div className="item1">
-                <label style={{ color: "#F1612A", fontWeight: 700 }}>
-                  Name :{" "}
-                </label>{" "}
-                |
-                {modifyMode ? (
-                  <Input
-                    defaultValue={userData.name}
-                    onChange={(e) => handleInputChange("name", e.target.value)}
-                  />
-                ) : (
-                  <p className="top1">
-                    {userData.name ? userData.name : "Admin User"}
-                  </p>
-                )}
-              </div>
-            </Col>
-          </Row>
-          <Row
-            gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}
-            style={{ display: "flex", alignItems: "center", marginTop: "1rem" }}
-          >
-            <Col span={24}>
-              <div className="item2">
-                <label style={{ color: "#F1612A", fontWeight: 700 }}>
-                  Email :
-                </label>{" "}
-                |
-                {modifyMode ? (
-                  <>
-                    <Input
-                      defaultValue={userData.email}
-                      onChange={(e) => {
-                        handleInputChange("email", e.target.value);
-                        emailValidation(e.target.value);
-                      }}
-                    />
-                    {!validEmail && (
-                      <p style={{ color: "red" }}>{emailMessage}</p>
-                    )}
-                  </>
-                ) : (
-                  <p className="top2">
-                    {userData.email ? userData.email : "Admin Email"}
-                  </p>
-                )}
-              </div>
-            </Col>
-          </Row>
-          <Row
-            gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}
-            style={{ display: "flex", alignItems: "center", marginTop: "1rem" }}
-          >
-            <Col span={24}>
-              <div className="item3">
-                <label style={{ color: "#F1612A", fontWeight: 700 }}>
-                  Phone :
-                </label>{" "}
-                |
-                {modifyMode ? (
-                  <Input
-                    defaultValue={userData.phone}
-                    onChange={(e) => handleInputChange("phone", e.target.value)}
-                  />
-                ) : (
-                  <p className="top3">
-                    {userData.phone ? userData.phone : "Admin Phone"}
-                  </p>
-                )}
-              </div>
-            </Col>
-          </Row>
-          <Row
-            gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}
-            style={{ display: "flex", alignItems: "center", marginTop: "1rem" }}
-          >
-            <Col span={24}>
-              <div className="item4">
-                <label style={{ color: "#F1612A", fontWeight: 700 }}>
-                  Role :
-                </label>{" "}
-                |
-                {modifyMode ? (
-                  <Select
-                    defaultValue={userData?.role_id}
-                    onChange={(value) => handleInputChange("role_id", value)}
-                    style={{ width: "100%" }}
-                  >
-                    {roles.map((role) => (
-                      <Select.Option value={role.id} key={role.id}>
-                        {role.name}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                ) : (
-                  <p className="top4">
-                    {userData?.role_id == "null"
-                      ? "Guest"
-                      : roles.find((role) => role.id == userData?.role_id)
-                          ?.name}
-                  </p>
-                )}
-              </div>
-            </Col>
-          </Row>
-          <Row
-            gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}
-            style={{ display: "flex", alignItems: "center", marginTop: "1rem" }}
-          >
-            <Col span={24}>
-              <div className="item5">
-                <label style={{ color: "#F1612A", fontWeight: 700 }}>
-                  Permissions :
-                </label>{" "}
-                |<p className="top5">All</p>
-              </div>
-            </Col>
-          </Row>
-        </Col>
-        {modifyMode ? (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              marginTop: "1rem",
-            }}
-          >
-            {canModifyUsers && (
-              <>
-                <Button
-                  type="primary"
-                  style={{
-                    marginRight: "1rem",
-                    backgroundColor: "var(--theme)",
-                    color: "white",
-                    padding: "0.5rem 1rem",
-                  }}
-                  onClick={handleUpdateProfile}
-                >
-                  <CheckOutlined /> Save
-                </Button>
-                <Button
-                  type="primary"
-                  danger
-                  style={{ marginLeft: "1rem", padding: "0.5rem 1rem" }}
-                  onClick={() => setModifyMode(false)}
-                >
-                  <CloseOutlined /> Cancel
-                </Button>
-              </>
-            )}
-          </div>
-        ) : (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {canModifyUsers && (
+        <Row>
+          <Col span={24}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "1rem",
+                marginBottom: "1rem",
+              }}
+            >
+              <Avatar
+                size={100}
+                shape="circle"
+                src="/images/profile_avatar.png"
+                style={{
+                  border: "4px solid var(--theme)",
+                }}
+              />
               <Button
                 type="primary"
+                onClick={() => setModifyMode(!modifyMode)}
                 style={{
-                  marginTop: "1rem",
                   backgroundColor: "var(--theme)",
-                  color: "white",
-                  padding: "0.5rem 1rem",
+                  borderColor: "var(--theme)",
                 }}
-                onClick={() => setModifyMode(true)}
               >
-                <EditOutlined /> Edit
+                {modifyMode ? "Submit" : "Edit Profile"}
               </Button>
-            )}
-          </div>
-        )}
+            </div>
+          </Col>
+        </Row>
+
+        {/* User Information Table */}
+        <Table
+          bordered
+          pagination={false}
+          dataSource={[
+            {
+              key: 1,
+              label: "Name",
+              // value: userData?.name,
+              value: modifyMode ? (
+                <Input
+                  placeholder="Name"
+                  value={modifiedData?.name}
+                  onChange={(e) => handleInputChange("name", e.target.value)}
+                  style={{ width: "100%" }}
+                />
+              ) : (
+                userData?.name
+              ),
+              // action: modifyMode ? (
+              //   <div
+              //     style={{
+              //       display: "flex",
+              //       justifyContent: "space-between",
+              //       width: "100px",
+              //     }}
+              //   >
+              //     <CheckOutlined
+              //       style={{
+              //         color: "var(--theme)",
+              //         cursor: "pointer",
+              //         padding: "10px",
+              //         backgroundColor: "var(--gray)",
+              //         borderRadius: "5px",
+              //       }}
+              //       onClick={handleUpdateProfile}
+              //     />
+              //     <CloseOutlined
+              //       style={{
+              //         color: "var(--themes)",
+              //         cursor: "pointer",
+              //         padding: "10px",
+              //         backgroundColor: "var(--gray)",
+              //         borderRadius: "5px",
+              //       }}
+              //       onClick={() => setModifyMode(false)}
+              //     />
+              //   </div>
+              // ) : (
+              //   <EditOutlined
+              //     style={{
+              //       color: "var(--themes)",
+              //       cursor: "pointer",
+              //       padding: "10px",
+              //       backgroundColor: "var(--gray)",
+              //       borderRadius: "5px",
+              //     }}
+              //     onClick={() => setModifyMode(true)}
+              //   />
+              // ),
+            },
+            {
+              key: 2,
+              label: "Email",
+              // value: userData?.email,
+              value: modifyMode ? (
+                <Input
+                  placeholder="Email"
+                  value={modifiedData?.email}
+                  onChange={(e) => handleInputChange("email", e.target.value)}
+                  onBlur={(e) => emailValidation(e.target.value)}
+                  style={{ width: "100%" }}
+                />
+              ) : (
+                <div>
+                  {userData?.email}
+                  <br />
+                  {emailMessage}
+                </div>
+              ),
+            },
+            {
+              key: 3,
+              label: "Role",
+              value:
+                userData?.role_id === "1"
+                  ? "Super Admin"
+                  : userData?.role_id === "2"
+                  ? "Admin"
+                  : userData?.role_id === "3"
+                  ? "Editor"
+                  : userData?.role_id === "4"
+                  ? "User"
+                  : userData?.role_id === "5"
+                  ? "Guest"
+                  : "",
+            },
+            {
+              key: 4,
+              label: "Active",
+              value: userData?.status ? "Yes" : "No",
+            },
+            {
+              key: 5,
+              label: "Last Login",
+              value: moment(userData?.last_login).format(
+                "MMMM Do YYYY, h:mm:ss a"
+              ),
+            },
+          ]}
+          columns={[
+            {
+              title: "Label",
+              dataIndex: "label",
+              key: "label",
+            },
+            {
+              title: "Value",
+              dataIndex: "value",
+              key: "value",
+            },
+          ]}
+        />
       </div>
     </div>
   );
