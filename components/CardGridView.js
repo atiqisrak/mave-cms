@@ -32,7 +32,11 @@ const CardGridView = ({ cardData, media, fetchCards, pages }) => {
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [linkType, setLinkType] = useState(
-    selectedCard?.link_url?.includes("page_id") ? "page" : "independent"
+    selectedCard?.link_url === null
+      ? "independent"
+      : selectedCard?.link_url?.includes("page_id")
+      ? "page"
+      : "independent"
   );
   // const [selectedPage, setSelectedPage] = useState(null);
 
@@ -164,7 +168,11 @@ const CardGridView = ({ cardData, media, fetchCards, pages }) => {
   useEffect(() => {
     if (selectedCard) {
       setLinkType(
-        selectedCard?.link_url.includes("page_id") ? "page" : "independent"
+        selectedCard?.link_url
+          ? selectedCard?.link_url?.includes("page_id")
+            ? "page"
+            : "independent"
+          : "independent"
       );
     }
   }, [selectedCard]);
@@ -515,7 +523,7 @@ const CardGridView = ({ cardData, media, fetchCards, pages }) => {
                 gap: "10px",
               }}
             >
-              <strong>Page Name:</strong> {selectedCard?.page_name}
+              <strong>Page Name:</strong> {selectedCard?.page_name || "N/A"}
             </div>
             <div
               style={{
@@ -523,7 +531,7 @@ const CardGridView = ({ cardData, media, fetchCards, pages }) => {
                 gap: "10px",
               }}
             >
-              <strong>Link URL:</strong> {selectedCard?.link_url}
+              <strong>Link URL:</strong> {selectedCard?.link_url || "N/A"}
             </div>
           </div>
         )}
