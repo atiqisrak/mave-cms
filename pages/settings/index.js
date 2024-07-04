@@ -88,6 +88,23 @@ export default function Settings() {
           <h2>SEO Settings</h2>
           <p>Configure SEO settings for your site.</p>
         </div>
+        {/* API Monitoring Tool */}
+        <div
+          className="Card"
+          style={{
+            backgroundColor: "#f0f0f0",
+            padding: "4rem 1rem",
+            borderRadius: "0.5rem",
+            textAlign: "center",
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            router.push("/settings/api-monitoring");
+          }}
+        >
+          <h2>API Monitoring</h2>
+          <p>Monitor API usage and performance.</p>
+        </div>
       </div>
     </div>
   );
