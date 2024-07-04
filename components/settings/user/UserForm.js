@@ -8,7 +8,7 @@ const UserForm = ({ visible, onCreate, onCancel, initialValues }) => {
 
   return (
     <Modal
-      visible={visible}
+      open={visible}
       title="User Form"
       okText="Save"
       cancelText="Cancel"

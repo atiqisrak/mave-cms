@@ -1,12 +1,19 @@
 import React, { useState } from "react";
-import { Button, Modal, Checkbox, Select, message } from "antd";
+import { Button, Modal, Checkbox, Select, message, Row, Col } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
-const BulkUserActions = ({ onBulkDelete, onBulkChangeRole }) => {
+const BulkUserActions = ({ onBulkDelete, onBulkChangeRole, users }) => {
   const [selectedAction, setSelectedAction] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
+
+  const [roles2, setRoles2] = useState([
+    { id: 1, u_id: "y8wewowlhl", name: "Admin" },
+    { id: 2, u_id: "btrq7wcnsv", name: "Editor" },
+    { id: 3, u_id: "lf0kaur5u4", name: "User" },
+    { id: 4, u_id: "c66aaozpxq", name: "Guest" },
+  ]);
 
   const handleBulkDelete = () => {
     Modal.confirm({
@@ -42,11 +49,32 @@ const BulkUserActions = ({ onBulkDelete, onBulkChangeRole }) => {
         style={{ width: "100%" }}
         onChange={(checkedValues) => setSelectedUsers(checkedValues)}
       >
-        {/* Assuming a list of user options is available */}
-        <Checkbox value="user1">User 1</Checkbox>
-        <Checkbox value="user2">User 2</Checkbox>
-        <Checkbox value="user3">User 3</Checkbox>
-        {/* Add more user options as needed */}
+        <Col span={24}>
+          {users?.map((user) => (
+            <Row
+              gutter={16}
+              style={{
+                marginTop: "1rem",
+                backgroundColor: "#ceedff",
+                padding: "1rem 1em",
+                borderRadius: "5px",
+              }}
+              key={user.id}
+            >
+              <Col span={8}>
+                <Checkbox key={user.id} value={user.id}>
+                  {user.name}
+                </Checkbox>
+              </Col>
+              <Col span={8}>{user.email}</Col>
+              <Col span={8}>
+                {user?.role_id
+                  ? roles2.find((role) => role.id == user?.role_id)?.name
+                  : "Guest"}
+              </Col>
+            </Row>
+          ))}
+        </Col>
       </Checkbox.Group>
       <Select
         placeholder="Select bulk action"

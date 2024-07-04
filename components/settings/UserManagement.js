@@ -176,9 +176,15 @@ const UserManagement = () => {
                 <h2>Password Management Settings</h2>
                 <PasswordManagementSettings />
               </Tabs.TabPane>
-              <Tabs.TabPane tab="Profile Management" key="6">
-                <h2>Profile Management</h2>
-                <ProfileManagement user={users[0]} />
+              <Tabs.TabPane tab="Import/Export Users" key="6">
+                <h2>Import/Export Users</h2>
+                <ImportExportUsers
+                  users={users}
+                  onImport={handleImport}
+                  onEdit={handleEditUser}
+                  onDelete={handleDeleteUser}
+                  fetchUsers={fetchUsers}
+                />
               </Tabs.TabPane>
               <Tabs.TabPane tab="Activity Log" key="7">
                 <h2>Activity Log</h2>
@@ -199,13 +205,10 @@ const UserManagement = () => {
               <Tabs.TabPane tab="Bulk User Actions" key="11">
                 <h2>Bulk User Actions</h2>
                 <BulkUserActions
+                  users={users}
                   onBulkDelete={handleBulkDelete}
                   onBulkChangeRole={handleBulkChangeRole}
                 />
-              </Tabs.TabPane>
-              <Tabs.TabPane tab="Import/Export Users" key="12">
-                <h2>Import/Export Users</h2>
-                <ImportExportUsers users={users} onImport={handleImport} />
               </Tabs.TabPane>
             </Tabs>
           </Content>

@@ -12,7 +12,14 @@ import { useState, useEffect } from "react";
 import instance from "../../../axios";
 import Loader from "../../Loader";
 
-const UserList = ({ users, setUsers, onEdit, onDelete, fetchUsers }) => {
+const UserList = ({
+  users,
+  importedData,
+  setUsers,
+  onEdit,
+  onDelete,
+  fetchUsers,
+}) => {
   // const [users, setUsers] = useState([]);
   const [createUser, setCreateUser] = useState(false);
   const [name, setName] = useState("");

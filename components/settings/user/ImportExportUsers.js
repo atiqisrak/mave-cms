@@ -2,8 +2,16 @@ import React, { useState } from "react";
 import { Upload, Button, message, Table } from "antd";
 import { UploadOutlined, DownloadOutlined } from "@ant-design/icons";
 import Papa from "papaparse";
+import UserList from "./UserList";
 
-const ImportExportUsers = ({ users, onImport, onExport }) => {
+const ImportExportUsers = ({
+  users,
+  onImport,
+  onExport,
+  fetchUsers,
+  onEdit,
+  onDelete,
+}) => {
   const [importedData, setImportedData] = useState([]);
 
   const handleUpload = (file) => {
@@ -60,21 +68,25 @@ const ImportExportUsers = ({ users, onImport, onExport }) => {
 
   return (
     <div>
-      <Upload beforeUpload={handleUpload}>
-        <Button icon={<UploadOutlined />}>Import Users</Button>
-      </Upload>
-      <Button
-        icon={<DownloadOutlined />}
-        onClick={handleExport}
-        style={{ marginLeft: 16 }}
-      >
-        Export Users
-      </Button>
-      <Table
+      <div className="flexed-between">
+        <Upload beforeUpload={handleUpload}>
+          <Button icon={<UploadOutlined />}>Import Users</Button>
+        </Upload>
+        <Button
+          icon={<DownloadOutlined />}
+          onClick={handleExport}
+          style={{ marginLeft: 16 }}
+        >
+          Export Users
+        </Button>
+      </div>
+      <UserList
+        importedData={importedData}
         columns={columns}
-        dataSource={importedData}
-        rowKey="email"
-        style={{ marginTop: 16 }}
+        users={users}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        fetchUsers={fetchUsers}
       />
     </div>
   );
