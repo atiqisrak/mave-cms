@@ -66,7 +66,7 @@ export default function Renderpages({
                         color: "white",
                         borderRadius: "10px",
                         fontSize: "1.2em",
-                        paddingBottom: "1.8em",
+                        // paddingBottom: "1.8em",
                       }}
                       onClick={() => handleEditPage(page.id)}
                       icon={<EditOutlined />}
@@ -80,7 +80,7 @@ export default function Renderpages({
                         color: "white",
                         borderRadius: "10px",
                         fontSize: "1.2em",
-                        paddingBottom: "1.8em",
+                        // paddingBottom: "1.8em",
                       }}
                       onClick={() => handleExpand(page?.id)}
                     >
@@ -111,7 +111,7 @@ export default function Renderpages({
                               borderRadius: "10px",
                               fontSize: "1.2em",
                               marginRight: "1em",
-                              paddingBottom: "1.8em",
+                              // paddingBottom: "1.8em",
                             }}
                             icon={<CloseCircleFilled />}
                             onClick={() => {
@@ -129,7 +129,7 @@ export default function Renderpages({
                               borderRadius: "10px",
                               fontSize: "1.2em",
                               marginRight: "1em",
-                              paddingBottom: "1.8em",
+                              // paddingBottom: "1.8em",
                             }}
                             icon={<CheckCircleFilled />}
                             onClick={handleSubmit}
@@ -148,7 +148,7 @@ export default function Renderpages({
                               borderRadius: "10px",
                               fontSize: "1.2em",
                               marginRight: "1em",
-                              paddingBottom: "1.8em",
+                              // paddingBottom: "1.8em",
                             }}
                             icon={<EditOutlined />}
                             onClick={() => {
@@ -163,7 +163,7 @@ export default function Renderpages({
                               borderRadius: "10px",
                               fontSize: "1.2em",
                               marginRight: "1em",
-                              paddingBottom: "1.8em",
+                              // paddingBottom: "1.8em",
                             }}
                             icon={<DeleteFilled />}
                             onClick={() => {
@@ -428,7 +428,7 @@ export default function Renderpages({
                                       color: "white",
                                       borderRadius: "10px",
                                       fontSize: "1.2em",
-                                      paddingBottom: "1.8em",
+                                      // paddingBottom: "1.8em",
                                       marginRight: "1em",
                                     }}
                                   >
@@ -454,7 +454,7 @@ export default function Renderpages({
                                   color: "white",
                                   borderRadius: "10px",
                                   fontSize: "1.2em",
-                                  paddingBottom: "1.8em",
+                                  // paddingBottom: "1.8em",
                                 }}
                                 onClick={() => setEditPageInfo(!editPageInfo)}
                               >

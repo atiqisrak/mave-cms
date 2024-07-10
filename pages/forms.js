@@ -70,7 +70,7 @@ function Forms() {
                   style={{
                     borderRadius: "10px",
                     fontSize: "1.2em",
-                    paddingBottom: "1.8em",
+                    // paddingBottom: "1.8em",
                   }}
                   icon={<CloseCircleFilled />}
                   onClick={toggleCreateForm}
@@ -86,7 +86,7 @@ function Forms() {
                     color: "white",
                     borderRadius: "10px",
                     fontSize: "1.2em",
-                    paddingBottom: "1.8em",
+                    // paddingBottom: "1.8em",
                   }}
                   icon={<PlusCircleOutlined />}
                   onClick={toggleCreateForm}

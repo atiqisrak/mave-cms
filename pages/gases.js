@@ -155,7 +155,7 @@ const Gases = () => {
                   borderRadius: "10px",
                   fontSize: "1.2em",
                   marginRight: "1em",
-                  paddingBottom: "1.8em",
+                  // paddingBottom: "1.8em",
                 }}
                 icon={<CloseCircleFilled />}
                 onClick={() => setCreateMode(false)}
@@ -172,7 +172,7 @@ const Gases = () => {
                   borderRadius: "10px",
                   fontSize: "1.2em",
                   marginRight: "1em",
-                  paddingBottom: "1.8em",
+                  // paddingBottom: "1.8em",
                 }}
                 icon={<CheckCircleFilled />}
                 onClick={() => setCreateMode(true)}
@@ -281,7 +281,7 @@ const Gases = () => {
                         borderRadius: "10px",
                         fontSize: "1.2em",
                         marginRight: "1em",
-                        paddingBottom: "1.8em",
+                        // paddingBottom: "1.8em",
                       }}
                       icon={<CheckCircleFilled />}
                       onClick={handleOpenModal}
@@ -339,7 +339,7 @@ const Gases = () => {
                         borderRadius: "10px",
                         fontSize: "1.2em",
                         marginRight: "1em",
-                        paddingBottom: "1.8em",
+                        // paddingBottom: "1.8em",
                       }}
                       icon={<CheckCircleFilled />}
                       onClick={() => handleUpdate(gas.id)}
@@ -352,7 +352,7 @@ const Gases = () => {
                         borderRadius: "10px",
                         fontSize: "1.2em",
                         marginRight: "1em",
-                        paddingBottom: "1.8em",
+                        // paddingBottom: "1.8em",
                       }}
                       icon={<CloseCircleFilled />}
                       onClick={() => {
@@ -422,7 +422,7 @@ const Gases = () => {
                         borderRadius: "10px",
                         fontSize: "1.2em",
                         marginRight: "1em",
-                        paddingBottom: "1.8em",
+                        // paddingBottom: "1.8em",
                       }}
                       icon={<EditOutlined />}
                       onClick={() => {
@@ -439,7 +439,7 @@ const Gases = () => {
                         borderRadius: "10px",
                         fontSize: "1.2em",
                         marginRight: "1em",
-                        paddingBottom: "1.8em",
+                        // paddingBottom: "1.8em",
                       }}
                       icon={<DeleteFilled />}
                       onClick={() => handleDelete(gas.id)}

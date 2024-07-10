@@ -573,7 +573,7 @@ const FooterParser = ({ item, editMode, onFooterSelect }) => {
                         borderRadius: "10px",
                         fontSize: "1.2em",
                         marginRight: "1em",
-                        paddingBottom: "1.8em",
+                        // paddingBottom: "1.8em",
                       }}
                       onClick={() => handleUpdate()}
                     >
@@ -588,7 +588,7 @@ const FooterParser = ({ item, editMode, onFooterSelect }) => {
                         color: "white",
                         borderRadius: "10px",
                         fontSize: "1.2em",
-                        paddingBottom: "1.8em",
+                        // paddingBottom: "1.8em",
                       }}
                       onClick={() => toggleCollapse(true)}
                     >

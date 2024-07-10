@@ -208,7 +208,7 @@ const Events = () => {
                   borderRadius: "10px",
                   fontSize: "1.2em",
                   marginRight: "1em",
-                  paddingBottom: "1.8em",
+                  // paddingBottom: "1.8em",
                 }}
                 icon={<CloseCircleFilled />}
                 onClick={() => setCreateMode(false)}
@@ -226,7 +226,7 @@ const Events = () => {
                 borderRadius: "10px",
                 fontSize: "1.2em",
                 marginRight: "1em",
-                paddingBottom: "1.8em",
+                // paddingBottom: "1.8em",
               }}
               icon={<CheckCircleFilled />}
               onClick={() => setCreateMode(true)}
@@ -380,7 +380,7 @@ const Events = () => {
                     borderRadius: "10px",
                     fontSize: "1.2em",
                     marginRight: "1em",
-                    paddingBottom: "1.8em",
+                    // paddingBottom: "1.8em",
                   }}
                   icon={<CheckCircleFilled />}
                   onClick={() => {
@@ -423,7 +423,7 @@ const Events = () => {
                                 borderRadius: "10px",
                                 fontSize: "1.2em",
                                 marginRight: "1em",
-                                paddingBottom: "1.8em",
+                                // paddingBottom: "1.8em",
                               }}
                               icon={<CloseCircleFilled />}
                               onClick={() => {
@@ -441,7 +441,7 @@ const Events = () => {
                                 borderRadius: "10px",
                                 fontSize: "1.2em",
                                 marginRight: "1em",
-                                paddingBottom: "1.8em",
+                                // paddingBottom: "1.8em",
                               }}
                               icon={<CheckCircleFilled />}
                               onClick={() => {
@@ -462,7 +462,7 @@ const Events = () => {
                                 borderRadius: "10px",
                                 fontSize: "1.2em",
                                 marginRight: "1em",
-                                paddingBottom: "1.8em",
+                                // paddingBottom: "1.8em",
                               }}
                               icon={<EditOutlined />}
                               onClick={() => {
@@ -483,7 +483,7 @@ const Events = () => {
                                   borderRadius: "10px",
                                   fontSize: "1.2em",
                                   marginRight: "1em",
-                                  paddingBottom: "1.8em",
+                                  // paddingBottom: "1.8em",
                                 }}
                                 icon={<DeleteOutlined />}
                               >

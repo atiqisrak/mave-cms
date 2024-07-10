@@ -266,7 +266,7 @@ const Sliders = () => {
                   color: "white",
                   borderRadius: "10px",
                   fontSize: "1.2em",
-                  paddingBottom: "1.8em",
+                  // paddingBottom: "1.8em",
                   width: "15em",
                 }}
               >
