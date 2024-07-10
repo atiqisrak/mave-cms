@@ -342,7 +342,7 @@ const Footer = () => {
                 color: "white",
                 borderRadius: "10px",
                 fontSize: "1.2em",
-                paddingBottom: "1.8em",
+                // paddingBottom: "1.8em",
                 width: "15em",
               }}
               icon={<PlusCircleOutlined />}
@@ -662,7 +662,7 @@ const Footer = () => {
                         borderRadius: "10px",
                         fontSize: "1.2em",
                         marginRight: "1em",
-                        paddingBottom: "1.8em",
+                        // paddingBottom: "1.8em",
                       }}
                       onClick={() => handlePost()}
                     >
@@ -677,7 +677,7 @@ const Footer = () => {
                         color: "white",
                         borderRadius: "10px",
                         fontSize: "1.2em",
-                        paddingBottom: "1.8em",
+                        // paddingBottom: "1.8em",
                       }}
                       onClick={() => handleClose()}
                     >
@@ -819,7 +819,7 @@ const Footer = () => {
                       borderRadius: "10px",
                       fontSize: "1em",
                       marginRight: "1em",
-                      paddingBottom: "1.8em",
+                      // paddingBottom: "1.8em",
                     }}
                     onClick={() => toggleCollapse(items.id, items)}
                   >
@@ -845,7 +845,7 @@ const Footer = () => {
                     style={{
                       borderRadius: "10px",
                       fontSize: "1em",
-                      paddingBottom: "1.8em",
+                      // paddingBottom: "1.8em",
                     }}
                     onClick={() => showDeleteConfirmation(items.id)}
                     icon={<DeleteOutlined />}
@@ -1214,7 +1214,7 @@ const Footer = () => {
                             borderRadius: "10px",
                             fontSize: "1.2em",
                             marginRight: "1em",
-                            paddingBottom: "1.8em",
+                            // paddingBottom: "1.8em",
                           }}
                           onClick={() => handleUpdate()}
                         >
@@ -1229,7 +1229,7 @@ const Footer = () => {
                             color: "white",
                             borderRadius: "10px",
                             fontSize: "1.2em",
-                            paddingBottom: "1.8em",
+                            // paddingBottom: "1.8em",
                           }}
                           onClick={() => toggleCollapse(true)}
                         >

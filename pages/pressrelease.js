@@ -442,7 +442,7 @@ const PressRelease = () => {
                 borderRadius: "10px",
                 fontSize: "1.2em",
                 marginRight: "1em",
-                paddingBottom: "1.8em",
+                // paddingBottom: "1.8em",
               }}
               icon={<CloseCircleFilled />}
               onClick={() => setCreateMode(false)}
@@ -459,7 +459,7 @@ const PressRelease = () => {
                 borderRadius: "10px",
                 fontSize: "1.2em",
                 marginRight: "1em",
-                paddingBottom: "1.8em",
+                // paddingBottom: "1.8em",
               }}
               icon={<CheckCircleFilled />}
               onClick={() => setCreateMode(true)}
@@ -532,7 +532,7 @@ const PressRelease = () => {
                       borderRadius: "10px",
                       fontSize: "1.2em",
                       marginRight: "1em",
-                      paddingBottom: "1.8em",
+                      // paddingBottom: "1.8em",
                     }}
                     onClick={handleCreatePressRelease}
                   >
@@ -574,7 +574,7 @@ const PressRelease = () => {
                                 borderRadius: "10px",
                                 fontSize: "1.2em",
                                 marginRight: "1em",
-                                paddingBottom: "1.8em",
+                                // paddingBottom: "1.8em",
                               }}
                               icon={<CloseCircleFilled />}
                               onClick={() => {
@@ -592,7 +592,7 @@ const PressRelease = () => {
                                 borderRadius: "10px",
                                 fontSize: "1.2em",
                                 marginRight: "1em",
-                                paddingBottom: "1.8em",
+                                // paddingBottom: "1.8em",
                               }}
                               icon={<CheckCircleFilled />}
                               onClick={handleSubmit}
@@ -611,7 +611,7 @@ const PressRelease = () => {
                                 borderRadius: "10px",
                                 fontSize: "1.2em",
                                 marginRight: "1em",
-                                paddingBottom: "1.8em",
+                                // paddingBottom: "1.8em",
                               }}
                               icon={<EditOutlined />}
                               onClick={() => {
@@ -626,7 +626,7 @@ const PressRelease = () => {
                                 borderRadius: "10px",
                                 fontSize: "1.2em",
                                 marginRight: "1em",
-                                paddingBottom: "1.8em",
+                                // paddingBottom: "1.8em",
                               }}
                               icon={<DeleteFilled />}
                               onClick={() => {

@@ -274,7 +274,7 @@ const MenuItems = () => {
                   color: "white",
                   borderRadius: "10px",
                   fontSize: "1.2em",
-                  paddingBottom: "1.8em",
+                  // paddingBottom: "1.8em",
                 }}
                 onClick={() => router.push("/menus")}
                 icon={<ArrowLeftOutlined />}
@@ -290,7 +290,7 @@ const MenuItems = () => {
                   color: "white",
                   borderRadius: "10px",
                   fontSize: "1.2em",
-                  paddingBottom: "1.8em",
+                  // paddingBottom: "1.8em",
                 }}
                 onClick={openAddMenuItemCard}
                 icon={<PlusCircleOutlined />}
@@ -557,7 +557,7 @@ const MenuItems = () => {
                       color: "white",
                       borderRadius: "10px",
                       fontSize: "1.2em",
-                      paddingBottom: "1.8em",
+                      // paddingBottom: "1.8em",
                     }}
                     icon={<PlusCircleOutlined />}
                   >
@@ -571,7 +571,7 @@ const MenuItems = () => {
                       color: "white",
                       borderRadius: "10px",
                       fontSize: "1.2em",
-                      paddingBottom: "1.8em",
+                      // paddingBottom: "1.8em",
                     }}
                     icon={<CloseCircleOutlined />}
                   >
@@ -854,7 +854,7 @@ const MenuItems = () => {
                           borderRadius: "10px",
                           fontSize: "1.2em",
                           marginRight: "1em",
-                          paddingBottom: "1.8em",
+                          // paddingBottom: "1.8em",
                         }}
                         onClick={(e) => handleEdit(menuItem?.id, e)}
                         icon={<EditOutlined />}
@@ -882,7 +882,7 @@ const MenuItems = () => {
                           style={{
                             borderRadius: "10px",
                             fontSize: "1.2em",
-                            paddingBottom: "1.8em",
+                            // paddingBottom: "1.8em",
                           }}
                           onClick={() => showDeleteConfirmation(menuItem.id)}
                           icon={<DeleteOutlined />}

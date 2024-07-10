@@ -231,7 +231,7 @@ const Navbars = () => {
                   color: "white",
                   borderRadius: "10px",
                   fontSize: "1.2em",
-                  paddingBottom: "1.8em",
+                  // paddingBottom: "1.8em",
                 }}
                 icon={<PlusCircleOutlined />}
                 onClick={toggleCreateNavbarForm}
@@ -386,7 +386,7 @@ const Navbars = () => {
                         color: "white",
                         borderRadius: "10px",
                         fontSize: "1.2em",
-                        paddingBottom: "1.8em",
+                        // paddingBottom: "1.8em",
                         marginRight: "1em",
                       }}
                       onClick={handleCreateNavbar}
@@ -403,7 +403,7 @@ const Navbars = () => {
                         color: "white",
                         borderRadius: "10px",
                         fontSize: "1.2em",
-                        paddingBottom: "1.8em",
+                        // paddingBottom: "1.8em",
                       }}
                     >
                       Cancel

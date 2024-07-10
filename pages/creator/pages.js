@@ -268,7 +268,7 @@ const Pages = () => {
                 borderRadius: "10px",
                 fontSize: "1.2em",
                 marginRight: "1em",
-                paddingBottom: "1.8em",
+                // paddingBottom: "1.8em",
               }}
               icon={<CloseCircleFilled />}
               onClick={() => setCreateMode(false)}
@@ -285,7 +285,7 @@ const Pages = () => {
                 borderRadius: "10px",
                 fontSize: "1.2em",
                 marginRight: "1em",
-                paddingBottom: "1.8em",
+                // paddingBottom: "1.8em",
               }}
               icon={<CheckCircleFilled />}
               onClick={() => openAddNewPageCard()}
@@ -376,7 +376,7 @@ const Pages = () => {
                                 color: "white",
                                 borderRadius: "10px",
                                 fontSize: "1.2em",
-                                paddingBottom: "1.8em",
+                                // paddingBottom: "1.8em",
                               }}
                               icon={<PlusCircleOutlined />}
                             >
@@ -391,7 +391,7 @@ const Pages = () => {
                                 color: "white",
                                 borderRadius: "10px",
                                 fontSize: "1.2em",
-                                paddingBottom: "1.8em",
+                                // paddingBottom: "1.8em",
                               }}
                               icon={<CloseCircleOutlined />}
                             >

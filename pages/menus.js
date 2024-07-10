@@ -298,7 +298,7 @@ const Menus = () => {
               color: "white",
               borderRadius: "10px",
               fontSize: "1.2em",
-              paddingBottom: "1.8em",
+              // paddingBottom: "1.8em",
             }}
             onClick={() => router.push("/menuitems")}
             icon={<ArrowRightOutlined />}
@@ -314,7 +314,7 @@ const Menus = () => {
               color: "white",
               borderRadius: "10px",
               fontSize: "1.2em",
-              paddingBottom: "1.8em",
+              // paddingBottom: "1.8em",
             }}
             icon={<PlusCircleOutlined />}
             onClick={() => setIsAddMenuOpen(true)}
@@ -334,7 +334,7 @@ const Menus = () => {
             color: "white",
             borderRadius: "10px",
             fontSize: "1.2em",
-            paddingBottom: "1.8em",
+            // paddingBottom: "1.8em",
             marginBottom: "1em",
             marginTop: "1em",
           }}
@@ -478,7 +478,7 @@ const Menus = () => {
                     borderRadius: "10px",
                     fontSize: "1.2em",
                     marginRight: "1em",
-                    paddingBottom: "1.8em",
+                    // paddingBottom: "1.8em",
                   }}
                   icon={<SyncOutlined />}
                 >
@@ -491,7 +491,7 @@ const Menus = () => {
                     color: "white",
                     borderRadius: "10px",
                     fontSize: "1.2em",
-                    paddingBottom: "1.8em",
+                    // paddingBottom: "1.8em",
                   }}
                   onClick={handleCancelAddMenu}
                   icon={<CloseCircleOutlined />}
@@ -602,7 +602,7 @@ const Menus = () => {
                         borderRadius: "10px",
                         fontSize: "1.2em",
                         marginRight: "1em",
-                        paddingBottom: "1.8em",
+                        // paddingBottom: "1.8em",
                       }}
                       icon={<SyncOutlined />}
                     >
@@ -615,7 +615,7 @@ const Menus = () => {
                         color: "white",
                         borderRadius: "10px",
                         fontSize: "1.2em",
-                        paddingBottom: "1.8em",
+                        // paddingBottom: "1.8em",
                       }}
                       onClick={handleCancelEdit}
                       icon={<CloseCircleOutlined />}
@@ -634,7 +634,7 @@ const Menus = () => {
                         borderRadius: "10px",
                         fontSize: "1.2em",
                         marginRight: "1em",
-                        paddingBottom: "1.8em",
+                        // paddingBottom: "1.8em",
                       }}
                       onClick={() => handleEdit(menu.id)}
                       icon={<EditOutlined />}
@@ -661,7 +661,7 @@ const Menus = () => {
                         style={{
                           borderRadius: "10px",
                           fontSize: "1.2em",
-                          paddingBottom: "1.8em",
+                          // paddingBottom: "1.8em",
                         }}
                         onClick={() => showDeleteConfirmation(menu.id)}
                         icon={<DeleteOutlined />}
