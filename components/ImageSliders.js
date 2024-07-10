@@ -62,38 +62,25 @@ export default function ImageSliders({
 
   const handleSubmit = async ({ slider, values }) => {
     setLoading(true);
-    // const maveMedia = values?.type === "image" ? selectedMedia : [];
-    const maveMedia = selectedMedia
-      ? selectedMedia
-      : slider?.media_ids?.map((media) => media.id);
 
-    // const maveCard = values?.card_ids
-    //   ? values?.card_ids
-    //   : slider?.cards?.map((card) => card.id);
-    const maveCard = values?.type === "card" ? values?.card_ids : [];
-    const maveSliderType = values?.type ? values?.type : "image";
+    const updatedSlider = {
+      title_en: values.title_en ? values.title_en : slider?.title_en,
+      title_bn: values.title_bn ? values.title_bn : slider?.title_bn,
+      description_en: values.description_en
+        ? values.description_en
+        : slider?.description_en,
+      description_bn: values.description_bn
+        ? values.description_bn
+        : slider?.description_bn,
+      type: values.type ? values.type : slider?.type,
+      media_ids: selectedMedia.length ? selectedMedia : slider?.media_ids,
+      card_ids: values.card_ids ? values.card_ids : slider?.card_ids,
+    };
 
     try {
-      const postData = {
-        title_en: values.title_en ? values.title_en : slider?.title_en,
-        title_bn: values.title_bn ? values.title_bn : slider?.title_bn,
-        description_en: values.description_en
-          ? values.description_en
-          : slider?.description_en,
-        description_bn: values.description_bn
-          ? values.description_bn
-          : slider?.description_bn,
-        type: maveSliderType,
-      };
-
-      const sendData = {
-        ...postData,
-        media_ids: maveMedia,
-        card_ids: maveCard,
-      };
       const response = await instance.put(
-        "/sliders/" + editingItemId,
-        sendData
+        `/sliders/${editingItemId}`,
+        updatedSlider
       );
       if (response.status === 200) {
         setResponse(response);
@@ -101,14 +88,11 @@ export default function ImageSliders({
         setLoading(false);
         window.location.reload();
       } else {
-        console.error("Error creating slider:", response.data);
+        console.error("Error updating slider:", response.data);
       }
-      // console.log("Media ids: ", selectedMedia);
-      // console.log("Card ids: ", values.card_ids);
-      // console.log("postData: ", postData);
-      // console.log("sendData: ", sendData);
     } catch (error) {
-      console.error("Error creating slider:", error);
+      console.error("Error updating slider:", error);
+      setLoading(false);
     }
   };
 

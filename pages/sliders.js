@@ -172,72 +172,108 @@ const Sliders = () => {
   const handleCancelEdit = () => {
     setEditingItemId(null);
   };
+  // const handleSubmit = async (values) => {
+  //   setLoading(true);
+  //   const previousTitleEn = sliders.find(
+  //     (slider) => slider.id === editingItemId
+  //   ).title_en;
+  //   const previousTitleBn = sliders.find(
+  //     (slider) => slider.id === editingItemId
+  //   ).title_bn;
+  //   const previousDescriptionEn = sliders.find(
+  //     (slider) => slider.id === editingItemId
+  //   ).description_en;
+  //   const previousDescriptionBn = sliders.find(
+  //     (slider) => slider.id === editingItemId
+  //   ).description_bn;
+  //   const previousType = sliders.find(
+  //     (slider) => slider.id === editingItemId
+  //   ).type;
+  //   const previousCardsIds = sliders.find(
+  //     (slider) => slider.id === editingItemId
+  //   ).card_ids;
+  //   const previousMediaIds = sliders.find(
+  //     (slider) => slider.id === editingItemId
+  //   ).media_ids;
+
+  //   const finalCards = values.card_ids ? values.card_ids : previousCardsIds;
+  //   const finalMedia =
+  //     selectedMedia?.length > 0 ? selectedMedia : previousMediaIds;
+
+  //   try {
+  //     const postData = {
+  //       title_en: values.title_e ? values.title_e : previousTitleEn,
+  //       title_bn: values.title_b ? values.title_b : previousTitleBn,
+  //       description_en: values.description_en
+  //         ? values.description_en
+  //         : previousDescriptionEn,
+  //       description_bn: values.description_bn
+  //         ? values.description_bn
+  //         : previousDescriptionBn,
+  //       type: values.type ? values.type : previousType,
+  //       card_ids: values.type === "card" ? finalCards : [],
+  //       media_ids: values.type === "image" ? finalMedia : [],
+  //     };
+
+  //     console.log("Edit Data: ", postData);
+
+  //     const response = await instance.put(
+  //       `/sliders/${editingItemId}`,
+  //       postData
+  //     );
+  //     if (response.status === 200) {
+  //       if (response?.data) {
+  //         console.log("Slider updated successfully");
+  //         setResponseData(response);
+  //       }
+  //       setEditingItemId(null);
+  //       setSelectedMedia([]);
+  //       setLoading(false);
+  //       window.location.reload();
+  //     } else {
+  //       console.error("Error creating slider:", response.data);
+  //       setLoading(false);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error creating slider:", error);
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleSubmit = async (values) => {
     setLoading(true);
-    const previousTitleEn = sliders.find(
-      (slider) => slider.id === editingItemId
-    ).title_en;
-    const previousTitleBn = sliders.find(
-      (slider) => slider.id === editingItemId
-    ).title_bn;
-    const previousDescriptionEn = sliders.find(
-      (slider) => slider.id === editingItemId
-    ).description_en;
-    const previousDescriptionBn = sliders.find(
-      (slider) => slider.id === editingItemId
-    ).description_bn;
-    const previousType = sliders.find(
-      (slider) => slider.id === editingItemId
-    ).type;
-    const previousCardsIds = sliders.find(
-      (slider) => slider.id === editingItemId
-    ).card_ids;
-    const previousMediaIds = sliders.find(
-      (slider) => slider.id === editingItemId
-    ).media_ids;
 
-    const finalCards = values.card_ids ? values.card_ids : previousCardsIds;
-    const finalMedia =
-      selectedMedia?.length > 0 ? selectedMedia : previousMediaIds;
+    const slider = sliders.find((slider) => slider.id === editingItemId);
+    const updatedSlider = {
+      title_en: values.title_en ? values.title_en : slider?.title_en,
+      title_bn: values.title_bn ? values.title_bn : slider?.title_bn,
+      description_en: values.description_en
+        ? values.description_en
+        : slider?.description_en,
+      description_bn: values.description_bn
+        ? values.description_bn
+        : slider?.description_bn,
+      type: values.type ? values.type : slider?.type,
+      media_ids: selectedMedia.length ? selectedMedia : slider?.media_ids,
+      card_ids: values.card_ids ? values.card_ids : slider?.card_ids,
+    };
 
     try {
-      const postData = {
-        title_en: values.title_e ? values.title_e : previousTitleEn,
-        title_bn: values.title_b ? values.title_b : previousTitleBn,
-        description_en: values.description_en
-          ? values.description_en
-          : previousDescriptionEn,
-        description_bn: values.description_bn
-          ? values.description_bn
-          : previousDescriptionBn,
-        type: values.type ? values.type : previousType,
-        // card_ids: values.card_ids ? values.card_ids : previousCardsIds,
-        // media_ids: selectedMedia?.length > 0 ? selectedMedia : previousMediaIds,
-        card_ids: values.type === "card" ? finalCards : [],
-        media_ids: values.type === "image" ? finalMedia : [],
-      };
-
-      console.log("Edit Data: ", postData);
-
       const response = await instance.put(
         `/sliders/${editingItemId}`,
-        postData
+        updatedSlider
       );
       if (response.status === 200) {
-        if (response?.data) {
-          console.log("Slider updated successfully");
-          setResponseData(response);
-        }
+        setResponse(response);
         setEditingItemId(null);
         setSelectedMedia([]);
         setLoading(false);
         window.location.reload();
       } else {
-        console.error("Error creating slider:", response.data);
-        setLoading(false);
+        console.error("Error updating slider:", response.data);
       }
     } catch (error) {
-      console.error("Error creating slider:", error);
+      console.error("Error updating slider:", error);
       setLoading(false);
     }
   };
