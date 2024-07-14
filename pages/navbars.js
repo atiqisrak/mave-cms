@@ -2,14 +2,24 @@ import { useEffect, useState } from "react";
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
+  CopyOutlined,
   DeleteOutlined,
   EditOutlined,
+  HomeFilled,
   MenuFoldOutlined,
   MenuOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
-import { Button, Input, Modal, Popconfirm, Select, message } from "antd";
-
+import {
+  Breadcrumb,
+  Button,
+  Input,
+  Modal,
+  Popconfirm,
+  Select,
+  message,
+} from "antd";
+import router from "next/router";
 import instance from "../axios";
 import SingleMediaSelect from "../components/SingleMediaSelect";
 import MediaModal from "../components/MediaModal"; // Import the MediaModal component
@@ -211,16 +221,70 @@ const Navbars = () => {
             className="TopbarContainer"
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 1fr",
+              gridTemplateColumns: "3fr 1fr",
+              alignItems: "center",
             }}
           >
-            <h1 style={{ paddingBottom: "2em" }}>These are Navbars</h1>
+            <Breadcrumb
+              style={{
+                fontSize: "1.2em",
+                marginBottom: "1em",
+              }}
+              items={[
+                {
+                  href: "/",
+                  title: <HomeFilled />,
+                },
+                {
+                  title: "Components",
+                },
+                {
+                  title: "Navbars",
+                  menu: {
+                    items: [
+                      {
+                        title: "Gallery",
+                        onClick: () => router.push("/gallery"),
+                      },
+                      {
+                        title: "Menus",
+                        onClick: () => router.push("/menus"),
+                      },
+                      {
+                        title: "Menu Items",
+                        onClick: () => router.push("/menuitems"),
+                      },
+                      {
+                        title: "Sliders",
+                        onClick: () => router.push("/sliders"),
+                      },
+                      {
+                        title: "Cards",
+                        onClick: () => router.push("/cards"),
+                      },
+                      {
+                        title: "Forms",
+                        onClick: () => router.push("/forms"),
+                      },
+                      {
+                        title: "Footers",
+                        onClick: () => router.push("/footers"),
+                      },
+                    ],
+                  },
+                },
+              ]}
+            />
 
             <div
               className="buttonHolder"
               style={{
                 display: "grid",
                 gridTemplateColumns: "1fr",
+                gap: "1em",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: "2em",
               }}
             >
               <Button
@@ -237,6 +301,25 @@ const Navbars = () => {
                 onClick={toggleCreateNavbarForm}
               >
                 Add New Navbar
+              </Button>
+              <Button
+                type="primary"
+                style={{
+                  backgroundColor: "var(--theme)",
+                  borderColor: "var(--theme)",
+                  color: "white",
+                  borderRadius: "10px",
+                  fontSize: "1.2em",
+                }}
+                icon={<CopyOutlined />}
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    `${process.env.NEXT_PUBLIC_API_BASE_URL}/navbars`
+                  );
+                  message.success("API Endpoint Copied");
+                }}
+              >
+                Copy API Endpoint
               </Button>
             </div>
           </div>
