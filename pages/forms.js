@@ -55,7 +55,7 @@ function Forms() {
               gridTemplateColumns: "1fr 1fr",
             }}
           >
-            <h1 style={{ paddingBottom: "2em" }}>These are Forms</h1>
+            <h1 style={{ paddingBottom: "2em" }}> Forms</h1>
 
             <div
               className="buttonHolder"

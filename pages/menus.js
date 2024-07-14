@@ -1,13 +1,24 @@
 import React, { useEffect, useState } from "react";
 import Site from "../components/Site";
-import { Button, Col, Input, Popconfirm, Row, Select, message } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Col,
+  Input,
+  Popconfirm,
+  Row,
+  Select,
+  message,
+} from "antd";
 import Router, { useRouter } from "next/router";
 import {
   ArrowRightOutlined,
   CloseCircleOutlined,
+  CopyOutlined,
   DeleteOutlined,
   EditOutlined,
   FilterOutlined,
+  HomeFilled,
   PlusCircleOutlined,
   SyncOutlined,
 } from "@ant-design/icons";
@@ -277,17 +288,67 @@ const Menus = () => {
         className="TopbarContainer"
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
+          gridTemplateColumns: "3fr 1fr",
+          alignItems: "center",
         }}
       >
-        <h1 style={{ paddingBottom: "2em" }}>These are Menus</h1>
-
+        <Breadcrumb
+          style={{
+            fontSize: "1.2em",
+            marginBottom: "1em",
+          }}
+          items={[
+            {
+              href: "/",
+              title: <HomeFilled />,
+            },
+            {
+              title: "Components",
+            },
+            {
+              title: "Menu Items",
+              menu: {
+                items: [
+                  {
+                    title: "Gallery",
+                    onClick: () => router.push("/gallery"),
+                  },
+                  {
+                    title: "Menus",
+                    onClick: () => router.push("/menuitems"),
+                  },
+                  {
+                    title: "Navbars",
+                    onClick: () => router.push("/navbars"),
+                  },
+                  {
+                    title: "Sliders",
+                    onClick: () => router.push("/sliders"),
+                  },
+                  {
+                    title: "Cards",
+                    onClick: () => router.push("/cards"),
+                  },
+                  {
+                    title: "Forms",
+                    onClick: () => router.push("/forms"),
+                  },
+                  {
+                    title: "Footers",
+                    onClick: () => router.push("/footers"),
+                  },
+                ],
+              },
+            },
+          ]}
+        />
         <div
           className="buttonHolder"
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
+            gridTemplateColumns: "1fr",
             gap: "1em",
+            alignItems: "flex-end",
           }}
         >
           <Button
@@ -298,6 +359,7 @@ const Menus = () => {
               color: "white",
               borderRadius: "10px",
               fontSize: "1.2em",
+              width: "100%",
               // paddingBottom: "1.8em",
             }}
             onClick={() => router.push("/menuitems")}
@@ -314,12 +376,32 @@ const Menus = () => {
               color: "white",
               borderRadius: "10px",
               fontSize: "1.2em",
+              width: "100%",
               // paddingBottom: "1.8em",
             }}
             icon={<PlusCircleOutlined />}
             onClick={() => setIsAddMenuOpen(true)}
           >
             Add New Menu
+          </Button>
+          <Button
+            type="primary"
+            style={{
+              backgroundColor: "var(--theme)",
+              borderColor: "var(--theme)",
+              color: "white",
+              borderRadius: "10px",
+              fontSize: "1.2em",
+            }}
+            icon={<CopyOutlined />}
+            onClick={() => {
+              navigator.clipboard.writeText(
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}/menus`
+              );
+              message.success("API Endpoint Copied");
+            }}
+          >
+            Copy API Endpoint
           </Button>
         </div>
       </div>

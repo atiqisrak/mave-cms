@@ -332,7 +332,7 @@ const Footer = () => {
               marginBottom: "1rem",
             }}
           >
-            <h1>These are Footers</h1>
+            <h1> Footers</h1>
             <Button
               type="primary"
               onClick={() => toggleCollapseAdd()}

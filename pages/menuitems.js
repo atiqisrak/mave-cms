@@ -13,14 +13,17 @@ import {
   Select,
   message,
   Radio,
+  Breadcrumb,
 } from "antd";
 import instance from "../axios";
 import { useRouter } from "next/router";
 import {
   ArrowLeftOutlined,
   CloseCircleOutlined,
+  CopyOutlined,
   DeleteOutlined,
   EditOutlined,
+  HomeFilled,
   PlusCircleOutlined,
   SyncOutlined,
 } from "@ant-design/icons";
@@ -253,11 +256,61 @@ const MenuItems = () => {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 1fr",
+              gridTemplateColumns: "3fr 1fr",
+              alignItems: "center",
             }}
           >
-            <h1 style={{ paddingBottom: "2em" }}>These are Menu Items</h1>
-
+            <Breadcrumb
+              style={{
+                fontSize: "1.2em",
+                marginBottom: "1em",
+              }}
+              items={[
+                {
+                  href: "/",
+                  title: <HomeFilled />,
+                },
+                {
+                  title: "Components",
+                },
+                {
+                  title: "Menu Items",
+                  menu: {
+                    items: [
+                      {
+                        title: "Gallery",
+                        onClick: () => router.push("/gallery"),
+                      },
+                      {
+                        title: "Menus",
+                        onClick: () => router.push("/menus"),
+                      },
+                      // navbars, sliders, cards, forms, footers
+                      {
+                        title: "Navbars",
+                        onClick: () => router.push("/navbars"),
+                      },
+                      {
+                        title: "Sliders",
+                        onClick: () => router.push("/sliders"),
+                      },
+                      {
+                        title: "Cards",
+                        onClick: () => router.push("/cards"),
+                      },
+                      {
+                        title: "Forms",
+                        onClick: () => router.push("/forms"),
+                      },
+                      {
+                        title: "Footers",
+                        onClick: () => router.push("/footers"),
+                      },
+                    ],
+                  },
+                },
+              ]}
+            />
             <div
               className="buttonHolder"
               style={{
@@ -296,6 +349,26 @@ const MenuItems = () => {
                 icon={<PlusCircleOutlined />}
               >
                 Add New Menu Item
+              </Button>
+
+              <Button
+                type="primary"
+                style={{
+                  backgroundColor: "var(--theme)",
+                  borderColor: "var(--theme)",
+                  color: "white",
+                  borderRadius: "10px",
+                  fontSize: "1.2em",
+                }}
+                icon={<CopyOutlined />}
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    `${process.env.NEXT_PUBLIC_API_BASE_URL}/menuitems`
+                  );
+                  message.success("API Endpoint Copied");
+                }}
+              >
+                Copy API Endpoint
               </Button>
             </div>
           </div>
