@@ -268,7 +268,7 @@ const Navbars = () => {
                       },
                       {
                         title: "Footers",
-                        onClick: () => router.push("/footers"),
+                        onClick: () => router.push("/footer"),
                       },
                     ],
                   },

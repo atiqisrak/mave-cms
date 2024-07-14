@@ -12,6 +12,7 @@ import {
   Select,
   message,
   notification,
+  Breadcrumb,
 } from "antd";
 import {
   CloseCircleOutlined,
@@ -21,8 +22,11 @@ import {
   EditOutlined,
   PlusCircleOutlined,
   SyncOutlined,
+  HomeFilled,
+  CopyOutlined,
 } from "@ant-design/icons";
 import Loader from "./Loader";
+import router from "next/router";
 import MediaSelectionModal1 from "./MediaSelectionModal1";
 const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
 const { Panel } = Collapse;
@@ -332,23 +336,104 @@ const Footer = () => {
               marginBottom: "1rem",
             }}
           >
-            <h1> Footers</h1>
-            <Button
-              type="primary"
-              onClick={() => toggleCollapseAdd()}
+            <Breadcrumb
               style={{
-                backgroundColor: "var(--themes)",
-                borderColor: "var(--themes)",
-                color: "white",
-                borderRadius: "10px",
                 fontSize: "1.2em",
-                // paddingBottom: "1.8em",
-                width: "15em",
+                marginBottom: "1em",
               }}
-              icon={<PlusCircleOutlined />}
+              items={[
+                {
+                  href: "/",
+                  title: <HomeFilled />,
+                },
+                {
+                  title: "Components",
+                },
+                {
+                  title: "Menu Items",
+                  menu: {
+                    items: [
+                      {
+                        title: "Gallery",
+                        onClick: () => router.push("/gallery"),
+                      },
+                      {
+                        title: "Menus Items",
+                        onClick: () => router.push("/menuitems"),
+                      },
+                      {
+                        title: "Menus",
+                        onClick: () => router.push("/menus"),
+                      },
+                      {
+                        title: "Navbars",
+                        onClick: () => router.push("/navbars"),
+                      },
+                      {
+                        title: "Sliders",
+                        onClick: () => router.push("/sliders"),
+                      },
+                      {
+                        title: "Cards",
+                        onClick: () => router.push("/cards"),
+                      },
+                      {
+                        title: "Forms",
+                        onClick: () => router.push("/forms"),
+                      },
+                      {
+                        title: "Footers",
+                        onClick: () => router.push("/footer"),
+                      },
+                    ],
+                  },
+                },
+              ]}
+            />
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr",
+                alignItems: "center",
+                gap: "1rem",
+              }}
             >
-              Add New Footer
-            </Button>
+              <Button
+                type="primary"
+                onClick={() => toggleCollapseAdd()}
+                style={{
+                  backgroundColor: "var(--themes)",
+                  borderColor: "var(--themes)",
+                  color: "white",
+                  borderRadius: "10px",
+                  fontSize: "1.2em",
+                  // paddingBottom: "1.8em",
+                  width: "15em",
+                }}
+                icon={<PlusCircleOutlined />}
+              >
+                Add New Footer
+              </Button>
+              <Button
+                type="primary"
+                style={{
+                  backgroundColor: "var(--theme)",
+                  borderColor: "var(--theme)",
+                  color: "white",
+                  borderRadius: "10px",
+                  fontSize: "1.2em",
+                }}
+                icon={<CopyOutlined />}
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    `${process.env.NEXT_PUBLIC_API_BASE_URL}/footers`
+                  );
+                  message.success("API Endpoint Copied");
+                }}
+              >
+                Copy API Endpoint
+              </Button>
+            </div>
           </div>
           {!isCollapsed1 && (
             <div className="ViewContentContainer1">

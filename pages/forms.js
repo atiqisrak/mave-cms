@@ -3,12 +3,15 @@ import FormBuilder from "../components/FormBuilder";
 import {
   ClockCircleFilled,
   CloseCircleFilled,
+  CopyOutlined,
+  HomeFilled,
   PlusCircleOutlined,
 } from "@ant-design/icons";
-import { Button, Form, message } from "antd";
+import { Breadcrumb, Button, Form, message } from "antd";
 import FormComponent from "../components/FormComponent";
 import instance from "../axios";
 import Loader from "../components/Loader";
+import router from "next/router";
 
 function Forms() {
   const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
@@ -52,16 +55,71 @@ function Forms() {
             className="TopbarContainer"
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 1fr",
+              gridTemplateColumns: "3fr 1fr",
+              alignItems: "center",
             }}
           >
-            <h1 style={{ paddingBottom: "2em" }}> Forms</h1>
-
+            <Breadcrumb
+              style={{
+                fontSize: "1.2em",
+                marginBottom: "1em",
+              }}
+              items={[
+                {
+                  href: "/",
+                  title: <HomeFilled />,
+                },
+                {
+                  title: "Components",
+                },
+                {
+                  title: "Forms",
+                  menu: {
+                    items: [
+                      {
+                        title: "Gallery",
+                        onClick: () => router.push("/gallery"),
+                      },
+                      {
+                        title: "Menus Items",
+                        onClick: () => router.push("/menuitems"),
+                      },
+                      {
+                        title: "Menus",
+                        onClick: () => router.push("/menus"),
+                      },
+                      {
+                        title: "Navbars",
+                        onClick: () => router.push("/navbars"),
+                      },
+                      {
+                        title: "Sliders",
+                        onClick: () => router.push("/sliders"),
+                      },
+                      {
+                        title: "Cards",
+                        onClick: () => router.push("/cards"),
+                      },
+                      {
+                        title: "Forms",
+                        onClick: () => router.push("/forms"),
+                      },
+                      {
+                        title: "Footers",
+                        onClick: () => router.push("/footer"),
+                      },
+                    ],
+                  },
+                },
+              ]}
+            />
             <div
               className="buttonHolder"
               style={{
                 display: "grid",
                 gridTemplateColumns: "1fr",
+                gap: "1em",
+                marginBottom: "2em",
               }}
             >
               {isCreateFormVisible ? (
@@ -78,21 +136,42 @@ function Forms() {
                   Cancel
                 </Button>
               ) : (
-                <Button
-                  type="primary"
-                  style={{
-                    backgroundColor: "var(--themes)",
-                    borderColor: "var(--themes)",
-                    color: "white",
-                    borderRadius: "10px",
-                    fontSize: "1.2em",
-                    // paddingBottom: "1.8em",
-                  }}
-                  icon={<PlusCircleOutlined />}
-                  onClick={toggleCreateForm}
-                >
-                  Add New Form
-                </Button>
+                <>
+                  <Button
+                    type="primary"
+                    style={{
+                      backgroundColor: "var(--themes)",
+                      borderColor: "var(--themes)",
+                      color: "white",
+                      borderRadius: "10px",
+                      fontSize: "1.2em",
+                      // paddingBottom: "1.8em",
+                    }}
+                    icon={<PlusCircleOutlined />}
+                    onClick={toggleCreateForm}
+                  >
+                    Add New Form
+                  </Button>
+                  <Button
+                    type="primary"
+                    style={{
+                      backgroundColor: "var(--theme)",
+                      borderColor: "var(--theme)",
+                      color: "white",
+                      borderRadius: "10px",
+                      fontSize: "1.2em",
+                    }}
+                    icon={<CopyOutlined />}
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        `${process.env.NEXT_PUBLIC_API_BASE_URL}/forms`
+                      );
+                      message.success("API Endpoint Copied");
+                    }}
+                  >
+                    Copy API Endpoint
+                  </Button>
+                </>
               )}
             </div>
           </div>

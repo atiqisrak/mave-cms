@@ -1,4 +1,5 @@
 import {
+  Breadcrumb,
   Button,
   Carousel,
   Col,
@@ -22,8 +23,10 @@ import instance from "../axios";
 import Loader from "../components/Loader";
 import {
   CloseOutlined,
+  CopyOutlined,
   DeleteOutlined,
   EditOutlined,
+  HomeFilled,
   LeftOutlined,
   PlusCircleOutlined,
   RightOutlined,
@@ -35,6 +38,7 @@ import CreateSliderComponent from "../components/CreateSliderComponent";
 import RichTextEditor from "../components/RichTextEditor";
 import ImageSliders from "../components/ImageSliders";
 import CardSliders from "../components/CardSliders";
+import router from "next/router";
 
 const Sliders = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -218,28 +222,106 @@ const Sliders = () => {
           <div className="ViewContentContiner" style={{ marginBottom: "5rem" }}>
             <Space
               style={{
-                display: "flex",
-                justifyContent: "space-between",
+                display: "grid",
+                gridTemplateColumns: "3fr 1fr",
                 alignItems: "center",
               }}
             >
-              <h1>Sliders</h1>
-              <Button
-                type="primary"
-                onClick={() => handleShowCreateSliderForm()}
-                icon={<PlusCircleOutlined />}
+              <Breadcrumb
                 style={{
-                  backgroundColor: "var(--themes)",
-                  borderColor: "var(--themes)",
-                  color: "white",
-                  borderRadius: "10px",
                   fontSize: "1.2em",
-                  // paddingBottom: "1.8em",
-                  width: "15em",
+                  marginBottom: "1em",
+                }}
+                items={[
+                  {
+                    href: "/",
+                    title: <HomeFilled />,
+                  },
+                  {
+                    title: "Components",
+                  },
+                  {
+                    title: "Sliders",
+                    menu: {
+                      items: [
+                        {
+                          title: "Gallery",
+                          onClick: () => router.push("/gallery"),
+                        },
+                        {
+                          title: "Menus Items",
+                          onClick: () => router.push("/menuitems"),
+                        },
+                        {
+                          title: "Menus",
+                          onClick: () => router.push("/menus"),
+                        },
+                        {
+                          title: "Navbars",
+                          onClick: () => router.push("/navbars"),
+                        },
+                        {
+                          title: "Cards",
+                          onClick: () => router.push("/cards"),
+                        },
+                        {
+                          title: "Forms",
+                          onClick: () => router.push("/forms"),
+                        },
+                        {
+                          title: "Footers",
+                          onClick: () => router.push("/footer"),
+                        },
+                      ],
+                    },
+                  },
+                ]}
+              />
+              <div
+                className="buttonHolder"
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr",
+                  gap: "1em",
                 }}
               >
-                Add New Slider
-              </Button>
+                <Button
+                  type="primary"
+                  onClick={() => handleShowCreateSliderForm()}
+                  icon={<PlusCircleOutlined />}
+                  style={{
+                    backgroundColor: "var(--themes)",
+                    borderColor: "var(--themes)",
+                    color: "white",
+                    borderRadius: "10px",
+                    fontSize: "1.2em",
+                    // paddingBottom: "1.8em",
+                    width: "15em",
+                  }}
+                >
+                  Add New Slider
+                </Button>
+
+                <Button
+                  type="primary"
+                  style={{
+                    backgroundColor: "var(--theme)",
+                    borderColor: "var(--theme)",
+                    color: "white",
+                    borderRadius: "10px",
+                    fontSize: "1.2em",
+                  }}
+                  icon={<CopyOutlined />}
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      `${process.env.NEXT_PUBLIC_API_BASE_URL}/sliders`
+                    );
+                    message.success("API Endpoint Copied");
+                  }}
+                >
+                  Copy API Endpoint
+                </Button>
+              </div>
             </Space>
 
             {showCreateSliderForm && (
