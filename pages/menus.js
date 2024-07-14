@@ -306,7 +306,7 @@ const Menus = () => {
               title: "Components",
             },
             {
-              title: "Menu Items",
+              title: "Menus",
               menu: {
                 items: [
                   {
@@ -335,7 +335,7 @@ const Menus = () => {
                   },
                   {
                     title: "Footers",
-                    onClick: () => router.push("/footers"),
+                    onClick: () => router.push("/footer"),
                   },
                 ],
               },

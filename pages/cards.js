@@ -1,8 +1,10 @@
 import {
   AppstoreOutlined,
   ClockCircleOutlined,
+  CopyOutlined,
   FilterOutlined,
   FontColorsOutlined,
+  HomeFilled,
   PlusCircleOutlined,
   SortAscendingOutlined,
   SyncOutlined,
@@ -10,6 +12,7 @@ import {
 } from "@ant-design/icons";
 import {
   Alert,
+  Breadcrumb,
   Button,
   Col,
   Input,
@@ -25,6 +28,7 @@ import Loader from "../components/Loader";
 import CardGridView from "../components/CardGridView";
 import CardListView from "../components/CardListView";
 import CreateCardForm from "../components/CreateCardForm";
+import router from "next/router";
 
 const Cards = () => {
   // UseStates
@@ -175,6 +179,100 @@ const Cards = () => {
           <>
             <div>
               {/* Top Header */}
+              <Row
+                justify="space-between"
+                align="middle"
+                gutter={16}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "3fr 1fr",
+                  gap: "1rem",
+                  marginBottom: "1rem",
+                }}
+              >
+                <Breadcrumb
+                  style={{
+                    fontSize: "1.2em",
+                    marginBottom: "1em",
+                  }}
+                  items={[
+                    {
+                      href: "/",
+                      title: <HomeFilled />,
+                    },
+                    {
+                      title: "Components",
+                    },
+                    {
+                      title: "Cards",
+                      menu: {
+                        items: [
+                          {
+                            title: "Gallery",
+                            onClick: () => router.push("/gallery"),
+                          },
+                          {
+                            title: "Menus Items",
+                            onClick: () => router.push("/menuitems"),
+                          },
+                          {
+                            title: "Menus",
+                            onClick: () => router.push("/menus"),
+                          },
+                          {
+                            title: "Navbars",
+                            onClick: () => router.push("/navbars"),
+                          },
+                          {
+                            title: "Sliders",
+                            onClick: () => router.push("/sliders"),
+                          },
+                          {
+                            title: "Cards",
+                            onClick: () => router.push("/cards"),
+                          },
+                          {
+                            title: "Forms",
+                            onClick: () => router.push("/forms"),
+                          },
+                          {
+                            title: "Footers",
+                            onClick: () => router.push("/footer"),
+                          },
+                        ],
+                      },
+                    },
+                  ]}
+                />
+                <div
+                  className="buttonHolder"
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr",
+                    gap: "1em",
+                  }}
+                >
+                  <Button
+                    type="primary"
+                    style={{
+                      backgroundColor: "var(--theme)",
+                      borderColor: "var(--theme)",
+                      color: "white",
+                      borderRadius: "10px",
+                      fontSize: "1.2em",
+                    }}
+                    icon={<CopyOutlined />}
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        `${process.env.NEXT_PUBLIC_API_BASE_URL}/cards`
+                      );
+                      message.success("API Endpoint Copied");
+                    }}
+                  >
+                    Copy API Endpoint
+                  </Button>
+                </div>
+              </Row>
               <Row
                 justify="space-between"
                 align="middle"

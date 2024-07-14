@@ -282,10 +282,13 @@ const MenuItems = () => {
                         onClick: () => router.push("/gallery"),
                       },
                       {
+                        title: "Menus Items",
+                        onClick: () => router.push("/menuitems"),
+                      },
+                      {
                         title: "Menus",
                         onClick: () => router.push("/menus"),
                       },
-                      // navbars, sliders, cards, forms, footers
                       {
                         title: "Navbars",
                         onClick: () => router.push("/navbars"),
@@ -304,7 +307,7 @@ const MenuItems = () => {
                       },
                       {
                         title: "Footers",
-                        onClick: () => router.push("/footers"),
+                        onClick: () => router.push("/footer"),
                       },
                     ],
                   },
