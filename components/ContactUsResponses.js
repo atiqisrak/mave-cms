@@ -123,14 +123,20 @@ const ContactUsResponses = () => {
 
   return (
     <div className="">
-      <h1>Contact Us</h1>
       <div
         style={{
           paddingTop: "3em",
         }}
       >
         <div className="TableContainer">
-          <div className="TableHeaderActions">
+          <div
+            className="TableHeaderActions"
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <Button type="primary" icon={<FilterOutlined />}>
               Filter
             </Button>

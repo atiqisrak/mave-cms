@@ -2,8 +2,10 @@ import {
   CheckCircleFilled,
   CloseCircleFilled,
   CloseCircleOutlined,
+  CopyOutlined,
   DeleteFilled,
   EditOutlined,
+  HomeFilled,
   PlusCircleOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
@@ -21,6 +23,7 @@ import {
   Radio,
   Tabs,
   Spin,
+  Breadcrumb,
 } from "antd";
 import React, { useState, useEffect } from "react";
 import instance from "../../axios";
@@ -246,7 +249,40 @@ const Pages = () => {
             justifyContent: "space-between",
           }}
         >
-          <h1>Pages</h1>
+          <Breadcrumb
+            style={{
+              fontSize: "1.2em",
+              marginBottom: "1em",
+            }}
+            items={[
+              {
+                href: "/",
+                title: <HomeFilled />,
+              },
+              {
+                title: "Creator Studio",
+              },
+              {
+                title: "Pages",
+                menu: {
+                  items: [
+                    {
+                      title: "Pages",
+                      onClick: () => router.push("/creator/pages"),
+                    },
+                    {
+                      title: "Blogs",
+                      onClick: () => router.push("/blogs"),
+                    },
+                    {
+                      title: "Create Blogs",
+                      onClick: () => router.push("/blogs/createblog"),
+                    },
+                  ],
+                },
+              },
+            ]}
+          />
 
           <Input
             placeholder="Search Pages"
@@ -276,22 +312,51 @@ const Pages = () => {
               Cancel Create
             </Button>
           ) : (
-            <Button
-              type="primary"
+            <div
               style={{
-                backgroundColor: "var(--theme)",
-                borderColor: "var(--theme)",
-                color: "white",
-                borderRadius: "10px",
-                fontSize: "1.2em",
-                marginRight: "1em",
-                // paddingBottom: "1.8em",
+                display: "grid",
+                gridTemplateColumns: "1fr",
+                gap: "1em",
+                justifyContent: "center",
+                alignItems: "center",
               }}
-              icon={<CheckCircleFilled />}
-              onClick={() => openAddNewPageCard()}
             >
-              Create New
-            </Button>
+              <Button
+                type="primary"
+                style={{
+                  backgroundColor: "var(--theme)",
+                  borderColor: "var(--theme)",
+                  color: "white",
+                  borderRadius: "10px",
+                  fontSize: "1.2em",
+                  marginRight: "1em",
+                  // paddingBottom: "1.8em",
+                }}
+                icon={<CheckCircleFilled />}
+                onClick={() => openAddNewPageCard()}
+              >
+                Create New
+              </Button>
+              <Button
+                type="primary"
+                style={{
+                  backgroundColor: "var(--theme)",
+                  borderColor: "var(--theme)",
+                  color: "white",
+                  borderRadius: "10px",
+                  fontSize: "1.2em",
+                }}
+                icon={<CopyOutlined />}
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    `${process.env.NEXT_PUBLIC_API_BASE_URL}/pages`
+                  );
+                  message.success("API Endpoint Copied");
+                }}
+              >
+                Copy API Endpoint
+              </Button>
+            </div>
           )}
         </div>
 
