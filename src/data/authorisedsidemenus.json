@@ -43,24 +43,6 @@
                 "title": "Sliders"
             },
             {
-                "id": 9,
-                "icon": "/icons/mave_icons/card.svg",
-                "link": "/cards",
-                "title": "Cards"
-            },
-            {
-                "id": 10,
-                "icon": "/icons/mave_icons/press.svg",
-                "link": "/pressrelease",
-                "title": "Press Release"
-            },
-            {
-                "id": 11,
-                "icon": "/icons/mave_icons/event.svg",
-                "link": "/events",
-                "title": "Events"
-            },
-            {
                 "id": 12,
                 "icon": "/icons/mave_icons/form.svg",
                 "link": "/forms",

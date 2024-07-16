@@ -82,7 +82,7 @@ function MyApp({ Component, pageProps }) {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Atiq Israk Niloy
+              MAVE CMS
             </a>{" "}
             | All rights reserved | Powered by{" "}
             <a
