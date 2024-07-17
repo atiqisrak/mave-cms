@@ -15,7 +15,7 @@ export default function FormBuilder() {
 
       <Button
         onClick={() => {
-          router.push("/formbuilder/create-form");
+          router.push("/formbuilder/mave-forms-showcase");
         }}
       >
         View Forms

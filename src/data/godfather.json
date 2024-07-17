@@ -11,6 +11,12 @@
                 "icon": "/icons/mave_icons/paper.svg",
                 "link": "/tools/doctoapi",
                 "title": "Doc to API"
+            },
+            {
+                "id": 61,
+                "icon": "/icons/mave_icons/documentation.svg",
+                "link": "/formbuilder",
+                "title": "Form Builder"
             }
         ]
     }
