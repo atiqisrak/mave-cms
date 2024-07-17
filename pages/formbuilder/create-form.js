@@ -1,14 +1,34 @@
-import { Button } from "antd";
+import { HomeOutlined } from "@ant-design/icons";
+import { Breadcrumb, Button } from "antd";
 import router from "next/router";
+import { DndProvider } from "react-dnd";
+import FormBuilder from "../../components/formbuilder/builder/FormBuilder";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 export default function CreateForm() {
   return (
     <div className="ViewContainer">
-      <h1>Welcome to the Mave Form Builder</h1>
-      <p>
-        This is where you can create forms using the Mave Form Builder. Click
-        the button below to get started.
-      </p>
+      <Breadcrumb
+        style={{
+          margin: "16px 0",
+        }}
+        items={[
+          {
+            title: <HomeOutlined />,
+            href: "/",
+          },
+          {
+            title: "Form Builder",
+            href: "/formbuilder",
+          },
+          {
+            title: "Create Form",
+          },
+        ]}
+      />
+      <DndProvider backend={HTML5Backend}>
+        <FormBuilder />
+      </DndProvider>
     </div>
   );
 }

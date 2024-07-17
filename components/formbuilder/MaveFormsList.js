@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import instance from "../../axios";
-import { Breadcrumb, Tabs } from "antd";
+import { Breadcrumb, Card, Modal, Switch, Tabs } from "antd";
 import {
+  CloudSyncOutlined,
+  EditOutlined,
   GroupOutlined,
   HomeOutlined,
   UnorderedListOutlined,
@@ -47,88 +49,72 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
         ]}
       />
 
-      <h2>Welcome to Mave Form Builder</h2>
+      <h2>Welcome to Mave Form Showcase</h2>
 
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "4fr 1fr",
+          gridTemplateColumns: "2fr 3fr",
           alignItems: "center",
           marginBottom: "1rem",
         }}
       >
-        {/* Navigation bar holding search and view toggle */}
         <Search
           placeholder="Search for forms"
           onSearch={(value) => console.log(value)}
-          style={{ width: 200 }}
+          style={{ width: 100 }}
         />
-        <Tabs
-          animated
-          type="card"
-          defaultActiveKey="2"
-          centered
-          items={[
-            {
-              title: "List",
-              icon: <UnorderedListOutlined />,
-              key: "1",
-            },
-            {
-              title: "Groups",
-              icon: <GroupOutlined />,
-              key: "2",
-            },
-          ]}
+        <Switch
+          style={{
+            justifySelf: "end",
+          }}
+          checkedChildren="List"
+          unCheckedChildren="Groups"
+          defaultChecked
           onChange={() => {
             setChangeFormsView(!changeFormsView);
           }}
         />
       </div>
-      <div>
-        {/* Cards holding forms */}
-
-        {changeFormsView ? (
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr",
+          gap: "1rem",
+        }}
+      >
+        {forms.map((form) => (
           <div
+            key={form.id}
             style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr 1fr",
-              gap: "1rem",
+              padding: "1rem",
+              border: "1px solid #ccc",
+              borderRadius: "8px",
             }}
           >
-            {forms.map((form) => (
-              <div
-                key={form.id}
-                style={{
-                  padding: "1rem",
-                  border: "1px solid #ccc",
-                  borderRadius: "8px",
-                }}
-              >
-                <h3>{form.mave_title}</h3>
-                <p>{form.mave_description}</p>
-                <button onClick={() => onSelectForm(form.id)}>View</button>
-              </div>
-            ))}
+            <Card
+              bordered={false}
+              title={form.mave_title}
+              hoverable
+              onClick={() => onSelectForm(form.id)}
+              cover={
+                <img
+                  alt="example"
+                  src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                />
+              }
+              actions={[
+                <EditOutlined key="edit" />,
+                <CloudSyncOutlined key="sync" />,
+              ]}
+            >
+              <Card.Meta
+                description={form.mave_description}
+                style={{ height: "100px" }}
+              />
+            </Card>
           </div>
-        ) : (
-          <div>
-            {forms.map((form) => (
-              <div
-                key={form.id}
-                style={{
-                  padding: "1rem",
-                  border: "1px solid #ccc",
-                  borderRadius: "8px",
-                }}
-              >
-                <h3>{form.mave_title}</h3>
-                <p>{form.mave_description}</p>
-                <button onClick={() => onSelectForm(form.id)}>View</button>
-              </div>
-            ))}
-          </div>
-        )}
+        ))}
       </div>
 
       {/* <ul>
@@ -141,13 +127,27 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
         ))}
       </ul> */}
 
-      <div>
+      {/* <div>
         {selectedFormId ? (
           <MaveFormElements formId={selectedFormId} />
         ) : (
           <p>Please select a form to view its elements.</p>
         )}
-      </div>
+      </div> */}
+
+      {/* Modal holding form elements */}
+      <Modal
+        title="Form Elements"
+        open={selectedFormId ? true : false}
+        onCancel={() => onSelectForm(null)}
+        footer={null}
+      >
+        {selectedFormId ? (
+          <MaveFormElements formId={selectedFormId} />
+        ) : (
+          <p>Please select a form to view its elements.</p>
+        )}
+      </Modal>
     </div>
   );
 };
