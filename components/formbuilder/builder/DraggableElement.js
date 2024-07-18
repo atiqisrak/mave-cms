@@ -16,8 +16,25 @@ const DraggableElement = ({ element }) => {
     <div
       className="draggable-element"
       ref={drag}
-      style={{ opacity: isDragging ? 0.5 : 1 }}
+      style={{
+        opacity: isDragging ? 0.5 : 1,
+        cursor: "move",
+        backgroundColor: "var(--theme)",
+        color: "white",
+        padding: "15px 0",
+        borderRadius: "5px",
+        marginBottom: "10px",
+        textAlign: "center",
+        fontSize: "1.3rem",
+        fontWeight: "bold",
+        transition: "opacity 0.2s",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: "10px",
+      }}
     >
+      {element.icon}
       {element.label}
     </div>
   );

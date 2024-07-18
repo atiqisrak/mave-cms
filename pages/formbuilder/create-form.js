@@ -7,7 +7,12 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 
 export default function CreateForm() {
   return (
-    <div className="ViewContainer">
+    <div
+      className="formbuilder"
+      style={{
+        padding: "2% 0 0 10%",
+      }}
+    >
       <Breadcrumb
         style={{
           margin: "16px 0",
