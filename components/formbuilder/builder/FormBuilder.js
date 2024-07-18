@@ -42,10 +42,14 @@ const FormBuilder = () => {
   };
 
   return (
-    <div className="form-builder">
-      <div className="panel">
-        <ElementPanel />
-      </div>
+    <div
+      className="form-builder"
+      style={{
+        display: "grid",
+        gridTemplateColumns: "4fr 1fr",
+        gap: "2rem",
+      }}
+    >
       <div className="panel">
         <BuilderPanel
           formElements={formElements}
@@ -53,6 +57,10 @@ const FormBuilder = () => {
           updateElement={updateElement}
         />
         <Button onClick={saveForm}>Save Form</Button>
+      </div>
+
+      <div className="panel">
+        <ElementPanel />
       </div>
     </div>
   );

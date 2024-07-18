@@ -2,61 +2,45 @@
 
 import React from "react";
 import DraggableElement from "./DraggableElement";
+import {
+  AlignLeftOutlined,
+  CheckSquareOutlined,
+  EditOutlined,
+  SwapOutlined,
+} from "@ant-design/icons";
 
 const elements = [
-  { type: "text_input", label: "Text Input" },
-  { type: "paragraph", label: "Paragraph" },
-  { type: "checkbox", label: "Checkbox" },
-  { type: "radio", label: "Radio Button" },
-  { type: "dropdown", label: "Dropdown" },
-  { type: "date", label: "Date" },
-  { type: "file", label: "File Upload" },
-  { type: "button", label: "Button" },
-  { type: "heading", label: "Heading" },
-  { type: "number", label: "Number" },
-  { type: "email", label: "Email" },
-  { type: "phone", label: "Phone" },
-  { type: "password", label: "Password" },
-  { type: "textarea", label: "Textarea" },
-  { type: "time", label: "Time" },
-  { type: "url", label: "URL" },
-  { type: "color", label: "Color" },
-  { type: "range", label: "Range" },
-  { type: "hidden", label: "Hidden" },
-  { type: "reset", label: "Reset" },
-  { type: "submit", label: "Submit" },
-  { type: "search", label: "Search" },
-  { type: "tel", label: "Tel" },
-  { type: "week", label: "Week" },
-  { type: "month", label: "Month" },
-  { type: "datetime-local", label: "Datetime Local" },
-  { type: "image", label: "Image" },
-  { type: "button", label: "Button" },
-  { type: "radio", label: "Radio" },
-  { type: "checkbox", label: "Checkbox" },
-  { type: "select", label: "Select" },
-  { type: "file", label: "File" },
-  { type: "text", label: "Text" },
-  { type: "password", label: "Password" },
-  { type: "email", label: "Email" },
-  { type: "number", label: "Number" },
-  { type: "tel", label: "Tel" },
-  { type: "url", label: "URL" },
-  { type: "search", label: "Search" },
-  { type: "date", label: "Date" },
-  { type: "time", label: "Time" },
-  { type: "datetime-local", label: "Datetime Local" },
-  { type: "month", label: "Month" },
-  { type: "week", label: "Week" },
-  { type: "color", label: "Color" },
-  { type: "range", label: "Range" },
+  { type: "text_input", label: "Text Input", icon: <EditOutlined /> },
+  { type: "paragraph", label: "Paragraph", icon: <AlignLeftOutlined /> },
+  { type: "checkbox", label: "Checkbox", icon: <CheckSquareOutlined /> },
+  { type: "radio", label: "Radio Button", icon: <SwapOutlined /> },
 ];
 
 const ElementPanel = () => {
   return (
-    <div className="element-panel">
-      <h3>Elements</h3>
-      {elements.map((element, index) => (
+    <div
+      className="element-panel"
+      style={{
+        backgroundColor: "var(--theme-transparent)",
+        padding: "20px",
+        borderRadius: "5px",
+        height: "85vh",
+        borderLeft: "2px solid var(--theme)",
+        borderTop: "2px solid var(--theme)",
+      }}
+    >
+      <center>
+        <h3
+          style={{
+            color: "var(--theme)",
+            fontSize: "1.5rem",
+            marginBottom: "20px",
+          }}
+        >
+          Elements
+        </h3>
+      </center>
+      {elements?.map((element, index) => (
         <DraggableElement key={index} element={element} />
       ))}
     </div>
