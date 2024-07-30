@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import instance from "../../axios";
-import { Breadcrumb, Card, Modal, Switch, Tabs } from "antd";
+import { Breadcrumb, Button, Card, Input, Modal, Switch, Tabs } from "antd";
 import {
   CloudSyncOutlined,
+  DeleteOutlined,
   EditOutlined,
   GroupOutlined,
   HomeOutlined,
+  SearchOutlined,
   UnorderedListOutlined,
 } from "@ant-design/icons";
 import MaveFormElements from "./MaveFormElements";
-import Search from "antd/es/transfer/search";
 
 const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
   const [forms, setForms] = useState([]);
@@ -49,8 +50,6 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
         ]}
       />
 
-      <h2>Welcome to Mave Form Showcase</h2>
-
       <div
         style={{
           display: "grid",
@@ -59,10 +58,20 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
           marginBottom: "1rem",
         }}
       >
-        <Search
+        {/* {Search && (
+          <Search
+            placeholder="Search for forms"
+            onSearch={(value) => console.log(value)}
+            style={{ width: 100 }}
+          />
+        )} */}
+        <Input
           placeholder="Search for forms"
-          onSearch={(value) => console.log(value)}
-          style={{ width: 100 }}
+          suffix={<SearchOutlined />}
+          style={{
+            width: "100%",
+            marginRight: "1rem",
+          }}
         />
         <Switch
           style={{
@@ -85,55 +94,71 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
       >
         {forms.map((form) => (
           <div
-            key={form.id}
             style={{
-              padding: "1rem",
-              border: "1px solid #ccc",
-              borderRadius: "8px",
+              display: "grid",
+              gridTemplateColumns: "1fr",
+              margin: "2rem 0 8rem 0",
+              borderRadius: "10px",
+              border: "1px solid var(--gray-dark)",
+              padding: "1rem 1rem 2rem 1rem",
+              gap: "2rem",
+              boxShadow: "5px 10px 10px #00000020",
             }}
           >
-            <Card
-              bordered={false}
-              title={form.mave_title}
-              hoverable
-              onClick={() => onSelectForm(form.id)}
-              cover={
-                <img
-                  alt="example"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                />
-              }
-              actions={[
-                <EditOutlined key="edit" />,
-                <CloudSyncOutlined key="sync" />,
-              ]}
+            {/* Name, banner, description, edit and delete buttons */}
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "30vh",
+                backgroundColor: "var(--themes)",
+                borderRadius: "10px 10px 0 0",
+                backgroundImage: `url(https://random.imagecdn.app/500/330)`,
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "contain",
+                backgroundPosition: "center",
+              }}
             >
-              <Card.Meta
-                description={form.mave_description}
-                style={{ height: "100px" }}
-              />
-            </Card>
+              <h3
+                style={{
+                  textAlign: "center",
+                  color: "white",
+                  fontSize: "1.5rem",
+                  fontWeight: "bold",
+                  padding: "0 2rem",
+                }}
+              >
+                {form.mave_title}
+              </h3>
+            </div>
+            <p
+              style={{
+                fontSize: "1.2em",
+                padding: "0 1em",
+              }}
+            >
+              {form.mave_description}
+            </p>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-around",
+                alignItems: "center",
+                gap: "1rem",
+              }}
+            >
+              <Button onClick={() => onSelectForm(form.id)}>
+                <EditOutlined />
+              </Button>
+              <Button danger>
+                <DeleteOutlined />
+              </Button>
+            </div>
           </div>
         ))}
       </div>
-
-      {/* <ul>
-        {forms.map((form) => (
-          <li key={form.id}>
-            <button onClick={() => onSelectForm(form.id)}>
-              {form.mave_title}
-            </button>
-          </li>
-        ))}
-      </ul> */}
-
-      {/* <div>
-        {selectedFormId ? (
-          <MaveFormElements formId={selectedFormId} />
-        ) : (
-          <p>Please select a form to view its elements.</p>
-        )}
-      </div> */}
 
       {/* Modal holding form elements */}
       <Modal
