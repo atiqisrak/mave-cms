@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import instance from "../../axios";
-import { Breadcrumb, Button, Card, Input, Modal, Switch, Tabs } from "antd";
+import { Breadcrumb, Button, Input, Modal, Popconfirm, Switch } from "antd";
 import {
   CloudSyncOutlined,
   DeleteOutlined,
   EditOutlined,
-  GroupOutlined,
+  EyeOutlined,
   HomeOutlined,
   SearchOutlined,
   UnorderedListOutlined,
@@ -19,7 +19,7 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
   useEffect(() => {
     const fetchForms = async () => {
       try {
-        const response = await instance.get("/mave_forms");
+        const response = await instance.get("/form_builder");
         setForms(response.data);
       } catch (error) {
         console.error("Error fetching forms:", error);
@@ -32,21 +32,11 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
   return (
     <div>
       <Breadcrumb
-        style={{
-          margin: "16px 0",
-        }}
+        style={{ margin: "16px 0" }}
         items={[
-          {
-            title: <HomeOutlined />,
-            href: "/",
-          },
-          {
-            title: "Form Builder",
-            href: "/formbuilder",
-          },
-          {
-            title: "Mave Forms",
-          },
+          { title: <HomeOutlined />, href: "/" },
+          { title: "Form Builder", href: "/formbuilder" },
+          { title: "Mave Forms" },
         ]}
       />
 
@@ -58,25 +48,13 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
           marginBottom: "1rem",
         }}
       >
-        {/* {Search && (
-          <Search
-            placeholder="Search for forms"
-            onSearch={(value) => console.log(value)}
-            style={{ width: 100 }}
-          />
-        )} */}
         <Input
           placeholder="Search for forms"
           suffix={<SearchOutlined />}
-          style={{
-            width: "100%",
-            marginRight: "1rem",
-          }}
+          style={{ width: "100%", marginRight: "1rem" }}
         />
         <Switch
-          style={{
-            justifySelf: "end",
-          }}
+          style={{ justifySelf: "end" }}
           checkedChildren="List"
           unCheckedChildren="Groups"
           defaultChecked
@@ -94,6 +72,7 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
       >
         {forms.map((form) => (
           <div
+            key={form.id} // Added key prop
             style={{
               display: "grid",
               gridTemplateColumns: "1fr",
@@ -105,17 +84,16 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
               boxShadow: "5px 10px 10px #00000020",
             }}
           >
-            {/* Name, banner, description, edit and delete buttons */}
-
             <div
               style={{
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
+                flexDirection: "column",
+                gap: "1rem",
                 height: "30vh",
                 backgroundColor: "var(--themes)",
                 borderRadius: "10px 10px 0 0",
-                backgroundImage: `url(https://random.imagecdn.app/500/330)`,
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "contain",
                 backgroundPosition: "center",
@@ -130,7 +108,18 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
                   padding: "0 2rem",
                 }}
               >
-                {form.mave_title}
+                Form ID: {form.id}
+              </h3>
+              <h3
+                style={{
+                  textAlign: "center",
+                  color: "white",
+                  fontSize: "1.5rem",
+                  fontWeight: "bold",
+                  padding: "0 2rem",
+                }}
+              >
+                {form.title}
               </h3>
             </div>
             <p
@@ -139,7 +128,7 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
                 padding: "0 1em",
               }}
             >
-              {form.mave_description}
+              {form.description}
             </p>
             <div
               style={{
@@ -149,29 +138,52 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
                 gap: "1rem",
               }}
             >
-              <Button onClick={() => onSelectForm(form.id)}>
-                <EditOutlined />
+              <Button
+                onClick={() => {
+                  console.log("Form ID:", form.id);
+                  console.log("Form Title:", form.title);
+                  onSelectForm
+                    ? onSelectForm(form.id)
+                    : console.log("No onSelectForm prop passed");
+                }}
+              >
+                <EyeOutlined
+                  style={{
+                    fontSize: "1.5rem",
+                    color: "var(--theme)",
+                  }}
+                />
               </Button>
-              <Button danger>
-                <DeleteOutlined />
-              </Button>
+              <Popconfirm
+                title="Are you sure you want to delete this form?"
+                onConfirm={() => {
+                  console.log("Deleting form:", form.id);
+                }}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button danger>
+                  <DeleteOutlined
+                    style={{
+                      fontSize: "1.5rem",
+                      color: "var(--error)",
+                    }}
+                  />
+                </Button>
+              </Popconfirm>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Modal holding form elements */}
       <Modal
-        title="Form Elements"
-        open={selectedFormId ? true : false}
+        title={`Form ${selectedFormId} Elements`}
+        open={selectedFormId}
         onCancel={() => onSelectForm(null)}
         footer={null}
+        width={800}
       >
-        {selectedFormId ? (
-          <MaveFormElements formId={selectedFormId} />
-        ) : (
-          <p>Please select a form to view its elements.</p>
-        )}
+        <MaveFormElements formId={selectedFormId} />
       </Modal>
     </div>
   );

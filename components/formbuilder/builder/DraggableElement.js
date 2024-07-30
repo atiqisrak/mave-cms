@@ -1,7 +1,6 @@
-// src/components/DraggableElement.js
-
 import React from "react";
 import { useDrag } from "react-dnd";
+import { Card } from "antd";
 
 const DraggableElement = ({ element }) => {
   const [{ isDragging }, drag] = useDrag({
@@ -13,7 +12,7 @@ const DraggableElement = ({ element }) => {
   });
 
   return (
-    <div
+    <Card
       className="draggable-element"
       ref={drag}
       style={{
@@ -36,7 +35,7 @@ const DraggableElement = ({ element }) => {
     >
       {element.icon}
       {element.label}
-    </div>
+    </Card>
   );
 };
 

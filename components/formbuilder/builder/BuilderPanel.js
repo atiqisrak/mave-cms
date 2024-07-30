@@ -1,17 +1,16 @@
-// src/components/BuilderPanel.js
-
 import React from "react";
 import { useDrop } from "react-dnd";
 import FormElement from "./FormElement";
+import { Card } from "antd";
 
-const BuilderPanel = ({ formElements, addElement }) => {
+const BuilderPanel = ({ formElements, addElement, updateElement }) => {
   const [, drop] = useDrop({
     accept: "element",
     drop: (item) => addElement(item.element),
   });
 
   return (
-    <div
+    <Card
       className="builder-panel"
       ref={drop}
       style={{
@@ -33,9 +32,9 @@ const BuilderPanel = ({ formElements, addElement }) => {
         </h3>
       </center>
       {formElements.map((element, index) => (
-        <FormElement key={index} element={element} />
+        <FormElement key={index} element={element} onUpdate={updateElement} />
       ))}
-    </div>
+    </Card>
   );
 };
 
