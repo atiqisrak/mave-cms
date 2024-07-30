@@ -1,6 +1,7 @@
 import { Button } from "antd";
 import router from "next/router";
 import MaveFormsList from "../../components/formbuilder/MaveFormsList";
+import MaveFormsShowcase from "./mave-forms-showcase";
 
 export default function FormBuilder() {
   return (
@@ -19,7 +20,7 @@ export default function FormBuilder() {
       >
         <Button
           style={{
-            backgroundColor: "var(--themes)",
+            backgroundColor: "var(--theme)",
             color: "white",
             fontSize: "1.2rem",
             fontWeight: "bold",
@@ -31,24 +32,9 @@ export default function FormBuilder() {
         >
           Create Form
         </Button>
-
-        <Button
-          style={{
-            backgroundColor: "var(--theme)",
-            color: "white",
-            fontSize: "1.2rem",
-            fontWeight: "bold",
-            padding: "1.5rem 2rem",
-          }}
-          onClick={() => {
-            router.push("/formbuilder/mave-forms-showcase");
-          }}
-        >
-          View Forms
-        </Button>
       </div>
       <div>
-        <MaveFormsList />
+        <MaveFormsShowcase />
       </div>
     </div>
   );

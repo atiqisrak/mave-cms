@@ -1,5 +1,3 @@
-// src/components/ElementPanel.js
-
 import React from "react";
 import DraggableElement from "./DraggableElement";
 import {
@@ -8,17 +6,20 @@ import {
   EditOutlined,
   SwapOutlined,
 } from "@ant-design/icons";
+import { Card } from "antd";
 
 const elements = [
-  { type: "text_input", label: "Text Input", icon: <EditOutlined /> },
-  { type: "paragraph", label: "Paragraph", icon: <AlignLeftOutlined /> },
+  { type: "input", label: "Input", icon: <EditOutlined /> },
+  { type: "textarea", label: "Textarea", icon: <AlignLeftOutlined /> },
   { type: "checkbox", label: "Checkbox", icon: <CheckSquareOutlined /> },
   { type: "radio", label: "Radio Button", icon: <SwapOutlined /> },
+  { type: "select", label: "Select", icon: <SwapOutlined /> },
+  { type: "submit", label: "Submit", icon: <SwapOutlined /> },
 ];
 
 const ElementPanel = () => {
   return (
-    <div
+    <Card
       className="element-panel"
       style={{
         backgroundColor: "var(--theme-transparent)",
@@ -40,10 +41,10 @@ const ElementPanel = () => {
           Elements
         </h3>
       </center>
-      {elements?.map((element, index) => (
+      {elements.map((element, index) => (
         <DraggableElement key={index} element={element} />
       ))}
-    </div>
+    </Card>
   );
 };
 
