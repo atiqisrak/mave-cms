@@ -11,6 +11,7 @@ import {
   Popconfirm,
   Select,
   Switch,
+  Tabs,
   Tag,
 } from "antd";
 import RichTextEditor from "../../RichTextEditor";
@@ -79,155 +80,149 @@ const FormBuilder = () => {
       style={{ display: "grid", gridTemplateColumns: "4fr 1fr", gap: "2rem" }}
     >
       <div className="panel">
-        <center>
-          <Button
-            type="primary"
-            style={{
-              marginBottom: "1rem",
-              display: "block",
-              width: "fit-content",
-              borderRadius: "5px",
-              backgroundColor: modifyAttributes
-                ? "var(--themes)"
-                : "var(--theme)",
-            }}
-            onClick={() => setModifyAttributes(!modifyAttributes)}
-          >
-            {modifyAttributes ? "Close" : "Modify Form Attributes"}
-          </Button>
-        </center>
-        {modifyAttributes && (
-          <Card
-            title="Form Attributes"
-            style={{ marginBottom: "1rem", borderRadius: "5px" }}
-          >
-            <Form layout="vertical" style={{ marginBottom: "1rem" }}>
-              <Form.Item label="Form Title">
-                <Input
-                  placeholder="Form Title"
-                  value={formMeta.title}
-                  onChange={(e) => {
-                    setFormMeta({ ...formMeta, title: e.target.value });
-                    setFormAttributes({
-                      ...formAttributes,
-                      component_id: e.target.value
-                        .toLowerCase()
-                        .replace(/\s/g, "_"),
-                    });
-                  }}
-                  style={{ marginBottom: "1rem" }}
-                />
-              </Form.Item>
-              <Form.Item label="Form Description">
-                <RichTextEditor
-                  value={formMeta.description}
-                  onChange={(value) =>
-                    setFormMeta({ ...formMeta, description: value })
-                  }
-                  editMode={true}
-                />
-              </Form.Item>
-              <Form.Item label="Component Classes">
-                <Select
-                  mode="tags"
-                  placeholder="Component Classes"
-                  value={formAttributes.component_class.split(",")}
-                  onChange={(value) =>
-                    setFormAttributes({
-                      ...formAttributes,
-                      component_class: value.join(","),
-                    })
-                  }
-                  style={{ width: "100%" }}
-                />
-              </Form.Item>
-              <Form.Item label="Method">
-                <Switch
-                  checkedChildren="POST"
-                  unCheckedChildren="GET"
-                  defaultChecked
-                  onChange={(checked) =>
-                    setFormAttributes({
-                      ...formAttributes,
-                      method: checked ? "POST" : "GET",
-                    })
-                  }
-                  style={{ marginBottom: "1rem" }}
-                />
-              </Form.Item>
-              <Form.Item label="Action URL">
-                <Input
-                  label="Action URL"
-                  type="url"
-                  placeholder="Action URL"
-                  value={formAttributes.action_url}
-                  onChange={(e) =>
-                    setFormAttributes({
-                      ...formAttributes,
-                      action_url: e.target.value,
-                    })
-                  }
-                  style={{ marginBottom: "1rem" }}
-                />
-              </Form.Item>
-              <Form.Item label="Enctype">
-                <Select
-                  placeholder="Enctype"
-                  value={formAttributes.enctype}
-                  onChange={(value) =>
-                    setFormAttributes({ ...formAttributes, enctype: value })
-                  }
-                  style={{ width: "100%" }}
-                >
-                  <Select.Option value="application/x-www-form-urlencoded">
-                    application/x-www-form-urlencoded
-                  </Select.Option>
-                  <Select.Option value="multipart/form-data">
-                    multipart/form-data
-                  </Select.Option>
-                  <Select.Option value="text/plain">text/plain</Select.Option>
-                </Select>
-              </Form.Item>
-            </Form>
-          </Card>
-        )}
-
-        <BuilderPanel
-          formElements={formElements}
-          addElement={addElement}
-          updateElement={updateElement}
-        />
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            margin: "1rem 0 5rem",
-          }}
+        <Tabs
+          defaultActiveKey="1"
+          style={{ marginBottom: "1rem" }}
+          type="card"
+          size="large"
+          centered
         >
-          {/* <Button onClick={saveForm}>Save Form</Button> */}
-          <Button
-            type="primary"
-            onClick={() => {
-              console.log("Form data:", {
-                title: formMeta.title,
-                descriprion: formMeta.description,
-                attributes: formAttributes,
-                elements: formElements,
-              });
-              saveForm();
-            }}
-          >
-            Save Form
-          </Button>
-          <Popconfirm
-            title="Are you sure you want to clear the form?"
-            onConfirm={() => setFormElements([])}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button danger>Clear Form</Button>
-          </Popconfirm>
-        </div>
+          <Tabs.TabPane tab="Attributes" key="1">
+            <Card
+              title="Form Attributes"
+              style={{
+                marginBottom: "1rem",
+                borderRadius: "5px",
+                height: "70vh",
+                overflowY: "auto",
+              }}
+            >
+              <Form layout="vertical" style={{ marginBottom: "1rem" }}>
+                <Form.Item label="Form Title">
+                  <Input
+                    placeholder="Form Title"
+                    value={formMeta.title}
+                    onChange={(e) => {
+                      setFormMeta({ ...formMeta, title: e.target.value });
+                      setFormAttributes({
+                        ...formAttributes,
+                        component_id: e.target.value
+                          .toLowerCase()
+                          .replace(/\s/g, "_"),
+                      });
+                    }}
+                  />
+                </Form.Item>
+                <Form.Item label="Form Description">
+                  <RichTextEditor
+                    value={formMeta.description}
+                    onChange={(value) =>
+                      setFormMeta({ ...formMeta, description: value })
+                    }
+                    editMode={true}
+                  />
+                </Form.Item>
+                {/* <Form.Item label="Component Classes">
+                  <Select
+                    mode="tags"
+                    placeholder="Component Classes"
+                    value={formAttributes.component_class.split(",")}
+                    onChange={(value) =>
+                      setFormAttributes({
+                        ...formAttributes,
+                        component_class: value.join(","),
+                      })
+                    }
+                    style={{ width: "100%" }}
+                  />
+                </Form.Item> */}
+                <Form.Item label="Method">
+                  <Switch
+                    checkedChildren="POST"
+                    unCheckedChildren="GET"
+                    defaultChecked
+                    onChange={(checked) =>
+                      setFormAttributes({
+                        ...formAttributes,
+                        method: checked ? "POST" : "GET",
+                      })
+                    }
+                  />
+                </Form.Item>
+                <Form.Item label="Action URL">
+                  <Input
+                    label="Action URL"
+                    type="url"
+                    placeholder="Action URL"
+                    value={formAttributes.action_url}
+                    onChange={(e) =>
+                      setFormAttributes({
+                        ...formAttributes,
+                        action_url: e.target.value,
+                      })
+                    }
+                  />
+                </Form.Item>
+                <Form.Item label="Enctype">
+                  <Select
+                    placeholder="Enctype"
+                    value={formAttributes.enctype}
+                    onChange={(value) =>
+                      setFormAttributes({ ...formAttributes, enctype: value })
+                    }
+                    style={{ width: "100%" }}
+                  >
+                    <Select.Option value="application/x-www-form-urlencoded">
+                      application/x-www-form-urlencoded
+                    </Select.Option>
+                    <Select.Option value="multipart/form-data">
+                      multipart/form-data
+                    </Select.Option>
+                    <Select.Option value="text/plain">text/plain</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Form>
+            </Card>
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Elements" key="2">
+            <BuilderPanel
+              formElements={formElements}
+              addElement={addElement}
+              updateElement={updateElement}
+            />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                margin: "1rem 0 5rem",
+              }}
+            >
+              {/* <Button onClick={saveForm}>Save Form</Button> */}
+              <Button
+                type="primary"
+                onClick={() => {
+                  console.log("Form data:", {
+                    title: formMeta.title,
+                    descriprion: formMeta.description,
+                    attributes: formAttributes,
+                    elements: formElements,
+                  });
+                  saveForm();
+                }}
+              >
+                Save Form
+              </Button>
+              <Popconfirm
+                title="Are you sure you want to clear the form?"
+                onConfirm={() => setFormElements([])}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button danger>Clear Form</Button>
+              </Popconfirm>
+            </div>
+          </Tabs.TabPane>
+        </Tabs>
       </div>
       <div className="panel">
         <ElementPanel />

@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import instance from "../../axios";
-import { Breadcrumb, Button, Input, Modal, Popconfirm, Switch } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Input,
+  Modal,
+  Popconfirm,
+  Spin,
+  Switch,
+} from "antd";
 import {
   CloudSyncOutlined,
   DeleteOutlined,
@@ -75,114 +83,124 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
+          gridTemplateColumns: "repeat(3, 1fr)",
           gap: "1rem",
         }}
       >
-        {forms.map((form) => (
-          <div
-            key={form.id} // Added key prop
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr",
-              margin: "2rem 0 8rem 0",
-              borderRadius: "10px",
-              border: "1px solid var(--gray-dark)",
-              padding: "1rem 1rem 2rem 1rem",
-              gap: "2rem",
-              boxShadow: "5px 10px 10px #00000020",
-            }}
-          >
+        {forms ? (
+          forms.map((form) => (
             <div
+              key={form.id}
               style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "column",
-                gap: "1rem",
-                height: "30vh",
-                backgroundColor: "var(--themes)",
-                borderRadius: "10px 10px 0 0",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "contain",
-                backgroundPosition: "center",
+                display: "grid",
+                gridTemplateColumns: "1fr",
+                borderRadius: "10px",
+                border: "1px solid var(--gray-dark)",
+                padding: "1rem 1rem 2rem 1rem",
+                gap: "2rem",
+                boxShadow: "5px 10px 10px #00000020",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                onSelectForm
+                  ? onSelectForm(form.id)
+                  : console.log("No onSelectForm prop passed");
               }}
             >
-              <h3
+              <div
                 style={{
-                  textAlign: "center",
-                  color: "white",
-                  fontSize: "1.5rem",
-                  fontWeight: "bold",
-                  padding: "0 2rem",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "column",
+                  gap: "1rem",
+                  height: "30vh",
+                  backgroundColor: "var(--themes)",
+                  borderRadius: "10px 10px 0 0",
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "contain",
+                  backgroundPosition: "center",
                 }}
               >
-                Form ID: {form.id}
-              </h3>
-              <h3
-                style={{
-                  textAlign: "center",
-                  color: "white",
-                  fontSize: "1.5rem",
-                  fontWeight: "bold",
-                  padding: "0 2rem",
-                }}
-              >
-                {form.title}
-              </h3>
-            </div>
-            <p
-              style={{
-                fontSize: "1.2em",
-                padding: "0 1em",
-              }}
-            >
-              {form.description}
-            </p>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-around",
-                alignItems: "center",
-                gap: "1rem",
-              }}
-            >
-              <Button
-                onClick={() => {
-                  console.log("Form ID:", form.id);
-                  console.log("Form Title:", form.title);
-                  onSelectForm
-                    ? onSelectForm(form.id)
-                    : console.log("No onSelectForm prop passed");
-                }}
-              >
-                <EyeOutlined
+                <h3
                   style={{
+                    textAlign: "center",
+                    color: "white",
                     fontSize: "1.5rem",
-                    color: "var(--theme)",
+                    fontWeight: "bold",
+                    padding: "0 2rem",
                   }}
-                />
-              </Button>
-              <Popconfirm
-                title="Are you sure you want to delete this form?"
-                onConfirm={() => {
-                  handleDeleteForm(form.id);
+                >
+                  Form ID: {form.id}
+                </h3>
+                <h3
+                  style={{
+                    textAlign: "center",
+                    color: "white",
+                    fontSize: "1.5rem",
+                    fontWeight: "bold",
+                    padding: "0 2rem",
+                  }}
+                >
+                  {form.title}
+                </h3>
+              </div>
+              <p
+                style={{
+                  fontSize: "1.2em",
+                  padding: "0 1em",
                 }}
-                okText="Yes"
-                cancelText="No"
               >
-                <Button danger>
-                  <DeleteOutlined
+                {/* {form.description} */}
+                <p dangerouslySetInnerHTML={{ __html: form.description }}></p>
+              </p>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                  gap: "1rem",
+                }}
+              >
+                <Button
+                  onClick={() => {
+                    console.log("Form ID:", form.id);
+                    console.log("Form Title:", form.title);
+                    onSelectForm
+                      ? onSelectForm(form.id)
+                      : console.log("No onSelectForm prop passed");
+                  }}
+                >
+                  <EyeOutlined
                     style={{
                       fontSize: "1.5rem",
-                      color: "var(--error)",
+                      color: "var(--theme)",
                     }}
                   />
                 </Button>
-              </Popconfirm>
+                <Popconfirm
+                  title="Are you sure you want to delete this form?"
+                  onConfirm={() => {
+                    handleDeleteForm(form.id);
+                  }}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button danger>
+                    <DeleteOutlined
+                      style={{
+                        fontSize: "1.5rem",
+                        color: "var(--error)",
+                      }}
+                    />
+                  </Button>
+                </Popconfirm>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <Spin />
+        )}
       </div>
 
       <Modal
