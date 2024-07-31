@@ -27,13 +27,23 @@ const DraggableElement = ({ element }) => {
         fontWeight: "bold",
         transition: "opacity 0.2s",
         display: "flex",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         alignItems: "center",
         gap: "10px",
+        height: "50px",
       }}
     >
-      {element.icon}
-      {element.label}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-start",
+          alignItems: "center",
+          gap: "15px",
+        }}
+      >
+        {element.icon}
+        {element.label}
+      </div>
     </Card>
   );
 };
