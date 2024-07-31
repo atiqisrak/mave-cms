@@ -29,6 +29,15 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
     fetchForms();
   }, []);
 
+  const handleDeleteForm = async (formId) => {
+    try {
+      await instance.delete(`/form_builder/${formId}`);
+      setForms(forms.filter((form) => form.id !== formId));
+    } catch (error) {
+      console.error("Error deleting form:", error);
+    }
+  };
+
   return (
     <div>
       <Breadcrumb
@@ -157,7 +166,7 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
               <Popconfirm
                 title="Are you sure you want to delete this form?"
                 onConfirm={() => {
-                  console.log("Deleting form:", form.id);
+                  handleDeleteForm(form.id);
                 }}
                 okText="Yes"
                 cancelText="No"

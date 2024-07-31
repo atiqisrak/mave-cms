@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Input, Select, DatePicker, Button, Radio } from "antd";
+import { Input, Select, DatePicker, Button, Radio, Popconfirm } from "antd";
 import ElementConfig from "./ElementConfig";
 import RichTextEditor from "../../RichTextEditor";
+import { DownOutlined, RightOutlined, UpOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -79,12 +80,100 @@ const FormElement = ({ element, onUpdate }) => {
       }}
     >
       <div
-        onClick={(e) => {
-          e.stopPropagation();
-          setConfigVisible(!configVisible);
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          cursor: "pointer",
+          paddingBottom: "1rem",
         }}
       >
-        {element.label || "Edit Element"}
+        <h4>
+          {element.label}
+          {element.help_text && (
+            <span style={{ marginLeft: "10px" }} title={element.help_text}>
+              <i className="fas fa-info-circle"></i>
+            </span>
+          )}
+        </h4>
+        <div
+          style={{
+            display: "flex",
+            gap: "10px",
+          }}
+        >
+          {
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                setConfigVisible(!configVisible);
+              }}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "var(--themes)",
+                color: "white",
+                borderRadius: "5px",
+                fontWeight: "bold",
+              }}
+            >
+              {configVisible ? "Hide Config" : "Show Config"}
+            </Button>
+          }
+
+          <Popconfirm
+            title="Are you sure you want to remove this item?"
+            onConfirm={(e) => {
+              e.stopPropagation();
+              onUpdate(null);
+            }}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button
+              style={{
+                backgroundColor: "red",
+                color: "white",
+                borderRadius: "5px",
+                fontWeight: "bold",
+              }}
+            >
+              Remove Item
+            </Button>
+          </Popconfirm>
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+            }}
+          >
+            <Button
+              style={{
+                backgroundColor: "var(--theme-transparent)",
+                color: "var(--theme)",
+                fontWeight: "bold",
+              }}
+              icon={<UpOutlined />}
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log("Move up");
+              }}
+            />
+            <Button
+              style={{
+                backgroundColor: "var(--theme-transparent)",
+                fontWeight: "bold",
+                color: "var(--theme)",
+              }}
+              icon={<DownOutlined />}
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log("Move down");
+              }}
+            />
+          </div>
+        </div>
       </div>
       {renderElement()}
       {configVisible && (

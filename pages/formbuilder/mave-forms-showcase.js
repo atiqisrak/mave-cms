@@ -10,7 +10,6 @@ const MaveFormsShowcase = () => {
 
   return (
     <div className="ViewContainer">
-      <h1>Mave Forms Showcase</h1>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <div>
           <MaveFormsList

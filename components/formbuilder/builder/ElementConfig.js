@@ -41,6 +41,7 @@ const ElementConfig = ({ element, onUpdate }) => {
 
   return (
     <div className="element-config">
+      {/* Title, Paragraph */}
       <Form layout="vertical">
         <Form.Item label="Label">
           <Input
@@ -56,7 +57,7 @@ const ElementConfig = ({ element, onUpdate }) => {
             onBlur={handleUpdate}
           />
         </Form.Item>
-        {element.element_type === "input" && (
+        {/* {element.element_type === "input" && (
           <Form.Item label="Input Type">
             <Select
               value={inputType}
@@ -69,9 +70,38 @@ const ElementConfig = ({ element, onUpdate }) => {
               <Option value="password">Password</Option>
               <Option value="phone">Phone</Option>
               <Option value="date">Date</Option>
-              <Option value="radio">Radio</Option>
               <Option value="submit">Submit</Option>
             </Select>
+          </Form.Item>
+        )} */}
+        {element.element_type === "input" && element.input_type === "radio" && (
+          <Form.Item label="Radio Options">
+            {options.map((option, index) => (
+              <div
+                key={option._id}
+                style={{ display: "flex", marginBottom: "8px" }}
+              >
+                <Input
+                  placeholder="Title"
+                  value={option.title}
+                  onChange={(e) => updateOption(index, "title", e.target.value)}
+                  style={{ marginRight: "8px" }}
+                />
+                <Input
+                  placeholder="Value"
+                  value={option.value}
+                  onChange={(e) => updateOption(index, "value", e.target.value)}
+                />
+                <Button
+                  type="danger"
+                  onClick={() => removeOption(index)}
+                  style={{ marginLeft: "8px" }}
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+            <Button onClick={addOption}>Add Option</Button>
           </Form.Item>
         )}
         {element.element_type === "select" && (

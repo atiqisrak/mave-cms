@@ -119,11 +119,13 @@ const ElementPanel = () => {
       className="element-panel"
       style={{
         backgroundColor: "var(--theme-transparent)",
-        padding: "20px",
+        padding: "0 10px",
         borderRadius: "5px",
-        height: "85vh",
+        height: "70vh",
         borderLeft: "2px solid var(--theme)",
         borderTop: "2px solid var(--theme)",
+        borderBottom: "2px solid var(--theme)",
+        overflowY: "auto",
       }}
     >
       <center>
