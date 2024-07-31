@@ -9,8 +9,10 @@ const FormElement = ({ element, onUpdate }) => {
   const [configVisible, setConfigVisible] = useState(false);
 
   const handleConfigChange = (updatedElement) => {
+    console.log("Updated element:", updatedElement);
+    console.log("Config visible:", configVisible);
     onUpdate(updatedElement);
-    setConfigVisible(false);
+    // setConfigVisible(false);
   };
 
   const renderElement = () => {
@@ -76,7 +78,12 @@ const FormElement = ({ element, onUpdate }) => {
         marginBottom: "10px",
       }}
     >
-      <div onClick={() => setConfigVisible(!configVisible)}>
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+          setConfigVisible(!configVisible);
+        }}
+      >
         {element.label || "Edit Element"}
       </div>
       {renderElement()}

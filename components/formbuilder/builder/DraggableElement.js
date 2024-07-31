@@ -20,7 +20,6 @@ const DraggableElement = ({ element }) => {
         cursor: "move",
         backgroundColor: "var(--theme)",
         color: "white",
-        padding: "15px 0",
         borderRadius: "5px",
         marginBottom: "10px",
         textAlign: "center",

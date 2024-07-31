@@ -6,23 +6,17 @@ import { Button, Card, Popconfirm } from "antd";
 
 const FormBuilder = () => {
   const [formElements, setFormElements] = useState([]);
-  const [formAttributes, setFormAttributes] = useState({
-    component_id: "",
-    component_class: "",
-    method: "POST",
-    action_url: "",
-    enctype: "multipart/form-data",
-  });
+  const [formAttributes, setFormAttributes] = useState({});
 
   useEffect(() => {
     const loadForm = async () => {
-      try {
-        const response = await instance.get("/form_builder/1");
-        setFormAttributes(response.data.attributes);
-        setFormElements(response.data.elements);
-      } catch (error) {
-        console.error("Error loading form:", error);
-      }
+      setFormAttributes({
+        component_id: "dummy_form",
+        component_class: "form, bg-light",
+        method: "POST",
+        action_url: "https://example.com",
+        enctype: "multipart/form-data",
+      });
     };
 
     loadForm();
@@ -45,7 +39,7 @@ const FormBuilder = () => {
 
   const saveForm = async () => {
     try {
-      await instance.post("/form_builder/1", {
+      await instance.post("/form_builder", {
         attributes: formAttributes,
         elements: formElements,
       });
@@ -73,7 +67,13 @@ const FormBuilder = () => {
             margin: "1rem 0 5rem",
           }}
         >
-          <Button onClick={saveForm}>Save Form</Button>
+          {/* <Button onClick={saveForm}>Save Form</Button> */}
+          <Button
+            type="primary"
+            onClick={console.log(formAttributes, formElements)}
+          >
+            Save Form
+          </Button>
           <Popconfirm
             title="Are you sure you want to clear the form?"
             onConfirm={() => setFormElements([])}

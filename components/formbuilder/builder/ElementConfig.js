@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Input, Select, Button, Form, Radio } from "antd";
+import React, { useState, useEffect } from "react";
+import { Input, Select, Button, Form } from "antd";
 
 const { Option } = Select;
 
@@ -8,6 +8,10 @@ const ElementConfig = ({ element, onUpdate }) => {
   const [placeholder, setPlaceholder] = useState(element.placeholder);
   const [inputType, setInputType] = useState(element.input_type || "text");
   const [options, setOptions] = useState(element.options || []);
+
+  useEffect(() => {
+    handleUpdate();
+  }, [label, placeholder, inputType, options]);
 
   const handleUpdate = () => {
     onUpdate({
