@@ -66,7 +66,7 @@ export default function ElementsParser({ element }) {
                   return <Input placeholder={element.placeholder} />;
               }
             case "textarea":
-              return <RichTextEditor editMode={true} />;
+              return <RichTextEditor editMode={false} />;
             case "select":
               return (
                 <Select placeholder={element.placeholder}>
