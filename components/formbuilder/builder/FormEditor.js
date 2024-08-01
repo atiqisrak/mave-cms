@@ -62,12 +62,8 @@ const FormEditor = ({ formId }) => {
     ]);
   };
 
-  const updateElement = (updatedElement) => {
-    setFormElements(
-      formElements.map((el) =>
-        el._id === updatedElement._id ? updatedElement : el
-      )
-    );
+  const updateElement = (newElements) => {
+    setFormElements(newElements);
   };
 
   const saveForm = async () => {

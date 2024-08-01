@@ -9,6 +9,27 @@ const BuilderPanel = ({ formElements, addElement, updateElement }) => {
     drop: (item) => addElement(item.element),
   });
 
+  const handleUpdateElement = (updatedElement, index) => {
+    if (updatedElement === null) {
+      // Remove element
+      const newElements = [...formElements];
+      newElements.splice(index, 1);
+      updateElement(newElements);
+    } else {
+      // Update element
+      const newElements = [...formElements];
+      newElements[index] = updatedElement;
+      updateElement(newElements);
+    }
+  };
+
+  const handleMoveElement = (fromIndex, toIndex) => {
+    const newElements = [...formElements];
+    const [movedElement] = newElements.splice(fromIndex, 1);
+    newElements.splice(toIndex, 0, movedElement);
+    updateElement(newElements);
+  };
+
   return (
     <Card
       className="builder-panel"
@@ -32,7 +53,14 @@ const BuilderPanel = ({ formElements, addElement, updateElement }) => {
         </h3>
       </center>
       {formElements.map((element, index) => (
-        <FormElement key={index} element={element} onUpdate={updateElement} />
+        <FormElement
+          key={element._id}
+          element={element}
+          index={index}
+          totalElements={formElements.length}
+          onUpdate={handleUpdateElement}
+          onMove={handleMoveElement}
+        />
       ))}
     </Card>
   );

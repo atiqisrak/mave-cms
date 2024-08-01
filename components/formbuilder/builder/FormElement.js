@@ -2,18 +2,31 @@ import React, { useState } from "react";
 import { Input, Select, DatePicker, Button, Radio, Popconfirm } from "antd";
 import ElementConfig from "./ElementConfig";
 import RichTextEditor from "../../RichTextEditor";
-import { DownOutlined, RightOutlined, UpOutlined } from "@ant-design/icons";
+import { DownOutlined, UpOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
-const FormElement = ({ element, onUpdate }) => {
+const FormElement = ({ element, index, totalElements, onUpdate, onMove }) => {
   const [configVisible, setConfigVisible] = useState(false);
 
   const handleConfigChange = (updatedElement) => {
-    console.log("Updated element:", updatedElement);
-    console.log("Config visible:", configVisible);
-    onUpdate(updatedElement);
-    // setConfigVisible(false);
+    onUpdate(updatedElement, index);
+  };
+
+  const handleRemove = () => {
+    onUpdate(null, index);
+  };
+
+  const handleMoveUp = () => {
+    if (index > 0) {
+      onMove(index, index - 1);
+    }
+  };
+
+  const handleMoveDown = () => {
+    if (index < totalElements - 1) {
+      onMove(index, index + 1);
+    }
   };
 
   const renderElement = () => {
@@ -102,31 +115,29 @@ const FormElement = ({ element, onUpdate }) => {
             gap: "10px",
           }}
         >
-          {
-            <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                setConfigVisible(!configVisible);
-              }}
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "var(--themes)",
-                color: "white",
-                borderRadius: "5px",
-                fontWeight: "bold",
-              }}
-            >
-              {configVisible ? "Hide Config" : "Show Config"}
-            </Button>
-          }
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              setConfigVisible(!configVisible);
+            }}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "var(--themes)",
+              color: "white",
+              borderRadius: "5px",
+              fontWeight: "bold",
+            }}
+          >
+            {configVisible ? "Hide Config" : "Show Config"}
+          </Button>
 
           <Popconfirm
             title="Are you sure you want to remove this item?"
             onConfirm={(e) => {
               e.stopPropagation();
-              onUpdate(null);
+              handleRemove();
             }}
             okText="Yes"
             cancelText="No"
@@ -157,8 +168,9 @@ const FormElement = ({ element, onUpdate }) => {
               icon={<UpOutlined />}
               onClick={(e) => {
                 e.stopPropagation();
-                console.log("Move up");
+                handleMoveUp();
               }}
+              disabled={index === 0}
             />
             <Button
               style={{
@@ -169,8 +181,9 @@ const FormElement = ({ element, onUpdate }) => {
               icon={<DownOutlined />}
               onClick={(e) => {
                 e.stopPropagation();
-                console.log("Move down");
+                handleMoveDown();
               }}
+              disabled={index === totalElements - 1}
             />
           </div>
         </div>
