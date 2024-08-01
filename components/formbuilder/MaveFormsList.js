@@ -111,11 +111,11 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
                 boxShadow: "5px 10px 10px #00000020",
                 cursor: "pointer",
               }}
-              onClick={() => {
-                onSelectForm
-                  ? onSelectForm(form.id)
-                  : console.log("No onSelectForm prop passed");
-              }}
+              // onClick={() => {
+              //   onSelectForm
+              //     ? onSelectForm(form.id)
+              //     : console.log("No onSelectForm prop passed");
+              // }}
             >
               <div
                 style={{
