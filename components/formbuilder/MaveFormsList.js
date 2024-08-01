@@ -19,6 +19,7 @@ import {
   UnorderedListOutlined,
 } from "@ant-design/icons";
 import MaveFormElements from "./MaveFormElements";
+import router from "next/router";
 
 const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
   const [forms, setForms] = useState([]);
@@ -45,6 +46,15 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
       console.error("Error deleting form:", error);
     }
   };
+
+  // spinner
+  if (!forms.length) {
+    return (
+      <div style={{ textAlign: "center", marginTop: "2rem" }}>
+        <Spin indicator={<CloudSyncOutlined spin />} />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -87,7 +97,7 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
           gap: "1rem",
         }}
       >
-        {forms ? (
+        {forms &&
           forms.map((form) => (
             <div
               key={form.id}
@@ -197,18 +207,29 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
                 </Popconfirm>
               </div>
             </div>
-          ))
-        ) : (
-          <Spin />
-        )}
+          ))}
       </div>
 
       <Modal
         title={`Form ${selectedFormId} Elements`}
         open={selectedFormId}
         onCancel={() => onSelectForm(null)}
-        footer={null}
         width={800}
+        footer={[
+          <Button
+            key="edit"
+            style={{
+              backgroundColor: "var(--theme)",
+              color: "white",
+              border: "none",
+            }}
+            onClick={() => {
+              router.push(`/formbuilder/edit-form?id=${selectedFormId}`);
+            }}
+          >
+            Edit Form
+          </Button>,
+        ]}
       >
         <MaveFormElements formId={selectedFormId} />
       </Modal>
