@@ -98,7 +98,33 @@ const FormEditor = ({ formId }) => {
           size="large"
           centered
         >
-          <Tabs.TabPane tab="Attributes" key="1">
+          <Tabs.TabPane tab="Elements" key="1">
+            <BuilderPanel
+              formElements={formElements}
+              addElement={addElement}
+              updateElement={updateElement}
+            />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                margin: "1rem 0 5rem",
+              }}
+            >
+              <Button type="primary" onClick={saveForm}>
+                Save Form
+              </Button>
+              <Popconfirm
+                title="Are you sure you want to clear the form?"
+                onConfirm={() => setFormElements([])}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button danger>Clear Form</Button>
+              </Popconfirm>
+            </div>
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Attributes" key="2">
             <Card
               title="Form Attributes"
               style={{
@@ -180,32 +206,6 @@ const FormEditor = ({ formId }) => {
                 </Form.Item>
               </Form>
             </Card>
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Elements" key="2">
-            <BuilderPanel
-              formElements={formElements}
-              addElement={addElement}
-              updateElement={updateElement}
-            />
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                margin: "1rem 0 5rem",
-              }}
-            >
-              <Button type="primary" onClick={saveForm}>
-                Save Form
-              </Button>
-              <Popconfirm
-                title="Are you sure you want to clear the form?"
-                onConfirm={() => setFormElements([])}
-                okText="Yes"
-                cancelText="No"
-              >
-                <Button danger>Clear Form</Button>
-              </Popconfirm>
-            </div>
           </Tabs.TabPane>
         </Tabs>
       </div>

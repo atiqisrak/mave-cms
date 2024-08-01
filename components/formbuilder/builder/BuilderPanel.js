@@ -10,17 +10,15 @@ const BuilderPanel = ({ formElements, addElement, updateElement }) => {
   });
 
   const handleUpdateElement = (updatedElement, index) => {
+    const newElements = [...formElements];
     if (updatedElement === null) {
       // Remove element
-      const newElements = [...formElements];
       newElements.splice(index, 1);
-      updateElement(newElements);
     } else {
       // Update element
-      const newElements = [...formElements];
       newElements[index] = updatedElement;
-      updateElement(newElements);
     }
+    updateElement(newElements);
   };
 
   const handleMoveElement = (fromIndex, toIndex) => {

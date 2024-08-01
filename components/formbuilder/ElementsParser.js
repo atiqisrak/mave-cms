@@ -66,7 +66,19 @@ export default function ElementsParser({ element }) {
                   return <Input placeholder={element.placeholder} />;
               }
             case "textarea":
-              return <RichTextEditor editMode={false} />;
+              // return <RichTextEditor editMode={true} />;
+              return (
+                <Input.TextArea
+                  autoSize={{ minRows: 3, maxRows: 5 }}
+                  style={{
+                    resize: "none",
+                    borderRadius: "5px",
+                    border: "1px solid var(--theme)",
+                    marginBottom: "1rem",
+                  }}
+                  placeholder={element.placeholder}
+                />
+              );
             case "select":
               return (
                 <Select placeholder={element.placeholder}>
