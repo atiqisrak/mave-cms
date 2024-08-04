@@ -10,7 +10,13 @@ const MaveFormsShowcase = () => {
 
   return (
     <div className="ViewContainer">
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: "5em",
+        }}
+      >
         <div>
           <MaveFormsList
             onSelectForm={handleSelectForm}
