@@ -7,12 +7,17 @@ import Support from "../../components/documentation/Support";
 import Privacy from "../../components/documentation/Privacy";
 import Licensing from "../../components/documentation/Licensing";
 import UserGuideline from "../../components/documentation/UserGuideline";
+import TermsandConditions from "../../components/documentation/TermsandConditions";
+import Contributing from "../../components/documentation/Contributing";
+import IssueTemplate from "../../components/documentation/IssueTemplate";
+import PullRequestTemplatePage from "../../components/documentation/PullRequestTemplate";
+import CodeOfConduct from "../../components/documentation/CodeOfConduct";
 
 const Documentation = () => {
   return (
     <div className="ViewContainer">
       <Tabs
-        // tabPosition="left"
+        tabPosition="left"
         centered
         defaultActiveKey="1"
         type="card"
@@ -38,6 +43,21 @@ const Documentation = () => {
         </Tabs.TabPane>
         <Tabs.TabPane tab="User Guideline" key="7">
           <UserGuideline />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="Terms and Conditions" key="8">
+          <TermsandConditions />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="Contributing" key="9">
+          <Contributing />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="Issue Template" key="10">
+          <IssueTemplate />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="Pull Request Template" key="11">
+          <PullRequestTemplatePage />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="Code of Conduct" key="12">
+          <CodeOfConduct />
         </Tabs.TabPane>
       </Tabs>
     </div>
