@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 const { Header } = Layout;
 import router from "next/router";
 import Login from "../Login";
-
+import Changelog from "../../pages/usermanual/changelog.json";
 import TopNavData from "../../src/data/topnavdata.json";
 import Link from "next/link";
 
@@ -29,9 +29,11 @@ export default function NavItems({
   const [topNavData, setTopNavData] = useState([]);
   const [selectedMenuItem, setSelectedMenuItem] = useState("Home");
   const [itemType, setItemType] = useState(null);
+  const [changeLogs, setChangeLogs] = useState([]);
 
   useEffect(() => {
     TopNavData && setTopNavData(TopNavData);
+    setChangeLogs(Changelog);
   }, [TopNavData]);
 
   // const settingItems = [
@@ -238,7 +240,9 @@ export default function NavItems({
           display: "flex",
           justifyContent: "flex-start",
           alignItems: "center",
+          gap: "1vw",
         }}
+        onClick={() => router.push("/")}
       >
         <Image
           className="sitelogo"
@@ -261,6 +265,32 @@ export default function NavItems({
             marginLeft: "2vw",
           }}
         />
+        {/* Version */}
+        <Link href={"/usermanual/changelog"}>
+          <h3
+            style={{
+              color: "white",
+              fontSize: "1em",
+              backgroundColor: theme === "dark" ? "#001529" : "var(--theme)",
+              height: "2.5vh",
+              fontWeight: "bold",
+              padding: "8px 10px",
+              borderRadius: "5px 0 5px 0",
+              position: "absolute",
+              zIndex: 1,
+              left: "11.5vw",
+              top: 26,
+              cursor: "pointer",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {changeLogs && changeLogs.length > 0
+              ? changeLogs[0].version
+              : "v 1.0.0"}
+          </h3>
+        </Link>
       </Space>
 
       {user && token ? (

@@ -569,32 +569,38 @@ const SiteContent = ({ children, collapsed, setCollapsed }) => {
                     </Link>
                   </div>
 
-                  <Link href="/dashboard" className="sitelogo">
-                    {collapsed ? (
-                      <Image
-                        className="sitelogo"
-                        // src="/images/mave_logo.png"
-                        src="/images/mave_favicon.svg"
-                        width={40}
-                        height={40}
-                        resizemode="contain"
-                        preview={false}
-                      />
-                    ) : (
-                      <Image
-                        className="sitelogo"
-                        // src="/images/mave_logo_horizontal.png"
-                        // src="/images/mave_logo_horizontal_core.png"
-                        // width={629 / 4}
-                        // height={301 / 4}
-                        src="/images/mave_logo_vertical.png"
-                        width={950 / 4}
-                        height={871 / 4}
-                        resizemode="contain"
-                        preview={false}
-                      />
-                    )}
-                  </Link>
+                  {/* <Link href="/dashboard" className="sitelogo"> */}
+                  {collapsed ? (
+                    <Image
+                      className="sitelogo"
+                      // src="/images/mave_logo.png"
+                      src="/images/mave_favicon.svg"
+                      width={40}
+                      height={40}
+                      resizemode="contain"
+                      preview={false}
+                      onClick={() => {
+                        router.push("/");
+                      }}
+                    />
+                  ) : (
+                    <Image
+                      className="sitelogo"
+                      // src="/images/mave_logo_horizontal.png"
+                      // src="/images/mave_logo_horizontal_core.png"
+                      // width={629 / 4}
+                      // height={301 / 4}
+                      src="/images/mave_logo_vertical.png"
+                      width={950 / 4}
+                      height={871 / 4}
+                      resizemode="contain"
+                      preview={false}
+                      onClick={() => {
+                        router.push("/");
+                      }}
+                    />
+                  )}
+                  {/* </Link> */}
                 </div>
                 <Menu
                   theme="dark"

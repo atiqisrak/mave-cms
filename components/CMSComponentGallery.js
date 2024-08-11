@@ -143,31 +143,37 @@ const CMSComponentGallery = ({ children, router }) => {
               />
             ) : null}
 
-            <Link href="/dashboard" className="sitelogo">
-              {collapsed ? (
-                <Image
-                  className="sitelogo"
-                  src="/images/mave_logo.png"
-                  width={40} // Adjust the collapsed logo width
-                  height={40} // Adjust the collapsed logo height
-                  resizemode="contain"
-                  preview={false}
-                />
-              ) : (
-                <Image
-                  className="sitelogo"
-                  // src="/images/mave_logo_horizontal.png"
-                  // width={629 / 4}
-                  // height={301 / 4}
+            {/* <Link href="/dashboard" className="sitelogo"> */}
+            {collapsed ? (
+              <Image
+                className="sitelogo"
+                src="/images/mave_logo.png"
+                width={40} // Adjust the collapsed logo width
+                height={40} // Adjust the collapsed logo height
+                resizemode="contain"
+                preview={false}
+                onClick={() => {
+                  router.push("/");
+                }}
+              />
+            ) : (
+              <Image
+                className="sitelogo"
+                // src="/images/mave_logo_horizontal.png"
+                // width={629 / 4}
+                // height={301 / 4}
 
-                  src="/images/mave_logo_vertical.png"
-                  width={950 / 4}
-                  height={871 / 4}
-                  resizemode="contain"
-                  preview={false}
-                />
-              )}
-            </Link>
+                src="/images/mave_logo_vertical.png"
+                width={950 / 4}
+                height={871 / 4}
+                resizemode="contain"
+                preview={false}
+                onClick={() => {
+                  router.push("/");
+                }}
+              />
+            )}
+            {/* </Link> */}
           </div>
           <Menu
             theme="dark"
