@@ -8,6 +8,12 @@ const ElementConfig = ({ element, onUpdate }) => {
   const [placeholder, setPlaceholder] = useState(element.placeholder);
   const [inputType, setInputType] = useState(element.input_type || "text");
   const [options, setOptions] = useState(element.options || []);
+  const [divisionLabel, setDivisionLabel] = useState(
+    element.divisionLabel || "Select Division"
+  );
+  const [districtLabel, setDistrictLabel] = useState(
+    element.districtLabel || "Select District"
+  );
 
   const handleUpdate = () => {
     onUpdate({
@@ -39,6 +45,14 @@ const ElementConfig = ({ element, onUpdate }) => {
   useEffect(() => {
     handleUpdate();
   }, [label, placeholder, inputType, options]);
+
+  useEffect(() => {
+    onUpdate({
+      ...element,
+      divisionLabel,
+      districtLabel,
+    });
+  }, [divisionLabel, districtLabel]);
 
   return (
     <div className="element-config">
@@ -134,6 +148,22 @@ const ElementConfig = ({ element, onUpdate }) => {
             ))}
             <Button onClick={addOption}>Add Option</Button>
           </Form.Item>
+        )}
+        {element.element_type === "location" && (
+          <>
+            <Form.Item label="Division Label">
+              <Input
+                value={divisionLabel}
+                onChange={(e) => setDivisionLabel(e.target.value)}
+              />
+            </Form.Item>
+            <Form.Item label="District Label">
+              <Input
+                value={districtLabel}
+                onChange={(e) => setDistrictLabel(e.target.value)}
+              />
+            </Form.Item>
+          </>
         )}
       </Form>
     </div>
