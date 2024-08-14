@@ -69,11 +69,12 @@ const Profile = () => {
     };
     try {
       const response = await instance.post("/admin/register", items);
-      if (response.status === 200) {
+      if (response.status === 201) {
         console.log("User created successfully");
+        message.success("User created successfully");
         setCreateUser(false);
         setIsLoading(false);
-        window.location.reload();
+        fetchUsers();
       }
     } catch (error) {
       setIsLoading(false);
@@ -246,7 +247,9 @@ const Profile = () => {
           // console.log("Response: ", response?.data?.user);
           if (response.status === 200) {
             console.log("User Deleted Successfully");
+            message.success("User Deleted Successfully");
             setUsers(users.filter((user) => user.id !== id));
+            fetchUsers();
           }
         })
         .catch((error) => {

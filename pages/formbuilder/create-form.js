@@ -4,13 +4,14 @@ import router from "next/router";
 import { DndProvider } from "react-dnd";
 import FormBuilder from "../../components/formbuilder/builder/FormBuilder";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import LocationFetcher from "../../components/formbuilder/LocationFetcher";
 
 export default function CreateForm() {
   return (
     <div
       className="formbuilder"
       style={{
-        padding: "2% 0 0 10%",
+        padding: "2% 0 5em 10%",
       }}
     >
       <Breadcrumb
@@ -34,6 +35,8 @@ export default function CreateForm() {
       <DndProvider backend={HTML5Backend}>
         <FormBuilder />
       </DndProvider>
+
+      {/* <LocationFetcher /> */}
     </div>
   );
 }

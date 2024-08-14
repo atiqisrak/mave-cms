@@ -3,6 +3,7 @@ import { Input, Select, DatePicker, Button, Radio, Popconfirm } from "antd";
 import ElementConfig from "./ElementConfig";
 import RichTextEditor from "../../RichTextEditor";
 import { DownOutlined, UpOutlined } from "@ant-design/icons";
+import LocationFetcher from "../LocationFetcher";
 
 const { Option } = Select;
 
@@ -94,6 +95,17 @@ const FormElement = ({ element, index, totalElements, onUpdate, onMove }) => {
               </Option>
             ))}
           </Select>
+        );
+      case "location":
+        return (
+          <LocationFetcher
+            onDivisionChange={(value) =>
+              onUpdate({ ...element, selectedDivision: value }, index)
+            }
+            onDistrictChange={(value) =>
+              onUpdate({ ...element, selectedDistrict: value }, index)
+            }
+          />
         );
       default:
         return null;

@@ -11,6 +11,7 @@ import {
   SwapOutlined,
   AlignLeftOutlined,
   UploadOutlined,
+  EnvironmentOutlined,
 } from "@ant-design/icons";
 
 import { Card } from "antd";
@@ -72,8 +73,8 @@ const elements = [
     input_type: "radio",
     placeholder: null,
     options: [
-      { _id: "option1", title: "Option 1", value: "option_1" },
-      { _id: "option2", title: "Option 2", value: "option_2" },
+      // { _id: "option1", title: "Option 1", value: "option_1" },
+      // { _id: "option2", title: "Option 2", value: "option_2" },
     ],
   },
   {
@@ -83,9 +84,15 @@ const elements = [
     element_type: "select",
     placeholder: "Select an option",
     options: [
-      { _id: "option1", title: "Option 1", value: "option_1" },
-      { _id: "option2", title: "Option 2", value: "option_2" },
+      // { _id: "option1", title: "Option 1", value: "option_1" },
+      // { _id: "option2", title: "Option 2", value: "option_2" },
     ],
+  },
+  {
+    type: "location",
+    label: "Location",
+    icon: <EnvironmentOutlined />, // Import this icon from `@ant-design/icons`
+    element_type: "location",
   },
   {
     type: "textarea",
