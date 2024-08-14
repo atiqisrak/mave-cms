@@ -266,7 +266,7 @@ const Profile = () => {
     // const emailRegEx = /^\w+@(?:gmail\.com|webable\.digital)$/;
     // const emailRegEx = /^\w(?:\w+\.)+@(?:\w+\.)?(?:gmail\.com|webable\.digital)$/;
     const emailRegEx =
-      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+)*@(gmail\.com|webable\.digital)$/;
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+)*@(gmail\.com|mave\.cms|webable\.digital)$/;
 
     // Check if email is empty
     if (!email.trim()) {

@@ -81,7 +81,13 @@ const FormElement = ({ element, index, totalElements, onUpdate, onMove }) => {
         );
       case "select":
         return (
-          <Select placeholder={element.placeholder}>
+          <Select
+            placeholder={element.placeholder}
+            value={element.selectedValue || undefined} // Ensure individual select state
+            onChange={(value) =>
+              onUpdate({ ...element, selectedValue: value }, index)
+            } // Update state individually
+          >
             {element.options.map((option) => (
               <Option key={option._id} value={option.value}>
                 {option.title}

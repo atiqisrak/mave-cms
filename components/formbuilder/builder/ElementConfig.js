@@ -9,10 +9,6 @@ const ElementConfig = ({ element, onUpdate }) => {
   const [inputType, setInputType] = useState(element.input_type || "text");
   const [options, setOptions] = useState(element.options || []);
 
-  useEffect(() => {
-    handleUpdate();
-  }, [label, placeholder, inputType, options]);
-
   const handleUpdate = () => {
     onUpdate({
       ...element,
@@ -20,6 +16,7 @@ const ElementConfig = ({ element, onUpdate }) => {
       placeholder,
       input_type: inputType,
       options,
+      selectedValue: element.selectedValue || "",
     });
   };
 
@@ -38,6 +35,10 @@ const ElementConfig = ({ element, onUpdate }) => {
     const newOptions = options.filter((_, i) => i !== index);
     setOptions(newOptions);
   };
+
+  useEffect(() => {
+    handleUpdate();
+  }, [label, placeholder, inputType, options]);
 
   return (
     <div className="element-config">

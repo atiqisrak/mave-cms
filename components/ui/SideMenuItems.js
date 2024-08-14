@@ -178,7 +178,8 @@ const SideMenuItems = ({
           <Menu.Item key="no-data">No data found</Menu.Item>
         )}
         {(user && user?.email === "atiqisrak@niloy.com") ||
-        user?.email === "lordofgalaxy@webable.digital"
+        user?.email === "lordofgalaxy@webable.digital" ||
+        user?.email === "su@mave.cms"
           ? Godfather?.map((item) => (
               <Menu.SubMenu
                 key={item.id}
