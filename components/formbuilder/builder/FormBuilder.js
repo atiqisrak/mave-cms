@@ -72,7 +72,7 @@ const FormBuilder = () => {
         attributes: formAttributes,
         elements: formElements,
       });
-      if (response.status === 200) {
+      if (response.status === 201) {
         message.success("Form saved successfully!");
         router.push("/formbuilder");
       } else {
