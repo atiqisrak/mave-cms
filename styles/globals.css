@@ -494,3 +494,14 @@ a:hover {
 .draggable-element:hover {
   background: #f0f0f0;
 }
+
+.dhaka:hover path,
+.mymensingh:hover path,
+.sylhet:hover path,
+.khulna:hover path,
+.rajshahi:hover path,
+.barishal:hover path,
+.rangpur:hover path,
+.chittagong:hover path {
+  fill: #7d88a1;
+}

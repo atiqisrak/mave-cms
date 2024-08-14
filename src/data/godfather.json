@@ -17,6 +17,12 @@
                 "icon": "/icons/mave_icons/documentation.svg",
                 "link": "/formbuilder",
                 "title": "Form Builder"
+            },
+            {
+                "id": 62,
+                "icon": "/icons/mave_icons/documentation.svg",
+                "link": "/mapview",
+                "title": "Map View"
             }
         ]
     }
