@@ -11,6 +11,7 @@ import {
 } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import RichTextEditor from "../../components/RichTextEditor";
+import LocationFetcher from "./LocationFetcher";
 
 const { Option } = Select;
 
@@ -58,6 +59,7 @@ export default function ElementsParser({ element }) {
                       ))}
                     </Radio.Group>
                   );
+
                 case "submit":
                   return (
                     <Button type="primary">{element.default_value}</Button>
@@ -88,6 +90,23 @@ export default function ElementsParser({ element }) {
                     </Option>
                   ))}
                 </Select>
+              );
+            case "location":
+              return (
+                <div style={{ display: "flex", gap: "2rem" }}>
+                  <Select
+                    placeholder="Select Division"
+                    style={{ width: "50%" }}
+                    options={[]}
+                    disabled
+                  />
+                  <Select
+                    placeholder="Select District"
+                    style={{ width: "50%" }}
+                    options={[]}
+                    disabled
+                  />
+                </div>
               );
           }
         })()}
