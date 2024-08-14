@@ -157,7 +157,7 @@ const UserList = ({
 
   const emailValidation = (email) => {
     const emailRegEx =
-      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+)*@(gmail\.com|webable\.digital)$/;
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+)*@(gmail\.com|mave\.cms|webable\.digital)$/;
     if (!email.trim()) {
       setEmailMessage("Email is required. (e.g.: username@gmail.com)");
       setValidEmail(false);

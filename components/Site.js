@@ -8,7 +8,7 @@ export default function Site({ children, collapsed, setCollapsed }) {
     "atiqisrak@niloy.com",
     "lordofgalaxy@webable.digital",
     "shadab.mahbub@webable.digital",
-    "tanvir.ahmed@webable.digital",
+    "su@mave.cms",
   ]);
 
   useEffect(() => {
