@@ -1,7 +1,10 @@
 import { HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb } from "antd";
+import { Breadcrumb, Tabs } from "antd";
 import Link from "next/link";
 import router from "next/router";
+import GeneralSetting from "../../components/settings/GeneralSetting";
+import ContentManagement from "../../components/settings/contentManagement";
+import UserManagement from "../../components/settings/UserManagement";
 
 export default function Settings() {
   return (
@@ -17,95 +20,21 @@ export default function Settings() {
           fontSize: "1.2rem",
         }}
       />
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: "1rem",
-        }}
-      >
-        <div
-          className="Card"
-          style={{
-            backgroundColor: "#f0f0f0",
-            padding: "4rem 1rem",
-            borderRadius: "0.5rem",
-            textAlign: "center",
-            cursor: "pointer",
-          }}
-          onClick={() => {
-            router.push("/settings/general-settings");
-          }}
-        >
-          <h2>General Settings</h2>
-          <p>Configure general settings for your site.</p>
-        </div>
-        <div
-          className="Card"
-          style={{
-            backgroundColor: "#f0f0f0",
-            padding: "4rem 1rem",
-            borderRadius: "0.5rem",
-            textAlign: "center",
-            cursor: "pointer",
-          }}
-          onClick={() => {
-            router.push("/settings/content-management");
-          }}
-        >
-          <h2>Content Management</h2>
-          <p>Configure content management settings.</p>
-        </div>
-        <div
-          className="Card"
-          style={{
-            backgroundColor: "#f0f0f0",
-            padding: "4rem 1rem",
-            borderRadius: "0.5rem",
-            textAlign: "center",
-            cursor: "pointer",
-          }}
-          onClick={() => {
-            router.push("/settings/user-management");
-          }}
-        >
-          <h2>User Management</h2>
-          <p>Configure user management settings.</p>
-        </div>
-        <div
-          className="Card"
-          style={{
-            backgroundColor: "#f0f0f0",
-            padding: "4rem 1rem",
-            borderRadius: "0.5rem",
-            textAlign: "center",
-            cursor: "pointer",
-          }}
-          onClick={() => {
-            router.push("/settings/seo-settings");
-          }}
-        >
-          <h2>SEO Settings</h2>
-          <p>Configure SEO settings for your site.</p>
-        </div>
-        {/* API Monitoring Tool */}
-        <div
-          className="Card"
-          style={{
-            backgroundColor: "#f0f0f0",
-            padding: "4rem 1rem",
-            borderRadius: "0.5rem",
-            textAlign: "center",
-            cursor: "pointer",
-          }}
-          onClick={() => {
-            router.push("/settings/api-monitoring");
-          }}
-        >
-          <h2>API Monitoring</h2>
-          <p>Monitor API usage and performance.</p>
-        </div>
-      </div>
+
+      <Tabs centered style={{ marginBottom: "5rem" }} type="card">
+        <Tabs.TabPane tab="General Settings" key="1">
+          <GeneralSetting />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="Content Management" key="2">
+          <ContentManagement />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="User Management" key="3">
+          <UserManagement />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="API Monitoring" key="4">
+          <p>API Monitoring</p>
+        </Tabs.TabPane>
+      </Tabs>
     </div>
   );
 }

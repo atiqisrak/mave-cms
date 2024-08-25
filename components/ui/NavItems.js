@@ -7,7 +7,16 @@ import {
   LoginOutlined,
   DownOutlined,
 } from "@ant-design/icons";
-import { Image, Input, List, Space, Layout, Menu, Dropdown } from "antd";
+import {
+  Image,
+  Input,
+  List,
+  Space,
+  Layout,
+  Menu,
+  Dropdown,
+  Button,
+} from "antd";
 import { useEffect, useState } from "react";
 const { Header } = Layout;
 import router from "next/router";
@@ -35,73 +44,6 @@ export default function NavItems({
     TopNavData && setTopNavData(TopNavData);
     setChangeLogs(Changelog);
   }, [TopNavData]);
-
-  // const settingItems = [
-  //   {
-  //     key: "1",
-  //     label: <Link href="/settings/general">General</Link>,
-  //   },
-  //   {
-  //     key: "2",
-  //     label: <Link href="/settings/user-management">User Management</Link>,
-  //   },
-  //   {
-  //     key: "3",
-  //     label: (
-  //       <Link href="/settings/content-management">Content Management</Link>
-  //     ),
-  //   },
-  //   {
-  //     key: "4",
-  //     label: <Link href="/settings/api-settings">API Settings</Link>,
-  //   },
-  //   {
-  //     key: "5",
-  //     label: <Link href="/settings/server-system">Server & System</Link>,
-  //   },
-  //   {
-  //     key: "6",
-  //     label: <Link href="/settings/cdn">CDN</Link>,
-  //   },
-  //   {
-  //     key: "7",
-  //     label: <Link href="/settings/ai-analytics">AI & Analytics</Link>,
-  //   },
-  //   {
-  //     key: "8",
-  //     label: (
-  //       <Link href="/settings/plugins-extensions">Plugins & Extensions</Link>
-  //     ),
-  //   },
-  //   {
-  //     key: "9",
-  //     label: (
-  //       <Link href="/settings/email-notification">Email & Notification</Link>
-  //     ),
-  //   },
-  //   {
-  //     key: "10",
-  //     label: (
-  //       <Link href="/settings/social-media-integration">
-  //         Social Media Integration
-  //       </Link>
-  //     ),
-  //   },
-  //   {
-  //     key: "11",
-  //     label: (
-  //       <Link href="/settings/licensing-updates">Licensing & Updates</Link>
-  //     ),
-  //   },
-  //   {
-  //     key: "12",
-  //     label: <Link href="/settings/security">Security</Link>,
-  //   },
-  //   {
-  //     key: "13",
-  //     label: <Link href="/settings/customization">Customization</Link>,
-  //   },
-  // ];
 
   const settingItems = [
     {
@@ -405,7 +347,7 @@ export default function NavItems({
                   }}
                 />
               </Space>
-              <Space
+              {/* <Space
                 style={{
                   width: "50px",
                   height: "50px",
@@ -426,10 +368,43 @@ export default function NavItems({
                     height: "clamp(1em, 2vw, 2em)",
                   }}
                 />
-              </Space>
+              </Space> */}
 
               {/* Settings */}
               <Space
+                style={{
+                  width: "50px",
+                  height: "50px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: "50%",
+                  backgroundColor: theme === "dark" ? "#001529" : "white",
+                }}
+              >
+                <Button
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: theme === "dark" ? "#001529" : "white",
+                    border: "none",
+                    cursor: "pointer",
+                    boxShadow: "none",
+                  }}
+                  onClick={() => router.push("/settings")}
+                >
+                  <Image
+                    src="/icons/mave_icons/wrench.svg"
+                    preview={false}
+                    style={{
+                      width: "clamp(1em, 2vw, 1.6em)",
+                      height: "clamp(1em, 2vw, 1.6em)",
+                    }}
+                  />
+                </Button>
+              </Space>
+              {/* <Space
                 style={{
                   width: "50px",
                   height: "50px",
@@ -468,7 +443,7 @@ export default function NavItems({
                     />
                   </Space>
                 </Dropdown>
-              </Space>
+              </Space> */}
 
               {/* User */}
               <Space
