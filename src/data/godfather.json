@@ -20,9 +20,9 @@
             },
             {
                 "id": 62,
-                "icon": "/icons/mave_icons/documentation.svg",
-                "link": "/mapview",
-                "title": "Map View"
+                "icon": "/icons/mave_icons/paper.svg",
+                "link": "/blackbox",
+                "title": "Data Visualizer"
             }
         ]
     }

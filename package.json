@@ -50,7 +50,9 @@
     "react-text-to-speech": "^0.14.5",
     "react-to-print": "^2.14.15",
     "react-virtualized": "^9.22.5",
-    "remark-gfm": "^4.0.0"
+    "recharts": "^2.12.7",
+    "remark-gfm": "^4.0.0",
+    "swr": "^2.2.5"
   },
   "devDependencies": {
     "eslint": "8.49.0",
