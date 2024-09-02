@@ -427,15 +427,14 @@ const MenuItems = () => {
               {/* Toggle Switch Button */}
               <Switch
                 size="large"
-                checkedChildren="Added Last"
-                unCheckedChildren="Added First"
+                checkedChildren="Last"
+                unCheckedChildren="First"
                 defaultChecked
                 onChange={(checked) =>
                   checked ? setSortType("asc") : setSortType("desc")
                 }
                 style={{
                   marginLeft: "1em",
-                  backgroundColor: "var(--theme)",
                 }}
               />
             </Col>

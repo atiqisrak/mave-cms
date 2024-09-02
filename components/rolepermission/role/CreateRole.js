@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Form, Input, Switch, Checkbox, Button, message, Select } from "antd";
-import instance from "../../axios";
+import instance from "../../../axios";
 
 export default function CreateRole() {
   const [permissions, setPermissions] = useState([]);
@@ -111,7 +111,15 @@ export default function CreateRole() {
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit" loading={loading}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={loading}
+            style={{
+              backgroundColor: "var(--maveyellow)",
+              color: "white",
+            }}
+          >
             Create Role
           </Button>
         </Form.Item>

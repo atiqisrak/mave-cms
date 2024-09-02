@@ -1,5 +1,32 @@
 [
     {
+        "id": 49,
+        "menu": "Settings",
+        "title": "Settings",
+        "icon": "/icons/mave_icons/wrench.svg",
+        "link": "settings",
+        "submenu": [
+            {
+                "id": 60,
+                "icon": "/icons/mave_icons/wrench.svg",
+                "link": "/settings/general-settings",
+                "title": "General"
+            },
+            {
+                "id": 61,
+                "icon": "/icons/mave_icons/wrench.svg",
+                "link": "/settings/content-management",
+                "title": "Content Management"
+            },
+            {
+                "id": 62,
+                "icon": "/icons/mave_icons/wrench.svg",
+                "link": "/settings/users",
+                "title": "User Management"
+            }
+        ]
+    },
+    {
         "id": 50,
         "menu": "Tools",
         "title": "Tools",

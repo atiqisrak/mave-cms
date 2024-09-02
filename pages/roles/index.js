@@ -31,7 +31,7 @@ export default function Roles() {
         }}
       >
         <Breadcrumb
-          style={{ margin: "16px 0" }}
+          style={{ margin: "16px 0", fontWeight: "600" }}
           separator=">"
           className="ViewContainer"
           items={[
@@ -47,7 +47,7 @@ export default function Roles() {
               title: <Link href="/settings">Settings</Link>,
             },
             {
-              title: "Permissions",
+              title: "Roles",
               menu: {
                 items: menuItems,
               },

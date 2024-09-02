@@ -7,9 +7,12 @@
   --black: #343434;
   --gray: #f5f5f5;
   --gray-dark: #bababa;
-  --theme: #9012ff;
+  /* --theme: #9012ff; */
+  --theme: #fcb813;
   --theme-transparent: #f3ecf8;
-  --themes: #f1612a;
+  /* --themes: #f1612a; */
+  --themes: #fcb813;
+  --maveyellow: #fcb813;
   --themes-transparent: #ffefe9;
   --themes-light: #f1622a25;
   --success: #008f39;
@@ -448,7 +451,7 @@ a:hover {
 
 .ant-menu-light .ant-menu-item-selected,
 .ant-menu-light > .ant-menu .ant-menu-item-selected {
-  background-color: #f1622a;
+  background-color: var(--themes);
 }
 
 .ant-menu-light .ant-menu-item-selected,
@@ -504,4 +507,16 @@ a:hover {
 .rangpur:hover path,
 .chittagong:hover path {
   fill: #7d88a1;
+}
+
+:where(.css-dev-only-do-not-override-f7vrd6).ant-switch.ant-switch-checked {
+  background: #fee9b6;
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-switch {
+  border-radius: 5px;
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-switch
+  .ant-switch-handle::before {
+  border-radius: 4px;
+  background-color: #fcb813;
 }
