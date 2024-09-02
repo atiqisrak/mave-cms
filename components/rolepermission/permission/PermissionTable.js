@@ -1,6 +1,6 @@
 import { Table, Switch, Tooltip } from "antd";
 import { useEffect, useState } from "react";
-import instance from "../../axios";
+import instance from "../../../axios";
 
 export default function PermissionTable() {
   const [permissions, setPermissions] = useState([]);

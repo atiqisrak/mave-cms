@@ -1,6 +1,6 @@
 import { Table, Switch, Tooltip, Button, Modal } from "antd";
 import { useEffect, useState } from "react";
-import instance from "../../axios";
+import instance from "../../../axios";
 
 export default function RoleTable() {
   const [loading, setLoading] = useState(true);

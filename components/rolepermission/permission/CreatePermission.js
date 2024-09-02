@@ -1,6 +1,6 @@
 import { useState } from "react";
-import instance from "../../axios";
 import { Form, Input, Switch, Button } from "antd";
+import instance from "../../../axios";
 
 export default function CreatePermission() {
   const [loading, setLoading] = useState(false);

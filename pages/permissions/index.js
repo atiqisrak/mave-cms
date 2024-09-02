@@ -32,7 +32,7 @@ export default function Permissions() {
         }}
       >
         <Breadcrumb
-          style={{ margin: "16px 0" }}
+          style={{ margin: "16px 0", fontWeight: "600" }}
           separator=">"
           className="ViewContainer"
           items={[
