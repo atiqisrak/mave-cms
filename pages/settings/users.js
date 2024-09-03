@@ -8,6 +8,7 @@ import UserList from "../../components/settings/user/UserList";
 import instance from "../../axios";
 import UserForm from "../../components/settings/user/UserForm";
 import UsersTopbar from "../../components/settings/user/UsersTopbar";
+import UserTable from "../../components/settings/userv2/UserTable";
 
 const initialLogs = [
   {
@@ -170,12 +171,13 @@ export default function usersSettingsPage() {
         createUser={createUser}
         handleCreateUser={handleCreateUser}
       />
-      <UserList
+      {/* <UserList
         users={users}
         onEdit={handleEditUser}
         onDelete={handleDeleteUser}
         fetchUsers={fetchUsers}
-      />
+      /> */}
+      <UserTable users={users} fetchUsers={fetchUsers} setUsers={setUsers} />
     </div>
   );
 }

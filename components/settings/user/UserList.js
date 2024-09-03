@@ -210,17 +210,14 @@ const UserList = ({
                   marginTop: "2rem",
                 }}
               >
-                <Col span={6}>
+                <Col span={9}>
                   <h3 style={{ fontWeight: "bold" }}>Name</h3>
                 </Col>
-                <Col span={6}>
+                <Col span={9}>
                   <h3 style={{ fontWeight: "bold" }}>Email</h3>
                 </Col>
                 <Col span={4}>
                   <h3 style={{ fontWeight: "bold" }}>Role</h3>
-                </Col>
-                <Col span={6}>
-                  <h3 style={{ fontWeight: "bold" }}>Permissions</h3>
                 </Col>
                 <Col span={2}>
                   <h3 style={{ fontWeight: "bold" }}>Actions</h3>
@@ -237,7 +234,7 @@ const UserList = ({
                   }}
                   key={user.id}
                 >
-                  <Col span={6}>
+                  <Col span={9}>
                     {userEdit && user?.id == editUserId ? (
                       <Input
                         defaultValue={user?.name}
@@ -249,7 +246,7 @@ const UserList = ({
                       user?.name
                     )}
                   </Col>
-                  <Col span={6}>
+                  <Col span={9}>
                     {userEdit && user?.id == editUserId ? (
                       <Input
                         defaultValue={user?.email}
@@ -283,9 +280,6 @@ const UserList = ({
                     ) : (
                       "Guest"
                     )}
-                  </Col>
-                  <Col span={6}>
-                    <p>All</p>
                   </Col>
                   <Col span={2}>
                     {userEdit && user?.id == editUserId ? (
