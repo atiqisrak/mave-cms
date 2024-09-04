@@ -1,13 +1,36 @@
 import { Breadcrumb, Button, Modal, Select } from "antd";
-import PermissionTable from "../../components/permission/PermissionTable";
 import { useState } from "react";
-import CreatePermission from "../../components/permission/CreatePermission";
 import { HomeOutlined } from "@ant-design/icons";
 import Link from "next/link";
+import CreatePermission from "../../components/rolepermission/permission/CreatePermission";
+import PermissionTable from "../../components/rolepermission/permission/PermissionTable";
+import instance from "../../axios";
 
 export default function Permissions() {
   const [modalVisible, setModalVisible] = useState(false);
+  const [permissions, setPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const fetchPermissions = async () => {
+    try {
+      const response = await instance.get("/permissions");
+      console.log("Making request to fetch permissions", response);
+      if (response.status === 200) {
+        setPermissions(response.data);
+        console.log("Response received", response.data);
+      } else {
+        console.error(response);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPermissions();
+  }, []);
 
   const menuItems = [
     {
@@ -21,6 +44,8 @@ export default function Permissions() {
       label: "Permissions",
     },
   ];
+
+  permissions && console.log("Permissions received index");
 
   return (
     <div className="ViewContainer">
@@ -69,7 +94,11 @@ export default function Permissions() {
           Create Permission
         </Button>
       </div>
-      <PermissionTable />
+      <PermissionTable
+        permissions={permissions}
+        fetchPermissions={fetchPermissions}
+        loading={loading}
+      />
 
       <Modal
         title="Create Permission"
@@ -80,7 +109,11 @@ export default function Permissions() {
         }}
         width={700}
       >
-        <CreatePermission />
+        <CreatePermission
+          setModalVisible={setModalVisible}
+          fetchPermissions={fetchPermissions}
+          loading={loading}
+        />
       </Modal>
     </div>
   );

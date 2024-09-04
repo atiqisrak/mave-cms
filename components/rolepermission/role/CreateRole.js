@@ -2,29 +2,13 @@ import { useEffect, useState } from "react";
 import { Form, Input, Switch, Checkbox, Button, message, Select } from "antd";
 import instance from "../../../axios";
 
-export default function CreateRole() {
-  const [permissions, setPermissions] = useState([]);
+export default function CreateRole({
+  permissions,
+  setModalVisible,
+  fetchRolesPermissions,
+}) {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
-
-  // Fetch all permissions to display as checkboxes
-  const fetchPermissions = async () => {
-    try {
-      const response = await instance.get("/permissions");
-
-      if (response.status === 200) {
-        setPermissions(response.data);
-      } else {
-        console.error(response);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchPermissions();
-  }, []);
 
   const createRole = async (values) => {
     setLoading(true);
@@ -40,7 +24,9 @@ export default function CreateRole() {
 
       if (response.status === 201) {
         message.success("Role created successfully!");
-        form.resetFields(); // Reset form fields after successful submission
+        form.resetFields();
+        fetchRolesPermissions();
+        setModalVisible(false);
       } else {
         console.error(response);
         message.error("Failed to create role.");
@@ -102,7 +88,7 @@ export default function CreateRole() {
             allowClear
             showSearch
           >
-            {permissions.map((permission) => (
+            {permissions?.map((permission) => (
               <Select.Option key={permission.id} value={permission.id}>
                 {permission.title}
               </Select.Option>

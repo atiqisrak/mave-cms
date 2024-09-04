@@ -1,6 +1,10 @@
 import React from "react";
 import { Row, Col, Select, Button, Input, Popconfirm, Checkbox } from "antd";
-import { FilterOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  FilterOutlined,
+  DeleteOutlined,
+  CheckOutlined,
+} from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -9,52 +13,80 @@ const TopBar = ({
   onSearch,
   onDelete,
   setIsFilterDrawerVisible,
+  onSelectAll,
+  users,
 }) => {
+  const isAllSelected =
+    selectedRowKeys.length > 0 && selectedRowKeys.length === users.length;
+
   return (
-    <Row gutter={16} style={{ marginBottom: "1rem" }}>
-      <Col span={4}>
-        <Checkbox onChange={(e) => console.log(e.target.checked)}>
-          Select All
-        </Checkbox>
-      </Col>
-      <Col span={4}>
-        <Select defaultValue="10" style={{ width: "100%" }}>
-          <Option value="10">10 Rows</Option>
-          <Option value="20">20 Rows</Option>
-          <Option value="30">30 Rows</Option>
-        </Select>
-      </Col>
-      <Col span={4}>
+    <>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "3fr 5fr",
+          alignItems: "center",
+          borderBottom: "1px solid #f0f0f0",
+          padding: "1rem 0",
+        }}
+      >
         <Button
-          icon={<FilterOutlined />}
-          onClick={() => setIsFilterDrawerVisible(true)}
+          icon={<CheckOutlined />}
+          style={{
+            marginRight: "1rem",
+            backgroundColor: isAllSelected ? "gray" : "var(--maveyellow)",
+            color: "white",
+            fontSize: "1rem",
+            fontWeight: 500,
+            width: "fit-content",
+          }}
+          onClick={onSelectAll}
         >
-          Filter
+          {isAllSelected ? "Deselect All" : "Select All"}
         </Button>
-      </Col>
-      <Col span={4}>
-        <Popconfirm
-          title="Are you sure to delete selected users?"
-          onConfirm={onDelete}
-          okText="Yes"
-          cancelText="No"
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            gap: "1.5rem",
+          }}
         >
+          <Select defaultValue="10" style={{ width: "fit-content" }}>
+            <Option value="10">10 Rows</Option>
+            <Option value="20">20 Rows</Option>
+            <Option value="30">30 Rows</Option>
+          </Select>
           <Button
-            icon={<DeleteOutlined />}
-            danger
-            disabled={!selectedRowKeys.length}
+            icon={<FilterOutlined />}
+            onClick={() => setIsFilterDrawerVisible(true)}
+            style={{ width: "fit-content" }}
           >
-            Delete
+            Filter
           </Button>
-        </Popconfirm>
-      </Col>
-      <Col span={8}>
-        <Input.Search
-          placeholder="Search by name"
-          onChange={(e) => onSearch(e.target.value)}
-        />
-      </Col>
-    </Row>
+          <Popconfirm
+            title="Are you sure to delete selected users?"
+            onConfirm={onDelete}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button
+              icon={<DeleteOutlined />}
+              danger
+              disabled={!selectedRowKeys.length}
+              style={{ width: "fit-content" }}
+            >
+              Delete
+            </Button>
+          </Popconfirm>
+          <Input.Search
+            placeholder="Search by name"
+            onChange={(e) => onSearch(e.target.value)}
+            style={{ width: "fit-content" }}
+          />
+        </div>
+      </div>
+    </>
   );
 };
 

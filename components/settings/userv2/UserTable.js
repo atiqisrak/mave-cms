@@ -9,6 +9,7 @@ import {
   message,
   Modal,
   Checkbox,
+  Spin,
 } from "antd";
 import { EditOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import TopBar from "./TopBar";
@@ -32,12 +33,22 @@ const UserTable = ({ users, fetchUsers, setUsers }) => {
     setFilteredUsers(users);
   }, [users]);
 
-  // Handle selection of all rows
-  const handleSelectAll = (e) => {
-    if (e.target.checked) {
-      setSelectedRowKeys(users.map((user) => user.id));
-    } else {
+  //   const handleSelectAll = (e) => {
+  //     if (e.target.checked) {
+  //       setSelectedRowKeys(filteredUsers?.map((user) => user.id));
+  //     } else {
+  //       setSelectedRowKeys([]);
+  //     }
+  //   };
+
+  // Handle selection of all rows (not header)
+  const handleSelectAll = () => {
+    if (selectedRowKeys.length === filteredUsers.length) {
+      // Deselect all if already selected
       setSelectedRowKeys([]);
+    } else {
+      // Select all
+      setSelectedRowKeys(filteredUsers.map((user) => user.id));
     }
   };
 
@@ -96,14 +107,9 @@ const UserTable = ({ users, fetchUsers, setUsers }) => {
   // Column definitions for Ant Design Table
   const columns = [
     {
-      title: (
-        <Checkbox
-          onChange={handleSelectAll}
-          checked={selectedRowKeys.length === users?.length}
-        />
-      ),
-      dataIndex: "checkbox",
-      key: "checkbox",
+      title: "Select",
+      dataIndex: "select",
+      key: "select",
       render: (_, record) => (
         <Checkbox
           checked={selectedRowKeys.includes(record.id)}
@@ -172,13 +178,26 @@ const UserTable = ({ users, fetchUsers, setUsers }) => {
         setIsFilterDrawerVisible={setIsFilterDrawerVisible}
         setFilteredUsers={setFilteredUsers}
         users={users}
+        onSelectAll={handleSelectAll}
       />
-      <Table
-        columns={columns}
-        dataSource={filteredUsers}
-        rowKey="id"
-        pagination={{ pageSize: 10 }}
-      />
+      {!users ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Spin />
+        </div>
+      ) : (
+        <Table
+          columns={columns}
+          dataSource={filteredUsers}
+          rowKey="id"
+          pagination={{ pageSize: 10 }}
+        />
+      )}
       <UserEditModal
         visible={isEditModalVisible}
         user={selectedUser}
