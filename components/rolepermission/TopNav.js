@@ -21,7 +21,9 @@ export default function TopNav({ activeTab, setActiveTab }) {
         }}
       >
         Role Permission{" "}
-        <span style={{ fontSize: "1rem", fontWeight: 200 }}>Role Table</span>
+        <span style={{ fontSize: "1rem", fontWeight: 200 }}>
+          {activeTab === "role" ? "Role Table" : "Permission Table"}
+        </span>
       </h4>
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
         <Select style={{ width: 60 }} placeholder="10">

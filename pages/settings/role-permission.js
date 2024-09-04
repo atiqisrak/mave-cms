@@ -6,11 +6,15 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import CreatePermission from "../../components/rolepermission/permission/CreatePermission";
 import CreateRole from "../../components/rolepermission/role/CreateRole";
+import instance from "../../axios";
 
 export default function RolePermissionPage() {
   const [active, setActive] = useState("1");
   const [activeTab, setActiveTab] = useState("role");
   const [modalVisible, setModalVisible] = useState(false);
+  const [roles, setRoles] = useState([]);
+  const [permissions, setPermissions] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
   const menuItems = [
@@ -41,6 +45,37 @@ export default function RolePermissionPage() {
       setActive("4");
     }
   }, [router.pathname]);
+
+  const fetchRolesPermissions = async () => {
+    try {
+      setLoading(true);
+      const response = await instance.get("/roles");
+      if (response.status === 200) {
+        setRoles(response.data);
+      } else {
+        console.error(response);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+
+    try {
+      const response = await instance.get("/permissions");
+      if (response.status === 200) {
+        setPermissions(response.data);
+      } else {
+        console.error(response);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRolesPermissions();
+  }, []);
 
   return (
     <div className="ViewContainer">
@@ -134,11 +169,36 @@ export default function RolePermissionPage() {
             }}
             width={700}
           >
-            {activeTab === "role" ? <CreateRole /> : <CreatePermission />}
+            {activeTab === "role" ? (
+              <CreateRole
+                roles={roles}
+                setRoles={setRoles}
+                permissions={permissions}
+                setPermissions={setPermissions}
+                setModalVisible={setModalVisible}
+                fetchRolesPermissions={fetchRolesPermissions}
+              />
+            ) : (
+              <CreatePermission
+                roles={roles}
+                setRoles={setRoles}
+                permissions={permissions}
+                setPermissions={setPermissions}
+                setModalVisible={setModalVisible}
+                fetchRolesPermissions={fetchRolesPermissions}
+              />
+            )}
           </Modal>
         </div>
       </div>
-      <RolePermission activeTab={activeTab} setActiveTab={setActiveTab} />
+      <RolePermission
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        roles={roles}
+        permissions={permissions}
+        fetchRolesPermissions={fetchRolesPermissions}
+        loading={loading}
+      />
     </div>
   );
 }

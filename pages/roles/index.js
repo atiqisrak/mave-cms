@@ -2,8 +2,8 @@ import { useState } from "react";
 import { HomeOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { Breadcrumb, Button, Modal, Select } from "antd";
-import RoleTable from "../../components/role/RoleTable";
-import CreateRole from "../../components/role/CreateRole";
+import RoleTable from "../../components/rolepermission/role/RoleTable";
+import CreateRole from "../../components/rolepermission/role/CreateRole";
 
 export default function Roles() {
   const [modalVisible, setModalVisible] = useState(false);
