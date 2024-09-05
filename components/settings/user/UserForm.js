@@ -4,62 +4,24 @@ import instance from "../../../axios";
 
 const { Option } = Select;
 
-const UserForm = ({ visible, fetchUsers, onCancel, initialValues }) => {
+const UserForm = ({ visible, fetchUsers, onCancel, initialValues, roles }) => {
   const [form] = Form.useForm();
-  const [roles, setRoles] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0); // 0 to 100 scale for strength
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    password: "",
-    password_confirmation: "",
-    profile_picture_id: "",
-    role_id: "",
-  });
-
-  const fetchRoles = async () => {
-    try {
-      const res = await instance.get("/roles");
-      setLoading(true);
-      if (res.status === 200) {
-        setRoles(res.data);
-      } else {
-        message.error("Something went wrong");
-      }
-    } catch (error) {
-      message.error("Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchRoles();
-  }, []);
 
   const handleCreateUser = async () => {
-    setLoading(true);
-    const items = {
-      name: formData.name,
-      phone: formData.phone,
-      email: formData.email,
-      password: formData.password,
-      password_confirmation: formData.password_confirmation,
-      profile_picture_id: formData.profile_picture_id,
-      role_id: formData.role_id,
-    };
     try {
-      const response = await instance.post("/admin/register", items);
+      const values = await form.validateFields(); // Get values directly from the form
+      setLoading(true);
+      const response = await instance.post("/admin/user", values);
       if (response.status === 201) {
-        console.log("User created successfully");
         message.success("User created successfully");
-        setCreateUser(false);
-        fetchUsers();
+        fetchUsers(); // Refresh the user list
+        onCancel(); // Close the modal
       }
     } catch (error) {
-      message.error("Something went wrong");
+      message.error("Something went wrong while creating the user.");
     } finally {
       setLoading(false);
     }
@@ -73,9 +35,8 @@ const UserForm = ({ visible, fetchUsers, onCancel, initialValues }) => {
       password_confirmation: randomPassword,
     });
     checkPasswordStrength(randomPassword);
-
-    console.log("Password: ", randomPassword);
   };
+
   // Check password strength and set it to state
   const checkPasswordStrength = (password) => {
     if (!password) {
@@ -92,24 +53,34 @@ const UserForm = ({ visible, fetchUsers, onCancel, initialValues }) => {
     setPasswordStrength(strength);
   };
 
+  console.log("Roles UserForm", roles);
+
   return (
     <Modal
       open={visible}
       title="User Form"
-      okText="Save"
-      cancelText="Cancel"
       onCancel={onCancel}
-      onOk={() => {
-        form
-          .validateFields()
-          .then((values) => {
-            form.resetFields();
-            handleCreateUser(values);
-          })
-          .catch((info) => {
-            console.log("Validate Failed:", info);
-          });
-      }}
+      onOk={handleCreateUser}
+      confirmLoading={loading}
+      footer={[
+        <Button key="back" onClick={onCancel} danger>
+          Cancel
+        </Button>,
+        <Button
+          key="submit"
+          type="primary"
+          loading={loading}
+          onClick={handleCreateUser}
+          style={{
+            backgroundColor: "var(--theme)",
+            borderColor: "var(--theme)",
+            color: "white",
+            fontWeight: 600,
+          }}
+        >
+          Create
+        </Button>,
+      ]}
     >
       <Form
         form={form}
@@ -173,19 +144,22 @@ const UserForm = ({ visible, fetchUsers, onCancel, initialValues }) => {
         >
           <Input.Password />
         </Form.Item>
-        <Form.Item
-          name="role_id"
-          label="Role"
-          rules={[{ required: true, message: "Please select the role!" }]}
-        >
-          <Select>
-            {roles?.map((role) => (
-              <Option key={role.id} value={role.id}>
-                {role.title}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
+        {roles && (
+          <Form.Item
+            name="role_id"
+            label="Role"
+            rules={[{ required: true, message: "Please select the role!" }]}
+          >
+            <Select>
+              {roles &&
+                roles?.map((role, index) => (
+                  <Option key={index} value={role.id}>
+                    {role?.title}
+                  </Option>
+                ))}
+            </Select>
+          </Form.Item>
+        )}
       </Form>
     </Modal>
   );

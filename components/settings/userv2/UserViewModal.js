@@ -24,10 +24,7 @@ const UserViewModal = ({ visible, user, onCancel, onEdit }) => {
       open={visible}
       onCancel={onCancel}
       footer={[
-        <Button key="edit" type="primary" onClick={onEdit}>
-          Edit
-        </Button>,
-        <Button key="close" onClick={onCancel}>
+        <Button key="close" onClick={onCancel} danger>
           Close
         </Button>,
       ]}
