@@ -1,12 +1,7 @@
-import { PlusCircleOutlined, UserSwitchOutlined } from "@ant-design/icons";
-import UserManagement from "../../components/settings/UserManagement";
-import Link from "next/link";
-import { Button, message, Modal } from "antd";
+import { message } from "antd";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import UserList from "../../components/settings/user/UserList";
 import instance from "../../axios";
-import UserForm from "../../components/settings/user/UserForm";
 import UsersTopbar from "../../components/settings/user/UsersTopbar";
 import UserTable from "../../components/settings/userv2/UserTable";
 
@@ -31,6 +26,7 @@ const initialLogs = [
 export default function usersSettingsPage() {
   const router = useRouter();
   const [users, setUsers] = useState();
+  const [roles, setRoles] = useState([]);
   const [logs, setLogs] = useState(initialLogs);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
@@ -80,10 +76,20 @@ export default function usersSettingsPage() {
       setLoading(false);
     }
   };
-
-  const handleAddUser = () => {
-    setEditingUser(null);
-    setModalVisible(true);
+  const fetchRoles = async () => {
+    setLoading(true);
+    try {
+      const res = await instance.get("/roles");
+      if (res.status === 200) {
+        setRoles(res.data);
+      } else {
+        message.error("Something went wrong while fetching roles.");
+      }
+    } catch (error) {
+      message.error("Something went wrong while fetching roles.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCreateUser = async () => {
@@ -109,57 +115,12 @@ export default function usersSettingsPage() {
     }
   };
 
-  const handleEditUser = (userId) => {
-    const user = users.find((u) => u.id === userId);
-    setEditingUser(user);
-    setModalVisible(true);
-  };
-
-  const handleDeleteUser = (userId) => {
-    setUsers(users.filter((user) => user.id !== userId));
-    message.success("User deleted successfully");
-  };
-
-  const handleCreateOrUpdateUser = (values) => {
-    if (editingUser) {
-      setUsers(
-        users.map((user) =>
-          user.id === editingUser.id ? { ...user, ...values } : user
-        )
-      );
-      message.success("User updated successfully");
-    } else {
-      setUsers([...users, { id: users.length + 1, ...values }]);
-      message.success("User created successfully");
-    }
-    setModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setModalVisible(false);
-  };
-
-  const handleBulkDelete = (userIds) => {
-    setUsers(users.filter((user) => !userIds.includes(user.id)));
-    message.success("Selected users deleted successfully.");
-  };
-
-  const handleBulkChangeRole = (userIds, role) => {
-    setUsers(
-      users.map((user) =>
-        userIds.includes(user.id) ? { ...user, role } : user
-      )
-    );
-    message.success("Selected users roles updated successfully.");
-  };
-
-  const handleImport = (importedUsers) => {
-    setUsers([...users, ...importedUsers]);
-  };
-
   useEffect(() => {
     fetchUsers();
+    fetchRoles();
   }, []);
+
+  console.log("Roles Users", roles);
 
   return (
     <div className="ViewContainer">
@@ -170,14 +131,15 @@ export default function usersSettingsPage() {
         setCreateUser={setCreateUser}
         createUser={createUser}
         handleCreateUser={handleCreateUser}
-      />
-      {/* <UserList
-        users={users}
-        onEdit={handleEditUser}
-        onDelete={handleDeleteUser}
         fetchUsers={fetchUsers}
-      /> */}
-      <UserTable users={users} fetchUsers={fetchUsers} setUsers={setUsers} />
+        roles={roles}
+      />
+      <UserTable
+        users={users}
+        fetchUsers={fetchUsers}
+        setUsers={setUsers}
+        roles={roles}
+      />
     </div>
   );
 }

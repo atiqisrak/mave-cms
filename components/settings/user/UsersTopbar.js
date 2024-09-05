@@ -9,7 +9,10 @@ export default function UsersTopbar({
   setCreateUser,
   createUser,
   handleCreateUser,
+  fetchUsers,
+  roles,
 }) {
+  console.log("Roles UsersTopbar", roles);
   return (
     <div
       className="top-nav"
@@ -97,6 +100,8 @@ export default function UsersTopbar({
             visible={createUser}
             onCreate={handleCreateUser}
             onCancel={() => setCreateUser(false)}
+            fetchUsers={fetchUsers}
+            roles={roles}
           />
         )}
       </div>

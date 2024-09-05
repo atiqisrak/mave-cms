@@ -20,7 +20,7 @@ import instance from "../../../axios";
 
 const { Option } = Select;
 
-const UserTable = ({ users, fetchUsers, setUsers }) => {
+const UserTable = ({ users, fetchUsers, roles }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isViewModalVisible, setIsViewModalVisible] = useState(false);
@@ -32,14 +32,6 @@ const UserTable = ({ users, fetchUsers, setUsers }) => {
   useEffect(() => {
     setFilteredUsers(users);
   }, [users]);
-
-  //   const handleSelectAll = (e) => {
-  //     if (e.target.checked) {
-  //       setSelectedRowKeys(filteredUsers?.map((user) => user.id));
-  //     } else {
-  //       setSelectedRowKeys([]);
-  //     }
-  //   };
 
   // Handle selection of all rows (not header)
   const handleSelectAll = () => {
@@ -150,10 +142,16 @@ const UserTable = ({ users, fetchUsers, setUsers }) => {
           <Button
             icon={<EyeOutlined />}
             onClick={() => handleViewUser(record)}
+            style={{ backgroundColor: "var(--theme)", color: "white" }}
           />
           <Button
             icon={<EditOutlined />}
             onClick={() => handleEditUser(record)}
+            style={{
+              backgroundColor: "transparent",
+              color: "var(--theme)",
+              border: "2px solid var(--theme)",
+            }}
           />
           <Popconfirm
             title="Are you sure to delete this user?"
@@ -180,42 +178,37 @@ const UserTable = ({ users, fetchUsers, setUsers }) => {
         users={users}
         onSelectAll={handleSelectAll}
       />
-      {!users ? (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Spin />
-        </div>
-      ) : (
-        <Table
-          columns={columns}
-          dataSource={filteredUsers}
-          rowKey="id"
-          pagination={{ pageSize: 10 }}
-        />
+      <Table
+        columns={columns}
+        dataSource={filteredUsers}
+        rowKey="id"
+        pagination={{ pageSize: 10 }}
+        loading={!users}
+      />
+
+      {users && roles && (
+        <>
+          <UserEditModal
+            visible={isEditModalVisible}
+            user={selectedUser}
+            onCancel={() => setIsEditModalVisible(false)}
+            fetchUsers={fetchUsers}
+            roles={roles}
+          />
+          <UserViewModal
+            visible={isViewModalVisible}
+            user={selectedUser}
+            onCancel={() => setIsViewModalVisible(false)}
+            onEdit={() => handleEditUser(selectedUser)}
+          />
+          <FilterDrawer
+            visible={isFilterDrawerVisible}
+            onClose={() => setIsFilterDrawerVisible(false)}
+            setFilteredUsers={setFilteredUsers}
+            users={users}
+          />
+        </>
       )}
-      <UserEditModal
-        visible={isEditModalVisible}
-        user={selectedUser}
-        onCancel={() => setIsEditModalVisible(false)}
-        fetchUsers={fetchUsers}
-      />
-      <UserViewModal
-        visible={isViewModalVisible}
-        user={selectedUser}
-        onCancel={() => setIsViewModalVisible(false)}
-        onEdit={() => handleEditUser(selectedUser)}
-      />
-      <FilterDrawer
-        visible={isFilterDrawerVisible}
-        onClose={() => setIsFilterDrawerVisible(false)}
-        setFilteredUsers={setFilteredUsers}
-        users={users}
-      />
     </>
   );
 };

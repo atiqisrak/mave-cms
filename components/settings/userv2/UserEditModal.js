@@ -1,11 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Form, Input, Button, Upload, Select, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import instance from "../../../axios";
 
-const UserEditModal = ({ visible, user, onCancel, fetchUsers }) => {
+const { Option } = Select;
+
+const UserEditModal = ({ visible, user, onCancel, fetchUsers, roles }) => {
   const [form] = Form.useForm();
   const [avatar, setAvatar] = useState(user?.profile_picture);
+
+  useEffect(() => {
+    setAvatar(user?.profile_picture); // Set initial avatar state
+    form.setFieldsValue({
+      ...user,
+      role_id: parseInt(user?.role_id), // Set the initial role ID value correctly
+    });
+  }, [user, form]);
 
   const handleUploadChange = (info) => {
     if (info.file.status === "done") {
@@ -30,18 +40,42 @@ const UserEditModal = ({ visible, user, onCancel, fetchUsers }) => {
     }
   };
 
+  // Ensure role is correctly selected and mapped
+  const userRole = roles?.find((role) => role?.id === parseInt(user?.role_id));
+
   return (
     <Modal
       title="Edit User"
       open={visible}
       onCancel={onCancel}
       onOk={() => form.submit()}
+      footer={[
+        <Button key="back" onClick={onCancel} danger>
+          Cancel
+        </Button>,
+        <Button
+          key="submit"
+          type="primary"
+          style={{
+            backgroundColor: "var(--theme)",
+            borderColor: "var(--theme)",
+            fontWeight: 600,
+          }}
+          onClick={() => form.submit()}
+        >
+          Update
+        </Button>,
+      ]}
     >
       <Form
         form={form}
         layout="vertical"
-        initialValues={user}
         onFinish={handleUpdateUser}
+        initialValues={{
+          name: user?.name,
+          email: user?.email,
+          role_id: userRole?.id,
+        }}
       >
         <Form.Item
           name="name"
@@ -62,16 +96,18 @@ const UserEditModal = ({ visible, user, onCancel, fetchUsers }) => {
           label="Role"
           rules={[{ required: true, message: "Please select the role" }]}
         >
-          <Select>
-            {/* Replace with dynamic roles */}
-            <Select.Option value="1">Admin</Select.Option>
-            <Select.Option value="2">Editor</Select.Option>
+          <Select value={userRole?.id}>
+            {roles?.map((role) => (
+              <Option key={role.id} value={role.id}>
+                {role.title}
+              </Option>
+            ))}
           </Select>
         </Form.Item>
         <Form.Item label="Avatar">
           <Upload
             name="avatar"
-            action="/upload"
+            action="/upload" // Adjust this URL to your backend endpoint
             onChange={handleUploadChange}
             listType="picture"
           >
