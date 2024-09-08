@@ -15,31 +15,46 @@ const RegistrationSettings = () => {
   };
 
   return (
-    <Form
-      form={form}
-      name="registration-settings"
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      layout="vertical"
-      initialValues={{
-        userRegistration: true,
-        emailVerification: false,
+    <div
+      style={{
+        padding: "2rem",
       }}
     >
-      <Form.Item name="userRegistration" valuePropName="checked">
-        <Checkbox>User Registration</Checkbox>
-      </Form.Item>
+      <Form
+        form={form}
+        name="registration-settings"
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        layout="vertical"
+        initialValues={{
+          userRegistration: true,
+          emailVerification: false,
+        }}
+      >
+        <Form.Item name="userRegistration" valuePropName="checked">
+          <Checkbox>User Registration</Checkbox>
+        </Form.Item>
 
-      <Form.Item name="emailVerification" valuePropName="checked">
-        <Checkbox>Email Verification</Checkbox>
-      </Form.Item>
+        <Form.Item name="emailVerification" valuePropName="checked">
+          <Checkbox>Email Verification</Checkbox>
+        </Form.Item>
 
-      <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Save Settings
-        </Button>
-      </Form.Item>
-    </Form>
+        <Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{
+              backgroundColor: "var(--theme)",
+              color: "white",
+              fontSize: "1.2rem",
+              fontWeight: 500,
+            }}
+          >
+            Save Settings
+          </Button>
+        </Form.Item>
+      </Form>
+    </div>
   );
 };
 

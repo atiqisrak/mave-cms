@@ -92,6 +92,7 @@ export default function UsersTopbar({
           }}
           icon={<PlusCircleOutlined />}
           onClick={() => setCreateUser(true)}
+          disabled={active !== "1"}
         >
           Add User
         </Button>

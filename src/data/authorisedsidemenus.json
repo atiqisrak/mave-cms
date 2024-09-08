@@ -43,6 +43,12 @@
                 "title": "Sliders"
             },
             {
+                "id": 9,
+                "icon": "/icons/mave_icons/card.svg",
+                "link": "/cards",
+                "title": "Cards"
+            },
+            {
                 "id": 12,
                 "icon": "/icons/mave_icons/form.svg",
                 "link": "/forms",
