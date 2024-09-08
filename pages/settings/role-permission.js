@@ -21,7 +21,7 @@ export default function RolePermissionPage() {
     {
       key: "1",
       title: "Users",
-      link: "/settings/user-management",
+      link: "/settings/users",
     },
     {
       key: "2",

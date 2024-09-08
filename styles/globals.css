@@ -509,14 +509,18 @@ a:hover {
   fill: #7d88a1;
 }
 
-:where(.css-dev-only-do-not-override-f7vrd6).ant-switch.ant-switch-checked {
+.ant-switch.ant-switch-checked {
   background: #fee9b6;
 }
-:where(.css-dev-only-do-not-override-f7vrd6).ant-switch {
+.ant-switch {
   border-radius: 5px;
 }
-:where(.css-dev-only-do-not-override-f7vrd6).ant-switch
-  .ant-switch-handle::before {
+.ant-switch .ant-switch-handle::before {
   border-radius: 4px;
-  background-color: #fcb813;
+  background-color: var(--theme);
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: var(--theme);
+  border-color: var(--theme);
 }
