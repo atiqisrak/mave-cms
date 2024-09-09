@@ -5,6 +5,8 @@ import UserStat from "../components/dashboard/UserStat";
 import SiteStat from "../components/dashboard/SiteStat";
 import LatestEvents from "../components/dashboard/LatestEvents";
 import SiteSpeed from "../components/dashboard/SiteSpeed";
+import Storage from "../components/dashboard/Storage";
+import AverageRequests from "../components/dashboard/AverageRequests";
 
 const index = () => {
   const [data, setData] = useState({});
@@ -80,27 +82,12 @@ const index = () => {
               marginLeft: "5%",
             }}
           >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "2rem",
-              }}
-            >
-              <CounterCards />
-              <UserStat />
-              <SiteStat />
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "2rem",
-              }}
-            >
-              <LatestEvents />
-              <SiteSpeed />
-            </div>
+            <CounterCards />
+            <Storage />
+            <SiteSpeed />
+            <UserStat />
+            <LatestEvents />
+            <AverageRequests />
           </div>
         </div>
       ) : (

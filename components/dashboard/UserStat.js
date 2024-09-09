@@ -1,112 +1,126 @@
-import { MoreOutlined } from "@ant-design/icons";
-import { Menu } from "antd";
-import React, { useState } from "react";
-import { Chart } from "react-google-charts";
+// components/SiteSpeed.js
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import React, { useState, useEffect } from "react";
 
-export const monthData = [
-  ["Days", "Users"],
-  ["1-5", 1234],
-  ["6-10", 1416],
-  ["11-15", 1345],
-  ["16-20", 1456],
-  ["21-25", 1234],
-  ["26-30", 1416],
-  ["31", 1345],
-];
+// Dynamically import ReactApexChart to handle Next.js SSR
+const ReactApexChart = dynamic(() => import("react-apexcharts"), {
+  ssr: false,
+});
 
-export const sixMonthsData = [
-  ["Month", "Users"],
-  ["Jan", 100],
-  ["Feb", 622],
-  ["Mar", 846],
-  ["Apr", 1175],
-  ["May", 1456],
-  ["Jun", 1234],
-];
+export const generateRandomActiveUsersData = () => {
+  const data = [];
+  const categories = [];
+  const now = new Date();
 
-export const yearData = [
-  ["Year", "Users"],
-  ["2020", 1000],
-  ["2021", 2000],
-  ["2022", 3000],
-  ["2023", 4000],
-  ["2024", 5000],
-  ["2025", 6000],
-];
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(now.getTime() + i * 60 * 60 * 1000); // increment by 1 hour
+    categories.push(date.toISOString());
+    data.push(Math.floor(Math.random() * 1000) + 200); // Random active users data between 200 to 1200
+  }
 
-export const options = {
-  title: "User Stat",
-  subtitle: "Users per month",
-  bar: {
-    groupWidth: "35%",
-  },
-  vAxis: {
-    title: "Users",
-  },
-  legend: {
-    position: "none",
-  },
-  colors: ["#29CC39"],
-  animation: {
-    startup: true,
-    easing: "linear",
-    duration: 1500,
-  },
+  return { data, categories };
 };
 
 export default function UserStat() {
-  const [dataTypes, setDataTypes] = useState("Month");
+  const [chartOptions, setChartOptions] = useState({});
+  const [chartSeries, setChartSeries] = useState([]);
 
-  const data =
-    dataTypes === "Month"
-      ? monthData
-      : dataTypes === "6 Months"
-      ? sixMonthsData
-      : yearData;
+  useEffect(() => {
+    // Generate random data for concurrent active users
+    const seriesData = generateRandomActiveUsersData();
+
+    setChartOptions({
+      chart: {
+        height: 350,
+        type: "area",
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      stroke: {
+        curve: "smooth",
+        width: 2, // Border width
+        colors: ["#fcb813"], // 100% fill color for the line
+      },
+      fill: {
+        type: "gradient",
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.25, // 25% opacity for the fill
+          opacityTo: 0,
+          stops: [25, 100], // Fill gradient starts at 25%
+          colorStops: [
+            {
+              offset: 0,
+              color: "#fcb813",
+              opacity: 1,
+            },
+            {
+              offset: 100,
+              color: "#fcb813",
+              opacity: 0.25,
+            },
+          ],
+        },
+      },
+      xaxis: {
+        type: "datetime",
+        categories: seriesData.categories,
+      },
+      tooltip: {
+        x: {
+          format: "dd/MM/yy HH:mm",
+        },
+      },
+    });
+
+    setChartSeries([
+      {
+        name: "Concurrent Active Users",
+        data: seriesData.data,
+      },
+    ]);
+  }, []);
 
   return (
     <div
+      id="chart"
       style={{
-        padding: "2rem",
+        border: "2.22px solid #C9C9C9",
         borderRadius: "1rem",
-        backgroundColor: "white",
       }}
     >
       <div
-        className="flexed-among"
+        className="top-bar"
         style={{
-          borderBottom: "1px solid var(--gray)",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          borderBottom: "2.22px solid #C9C9C9",
+          padding: "0.7rem 1rem",
           marginBottom: "1rem",
         }}
       >
-        <h4
+        <h3>Concurrent Active Users</h3>
+        <Image
+          src="/icons/mave_icons/threedots.svg"
+          alt="Three Dots"
+          width={40}
+          height={40}
           style={{
-            fontSize: "1.1rem",
-            fontWeight: 500,
-            color: "var(--black)",
+            transform: "rotate(90deg)",
           }}
-        >
-          User Stat
-        </h4>
-        <Menu
-          mode="horizontal"
-          defaultSelectedKeys={["Month"]}
-          onClick={(e) => setDataTypes(e.key)}
-        >
-          <Menu.Item key="Month">Month</Menu.Item>
-          <Menu.Item key="6 Months">6 Months</Menu.Item>
-          <Menu.Item key="Year">Year</Menu.Item>
-        </Menu>
-        <MoreOutlined />
+        />
       </div>
-
-      <Chart
-        chartType="Bar"
-        width={"100%"}
-        height={"600px"}
-        data={data}
-        options={options}
-      />
+      {chartOptions && chartSeries.length > 0 && (
+        <ReactApexChart
+          options={chartOptions}
+          series={chartSeries}
+          type="area"
+          height={350}
+        />
+      )}
     </div>
   );
 }

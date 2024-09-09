@@ -6,6 +6,7 @@ import {
   MessageFilled,
   MoreOutlined,
 } from "@ant-design/icons";
+import Image from "next/image";
 
 // export const activityLog = [
 //   {
@@ -84,23 +85,23 @@ export const activityLog = [
 export const activityIcons = [
   {
     id: 1,
-    icon: <FileFilled style={{ fontSize: "1.4rem", color: "#29CC39" }} />,
-    backgroundColor: "#F4FCF5",
+    icon: <FileFilled style={{ fontSize: "1.4rem", color: "#E3A611" }} />,
+    backgroundColor: "#FFF4DC",
   },
   {
     id: 2,
-    icon: <FileImageFilled style={{ fontSize: "1.4rem", color: "#8833FF" }} />,
-    backgroundColor: "#F5F0FC",
+    icon: <FileImageFilled style={{ fontSize: "1.4rem", color: "#E3A611" }} />,
+    backgroundColor: "#FFF4DC",
   },
   {
     id: 3,
-    icon: <MessageFilled style={{ fontSize: "1.4rem", color: "#FF6633" }} />,
-    backgroundColor: "#FCEEEB",
+    icon: <MessageFilled style={{ fontSize: "1.4rem", color: "#E3A611" }} />,
+    backgroundColor: "#FFF4DC",
   },
   {
     id: 4,
-    icon: <ContactsFilled style={{ fontSize: "1.4rem", color: "#3361FF" }} />,
-    backgroundColor: "#EBF2FC",
+    icon: <ContactsFilled style={{ fontSize: "1.4rem", color: "#E3A611" }} />,
+    backgroundColor: "#FFF4DC",
   },
 ];
 
@@ -108,167 +109,165 @@ export default function LatestEvents() {
   return (
     <div
       style={{
-        padding: "2rem",
+        border: "2.22px solid #C9C9C9",
         borderRadius: "1rem",
-        backgroundColor: "white",
+        backgroundColor: "var(--white)",
       }}
     >
       <div
-        className="flexed-among"
+        className="top-bar"
         style={{
-          borderBottom: "1px solid var(--gray)",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          borderBottom: "2.22px solid #C9C9C9",
+          padding: "0.7rem 1rem",
           marginBottom: "1rem",
-          paddingBottom: "1rem",
         }}
       >
-        <h4
+        <h3>Digital Footprint</h3>
+        <Image
+          src="/icons/mave_icons/threedots.svg"
+          alt="Three Dots"
+          width={40}
+          height={40}
           style={{
-            fontSize: "1.1rem",
-            fontWeight: 500,
-            color: "var(--mild-black)",
-          }}
-        >
-          Latest Events
-        </h4>
-
-        <MoreOutlined
-          onClick={() => {
-            console.log("More Clicked");
+            transform: "rotate(90deg)",
           }}
         />
       </div>
-
       {/* Activity */}
-      <div>
-        <div>
-          {activityLog.map((log, index) => (
+      <div
+        style={{
+          padding: "0.5rem 0.8rem",
+          overflowY: "scroll",
+          height: "40rem",
+        }}
+      >
+        {activityLog.map((log, index) => (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 4fr",
+              gap: "2rem",
+            }}
+          >
             <div
               style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 4fr",
-                gap: "2rem",
-                // padding: "1rem 0",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
               }}
             >
-              {/* icon */}
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  //   gap: "1rem",
-                  alignItems: "center",
-                }}
-              >
-                {activityIcons.map((icon) => {
-                  if (icon.id === log.categoryType) {
-                    return (
-                      <div
-                        style={{
-                          backgroundColor: icon.backgroundColor,
-                          width: "4rem",
-                          height: "4rem",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          borderRadius: "50%",
-                        }}
-                      >
-                        {icon.icon}
-                      </div>
-                    );
-                  }
-                })}
-                {index !== activityLog.length - 1 && (
-                  <div
-                    style={{
-                      width: "0.15rem",
-                      height: "7rem",
-                      backgroundColor: "var(--gray)",
-                    }}
-                  ></div>
-                )}
-              </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1rem",
-                }}
-              >
-                <div>
-                  {/* Time - Catefory - User */}
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 1fr 1fr",
-                      gap: "1rem",
-                      marginTop: "1.1rem",
-                    }}
-                  >
-                    {/* Time */}
-                    <p
+              {activityIcons.map((icon) => {
+                if (icon.id === log.categoryType) {
+                  return (
+                    <div
                       style={{
-                        padding: "0.5rem",
-                        backgroundColor: "var(--gray)",
-                        borderRadius: "1.5rem",
+                        backgroundColor: icon.backgroundColor,
+                        width: "4rem",
+                        height: "4rem",
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
-                        color: "var(--mild-black)",
+                        borderRadius: "50%",
                       }}
                     >
-                      {log.time}
-                    </p>
+                      {icon.icon}
+                    </div>
+                  );
+                }
+              })}
+              {index !== activityLog.length - 1 && (
+                <div
+                  style={{
+                    width: "0.15rem",
+                    height: "7rem",
+                    backgroundColor: "var(--gray)",
+                  }}
+                ></div>
+              )}
+            </div>
 
-                    {/* Category */}
-                    <p
-                      style={{
-                        padding: "0.5rem",
-                        backgroundColor: "var(--gray)",
-                        borderRadius: "1.5rem",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        color: "var(--mild-black)",
-                      }}
-                    >
-                      {log.category}
-                    </p>
-
-                    {/* User */}
-                    <p
-                      style={{
-                        padding: "0.5rem",
-                        backgroundColor: "var(--gray)",
-                        borderRadius: "1.5rem",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        color: "var(--mild-black)",
-                      }}
-                    >
-                      {log.user}
-                    </p>
-                  </div>
-                </div>
-                {/* Description */}
-                <div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
+              <div>
+                {/* Time - Catefory - User */}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr 1fr",
+                    gap: "1rem",
+                    marginTop: "1.1rem",
+                  }}
+                >
+                  {/* Time */}
                   <p
                     style={{
+                      padding: "0.5rem",
+                      backgroundColor: "var(--gray)",
+                      borderRadius: "1.5rem",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                       color: "var(--mild-black)",
-                      fontSize: "1rem",
-                      fontWeight: 400,
-                      lineHeight: "1.5rem",
                     }}
                   >
-                    {log.description}
+                    {log.time}
+                  </p>
+
+                  {/* Category */}
+                  <p
+                    style={{
+                      padding: "0.5rem",
+                      backgroundColor: "var(--gray)",
+                      borderRadius: "1.5rem",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      color: "var(--mild-black)",
+                    }}
+                  >
+                    {log.category}
+                  </p>
+
+                  {/* User */}
+                  <p
+                    style={{
+                      padding: "0.5rem",
+                      backgroundColor: "var(--gray)",
+                      borderRadius: "1.5rem",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      color: "var(--mild-black)",
+                    }}
+                  >
+                    {log.user}
                   </p>
                 </div>
               </div>
+              {/* Description */}
+              <div>
+                <p
+                  style={{
+                    color: "var(--mild-black)",
+                    fontSize: "1rem",
+                    fontWeight: 400,
+                    lineHeight: "1.5rem",
+                  }}
+                >
+                  {log.description}
+                </p>
+              </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );
