@@ -332,15 +332,16 @@ export default function Login() {
                 fontWeight: "bold",
               }}
             >
-              Mave CMS. Local is
+              Mave CMS is
               <br />
-              coming to Bangladesh!
+              launching in Bangladesh soon !!!
             </h1>
             <p
               style={{
                 fontSize: "1.5rem",
-                fontWeight: 500,
+                fontWeight: 400,
                 width: "52%",
+                lineHeight: "2.5rem",
               }}
             >
               It is a long established fact that a reader will be distracted by
