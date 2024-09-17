@@ -47,6 +47,8 @@ const SiteContent = ({ children }) => {
   useEffect(() => {
     if (!loading && (!user || !token) && currentRoute !== "/login") {
       router.push("/login"); // Redirect to login page if not authenticated and not already on login page
+    } else if (!loading && user && currentRoute === "/login") {
+      router.push("/"); // Redirect to dashboard if authenticated and on login page
     }
   }, [user, token, router, loading, currentRoute]);
 
@@ -134,13 +136,14 @@ const SiteContent = ({ children }) => {
           collapsed={collapsed}
           onCollapse={handleCollapse}
           theme={theme}
-          width={250}
+          width={260}
           style={{
             height: "100vh",
             position: "fixed",
             left: 0,
             top: 64, // Offset for the fixed header
             bottom: 0,
+            padding: "0 1.4rem",
             borderRight: "1px solid #f0f0f0",
             boxShadow: "0 0 10px rgba(0, 0, 0, 0.6)",
             transition: "all 0.5s",

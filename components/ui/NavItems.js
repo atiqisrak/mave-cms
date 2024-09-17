@@ -182,17 +182,18 @@ export default function NavItems({
           display: "flex",
           justifyContent: "flex-start",
           alignItems: "center",
-          gap: "1vw",
+          gap: "0.5vw",
         }}
         onClick={() => router.push("/")}
       >
         <Image
           className="sitelogo"
-          src={
-            theme === "dark"
-              ? "/images/Mave_Logo_Dark.png"
-              : "/images/Mave_Logo_Lite.png"
-          }
+          // src={
+          //   theme === "dark"
+          //     ? "/images/Mave_Logo_Dark.png"
+          //     : "/images/Mave_Logo_Lite.png"
+          // }
+          src="/images/ui/mave_new_logo.png"
           alt="Mave Logo"
           onError={(e) => {
             e.target.onerror = null;
@@ -200,11 +201,11 @@ export default function NavItems({
           }}
           preview={false}
           style={{
-            height: "3vh",
+            height: "5vh",
             marginLeft: "10px",
             objectFit: "contain",
             backgroundColor: theme === "dark" ? "#001529" : "white",
-            marginLeft: "2vw",
+            marginLeft: "1vw",
           }}
         />
         {/* Version */}

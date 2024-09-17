@@ -127,7 +127,7 @@ const SideMenuItems = ({
                       style={{
                         display: "flex",
                         gap: "10px",
-                        border: "1px solid var(--gray-dark)",
+                        // border: "1px solid var(--gray-dark)",
                         borderRadius: "5px",
                       }}
                     >
