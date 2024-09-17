@@ -1,671 +1,181 @@
-"use client";
-
-import React, { Fragment, useContext, useEffect, useState } from "react";
-import {
-  Layout,
-  Menu,
-  Image,
-  Collapse,
-  Avatar,
-  message,
-  Switch,
-  Button,
-  Modal,
-} from "antd";
-import Icon, {
-  UserOutlined,
-  LoginOutlined,
-  DesktopOutlined,
-  BlockOutlined,
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-  LogoutOutlined,
-  PicRightOutlined,
-  FileImageOutlined,
-  MenuOutlined,
-  PicCenterOutlined,
-  SlidersOutlined,
-  IdcardOutlined,
-  FormOutlined,
-  FontSizeOutlined,
-  BoxPlotOutlined,
-  SettingOutlined,
-  AppstoreOutlined,
-  MailOutlined,
-  ProfileOutlined,
-  SwitcherOutlined,
-  FormatPainterOutlined,
-  DollarCircleOutlined,
-  AlignLeftOutlined,
-  FileTextOutlined,
-  ClockCircleOutlined,
-  VideoCameraOutlined,
-  MessageOutlined,
-  FilePdfOutlined,
-  RightCircleOutlined,
-  ArrowRightOutlined,
-  QuestionCircleOutlined,
-  CalculatorOutlined,
-  PlusCircleFilled,
-  PlusCircleOutlined,
-  CompassOutlined,
-} from "@ant-design/icons";
-import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import { Image, Layout, message } from "antd";
 import { useRouter } from "next/router";
-import Login from "./Login";
-import GLOBAL_CONTEXT from "../src/context/context";
-import iconsNames from "../public/data.js";
-const { Sider } = Layout;
-const { SubMenu } = Menu;
-const { Panel } = Collapse;
-import Changelog from "../pages/usermanual/changelog.json";
-import { renderToString } from "react-dom/server";
-// import Icon from "@ant-design/icons/lib/components/Icon";
+import { useAuth } from "../src/context/AuthContext"; // Using centralized auth context
+import NavItems from "./ui/NavItems";
+import SideMenuItems from "./ui/SideMenuItems";
+import Loader from "./Loader"; // Import Loader to show loading states
 
-const SiteContent = ({ children, collapsed, setCollapsed }) => {
-  const router = useRouter();
-  const [open, setOpen] = useState(false);
+const { Sider, Content, Header } = Layout;
+
+const SiteContent = ({ children }) => {
+  const [collapsed, setCollapsed] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedMenuItem, setSelectedMenuItem] = useState("1");
-  const [token, setToken] = useState(null);
-  const [user, setUser] = useState(null);
-  const [response, setResponse] = useState();
-  const { setContextToken } = useContext(GLOBAL_CONTEXT);
-  const [creatorMode, setCreatorMode] = useState(false);
+  const [theme, setTheme] = useState("light"); // Default theme
   const [changeLogs, setChangeLogs] = useState([]);
-  const [sideMenuData, setSideMenuData] = useState([]);
+  const { user, token, logout, loading } = useAuth(); // Use auth context for user management
+  const router = useRouter();
+  const currentRoute = router.pathname;
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    const users = localStorage.getItem("user");
-    const user_Parse = JSON.parse(users);
-    if (storedToken && user_Parse) {
-      setToken(storedToken);
-      setUser(user_Parse);
+    // Check localStorage availability and update theme state
+    try {
+      const storedTheme = localStorage.getItem("darkmode");
+      if (storedTheme) {
+        setTheme(storedTheme === "true" ? "dark" : "light");
+      }
+    } catch (error) {
+      console.warn("localStorage is not available. Using default theme.");
     }
-    localStorage.setItem("creatorMode", creatorMode);
 
-    setChangeLogs(Changelog);
-  }, [response]);
+    // Update theme state based on local storage changes
+    const handleThemeChange = () => {
+      try {
+        const updatedTheme = localStorage.getItem("darkmode");
+        if (updatedTheme) {
+          setTheme(updatedTheme === "true" ? "dark" : "light");
+        }
+      } catch (error) {
+        console.warn("localStorage is not available. Theme not updated.");
+      }
+    };
+
+    window.addEventListener("storage", handleThemeChange);
+    return () => window.removeEventListener("storage", handleThemeChange);
+  }, []);
+
+  useEffect(() => {
+    if (!loading && (!user || !token) && currentRoute !== "/login") {
+      router.push("/login"); // Redirect to login page if not authenticated and not already on login page
+    }
+  }, [user, token, router, loading, currentRoute]);
 
   const handleCollapse = () => {
     setCollapsed(!collapsed);
   };
 
-  const handleMenuClick = (item) => {
-    setSelectedMenuItem(item.key);
-  };
+  if (loading) return <Loader />; // Display loader if loading state is true
 
-  const handleLogout = () => {
-    console.log("Logged out successfully");
-    // Clear the token from state and localStorage
-    // setToken(null);
-    setContextToken(null);
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("creatormode");
-    localStorage.removeItem("niloy");
-  };
-
-  const GoCreatorMode = () => {
-    setCreatorMode(true);
-    localStorage.setItem("creatorMode", true);
-    router.push("/creator");
-  };
-
-  const SiteContent = ({ children, collapsed, setCollapsed }) => {
-    const router = useRouter();
-    const [open, setOpen] = useState(false); // Control modal open state here
-    const [isModalOpen, setIsModalOpen] = useState(false); // Initialize modal state
-    const [response, setResponse] = useState();
-    const { setContextToken } = useContext(GLOBAL_CONTEXT);
-
-    const handleLoginModalOpen = () => {
-      setIsModalOpen(true); // Set the modal state to true to open the modal
-    };
-
-    const handleLogout = () => {
-      console.log("Log out successfully");
-      setContextToken(null);
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      localStorage.removeItem("creatormode");
-      localStorage.removeItem("niloy");
-    };
-
-    // Replace direct call with handleLoginModalOpen function
-    const renderUnAuthorizedMenuItems = () => {
-      return (
-        <>
-          <Menu.Item
-            key="1"
-            icon={<UserOutlined />}
-            onClick={() => router.push("/profile")}
-          >
-            Profile
-          </Menu.Item>
-          <Menu.Item
-            key="2"
-            icon={<PicRightOutlined />}
-            onClick={() => router.push("/dashboard")}
-          >
-            Dashboard
-          </Menu.Item>
-          <Menu.Item
-            key="3"
-            icon={<LoginOutlined />}
-            onClick={() => handleLogout()}
-          >
-            Log out
-          </Menu.Item>
-        </>
-      );
-    };
-
-    return (
-      <>
-        <Layout>
-          {/* Other content */}
-          <Login
-            open={isModalOpen} // Ensure isModalOpen is passed here
-            setOpen={setIsModalOpen} // Pass the setter for managing modal state
-            response={response}
-            setResponse={setResponse}
-          />
-        </Layout>
-      </>
-    );
-  };
-
-  const renderAuthorizedMenuItems = () => {
-    return (
-      <>
-        {/* Components */}
-        <SubMenu
-          key="components"
-          icon={<BlockOutlined />}
-          title="Components"
-          style={{
-            marginTop: "10%",
-            fontSize: "1.1em",
-            fontWeight: "bold",
-          }}
-        >
-          <Menu.Item
-            key="8"
-            icon={<FileImageOutlined />}
-            onClick={() => router.push("/gallery")}
-          >
-            Gallery
-          </Menu.Item>
-          {/* <Menu.Item
-            key="32"
-            icon={<FilePdfOutlined />}
-            onClick={() => router.push("/documents")}
-          >
-            Documents
-          </Menu.Item> */}
-
-          <Menu.Item
-            key="9"
-            icon={<MenuOutlined />}
-            onClick={() => router.push("/menuitems")}
-          >
-            Menu Items
-          </Menu.Item>
-          <Menu.Item
-            key="10"
-            icon={<MenuOutlined />}
-            onClick={() => router.push("/menus")}
-          >
-            Menus
-          </Menu.Item>
-          <Menu.Item
-            key="11"
-            icon={<PicCenterOutlined />}
-            onClick={() => router.push("/navbars")}
-          >
-            Navbars
-          </Menu.Item>
-          <Menu.Item
-            key="12"
-            icon={<SlidersOutlined />}
-            onClick={() => router.push("/sliders")}
-          >
-            Sliders
-          </Menu.Item>
-          <Menu.Item
-            key="13"
-            icon={<IdcardOutlined />}
-            onClick={() => router.push("/cards")}
-          >
-            Cards
-          </Menu.Item>
-          <Menu.Item
-            key="14"
-            icon={<FormOutlined />}
-            onClick={() => router.push("/forms")}
-          >
-            Forms
-          </Menu.Item>
-          <Menu.Item
-            key="19"
-            icon={<BoxPlotOutlined />}
-            onClick={() => router.push("/footer")}
-          >
-            Footers
-          </Menu.Item>
-        </SubMenu>
-
-        {/* Form Responses */}
-        <Menu.Item
-          key="28"
-          icon={<MailOutlined />}
-          onClick={() => router.push("/formresponses")}
-          style={{
-            marginTop: "10%",
-            fontSize: "1.1em",
-            fontWeight: "bold",
-          }}
-        >
-          Form Responses
-        </Menu.Item>
-
-        {/* only admin can see this */}
-        <SubMenu
-          key="creatortools"
-          icon={<FormatPainterOutlined />}
-          title="Creator Studio"
-          style={{
-            marginTop: "10%",
-            fontSize: "1.1em",
-            fontWeight: "bold",
-          }}
-        >
-          <Menu.Item
-            key="29"
-            icon={<DollarCircleOutlined />}
-            onClick={() => router.push("/creator/pages")}
-            style={{
-              marginTop: "10%",
-              fontSize: "1.1em",
-              fontWeight: "bold",
-            }}
-          >
-            Pages
-          </Menu.Item>
-          <Menu.Item
-            key="30"
-            icon={<AlignLeftOutlined />}
-            onClick={() => router.push("/blogs")}
-            style={{
-              marginTop: "10%",
-              fontSize: "1.1em",
-              fontWeight: "bold",
-            }}
-          >
-            Blogs
-          </Menu.Item>
-          <Menu.Item
-            key="56"
-            icon={<PlusCircleOutlined />}
-            onClick={() => router.push("/blogs/createblog")}
-            style={{
-              marginTop: "10%",
-              fontSize: "1.1em",
-              fontWeight: "bold",
-            }}
-          >
-            Create Blog
-          </Menu.Item>
-          {/* Tools */}
-          {/* <Menu.Item
-            key="15"
-            icon={<SettingOutlined />}
-            style={{
-              marginTop: "10%",
-              fontSize: "1.1em",
-              fontWeight: "bold",
-            }}
-            onClick={() => router.push("/tools")}
-          >
-            Tools
-          </Menu.Item> */}
-          {/* Support */}
-        </SubMenu>
-
-        {/* Manual */}
-        <SubMenu
-          key="manual"
-          icon={<FileTextOutlined />}
-          title="User Manual"
-          style={{
-            marginTop: "10%",
-            fontSize: "1.1em",
-            fontWeight: "bold",
-          }}
-        >
-          <Menu.Item
-            key="16"
-            icon={<ClockCircleOutlined />}
-            onClick={() => router.push("/usermanual/changelog")}
-          >
-            Changelog
-          </Menu.Item>
-          <Menu.Item
-            key="17"
-            icon={<FileTextOutlined />}
-            onClick={() => router.push("/usermanual/documentation")}
-          >
-            Documentation
-          </Menu.Item>
-          <Menu.Item
-            key="18"
-            icon={<VideoCameraOutlined />}
-            onClick={() => router.push("/usermanual/userguide")}
-          >
-            User Guide
-          </Menu.Item>
-          <Menu.Item
-            key="21"
-            icon={<QuestionCircleOutlined />}
-            onClick={() => router.push("/usermanual/faq")}
-          >
-            FAQ
-          </Menu.Item>
-          <Menu.Item
-            key="20"
-            icon={<MessageOutlined />}
-            onClick={() => router.push("/usermanual/support")}
-          >
-            Support
-          </Menu.Item>
-          <Menu.Item
-            key="22"
-            icon={<CompassOutlined />}
-            onClick={() => router.push("/compare")}
-          >
-            Compare
-          </Menu.Item>
-        </SubMenu>
-
-        {/* {sideMenuData &&
-          sideMenuData.map((item, index) => {
-            return item?.submenu?.length > 0 ? (
-              <SubMenu
-                key={item.menu}
-                icon={<CalculatorOutlined />}
-                title={item.menu}
-                style={{
-                  marginTop: "10%",
-                  fontSize: "1.1em",
-                  fontWeight: "bold",
-                }}
-              >
-                {item?.submenu?.map((subItem, subIndex) => {
-                  return (
-                    <Menu.Item
-                      key={subItem.subMenu}
-                      icon={<CalculatorOutlined />}
-                      onClick={() => router.push(subItem.url)}
-                    >
-                      {subItem.title}
-                    </Menu.Item>
-                  );
-                })}
-              </SubMenu>
-            ) : item?.icon ? (
-              <Menu.Item
-                key={item.menu}
-                // icon={<Icon component={item?.icon} />}
-                onClick={() => router.push(item.url)}
-                style={{
-                  marginTop: "10%",
-                  fontSize: "1.1em",
-                  fontWeight: "bold",
-                }}
-              >
-                {React.createElement(iconsNames[item.icon])}
-                {console.log("Icon", item?.icon)}
-                {item.menu}
-              </Menu.Item>
-            ) : (
-              "not found"
-            );
-            // ""
-          })} */}
-      </>
-    );
-  };
+  // If on the login page, do not show top bar and sidebar
+  if (currentRoute === "/login") {
+    return <Content style={{ minHeight: "100vh" }}>{children}</Content>;
+  }
 
   return (
-    <>
-      <Layout>
+    <Layout style={{ minHeight: "100vh" }}>
+      {/* Top Navigation Items */}
+      <Header
+        style={{
+          position: "fixed",
+          width: "100%",
+          zIndex: 1000,
+          padding: 0,
+          backgroundColor: theme === "dark" ? "#001529" : "#ffffff",
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <NavItems
+          user={user}
+          token={token}
+          handleLogout={logout}
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          theme={theme}
+          setTheme={setTheme}
+        />
+      </Header>
+
+      {/* Sidebar Menu */}
+      <Layout style={{ marginTop: "64px", padding: 0 }}>
+        {" "}
+        {/* Offset for fixed header */}
         <div
-          className="header-area"
+          className="collapse-button"
           style={{
             position: "fixed",
-            top: 0,
-            right: 200,
+            top: 90,
+            left: collapsed ? 30 : 250,
             cursor: "pointer",
-            zIndex: 99,
+            color: "#fff",
+            zIndex: 1200,
+            transition: "left 0.5s",
           }}
+          onClick={() => handleCollapse(!collapsed)}
         >
-          {creatorMode == true ? (
-            ""
-          ) : (
-            <div
-              className="collapse-button"
+          {collapsed ? (
+            <Image
+              src="/icons/mave_icons/expand.svg"
+              alt="Mave Logo"
+              preview={false}
               style={{
-                position: "fixed",
-                top: 20,
-                left: collapsed ? 20 : 230,
-                cursor: "pointer",
-                zIndex: 999,
-                background: "var(--theme)",
-                color: "#fff",
-                padding: "10px 20px",
-                borderRadius: "0 10px 0 10px",
+                height: "4vh",
+                marginLeft: "10px",
+                objectFit: "contain",
               }}
               onClick={() => handleCollapse(!collapsed)}
-            >
-              {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            </div>
-          )}
-
-          <div className="sider-area">
-            <Menu
-              theme="light"
-              // mode="inline"
-              defaultSelectedKeys={[selectedMenuItem]}
-              onClick={handleMenuClick}
-              collapsible
-              collapsedWidth={80}
-              style={{ border: "none" }}
-            >
-              {/* MAVE Admin */}
-              <SubMenu
-                key="mave-admin"
-                // icon={<UserOutlined style={{ fontSize: "1.5rem" }} />}
-                icon={
-                  <Image
-                    src="/images/profile_avatar.png"
-                    preview={false}
-                    style={{
-                      borderRadius: "50%",
-                    }}
-                  />
-                }
-                style={{
-                  marginTop: "20%",
-                  width: "100px",
-                  height: "auto",
-                }}
-              >
-                {token ? (
-                  renderUnAuthorizedMenuItems()
-                ) : (
-                  <>
-                    <Menu.Item
-                      key="6"
-                      icon={<LoginOutlined />}
-                      onClick={() => setIsModalOpen(true)}
-                    >
-                      Login
-                    </Menu.Item>
-                  </>
-                )}
-              </SubMenu>
-            </Menu>
-          </div>
-        </div>
-        {creatorMode == false ? (
-          <>
-            <Sider
-              trigger={null}
-              collapsible
-              collapsed={collapsed}
-              onCollapse={handleCollapse}
-              breakpoint="md"
-              collapsedWidth={80}
-              width={260}
-              theme="lite"
+            />
+          ) : (
+            <Image
+              src="/icons/mave_icons/collapse.svg"
+              alt="Mave Logo"
+              preview={false}
               style={{
-                overflow: "auto",
-                position: "fixed",
-                zIndex: 9,
-                height: "100%",
-                left: 0,
-                top: 0,
-                borderRadius: "0 10px 10px 0",
-                paddingTop: 30,
+                height: "4vh",
+                marginLeft: "10px",
+                objectFit: "contain",
+                zIndex: 1201,
               }}
-            >
-              <div>
-                <div
-                  className="logoholder"
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: 30,
-                    paddingTop: 40,
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: 10,
-                      alignItems: "center",
-                    }}
-                  >
-                    <Link href={"/usermanual/changelog"}>
-                      <h3
-                        style={{
-                          color: "var(--theme)",
-                          fontSize: collapsed ? "1em" : "1.2em",
-                          fontWeight: "bold",
-                          backgroundColor: "white",
-                          padding: "8px 10px",
-                          borderRadius: "5px 0 5px 0",
-                          position: collapsed ? "relative" : "absolute",
-                          zIndex: 1,
-                          right: collapsed ? "" : 5,
-                          top: collapsed ? "" : 70,
-                          cursor: "pointer",
-                        }}
-                      >
-                        {changeLogs && changeLogs.length > 0
-                          ? changeLogs[0].version
-                          : "v 1.0.0"}
-                      </h3>
-                    </Link>
-                  </div>
-
-                  {/* <Link href="/dashboard" className="sitelogo"> */}
-                  {collapsed ? (
-                    <Image
-                      className="sitelogo"
-                      // src="/images/mave_logo.png"
-                      src="/images/mave_favicon.svg"
-                      width={40}
-                      height={40}
-                      resizemode="contain"
-                      preview={false}
-                      onClick={() => {
-                        router.push("/");
-                      }}
-                    />
-                  ) : (
-                    <Image
-                      className="sitelogo"
-                      // src="/images/mave_logo_horizontal.png"
-                      // src="/images/mave_logo_horizontal_core.png"
-                      // width={629 / 4}
-                      // height={301 / 4}
-                      src="/images/mave_logo_vertical.png"
-                      width={950 / 4}
-                      height={871 / 4}
-                      resizemode="contain"
-                      preview={false}
-                      onClick={() => {
-                        router.push("/");
-                      }}
-                    />
-                  )}
-                  {/* </Link> */}
-                </div>
-                <Menu
-                  theme="dark"
-                  mode="inline"
-                  defaultSelectedKeys={[selectedMenuItem]}
-                  onClick={handleMenuClick}
-                  collapsible
-                  collapsedWidth={80}
-                >
-                  {/* MAVE Admin */}
-                  <SubMenu
-                    key="mave-admin"
-                    icon={<UserOutlined />}
-                    title="MAVE Admin"
-                    style={{
-                      marginTop: "20%",
-                      fontSize: "1.1em",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {token ? (
-                      renderUnAuthorizedMenuItems()
-                    ) : (
-                      <>
-                        <Menu.Item
-                          key="6"
-                          icon={<LoginOutlined />}
-                          onClick={() => setIsModalOpen(true)}
-                        >
-                          Login
-                        </Menu.Item>
-                      </>
-                    )}
-                  </SubMenu>
-                  {token ? renderAuthorizedMenuItems() : ""}
-                </Menu>
-                {children}
-              </div>
-            </Sider>
-          </>
-        ) : (
-          ""
-        )}
+              onClick={() => handleCollapse(!collapsed)}
+            />
+          )}
+        </div>
+        <Sider
+          collapsible
+          collapsed={collapsed}
+          onCollapse={handleCollapse}
+          theme={theme}
+          width={250}
+          style={{
+            height: "100vh",
+            position: "fixed",
+            left: 0,
+            top: 64, // Offset for the fixed header
+            bottom: 0,
+            borderRight: "1px solid #f0f0f0",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.6)",
+            transition: "all 0.5s",
+          }}
+        >
+          <SideMenuItems
+            token={token}
+            user={user}
+            handleLogout={logout}
+            setIsModalOpen={setIsModalOpen}
+            collapsed={collapsed}
+            theme={theme}
+            setTheme={setTheme}
+          />
+        </Sider>
+        {/* Main Content Area */}
+        <Layout
+          className="site-layout"
+          style={{
+            transition: "margin-left 0.5s, padding-left 0.5s",
+          }}
+        >
+          <Content
+            style={{
+              padding: "24px",
+              marginTop: 0, // Remove unnecessary top margin
+              transition: "all 0.3s",
+            }}
+          >
+            {children}
+          </Content>
+        </Layout>
       </Layout>
-      <Login
-        open={isModalOpen}
-        setOpen={setIsModalOpen}
-        response={response}
-        setResponse={setResponse}
-      />
-    </>
+    </Layout>
   );
 };
+
 export default SiteContent;
