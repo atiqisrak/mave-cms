@@ -97,9 +97,9 @@ const SiteContent = ({ children, collapsed, setCollapsed }) => {
   };
 
   const handleLogout = () => {
-    console.log("Log out successfully");
+    console.log("Logged out successfully");
     // Clear the token from state and localStorage
-    setToken(null);
+    // setToken(null);
     setContextToken(null);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -113,41 +113,69 @@ const SiteContent = ({ children, collapsed, setCollapsed }) => {
     router.push("/creator");
   };
 
-  const renderUnAuthorizedMenuItems = () => {
+  const SiteContent = ({ children, collapsed, setCollapsed }) => {
+    const router = useRouter();
+    const [open, setOpen] = useState(false); // Control modal open state here
+    const [isModalOpen, setIsModalOpen] = useState(false); // Initialize modal state
+    const [response, setResponse] = useState();
+    const { setContextToken } = useContext(GLOBAL_CONTEXT);
+
+    const handleLoginModalOpen = () => {
+      setIsModalOpen(true); // Set the modal state to true to open the modal
+    };
+
+    const handleLogout = () => {
+      console.log("Log out successfully");
+      setContextToken(null);
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      localStorage.removeItem("creatormode");
+      localStorage.removeItem("niloy");
+    };
+
+    // Replace direct call with handleLoginModalOpen function
+    const renderUnAuthorizedMenuItems = () => {
+      return (
+        <>
+          <Menu.Item
+            key="1"
+            icon={<UserOutlined />}
+            onClick={() => router.push("/profile")}
+          >
+            Profile
+          </Menu.Item>
+          <Menu.Item
+            key="2"
+            icon={<PicRightOutlined />}
+            onClick={() => router.push("/dashboard")}
+          >
+            Dashboard
+          </Menu.Item>
+          <Menu.Item
+            key="3"
+            icon={<LoginOutlined />}
+            onClick={() => handleLogout()}
+          >
+            Log out
+          </Menu.Item>
+        </>
+      );
+    };
+
     return (
       <>
-        <Menu.Item
-          key="1"
-          icon={<UserOutlined />}
-          onClick={() => router.push("/profile")}
-        >
-          Profile
-        </Menu.Item>
-        <Menu.Item
-          key="2"
-          icon={<PicRightOutlined />}
-          onClick={() => router.push("/dashboard")}
-        >
-          Dashboard
-        </Menu.Item>
-        <Menu.Item
-          key="3"
-          icon={<LoginOutlined />}
-          onClick={() => handleLogout()}
-        >
-          Log out
-        </Menu.Item>
+        <Layout>
+          {/* Other content */}
+          <Login
+            open={isModalOpen} // Ensure isModalOpen is passed here
+            setOpen={setIsModalOpen} // Pass the setter for managing modal state
+            response={response}
+            setResponse={setResponse}
+          />
+        </Layout>
       </>
     );
   };
-
-  useEffect(() => {
-    fetch("/api/authorisedsidemenu")
-      .then((res) => res.json())
-      .then((data) => {
-        setSideMenuData(data);
-      });
-  }, []);
 
   const renderAuthorizedMenuItems = () => {
     return (
@@ -212,20 +240,6 @@ const SiteContent = ({ children, collapsed, setCollapsed }) => {
             onClick={() => router.push("/cards")}
           >
             Cards
-          </Menu.Item>
-          <Menu.Item
-            key="23"
-            icon={<ProfileOutlined />}
-            onClick={() => router.push("/pressrelease")}
-          >
-            Press Release
-          </Menu.Item>
-          <Menu.Item
-            key="24"
-            icon={<SwitcherOutlined />}
-            onClick={() => router.push("/events")}
-          >
-            Events
           </Menu.Item>
           <Menu.Item
             key="14"
@@ -465,7 +479,7 @@ const SiteContent = ({ children, collapsed, setCollapsed }) => {
               // mode="inline"
               defaultSelectedKeys={[selectedMenuItem]}
               onClick={handleMenuClick}
-              collapsible={true}
+              collapsible
               collapsedWidth={80}
               style={{ border: "none" }}
             >
@@ -509,7 +523,7 @@ const SiteContent = ({ children, collapsed, setCollapsed }) => {
           <>
             <Sider
               trigger={null}
-              collapsible={true}
+              collapsible
               collapsed={collapsed}
               onCollapse={handleCollapse}
               breakpoint="md"
@@ -607,7 +621,7 @@ const SiteContent = ({ children, collapsed, setCollapsed }) => {
                   mode="inline"
                   defaultSelectedKeys={[selectedMenuItem]}
                   onClick={handleMenuClick}
-                  collapsible={true}
+                  collapsible
                   collapsedWidth={80}
                 >
                   {/* MAVE Admin */}

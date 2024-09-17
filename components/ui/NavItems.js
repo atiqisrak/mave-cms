@@ -49,7 +49,7 @@ export default function NavItems({
     {
       key: "sub1",
       label: "General Settings",
-      children: [
+      items: [
         {
           key: "1-1",
           label: <Link href="/settings/general">General</Link>,
@@ -73,7 +73,7 @@ export default function NavItems({
     {
       key: "sub2",
       label: "User and Content Management",
-      children: [
+      items: [
         {
           key: "2-1",
           label: <Link href="/settings/user-management">User Management</Link>,
@@ -97,7 +97,7 @@ export default function NavItems({
     {
       key: "sub3",
       label: "API and System Settings",
-      children: [
+      items: [
         {
           key: "3-1",
           label: <Link href="/settings/api-settings">API Settings</Link>,
@@ -123,7 +123,7 @@ export default function NavItems({
     {
       key: "sub4",
       label: "Customization and Integration",
-      children: [
+      items: [
         {
           key: "4-1",
           label: (
@@ -463,7 +463,7 @@ export default function NavItems({
                   menu={{
                     items: userItems,
                   }}
-                  placement="bottomCenter"
+                  placement="bottom"
                 >
                   <Space>
                     <Image

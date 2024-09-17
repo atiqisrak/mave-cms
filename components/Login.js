@@ -1,64 +1,78 @@
-import { Button, Divider, Input, Modal, Space, message } from "antd";
 import React, { useContext, useEffect, useState } from "react";
+import { Button, Divider, Input, Modal, Space, message } from "antd";
+import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
+import GLOBAL_CONTEXT from "../src/context/context";
 import Signup from "./Signup";
 import ForgotPass from "./ForgotPass";
-import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
-import instance from "../axios";
-import GLOBAL_CONTEXT from "../src/context/context";
 import Loader from "./Loader";
+import instance from "../axios";
+
 const Login = ({ open, setOpen, response, setResponse }) => {
   const [signupModalOpen, setSignupModalOpen] = useState(false);
   const [forgotModalOpen, setForgotModalOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEamil] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [token, setToken] = useState(null);
   const [data, setData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const { setUser } = useContext(GLOBAL_CONTEXT);
-  setUser(data);
+
+  // Effect to update the global context after data is fetched
   useEffect(() => {
-    // Check if a token is stored in localStorage when the component mounts
+    if (Object.keys(data).length > 0) {
+      setUser(data); // Update context after data is fetched
+    }
+  }, [data, setUser]);
+
+  // Effect to check for token in localStorage
+  useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
       setToken(storedToken);
     }
   }, []);
-  // handler area
+
+  // Toggle visibility of password
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  // Handle switching to Signup modal
   const handleChangeState = () => {
     setOpen(false);
     setSignupModalOpen(true);
   };
+
+  // Handle switching to Forgot Password modal
   const handleChangeForgot = () => {
     setOpen(false);
     setForgotModalOpen(true);
   };
+
+  // Handle input changes
   const handleChange = (e, inputName) => {
-    // Dynamically select the state variable to update based on inputName
     switch (inputName) {
       case "email":
-        setEamil(e.target.value);
+        setEmail(e.target.value);
         break;
       case "password":
         setPassword(e.target.value);
-
         break;
       default:
         break;
     }
   };
+
+  // Handle login process
   const handleLogin = async () => {
     const items = { email: email, password: password };
     setIsLoading(true);
     try {
-      // Send a put request to the API endpoint
       const res = await instance.post("admin/login", items);
       if (res?.status === 200) {
         setOpen(false);
-        setData(res.data);
+        setData(res.data); // Trigger useEffect to update context
         setResponse(res);
         setIsLoading(false);
         const newToken = res?.data?.token;
@@ -71,10 +85,9 @@ const Login = ({ open, setOpen, response, setResponse }) => {
           "y$vtw#*tPECXug7SBeUqNSMVd2!TS!YkjL%#sbtBEPkxS65NtDxm&F$5mKhX(kUP"
         );
         console.log("Login successfully");
-        window.location.reload();
+        window.location.reload(); // Reload to refresh state
       }
     } catch (error) {
-      // Handle errors, e.g., display an error message or log the error
       if (error?.response?.status === 401) {
         message.error("Invalid Credentials");
         setIsLoading(false);
@@ -82,23 +95,25 @@ const Login = ({ open, setOpen, response, setResponse }) => {
       console.error("Error data:", error);
     }
   };
+
   if (isLoading)
     return (
       <>
         <Loader />
       </>
     );
+
   return (
     <>
       <Modal
         open={open}
-        onOk={setOpen}
+        onOk={() => setOpen(false)}
         onCancel={() => setOpen(false)}
         width={600}
         cancelButtonProps={{ style: { display: "none" } }}
         okButtonProps={{ style: { display: "none" } }}
       >
-        <div className="modalContiner">
+        <div className="modalContainer">
           <h1>Login</h1>
           <div style={{ marginTop: "1rem" }}>
             <strong>Email</strong>
@@ -147,7 +162,7 @@ const Login = ({ open, setOpen, response, setResponse }) => {
             type="primary"
             block
             className="buttons"
-            onClick={() => handleLogin()}
+            onClick={handleLogin}
           >
             Login
           </Button>
@@ -155,17 +170,14 @@ const Login = ({ open, setOpen, response, setResponse }) => {
 
         <Divider>Or</Divider>
         <div
-          className="createAccout"
+          className="createAccount"
           style={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
           }}
         >
-          <p>
-            New to Mave?
-            {/* <span onClick={handleChangeState}>Create an Account</span>{" "} */}
-          </p>
+          <p>New to Mave?</p>
           <Button
             style={{
               backgroundColor: "transparent",
@@ -182,6 +194,7 @@ const Login = ({ open, setOpen, response, setResponse }) => {
           </Button>
         </div>
       </Modal>
+      {/* Signup and ForgotPass Modals */}
       <Signup
         open={signupModalOpen}
         setOpen={setSignupModalOpen}

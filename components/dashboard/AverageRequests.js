@@ -26,14 +26,18 @@ const generateRandomData = (type) => {
     // Generate data for each day of a week
     for (let i = 0; i < 7; i++) {
       const date = new Date(now.getTime() + i * 24 * 60 * 60 * 1000);
-      categories.push(date.toLocaleDateString("default", { weekday: "short" }));
+      // categories.push(date.toLocaleDateString("default", { weekday: "short" }));
+      categories.push(date.toLocaleDateString("en-US", { weekday: "short" }));
+
       data.push(Math.floor(Math.random() * 300) + 100); // Random hits between 100 to 400
     }
   } else {
     // Generate data for each month
     for (let i = 0; i < 12; i++) {
       const date = new Date(now.getFullYear(), i);
-      categories.push(date.toLocaleDateString("default", { month: "short" }));
+      // categories.push(date.toLocaleDateString("default", { month: "short" }));
+      categories.push(date.toLocaleDateString("en-US", { month: "short" }));
+
       data.push(Math.floor(Math.random() * 1000) + 500); // Random hits between 500 to 1500
     }
   }
@@ -74,9 +78,14 @@ export default function AverageRequests() {
           text: "API Hits",
         },
       },
+      // tooltip: {
+      //   x: {
+      //     format: "dd/MM/yy HH:mm",
+      //   },
+      // },
       tooltip: {
         x: {
-          format: "dd/MM/yy HH:mm",
+          format: activeTab === "day" ? "HH:mm" : "dd/MM/yy",
         },
       },
     });
@@ -95,6 +104,10 @@ export default function AverageRequests() {
       style={{
         border: "2.22px solid #C9C9C9",
         borderRadius: "1rem",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        backgroundColor: "white",
       }}
     >
       <div
@@ -145,6 +158,7 @@ export default function AverageRequests() {
           height={350}
         />
       )}
+      {/* {console.log("Chart Options: ", chartOptions)} */}
     </div>
   );
 }

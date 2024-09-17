@@ -28,13 +28,25 @@ export default function Storage() {
         },
       },
     ],
+    legend: {
+      position: "right", // Ensure legend positioning for desktop view
+    },
   });
 
   const [chartSeries, setChartSeries] = useState([44, 55, 41, 17, 15]);
   const total = chartSeries.reduce((a, b) => a + b, 0);
 
   return (
-    <div style={{ border: "2.22px solid #C9C9C9", borderRadius: "1rem" }}>
+    <div
+      style={{
+        border: "2.22px solid #C9C9C9",
+        borderRadius: "1rem",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        backgroundColor: "white",
+      }}
+    >
       <div
         className="top-bar"
         style={{
@@ -57,14 +69,15 @@ export default function Storage() {
           }}
         />
       </div>
-      <div>
+      {chartOptions && chartSeries.length > 0 && (
         <ReactApexChart
           options={chartOptions}
           series={chartSeries}
           type="donut"
           height={350}
         />
-      </div>
+      )}
+      {/* {console.log("Chart Series: ", chartSeries)} */}
     </div>
   );
 }

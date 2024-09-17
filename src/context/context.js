@@ -9,7 +9,6 @@ export function ContextProvider({ children }) {
   const [user, setUser] = useState("hello");
   const [contextToken, setContextToken] = useState();
 
-  // const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -18,14 +17,6 @@ export function ContextProvider({ children }) {
     } else {
       setContextToken(token);
     }
-    // if (!token && router.pathname === "/zakat") {
-    //   router.push("/zakat");
-    // } else if (!token) {
-    //   setContextToken(null);
-    //   router.replace("/");
-    // } else {
-    //   setContextToken(token);
-    // }
   }, [router, contextToken]);
 
   const value = {

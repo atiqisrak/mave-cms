@@ -67,7 +67,8 @@ function MyApp({ Component, pageProps }) {
             transition: "margin-left 0.5s",
             // height: "100vh",
             overflow: "auto",
-            backgroundColor: !darkmode ? "var(--notwhite)" : "#1e1e1e",
+            // backgroundColor: !darkmode ? "var(--notwhite)" : "#1e1e1e",
+            backgroundColor: "#E8E8E9",
             color: !darkmode ? "black" : "white",
             marginTop: "5vh",
           }}

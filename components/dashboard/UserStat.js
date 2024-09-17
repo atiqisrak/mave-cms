@@ -15,7 +15,11 @@ export const generateRandomActiveUsersData = () => {
 
   for (let i = 0; i < 7; i++) {
     const date = new Date(now.getTime() + i * 60 * 60 * 1000); // increment by 1 hour
-    categories.push(date.toISOString());
+    // categories.push(date.toISOString());
+    categories.push(
+      date.toISOString().split("T")[0] + " " + date.toTimeString().split(" ")[0]
+    ); // Format to "YYYY-MM-DD HH:mm:ss"
+
     data.push(Math.floor(Math.random() * 1000) + 200); // Random active users data between 200 to 1200
   }
 
@@ -70,7 +74,7 @@ export default function UserStat() {
       },
       tooltip: {
         x: {
-          format: "dd/MM/yy HH:mm",
+          format: "yyyy-MM-dd HH:mm",
         },
       },
     });
@@ -89,6 +93,7 @@ export default function UserStat() {
       style={{
         border: "2.22px solid #C9C9C9",
         borderRadius: "1rem",
+        backgroundColor: "white",
       }}
     >
       <div
@@ -121,6 +126,7 @@ export default function UserStat() {
           height={350}
         />
       )}
+      {console.log("Chart Series: ", chartSeries)}
     </div>
   );
 }
