@@ -113,7 +113,6 @@ const SiteContentV2 = ({ children }) => {
           }}
           onClick={() => handleCollapse(!collapsed)}
         >
-          {/* {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} */}
           {collapsed ? (
             <Image
               src="/icons/mave_icons/expand.svg"

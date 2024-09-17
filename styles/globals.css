@@ -524,3 +524,6 @@ a:hover {
   background-color: var(--theme);
   border-color: var(--theme);
 }
+:where(.css-dev-only-do-not-override-f7vrd6).ant-layout-header {
+  padding: 0;
+}
