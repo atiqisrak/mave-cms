@@ -109,6 +109,8 @@ const SideMenuItems = ({
                   fontSize: "1.1em",
                   fontWeight: "bold",
                   marginTop: "10%",
+                  border: "2px solid var(--gray-dark)",
+                  borderRadius: "5px",
                 }}
               >
                 {item?.submenu?.map((subItem) => (
@@ -125,7 +127,8 @@ const SideMenuItems = ({
                       style={{
                         display: "flex",
                         gap: "10px",
-                        // alignItems: "center",
+                        border: "1px solid var(--gray-dark)",
+                        borderRadius: "5px",
                       }}
                     >
                       <Image
@@ -152,6 +155,8 @@ const SideMenuItems = ({
                   marginTop: "10%",
                   fontSize: "1.1em",
                   fontWeight: "bold",
+                  border: "2px solid var(--gray-dark)",
+                  borderRadius: "5px",
                 }}
               >
                 <div

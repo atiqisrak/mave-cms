@@ -64,6 +64,7 @@ export default function CounterCards() {
             border: "3px solid #FDCA4E",
             padding: "2rem 1.2rem",
             borderRadius: "1rem",
+            backgroundColor: "white",
           }}
         >
           <div
@@ -115,6 +116,7 @@ export default function CounterCards() {
           </Button>
         </div>
       ))}
+      {/* {console.log("Card Data: ", cardData)} */}
     </div>
   );
 }

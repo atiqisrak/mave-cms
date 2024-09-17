@@ -8,41 +8,6 @@ import {
 } from "@ant-design/icons";
 import Image from "next/image";
 
-// export const activityLog = [
-//   {
-//     categoryType: 1,
-//     category: "Page",
-//     time: "11:32",
-//     type: "New Page",
-//     user: "Atiq Israk",
-//     description: "New Page Created by Atiq Israk",
-//   },
-//   {
-//     categoryType: 2,
-//     category: "Page",
-//     time: "11:20",
-//     type: "About Page Updated",
-//     user: "Israk Niloy",
-//     description: "About Page Updated by Israk Niloy",
-//   },
-//   {
-//     categoryType: 3,
-//     category: "Form",
-//     time: "11:10",
-//     type: "New Form Submitted",
-//     user: "Website Visitor",
-//     description: "New Form Submitted by Website Visitor",
-//   },
-//   {
-//     categoryType: 4,
-//     category: "Blog",
-//     time: "11:00",
-//     type: "New Blog Post",
-//     user: "Lord Shamim",
-//     description: "New Blog Post by Galaxy Lord Shamim",
-//   },
-// ];
-
 export const activityLog = [
   {
     categoryType: 1,
@@ -268,6 +233,7 @@ export default function LatestEvents() {
             </div>
           </div>
         ))}
+        {/* {console.log("Activity Log: ", activityLog)} */}
       </div>
     </div>
   );

@@ -91,7 +91,7 @@ const CMSComponentGallery = ({ children, router }) => {
     <>
       <Sider
         trigger={null}
-        collapsible={true}
+        collapsible
         collapsed={collapsed}
         onCollapse={handleCollapse}
         breakpoint="md"
@@ -180,7 +180,7 @@ const CMSComponentGallery = ({ children, router }) => {
             mode="inline"
             defaultSelectedKeys={[selectedMenuItem]}
             onClick={handleMenuClick}
-            collapsible={true}
+            collapsible
             collapsedWidth={80}
           >
             {/* MAVE Admin */}
@@ -295,20 +295,6 @@ const CMSComponentGallery = ({ children, router }) => {
                     onClick={() => router.push("/cards")}
                   >
                     Cards
-                  </Menu.Item>
-                  <Menu.Item
-                    key="23"
-                    icon={<ProfileOutlined />}
-                    onClick={() => router.push("/pressrelease")}
-                  >
-                    Press Release
-                  </Menu.Item>
-                  <Menu.Item
-                    key="24"
-                    icon={<SwitcherOutlined />}
-                    onClick={() => router.push("/events")}
-                  >
-                    Events
                   </Menu.Item>
                   <Menu.Item
                     key="14"

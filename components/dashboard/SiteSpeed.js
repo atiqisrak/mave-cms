@@ -15,8 +15,12 @@ export const generateRandomSiteSpeedData = () => {
 
   for (let i = 0; i < 7; i++) {
     const date = new Date(now.getTime() + i * 60 * 60 * 1000); // increment by 1 hour
-    categories.push(date.toISOString());
-    data.push(Math.floor(Math.random() * 100) + 50); // Random site speed data between 50ms to 150ms
+    // categories.push(date.toISOString());
+    categories.push(
+      date.toISOString().split("T")[0] + " " + date.toTimeString().split(" ")[0]
+    ); // Formats date to "YYYY-MM-DD HH:mm:ss"
+
+    data.push(Math.floor(Math.random() * 100) + 50);
   }
 
   return { data, categories };
@@ -70,7 +74,7 @@ export default function SiteSpeed() {
       },
       tooltip: {
         x: {
-          format: "dd/MM/yy HH:mm",
+          format: "yyyy-MM-dd HH:mm",
         },
       },
     });
@@ -89,6 +93,7 @@ export default function SiteSpeed() {
       style={{
         border: "2.22px solid #C9C9C9",
         borderRadius: "1rem",
+        backgroundColor: "white",
       }}
     >
       <div

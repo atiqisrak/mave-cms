@@ -23,8 +23,6 @@ const index = () => {
         navbars_response,
         sliders_response,
         cards_response,
-        pressrelease_response,
-        events_response,
         forms_response,
         footers_response,
       ] = await Promise.all([
@@ -34,8 +32,6 @@ const index = () => {
         instance.get("/navbars"),
         instance.get("/sliders"),
         instance.get("/cards"),
-        instance.get("/press_release"),
-        instance.get("/events"),
         instance.get("/forms"),
         instance.get("/footers"),
       ]);
@@ -47,8 +43,6 @@ const index = () => {
         navbars: navbars_response.data,
         sliders: sliders_response.data,
         cards: cards_response.data,
-        pressreleases: pressrelease_response.data,
-        events: events_response.data,
         forms: forms_response.data,
         footers: footers_response.data,
       });
@@ -71,9 +65,17 @@ const index = () => {
   return (
     <>
       {userData ? (
-        <div className="ViewContainer">
+        <div
+          className="ViewContainer"
+          // style={{
+          //   backgroundColor: "#E8E8E9",
+          //   width: "100%",
+          //   maxWidth: "1500px",
+          //   margin: "0 auto",
+          //   paddingTop: "5rem",
+          // }}
+        >
           <div
-            // className="ViewContentContainer"
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(2, 1fr)",
