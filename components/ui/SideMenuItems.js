@@ -182,7 +182,7 @@ const SideMenuItems = ({
         ) : (
           <Menu.Item key="no-data">No data found</Menu.Item>
         )}
-        {(user && user?.email === "atiqisrak@niloy.com") ||
+        {/* {(user && user?.email === "atiqisrak@niloy.com") ||
         user?.email === "lordofgalaxy@webable.digital" ||
         user?.email === "su@mave.cms"
           ? Godfather?.map((item) => (
@@ -273,7 +273,6 @@ const SideMenuItems = ({
                         placement="right"
                       >
                         <strong>
-                          {/* {subItem.title} */}
                           {subItem.title.length > 10
                             ? subItem.title.substring(0, 10) + "..."
                             : subItem.title}
@@ -284,7 +283,7 @@ const SideMenuItems = ({
                 ))}
               </Menu.SubMenu>
             ))
-          : null}
+          : null} */}
 
         {user ? null : (
           <Menu.Item
