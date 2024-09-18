@@ -1,12 +1,5 @@
 [
     {
-        "id": 1,
-        "menu": "Home",
-        "title": "Home",
-        "icon": "/icons/mave_icons/home.svg",
-        "link": "/"
-    },
-    {
         "id": 2,
         "menu": "Components",
         "title": "Components",
@@ -130,6 +123,54 @@
                 "icon": "/icons/mave_icons/support.svg",
                 "link": "/usermanual/support",
                 "title": "Support"
+            }
+        ]
+    },
+    {
+        "id": 49,
+        "menu": "Settings",
+        "title": "Settings",
+        "icon": "/icons/mave_icons/wrench.svg",
+        "link": "settings",
+        "submenu": [
+            {
+                "id": 60,
+                "icon": "/icons/mave_icons/wrench.svg",
+                "link": "/settings/general-settings",
+                "title": "General"
+            },
+            {
+                "id": 61,
+                "icon": "/icons/mave_icons/wrench.svg",
+                "link": "/settings/content-management",
+                "title": "Content Management"
+            },
+            {
+                "id": 62,
+                "icon": "/icons/mave_icons/wrench.svg",
+                "link": "/settings/users",
+                "title": "User Management"
+            }
+        ]
+    },
+    {
+        "id": 50,
+        "menu": "Tools",
+        "title": "Tools",
+        "icon": "/icons/mave_icons/wrench.svg",
+        "link": "tools",
+        "submenu": [
+            {
+                "id": 60,
+                "icon": "/icons/mave_icons/paper.svg",
+                "link": "/tools/doctoapi",
+                "title": "Doc to API"
+            },
+            {
+                "id": 61,
+                "icon": "/icons/mave_icons/documentation.svg",
+                "link": "/formbuilder",
+                "title": "Form Builder"
             }
         ]
     }

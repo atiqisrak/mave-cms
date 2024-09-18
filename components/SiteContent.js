@@ -96,7 +96,7 @@ const SiteContent = ({ children }) => {
           style={{
             position: "fixed",
             top: 90,
-            left: collapsed ? 30 : 250,
+            left: collapsed ? 30 : 226,
             cursor: "pointer",
             color: "#fff",
             zIndex: 1200,
@@ -143,7 +143,7 @@ const SiteContent = ({ children }) => {
             left: 0,
             top: 64, // Offset for the fixed header
             bottom: 0,
-            padding: "0 1.4rem",
+            padding: "4rem 1.4rem 0 1.4rem",
             borderRight: "1px solid #f0f0f0",
             boxShadow: "0 0 10px rgba(0, 0, 0, 0.6)",
             transition: "all 0.5s",
