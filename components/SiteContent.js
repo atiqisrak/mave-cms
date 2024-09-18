@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Image, Layout, message } from "antd";
 import { useRouter } from "next/router";
-import { useAuth } from "../src/context/AuthContext"; // Using centralized auth context
+import { useAuth } from "../src/context/AuthContext";
 import NavItems from "./ui/NavItems";
 import SideMenuItems from "./ui/SideMenuItems";
-import Loader from "./Loader"; // Import Loader to show loading states
+import Loader from "./Loader";
 
 const { Sider, Content, Header } = Layout;
 
 const SiteContent = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [theme, setTheme] = useState("light"); // Default theme
+  const [theme, setTheme] = useState("light");
   const [changeLogs, setChangeLogs] = useState([]);
-  const { user, token, logout, loading } = useAuth(); // Use auth context for user management
+  const { user, token, logout, loading, isAuthenticated } = useAuth();
   const router = useRouter();
   const currentRoute = router.pathname;
 
   useEffect(() => {
-    // Check localStorage availability and update theme state
     try {
       const storedTheme = localStorage.getItem("darkmode");
       if (storedTheme) {
@@ -28,7 +27,6 @@ const SiteContent = ({ children }) => {
       console.warn("localStorage is not available. Using default theme.");
     }
 
-    // Update theme state based on local storage changes
     const handleThemeChange = () => {
       try {
         const updatedTheme = localStorage.getItem("darkmode");
@@ -45,27 +43,29 @@ const SiteContent = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (!loading && (!user || !token) && currentRoute !== "/login") {
-      router.push("/login"); // Redirect to login page if not authenticated and not already on login page
-    } else if (!loading && user && currentRoute === "/login") {
-      router.push("/"); // Redirect to dashboard if authenticated and on login page
+    if (!loading && !token && !isAuthenticated && currentRoute !== "/login") {
+      router.push("/login");
+    } else if (
+      !loading &&
+      token &&
+      isAuthenticated &&
+      currentRoute === "/login"
+    ) {
+      router.push("/home");
     }
-  }, [user, token, router, loading, currentRoute]);
+  }, [isAuthenticated, loading, currentRoute, router]);
 
   const handleCollapse = () => {
     setCollapsed(!collapsed);
   };
 
-  if (loading) return <Loader />; // Display loader if loading state is true
-
-  // If on the login page, do not show top bar and sidebar
+  if (loading) return <Loader />;
   if (currentRoute === "/login") {
     return <Content style={{ minHeight: "100vh" }}>{children}</Content>;
   }
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      {/* Top Navigation Items */}
       <Header
         style={{
           position: "fixed",
@@ -86,11 +86,8 @@ const SiteContent = ({ children }) => {
           setTheme={setTheme}
         />
       </Header>
-
-      {/* Sidebar Menu */}
       <Layout style={{ marginTop: "64px", padding: 0 }}>
         {" "}
-        {/* Offset for fixed header */}
         <div
           className="collapse-button"
           style={{
@@ -141,7 +138,7 @@ const SiteContent = ({ children }) => {
             height: "100vh",
             position: "fixed",
             left: 0,
-            top: 64, // Offset for the fixed header
+            top: 64,
             bottom: 0,
             padding: "4rem 1.4rem 0 1.4rem",
             borderRight: "1px solid #f0f0f0",
@@ -159,7 +156,6 @@ const SiteContent = ({ children }) => {
             setTheme={setTheme}
           />
         </Sider>
-        {/* Main Content Area */}
         <Layout
           className="site-layout"
           style={{
@@ -169,7 +165,7 @@ const SiteContent = ({ children }) => {
           <Content
             style={{
               padding: "24px",
-              marginTop: 0, // Remove unnecessary top margin
+              marginTop: 0,
               transition: "all 0.3s",
             }}
           >

@@ -8,10 +8,12 @@ import {
   Popconfirm,
   Spin,
   Switch,
+  Tooltip,
 } from "antd";
 import {
   CloudSyncOutlined,
   DeleteOutlined,
+  DockerOutlined,
   EditOutlined,
   EyeOutlined,
   HomeOutlined,
@@ -105,17 +107,13 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
                 display: "grid",
                 gridTemplateColumns: "1fr",
                 borderRadius: "10px",
-                border: "1px solid var(--gray-dark)",
+                border: "2px solid var(--gray-dark)",
                 padding: "1rem 1rem 2rem 1rem",
                 gap: "2rem",
                 boxShadow: "5px 10px 10px #00000020",
                 cursor: "pointer",
+                backgroundColor: "var(--white)",
               }}
-              // onClick={() => {
-              //   onSelectForm
-              //     ? onSelectForm(form.id)
-              //     : console.log("No onSelectForm prop passed");
-              // }}
             >
               <div
                 style={{
@@ -161,18 +159,49 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
                   padding: "0 1em",
                 }}
               >
-                {/* {form.description} */}
-                <p dangerouslySetInnerHTML={{ __html: form.description }}></p>
+                <Tooltip
+                  placement="right"
+                  overlayInnerStyle={{
+                    backgroundColor: "var(--theme)",
+                    width: "30vw",
+                    padding: "1.8rem",
+                    border: "2px solid var(--black)",
+                    borderRadius: "20px",
+                  }}
+                  title={
+                    <p
+                      style={{
+                        fontSize: "1.1rem",
+                      }}
+                      dangerouslySetInnerHTML={{
+                        __html: form.description,
+                      }}
+                    />
+                  }
+                >
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: form.description.substring(0, 120) + "...",
+                    }}
+                  />
+                </Tooltip>
               </p>
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "space-around",
-                  alignItems: "center",
+                  display: "grid",
+                  gridTemplateColumns: "repeat(3, 1fr)",
                   gap: "1rem",
                 }}
               >
                 <Button
+                  icon={
+                    <EyeOutlined
+                      style={{
+                        fontSize: "1.5rem",
+                        color: "var(--theme)",
+                      }}
+                    />
+                  }
                   onClick={() => {
                     console.log("Form ID:", form.id);
                     console.log("Form Title:", form.title);
@@ -180,13 +209,28 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
                       ? onSelectForm(form.id)
                       : console.log("No onSelectForm prop passed");
                   }}
+                  style={{
+                    fontSize: "1.1rem",
+                    fontWeight: 600,
+                  }}
                 >
-                  <EyeOutlined
-                    style={{
-                      fontSize: "1.5rem",
-                      color: "var(--theme)",
-                    }}
-                  />
+                  Preview
+                </Button>
+                <Button
+                  icon={
+                    <DockerOutlined
+                      style={{
+                        fontSize: "1.5rem",
+                        color: "var(--theme)",
+                      }}
+                    />
+                  }
+                  style={{
+                    fontSize: "1.1rem",
+                    fontWeight: 600,
+                  }}
+                >
+                  Responses
                 </Button>
                 <Popconfirm
                   title="Are you sure you want to delete this form?"
@@ -196,13 +240,23 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
                   okText="Yes"
                   cancelText="No"
                 >
-                  <Button danger>
-                    <DeleteOutlined
-                      style={{
-                        fontSize: "1.5rem",
-                        color: "var(--error)",
-                      }}
-                    />
+                  <Button
+                    danger
+                    icon={
+                      <DeleteOutlined
+                        style={{
+                          fontSize: "1.5rem",
+                          color: "red",
+                        }}
+                      />
+                    }
+                    style={{
+                      fontSize: "1.1rem",
+                      fontWeight: 600,
+                      color: "var(--black)",
+                    }}
+                  >
+                    Delete
                   </Button>
                 </Popconfirm>
               </div>

@@ -7,32 +7,25 @@ import Head from "next/head";
 import { message, Switch } from "antd";
 import { MoonFilled, SunFilled } from "@ant-design/icons";
 import { AuthProvider } from "../src/context/AuthContext";
+import { useRouter } from "next/router";
 
 function MyApp({ Component, pageProps }) {
+  const router = useRouter();
   const [collapsed, setCollapsed] = useState(true);
   const [darkmode, setDarkmode] = useState(false);
   const [niloy, setNiloy] = useState(
     "y$vtw#*tPECXug7SBeUqNSMVd2!TS!YkjL%#sbtBEPkxS65NtDxm&F$5mKhX(kUP"
   );
-
   useEffect(() => {
-    const currentPageName = "Home Page";
-    setPageTitle(currentPageName);
+    const storedToken = localStorage.getItem("token");
 
-    if (
-      localStorage.getItem("niloy") === null ||
-      localStorage.getItem("niloy") !== niloy
-    ) {
-      localStorage.removeItem("user");
-      localStorage.removeItem("token");
-      localStorage.removeItem("niloy");
+    if (!storedToken && router.pathname !== "/login") {
       message.error("Please login to continue");
-    } else if (localStorage.getItem("niloy") === niloy) {
-      localStorage.setItem("niloy", niloy);
-    } else {
-      console.log("Error");
+      router.push("/login");
+    } else if (storedToken && router.pathname === "/login") {
+      router.push("/home");
     }
-  }, []);
+  }, [router]);
 
   return (
     <>
@@ -43,14 +36,8 @@ function MyApp({ Component, pageProps }) {
         <Site collapsed={collapsed} setCollapsed={setCollapsed}>
           <div
             style={{
-              // paddingLeft: collapsed ? "2%" : "7%",
-              // transition: "margin-left 0.5s",
-              // height: "100vh",
               overflow: "auto",
-              // backgroundColor: !darkmode ? "var(--notwhite)" : "#1e1e1e",
-              // backgroundColor: "#E8E8E9",
               color: !darkmode ? "black" : "white",
-              // marginTop: "5vh",
             }}
           >
             <Component {...pageProps} />

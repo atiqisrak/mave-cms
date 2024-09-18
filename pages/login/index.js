@@ -32,8 +32,7 @@ export default function Login() {
         );
 
         setIsLoading(false);
-        // router.replace("/");
-        router.push("/"); // Redirect to home page
+        router.push("/home"); // Ensure this redirects to the home page
       }
     } catch (error) {
       setIsLoading(false);

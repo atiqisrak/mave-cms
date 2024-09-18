@@ -110,7 +110,7 @@ const SideMenuItems = ({
                   fontWeight: "bold",
                   marginTop: "10%",
                   border: "2px solid var(--gray-dark)",
-                  borderRadius: "5px",
+                  borderRadius: "10px",
                 }}
               >
                 {item?.submenu?.map((subItem) => (
@@ -127,8 +127,7 @@ const SideMenuItems = ({
                       style={{
                         display: "flex",
                         gap: "10px",
-                        // border: "1px solid var(--gray-dark)",
-                        borderRadius: "5px",
+                        borderRadius: "10px",
                       }}
                     >
                       <Image
@@ -156,14 +155,16 @@ const SideMenuItems = ({
                   fontSize: "1.1em",
                   fontWeight: "bold",
                   border: "2px solid var(--gray-dark)",
-                  borderRadius: "5px",
+                  borderRadius: "10px",
+                  width: "100%",
+                  padding: "24px 24px",
+                  marginLeft: "-1px",
                 }}
               >
                 <div
                   style={{
                     display: "flex",
                     gap: "10px",
-                    // alignItems: "center",
                   }}
                 >
                   <Image
@@ -182,108 +183,6 @@ const SideMenuItems = ({
         ) : (
           <Menu.Item key="no-data">No data found</Menu.Item>
         )}
-        {/* {(user && user?.email === "atiqisrak@niloy.com") ||
-        user?.email === "lordofgalaxy@webable.digital" ||
-        user?.email === "su@mave.cms"
-          ? Godfather?.map((item) => (
-              <Menu.SubMenu
-                key={item.id}
-                onClick={() => {
-                  setSelectedMenuItem(item.id);
-                }}
-                title={
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "10px",
-                    }}
-                  >
-                    {collapsed ? (
-                      <Image
-                        className="sidebaricon"
-                        preview={false}
-                        src={item.icon
-                          .replace("collapsed", "expand")
-                          .replace("dark", "light")}
-                        alt="logo"
-                      />
-                    ) : (
-                      <Image
-                        className="sidebaricon"
-                        preview={false}
-                        src={item.icon
-                          .replace("expand", "collapsed")
-                          .replace("light", "dark")}
-                        alt="logo"
-                        width={25}
-                        height={25}
-                      />
-                    )}
-                    {!collapsed && <strong>{item.title}</strong>}
-                  </div>
-                }
-                style={{
-                  fontSize: "1.1em",
-                  fontWeight: "bold",
-                  marginTop: "10%",
-                }}
-              >
-                {item?.submenu?.map((subItem) => (
-                  <Menu.Item
-                    key={subItem.id}
-                    onClick={() => router.push(subItem.link)}
-                    style={{
-                      marginTop: "10%",
-                      fontSize: "1.1em",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "10px",
-                        // alignItems: "center",
-                      }}
-                    >
-                      <Image
-                        className="sidebaricon"
-                        preview={false}
-                        src={subItem.icon}
-                        alt="logo"
-                        width={25}
-                        height={25}
-                      />
-                      <Popover
-                        content={
-                          <div className="flexed-between">
-                            <Image
-                              preview={false}
-                              src={subItem?.icon}
-                              alt="logo"
-                              style={{
-                                width: "30px",
-                                height: "30px",
-                                marginRight: "10px",
-                              }}
-                            />
-                            <h4>{subItem.title}</h4>
-                          </div>
-                        }
-                        trigger="hover"
-                        placement="right"
-                      >
-                        <strong>
-                          {subItem.title.length > 10
-                            ? subItem.title.substring(0, 10) + "..."
-                            : subItem.title}
-                        </strong>
-                      </Popover>
-                    </div>
-                  </Menu.Item>
-                ))}
-              </Menu.SubMenu>
-            ))
-          : null} */}
 
         {user ? null : (
           <Menu.Item

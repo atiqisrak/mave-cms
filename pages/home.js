@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react";
 import instance from "../axios";
 import CounterCards from "../components/dashboard/CounterCards";
 import UserStat from "../components/dashboard/UserStat";
-import SiteStat from "../components/dashboard/SiteStat";
 import LatestEvents from "../components/dashboard/LatestEvents";
 import SiteSpeed from "../components/dashboard/SiteSpeed";
 import Storage from "../components/dashboard/Storage";
 import AverageRequests from "../components/dashboard/AverageRequests";
 
-const index = () => {
+const Home = () => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState(null);
@@ -92,4 +91,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Home;
