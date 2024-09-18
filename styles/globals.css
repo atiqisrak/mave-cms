@@ -456,7 +456,7 @@ a:hover {
 
 .ant-menu-light .ant-menu-item-selected,
 .ant-menu-light > .ant-menu .ant-menu-item-selected {
-  color: #fff;
+  color: var(--black);
 }
 /* icon color svg white */
 .sidebaricon:hover {
@@ -526,4 +526,13 @@ a:hover {
 }
 :where(.css-dev-only-do-not-override-f7vrd6).ant-layout-header {
   padding: 0;
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-menu-light
+  .ant-menu-submenu-selected
+  > .ant-menu-submenu-title,
+:where(.css-dev-only-do-not-override-f7vrd6).ant-menu-light
+  > .ant-menu
+  .ant-menu-submenu-selected
+  > .ant-menu-submenu-title {
+  color: var(--theme);
 }
