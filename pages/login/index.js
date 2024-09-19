@@ -116,6 +116,7 @@ export default function Login() {
                 style={{
                   fontWeight: 600,
                   color: "var(--theme)",
+                  cursor: "pointer",
                 }}
               >
                 Sign Up

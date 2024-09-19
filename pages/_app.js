@@ -19,10 +19,16 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
 
-    if (!storedToken && router.pathname !== "/login") {
+    if (
+      !storedToken &&
+      !["/login", "/signup", "/forgot-password"].includes(router.pathname)
+    ) {
       message.error("Please login to continue");
       router.push("/login");
-    } else if (storedToken && router.pathname === "/login") {
+    } else if (
+      storedToken &&
+      ["/login", "/signup", "/forgot-password"].includes(router.pathname)
+    ) {
       router.push("/home");
     }
   }, [router]);

@@ -142,7 +142,7 @@ export default function NavItems({
   const userItems = [
     {
       key: "1",
-      label: <Link href="/profile">Profile</Link>,
+      label: <Link href="/user/profile">Profile</Link>,
     },
     {
       key: "2",

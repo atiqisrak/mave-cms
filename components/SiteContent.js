@@ -43,13 +43,22 @@ const SiteContent = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (!loading && !token && !isAuthenticated && currentRoute !== "/login") {
+    if (
+      !loading &&
+      !token &&
+      !isAuthenticated &&
+      currentRoute !== "/login" &&
+      currentRoute !== "/signup" &&
+      currentRoute !== "/forgot-password"
+    ) {
       router.push("/login");
     } else if (
       !loading &&
       token &&
       isAuthenticated &&
-      currentRoute === "/login"
+      currentRoute === "/login" &&
+      currentRoute === "/signup" &&
+      currentRoute === "/forgot-password"
     ) {
       router.push("/home");
     }
@@ -60,7 +69,11 @@ const SiteContent = ({ children }) => {
   };
 
   if (loading) return <Loader />;
-  if (currentRoute === "/login") {
+  if (
+    currentRoute === "/login" ||
+    currentRoute === "/signup" ||
+    currentRoute === "/forgot-password"
+  ) {
     return <Content style={{ minHeight: "100vh" }}>{children}</Content>;
   }
 
