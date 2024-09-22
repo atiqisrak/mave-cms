@@ -1,5 +1,18 @@
 [
     {
+        "version": "v 0.3.21",
+        "date": "2024-09-22",
+        "changes": {
+            "Feature": [
+                "Added new icons in the sidebar",
+                "Mave logo has changed"
+            ],
+            "BugFix": [
+                "Fixed slider elements update issue/bug"
+            ]
+        }
+    },
+    {
         "version": "v 0.3.19",
         "date": "2024-08-11",
         "changes": {

@@ -64,19 +64,19 @@
         "submenu": [
             {
                 "id": 12,
-                "icon": "/icons/mave_icons/page.svg",
+                "icon": "/icons/mave/forms.svg",
                 "link": "/creator/pages",
                 "title": "Pages"
             },
             {
                 "id": 13,
-                "icon": "/icons/mave_icons/blog.svg",
+                "icon": "/icons/mave/blogs.svg",
                 "link": "/blogs",
                 "title": "Blogs"
             },
             {
                 "id": 14,
-                "icon": "/icons/mave_icons/createblog.svg",
+                "icon": "/icons/mave/exam.svg",
                 "link": "/blogs/createblog",
                 "title": "Create Blog"
             }
@@ -90,31 +90,31 @@
         "submenu": [
             {
                 "id": 16,
-                "icon": "/icons/mave_icons/changelog.svg",
+                "icon": "/icons/mave/changelog.svg",
                 "link": "/usermanual/changelog",
                 "title": "Changelog"
             },
             {
                 "id": 17,
-                "icon": "/icons/mave_icons/documentation.svg",
+                "icon": "/icons/mave/documentation.svg",
                 "link": "/usermanual/documentation",
                 "title": "Docs"
             },
             {
                 "id": 18,
-                "icon": "/icons/mave_icons/userguide.svg",
+                "icon": "/icons/mave/browser.svg",
                 "link": "/usermanual/userguide",
                 "title": "User Guide"
             },
             {
                 "id": 19,
-                "icon": "/icons/mave_icons/faq.svg",
+                "icon": "/icons/mave/faq.svg",
                 "link": "/usermanual/faq",
                 "title": "FAQ"
             },
             {
                 "id": 20,
-                "icon": "/icons/mave_icons/support.svg",
+                "icon": "/icons/mave/headphones2.svg",
                 "link": "/usermanual/support",
                 "title": "Support"
             }
@@ -129,19 +129,19 @@
         "submenu": [
             {
                 "id": 22,
-                "icon": "/icons/mave_icons/wrench.svg",
+                "icon": "/icons/mave/settings.svg",
                 "link": "/settings/general-settings",
                 "title": "General"
             },
             {
                 "id": 23,
-                "icon": "/icons/mave_icons/wrench.svg",
+                "icon": "/icons/mave/settings2.svg",
                 "link": "/settings/content-management",
                 "title": "Content"
             },
             {
                 "id": 24,
-                "icon": "/icons/mave_icons/wrench.svg",
+                "icon": "/icons/mave/user-settings.svg",
                 "link": "/settings/users",
                 "title": "User"
             }
@@ -156,19 +156,19 @@
         "submenu": [
             {
                 "id": 26,
-                "icon": "/icons/mave_icons/paper.svg",
+                "icon": "/icons/mave/response.svg",
                 "link": "/tools/doctoapi",
                 "title": "Doc to API"
             },
             {
                 "id": 27,
-                "icon": "/icons/mave_icons/documentation.svg",
+                "icon": "/icons/mave/exam.svg",
                 "link": "/formbuilder",
                 "title": "Form Builder"
             },
             {
                 "id": 28,
-                "icon": "/icons/mave_icons/documentation.svg",
+                "icon": "/icons/mave/feedback.svg",
                 "link": "/formbuilder/form-responses",
                 "title": "Responses"
             }
