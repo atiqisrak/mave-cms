@@ -480,7 +480,7 @@ const Footer = () => {
 
                         <MediaSelectionModal1
                           mediaList={mediaList}
-                          visible={modalVisible}
+                          open={modalVisible}
                           onCancel={handleModalCancel}
                           onSelect={handleMediaSelect}
                         />
@@ -1001,7 +1001,7 @@ const Footer = () => {
 
                             <MediaSelectionModal1
                               mediaList={mediaList}
-                              visible={modalVisible}
+                              open={modalVisible}
                               onCancel={handleModalCancel}
                               onSelect={handleMediaSelect}
                             />

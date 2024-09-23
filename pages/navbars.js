@@ -406,7 +406,7 @@ const Navbars = () => {
                     <SingleMediaSelect
                       media={media}
                       onMediaSelect={(mediaId) => setSelectedMediaId(mediaId)}
-                      visible={mediaSelectionVisible2}
+                      open={mediaSelectionVisible2}
                       onCancel={() => setMediaSelectionVisible2(false)}
                       setSelectedMenuId={setSelectedMenuId}
                     />
@@ -919,7 +919,7 @@ const Navbars = () => {
       {/* Render the MediaModal */}
       <MediaModal
         mediaList={media}
-        visible={mediaSelectionVisible}
+        open={mediaSelectionVisible}
         onCancel={() => setMediaSelectionVisible(false)}
         onSelect={(selectedMedia) => {
           handleAddMediaToNavbar(selectedMedia);

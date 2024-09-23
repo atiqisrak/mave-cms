@@ -317,7 +317,7 @@ const FormBuilder = () => {
         <ElementPanel />
       </div>
       <PreviewModal
-        visible={preview}
+        open={preview}
         onCancel={() => setPreview(false)}
         onSave={saveForm}
       />

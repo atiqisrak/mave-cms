@@ -158,7 +158,7 @@ const UserManagement = () => {
                   fetchUsers={fetchUsers}
                 />
                 <UserForm
-                  visible={isModalVisible}
+                  open={isModalVisible}
                   onCreate={handleCreateOrUpdateUser}
                   onCancel={handleCancel}
                   initialValues={editingUser}

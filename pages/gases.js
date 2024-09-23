@@ -289,7 +289,7 @@ const Gases = () => {
                       Change Image
                     </Button>
                     <SingleMediaSelect
-                      visible={modalVisible}
+                      open={modalVisible}
                       onCancel={handleModalCancel}
                       onMediaSelect={handleMediaSelect}
                       media={media}

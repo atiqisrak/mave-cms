@@ -326,7 +326,7 @@ const CardGridView = ({ cardData, media, fetchCards, pages }) => {
                 Change Media
               </Button>
               <SingleMediaSelect
-                visible={mediaSelectionVisible}
+                open={mediaSelectionVisible}
                 setVisible={setMediaSelectionVisible}
                 media={media}
                 cardId={selectedCardId}

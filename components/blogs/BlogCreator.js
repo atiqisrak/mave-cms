@@ -345,7 +345,7 @@ const BlogCreator = ({ creatorMode, setCreatorMode, fetchBlogs }) => {
 
         {mediaSelectionVisible && (
           <SingleMediaSelect
-            visible={mediaSelectionVisible}
+            open={mediaSelectionVisible}
             setVisible={setMediaSelectionVisible}
             setSelectedMediaId={setFeaturedImage}
             onMediaSelect={(mediaId) => {

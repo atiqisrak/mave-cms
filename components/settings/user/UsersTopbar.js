@@ -98,7 +98,7 @@ export default function UsersTopbar({
         </Button>
         {createUser && (
           <UserForm
-            visible={createUser}
+            open={createUser}
             onCreate={handleCreateUser}
             onCancel={() => setCreateUser(false)}
             fetchUsers={fetchUsers}

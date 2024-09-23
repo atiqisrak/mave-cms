@@ -189,20 +189,20 @@ const UserTable = ({ users, fetchUsers, roles }) => {
       {users && roles && (
         <>
           <UserEditModal
-            visible={isEditModalVisible}
+            open={isEditModalVisible}
             user={selectedUser}
             onCancel={() => setIsEditModalVisible(false)}
             fetchUsers={fetchUsers}
             roles={roles}
           />
           <UserViewModal
-            visible={isViewModalVisible}
+            open={isViewModalVisible}
             user={selectedUser}
             onCancel={() => setIsViewModalVisible(false)}
             onEdit={() => handleEditUser(selectedUser)}
           />
           <FilterDrawer
-            visible={isFilterDrawerVisible}
+            open={isFilterDrawerVisible}
             onClose={() => setIsFilterDrawerVisible(false)}
             setFilteredUsers={setFilteredUsers}
             users={users}

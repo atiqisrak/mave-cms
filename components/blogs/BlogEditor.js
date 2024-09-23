@@ -50,7 +50,7 @@ export default function BlogEditor({ content, setContent, onContentChange }) {
           width={"60vw"}
         >
           <WriteWithAI
-            visible={modalVisible}
+            open={modalVisible}
             setVisible={setModalVisible}
             setContent={setContent}
           />

@@ -204,7 +204,7 @@ const CreateCardForm = ({
         )}
       </Button>
       <SingleMediaSelect
-        visible={mediaSelectionVisible}
+        open={mediaSelectionVisible}
         onCancel={() => setMediaSelectionVisible(false)}
         onMediaSelect={handleAddMediaToCard}
         media={media}

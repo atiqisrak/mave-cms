@@ -320,7 +320,7 @@ const CreateHomePage = ({
           >
             <MediaSelectionModal
               media={media}
-              visible={modalVisible}
+              open={modalVisible}
               onCancel={() => setModalVisible(false)}
               selectedMedia={selectedMedia}
               setSelectedMedia={setSelectedMedia}
