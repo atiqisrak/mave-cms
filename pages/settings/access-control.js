@@ -32,7 +32,7 @@ export default function AccessControlPage() {
     },
   ];
   return (
-    <div className="ViewContainer">
+    <div className="ViewContainer ViewContentContainer">
       <UsersTopbar
         menuItems={menuItems}
         active={active}

@@ -19,7 +19,7 @@ export default function Login() {
     const { email, password } = values;
     setIsLoading(true);
     try {
-      const res = await instance.post("admin/login", { email, password });
+      const res = await instance.post("/admin/login", { email, password });
       if (res?.status === 200) {
         const newToken = res?.data?.token;
         const user = JSON.stringify(res?.data?.user);

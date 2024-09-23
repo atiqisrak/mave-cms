@@ -1,15 +1,44 @@
-import React, { useState } from "react";
-import { Form, Input, Button, Upload, Select, message } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import React, { useEffect } from "react";
+import {
+  Layout,
+  Breadcrumb,
+  Form,
+  Input,
+  Button,
+  Upload,
+  Select,
+  message,
+} from "antd";
+import { UploadOutlined, HomeOutlined } from "@ant-design/icons";
+import Link from "next/link";
 
+const { Content } = Layout;
 const { Option } = Select;
 
 const GeneralSetting = () => {
   const [form] = Form.useForm();
 
+  // Load settings from localStorage on component mount
+  useEffect(() => {
+    const savedSettings = localStorage.getItem("generalSettings");
+    if (savedSettings) {
+      form.setFieldsValue(JSON.parse(savedSettings));
+    }
+  }, [form]);
+
+  // Save form data to localStorage
   const onFinish = (values) => {
-    console.log("Success:", values);
-    message.success("Settings saved!");
+    const settings = {
+      siteTitle: values.siteTitle,
+      siteDescription: values.siteDescription,
+      logo: values.logo,
+      favicon: values.favicon,
+      timezone: values.timezone,
+      language: values.language,
+    };
+
+    localStorage.setItem("generalSettings", JSON.stringify(settings));
+    message.success("Settings saved successfully!");
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -24,6 +53,12 @@ const GeneralSetting = () => {
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       layout="vertical"
+      style={{
+        backgroundColor: "#f9f9f9",
+        padding: "2rem",
+        borderRadius: "8px",
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+      }}
     >
       <Form.Item
         label="Site Title"
@@ -70,10 +105,9 @@ const GeneralSetting = () => {
         name="timezone"
         rules={[{ required: true, message: "Please select the timezone!" }]}
       >
-        <Select>
+        <Select placeholder="Select timezone">
           <Option value="UTC">UTC</Option>
           <Option value="GMT">GMT</Option>
-          {/* Add more timezones as needed */}
         </Select>
       </Form.Item>
 
@@ -82,15 +116,29 @@ const GeneralSetting = () => {
         name="language"
         rules={[{ required: true, message: "Please select the language!" }]}
       >
-        <Select>
+        <Select placeholder="Select language">
           <Option value="en">English</Option>
           <Option value="bn">Bangla</Option>
-          {/* Add more languages as needed */}
         </Select>
       </Form.Item>
 
       <Form.Item>
-        <Button type="primary" htmlType="submit">
+        <Button
+          type="primary"
+          htmlType="submit"
+          style={{
+            width: "fit-content",
+            backgroundColor: "var(--theme)",
+            borderColor: "var(--theme)",
+            fontSize: "1.4rem",
+            fontWeight: 600,
+            margin: "0 auto",
+            display: "block",
+            padding: "0 2rem",
+            height: "4rem",
+            borderRadius: "18px",
+          }}
+        >
           Save Settings
         </Button>
       </Form.Item>

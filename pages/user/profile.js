@@ -152,58 +152,6 @@ const Profile = () => {
         modifyMode={modifyMode}
         setModifyMode={setModifyMode}
       />
-      <hr />
-      {/* <UserProfileForm
-        userData={userData}
-        modifiedData={modifiedData}
-        handleInputChange={handleInputChange}
-        modifyMode={modifyMode}
-        handleUpdateProfile={handleUpdateProfile}
-        setModifyMode={setModifyMode}
-        canModifyUsers={canModifyUsers}
-        validEmail={validEmail}
-        emailMessage={"Email is valid or invalid based on logic"}
-      /> */}
-      {canModifyUsers && (
-        <>
-          <UserList
-            users={users}
-            roles={[
-              { id: 1, name: "Admin" },
-              { id: 2, name: "User" },
-            ]}
-            handleUserEdit={handleUserEdit}
-            handleDeleteUser={handleDeleteUser}
-          />
-          {createUser && (
-            <UserCreateForm
-              name={name}
-              email={email}
-              password={password}
-              confirmPassword={confirmPassword}
-              handleChange={handleInputChange}
-              showPassword={showPassword}
-              togglePasswordVisibility={() => setShowPassword(!showPassword)}
-              showConfirmPassword={showConfirmPassword}
-              toggleConfirmPasswordVisibility={() =>
-                setShowConfirmPassword(!showConfirmPassword)
-              }
-              handleCreateUser={handleCreateUser}
-              validEmail={validEmail}
-              emailMessage={"Email is valid or invalid based on logic"}
-              passwordsMatch={passwordsMatch}
-              isSubmitDisabled={!validEmail || !passwordsMatch}
-            />
-          )}
-          <Button
-            type="primary"
-            onClick={() => setCreateUser(!createUser)}
-            style={{ marginTop: "1rem" }}
-          >
-            {createUser ? "Cancel" : "Create User"}
-          </Button>
-        </>
-      )}
     </div>
   );
 };
