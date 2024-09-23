@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Timeline, Tag, Button } from "antd";
+import { Layout, Timeline, Tag, Button, Breadcrumb } from "antd";
 import moment from "moment";
 import changelog from "./changelog.json";
-import { SwapOutlined } from "@ant-design/icons";
+import { HomeOutlined, SwapOutlined } from "@ant-design/icons";
 
 const Changelog = () => {
+  const { Content } = Layout;
   const [changeLogs, setChangeLogs] = useState([]);
   const [reverse, setReverse] = useState(false);
 
@@ -17,53 +18,110 @@ const Changelog = () => {
   }, []);
 
   return (
-    <div style={{ padding: "20px" }} className="ViewContainer">
-      <div
+    <div className="ViewContentContainer">
+      <Layout
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "20px",
+          padding: "0 24px 24px",
+          marginBottom: "2rem",
+          backgroundColor: "transparent",
         }}
       >
-        <h1 style={{ marginBottom: "20px" }}>Changelog</h1>
-        <Button
-          icon={<SwapOutlined />}
-          onClick={() => setReverse(!reverse)}
-          style={{ marginBottom: "20px", transform: "rotate(90deg)" }}
-        />
-      </div>
-      <Timeline mode="alternate" pending="More to come..." reverse={reverse}>
-        {changeLogs.map((log, index) => (
-          <Timeline.Item
-            key={index}
-            label={moment(log.date).format("DD MMM YYYY")}
-            style={{ paddingBottom: "20px", fontSize: "1.1em" }}
+        <Breadcrumb
+          style={{
+            margin: "16px 0",
+            fontSize: "1rem",
+            fontWeight: 600,
+          }}
+        >
+          <Breadcrumb.Item>
+            <Button icon={<HomeOutlined />} type="link" href="/" />
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>Settings</Breadcrumb.Item>
+          <Breadcrumb.Item>Changelog</Breadcrumb.Item>
+        </Breadcrumb>
+
+        <Content
+          style={{
+            padding: "24px",
+            margin: 0,
+            minHeight: 280,
+            backgroundColor: "#fff",
+            borderRadius: "8px",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
           >
-            <h3
+            <h1
               style={{
-                fontSize: "1.25em",
-                marginBottom: "10px",
-                color: "var(--theme)",
+                fontSize: "1.8rem",
+                fontWeight: 600,
+                marginBottom: "1.5rem",
+                margin: "0 auto",
               }}
             >
-              Version {log.version}
-            </h3>
-            <>
-              {Object.entries(log.changes).map(([type, changeList]) =>
-                changeList.map((change, i) => (
-                  <div key={i} style={{ marginBottom: "10px" }}>
-                    <Tag color={type === "BugFix" ? "red" : "green"}>
-                      {type}
-                    </Tag>
-                    {change}
-                  </div>
-                ))
-              )}
-            </>
-          </Timeline.Item>
-        ))}
-      </Timeline>
+              Changelogs
+            </h1>
+            <Button
+              icon={<SwapOutlined />}
+              onClick={() => setReverse(!reverse)}
+              style={{ marginBottom: "20px", transform: "rotate(90deg)" }}
+            />
+          </div>
+
+          <Timeline
+            mode="alternate"
+            pending="More to come..."
+            reverse={reverse}
+          >
+            {changeLogs.map((log, index) => (
+              <Timeline.Item
+                key={index}
+                label={moment(log.date).format("DD MMM YYYY")}
+                style={{
+                  paddingBottom: "20px",
+                  fontSize: "1.1em",
+                }}
+              >
+                <h3
+                  style={{
+                    fontSize: "1.25em",
+                    marginBottom: "10px",
+                    color: "var(--theme)",
+                  }}
+                >
+                  Version {log.version}
+                </h3>
+                <>
+                  {Object.entries(log.changes).map(([type, changeList]) =>
+                    changeList.map((change, i) => (
+                      <div
+                        key={i}
+                        style={{
+                          marginBottom: "10px",
+                          padding: "1rem 2rem",
+                          borderRadius: "10px",
+                          backgroundColor: "white",
+                          boxShadow: "0 0 5px rgba(0, 0, 0, 0.1)",
+                        }}
+                      >
+                        <Tag color={type === "BugFix" ? "red" : "green"}>
+                          {type}
+                        </Tag>
+                        {change}
+                      </div>
+                    ))
+                  )}
+                </>
+              </Timeline.Item>
+            ))}
+          </Timeline>
+        </Content>
+      </Layout>
     </div>
   );
 };

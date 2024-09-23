@@ -123,7 +123,7 @@ export default function usersSettingsPage() {
   console.log("Roles Users", roles);
 
   return (
-    <div className="ViewContainer">
+    <div className="ViewContainer ViewContentContainer">
       <UsersTopbar
         menuItems={menuItems}
         active={active}
