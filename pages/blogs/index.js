@@ -34,7 +34,7 @@ export default function index() {
   console.log("Blog data: ", blogs);
 
   return (
-    <div className="ViewContainer">
+    <div className="ViewContentContainer">
       <center>
         <h1
           style={{
