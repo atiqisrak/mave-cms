@@ -22,11 +22,15 @@ const SideMenuItems = ({
   const [loading, setLoading] = useState(false);
   const [sideMenuData, setSideMenuData] = useState([]);
   const [selectedMenuItem, setSelectedMenuItem] = useState("1");
+  const [godfather, setGodfather] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
     if (token && user) {
       setSideMenuData(AuthorizedSideMenuData);
+      if (user?.email == "atiqisrak@niloy.com") {
+        setGodfather(Godfather);
+      }
     } else {
       setSideMenuData(UnAuthorizedSideMenuData);
     }
@@ -183,7 +187,125 @@ const SideMenuItems = ({
         ) : (
           <Menu.Item key="no-data">No data found</Menu.Item>
         )}
-
+        {user && godfather?.length > 0 ? (
+          godfather?.map((item) =>
+            item?.submenu?.length > 0 ? (
+              <Menu.SubMenu
+                key={item.id}
+                onClick={() => {
+                  setSelectedMenuItem(item.id);
+                }}
+                title={
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "10px",
+                    }}
+                  >
+                    {collapsed ? (
+                      <Image
+                        className="sidebaricon"
+                        preview={false}
+                        src={item.icon
+                          .replace("collapsed", "expand")
+                          .replace("dark", "light")}
+                        alt="logo"
+                        width={25}
+                        height={25}
+                      />
+                    ) : (
+                      <Image
+                        className="sidebaricon"
+                        preview={false}
+                        src={item.icon
+                          .replace("expand", "collapsed")
+                          .replace("light", "dark")}
+                        alt="logo"
+                        width={25}
+                        height={25}
+                      />
+                    )}
+                    {!collapsed && <strong>{item.title}</strong>}
+                  </div>
+                }
+                style={{
+                  fontSize: "1.1em",
+                  fontWeight: "bold",
+                  marginTop: "10%",
+                  border: "2px solid var(--gray-dark)",
+                  borderRadius: "10px",
+                }}
+              >
+                {item?.submenu?.map((subItem) => (
+                  <Menu.Item
+                    key={subItem.id}
+                    onClick={() => router.push(subItem.link)}
+                    style={{
+                      marginTop: "10%",
+                      fontSize: "1.1em",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "10px",
+                        borderRadius: "10px",
+                      }}
+                    >
+                      <Image
+                        className="sidebaricon"
+                        preview={false}
+                        src={subItem.icon}
+                        alt="logo"
+                        width={25}
+                        height={25}
+                      />
+                      <strong>{subItem.title}</strong>
+                    </div>
+                  </Menu.Item>
+                ))}
+              </Menu.SubMenu>
+            ) : (
+              <Menu.Item
+                key={item.id}
+                onClick={() => {
+                  setSelectedMenuItem(item.id);
+                  router.push(item.link);
+                }}
+                style={{
+                  marginTop: "10%",
+                  fontSize: "1.1em",
+                  fontWeight: "bold",
+                  border: "2px solid var(--gray-dark)",
+                  borderRadius: "10px",
+                  width: "100%",
+                  padding: "24px 24px",
+                  marginLeft: "-1px",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "10px",
+                  }}
+                >
+                  <Image
+                    className="sidebaricon"
+                    preview={false}
+                    src={item.icon}
+                    alt="logo"
+                    width={25}
+                    height={25}
+                  />
+                  {!collapsed && <strong>{item.title}</strong>}
+                </div>
+              </Menu.Item>
+            )
+          )
+        ) : (
+          <Menu.Item key="no-data">No data found</Menu.Item>
+        )}
         {user ? null : (
           <Menu.Item
             key="login"
