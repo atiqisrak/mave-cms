@@ -1,5 +1,5 @@
+import React, { useState, useEffect } from "react";
 import { Form, Input, Select, Checkbox, Button } from "antd";
-import { useState } from "react";
 
 const { Option } = Select;
 
@@ -12,22 +12,60 @@ const FieldInput = ({ initialFieldData, availableModels, onSave }) => {
   const [isUnique, setIsUnique] = useState(initialFieldData.unique || false);
   const [relatedModel, setRelatedModel] = useState(null);
   const [relatedField, setRelatedField] = useState(null);
-  const [connectionType, setConnectionType] = useState(null);
+  const [relationshipType, setRelationshipType] = useState("");
 
-  const handleSave = () => {
+  // Filter available connection types based on field type
+  const relationshipOptions = [
+    { label: "A Task can have One Contributor", value: "hasOne" },
+    { label: "A Task can have Multiple Contributors", value: "hasMany" },
+    { label: "A Task belongs to One Contributor", value: "belongsTo" },
+    { label: "A Task belongs to Many Contributors", value: "belongsToMany" },
+  ];
+
+  useEffect(() => {
+    // Reset relationships if array/json are selected
+    if (fieldType === "array" || fieldType === "json") {
+      setRelatedModel(null);
+      setRelatedField(null);
+      setRelationshipType("");
+    }
+  }, [fieldType]);
+
+  // const addField = () => {
+  //   const fieldData = {
+  //     name: fieldName,
+  //     type: fieldType,
+  //     required: isRequired,
+  //     unique: isUnique,
+  //     relatedModel,
+  //     relatedField,
+  //     relationshipType,
+  //   };
+  //   onSave(fieldData);
+  // };
+  const addField = () => {
+    if (!fieldName || !fieldType) {
+      alert("Field name and type are required.");
+      return;
+    }
+
+    // If relationships are involved, ensure they are properly filled
+    if (relatedModel && (!relatedField || !relationshipType)) {
+      alert("Please select the related field and relationship type.");
+      return;
+    }
+
     const fieldData = {
-      name: fieldName,
+      // name: fieldName,
+      name: fieldName.toLowerCase().replace(/ /g, "_"),
       type: fieldType,
       required: isRequired,
       unique: isUnique,
-      connection: relatedModel
-        ? {
-            model: relatedModel,
-            field: relatedField,
-            type: connectionType,
-          }
-        : null,
+      relatedModel: relatedModel || null, // Handle empty relationships
+      relatedField: relatedField || null,
+      relationshipType: relationshipType || null,
     };
+
     onSave(fieldData);
   };
 
@@ -43,11 +81,65 @@ const FieldInput = ({ initialFieldData, availableModels, onSave }) => {
       <Form.Item label="Field Type">
         <Select value={fieldType} onChange={(value) => setFieldType(value)}>
           <Option value="string">String</Option>
-          <Option value="number">Number</Option>
+          <Option value="integer">Number</Option>
           <Option value="boolean">Boolean</Option>
           <Option value="date">Date</Option>
+          <Option value="array">Array</Option>
+          <Option value="json">JSON</Option>
         </Select>
       </Form.Item>
+
+      {fieldType !== "array" && fieldType !== "json" && (
+        <>
+          <Form.Item label="Connect to Other Model">
+            <Select
+              value={relatedModel}
+              onChange={(value) => setRelatedModel(value)}
+              placeholder="Select Model"
+            >
+              {availableModels.map((model) => (
+                <Option key={model.name} value={model.name}>
+                  {model.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          {relatedModel && (
+            <Form.Item label="Field in Related Model">
+              <Select
+                value={relatedField}
+                onChange={(value) => setRelatedField(value)}
+                placeholder="Select Field"
+              >
+                {availableModels
+                  .find((model) => model.name === relatedModel)
+                  ?.fields.map((field) => (
+                    <Option key={field} value={field}>
+                      {field}
+                    </Option>
+                  ))}
+              </Select>
+            </Form.Item>
+          )}
+
+          {relatedModel && relatedField && (
+            <Form.Item label="Relationship Type">
+              <Select
+                value={relationshipType}
+                onChange={(value) => setRelationshipType(value)}
+                placeholder="Select Relationship Type"
+              >
+                {relationshipOptions.map((option) => (
+                  <Option key={option.value} value={option.value}>
+                    {option.label}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          )}
+        </>
+      )}
 
       <Form.Item>
         <Checkbox
@@ -64,53 +156,24 @@ const FieldInput = ({ initialFieldData, availableModels, onSave }) => {
         </Checkbox>
       </Form.Item>
 
-      {/* Connection Section */}
-      <Form.Item label="Connect to another model?">
-        <Select
-          placeholder="Select Model"
-          onChange={(value) => setRelatedModel(value)}
+      <center>
+        <Button
+          onClick={addField}
+          style={{
+            backgroundColor: "#4CAF50",
+            color: "white",
+            padding: "14px 20px",
+            margin: "8px 0",
+            border: "none",
+            cursor: "pointer",
+            borderRadius: "4px",
+            boxSizing: "border-box",
+            fontSize: "16px",
+          }}
         >
-          {availableModels.map((model, index) => (
-            <Option key={index} value={model.name}>
-              {model.name}
-            </Option>
-          ))}
-        </Select>
-      </Form.Item>
-
-      {relatedModel && (
-        <Form.Item label="Select Field from Model">
-          <Select
-            placeholder="Select Field"
-            onChange={(value) => setRelatedField(value)}
-          >
-            {availableModels
-              .find((model) => model.name === relatedModel)
-              ?.fields.map((field, index) => (
-                <Option key={index} value={field}>
-                  {field}
-                </Option>
-              ))}
-          </Select>
-        </Form.Item>
-      )}
-
-      {relatedModel && relatedField && (
-        <Form.Item label="Connection Type">
-          <Select
-            placeholder="Select Connection Type"
-            onChange={(value) => setConnectionType(value)}
-          >
-            <Option value="hasMany">Has Many</Option>
-            <Option value="hasOne">Has One</Option>
-            <Option value="belongsTo">Belongs To</Option>
-          </Select>
-        </Form.Item>
-      )}
-
-      <Button type="primary" onClick={handleSave}>
-        Save Field
-      </Button>
+          Save Field
+        </Button>
+      </center>
     </div>
   );
 };
