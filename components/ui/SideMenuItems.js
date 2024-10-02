@@ -28,7 +28,10 @@ const SideMenuItems = ({
   useEffect(() => {
     if (token && user) {
       setSideMenuData(AuthorizedSideMenuData);
-      if (user?.email == "atiqisrak@niloy.com") {
+      if (
+        user?.email == "atiqisrak@niloy.com" ||
+        user?.email == "Zeeshan.akhtar@webable.digital"
+      ) {
         setGodfather(Godfather);
       }
     } else {

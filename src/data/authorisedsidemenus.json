@@ -73,12 +73,6 @@
                 "icon": "/icons/mave/blogs.svg",
                 "link": "/blogs",
                 "title": "Blogs"
-            },
-            {
-                "id": 14,
-                "icon": "/icons/mave/exam.svg",
-                "link": "/blogs/createblog",
-                "title": "Create Blog"
             }
         ]
     },
