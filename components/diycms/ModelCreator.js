@@ -8,11 +8,8 @@ import {
   Switch,
 } from "antd";
 import FieldInput from "./FieldInput";
-import SQLGenerator from "./SQLGenerator";
-import RouteGenerator from "./RouteGenerator";
 import { useState, useEffect } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import ControllerGenerator from "./ControllerGenerator";
 import instance from "../../axios";
 
 const { Panel } = Collapse;
@@ -23,17 +20,25 @@ export default function ModelCreator() {
   const [modelSingular, setModelSingular] = useState("");
   const [modelPlural, setModelPlural] = useState("");
   const [availableModels, setAvailableModels] = useState([]);
+  const [status, setStatus] = useState(false); // Handle model status
 
+  // Fetch models for relationships from backend
+  const fetchAvailableModels = async () => {
+    setLoading(true);
+    try {
+      const response = await instance.get("/generated-models");
+      if (response.data) {
+        setAvailableModels(response.data);
+      } else {
+        setAvailableModels([]);
+      }
+    } catch (error) {
+      console.error("Error fetching available models:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    // Mock fetching models from localhost
-    const fetchAvailableModels = async () => {
-      const models = [
-        { name: "User", fields: ["id", "name", "email"] },
-        { name: "Post", fields: ["id", "title", "content"] },
-      ];
-      setAvailableModels(models);
-    };
-
     fetchAvailableModels();
   }, []);
 
@@ -54,61 +59,37 @@ export default function ModelCreator() {
   };
 
   const handleFormSubmit = async () => {
-    // Convert model names to lowercase and replace spaces
-    const formattedModelSingular = modelSingular
-      .trim()
-      .replace(/\s+/g, "_")
-      .toLowerCase();
-    const formattedModelPlural = modelPlural
-      .trim()
-      .replace(/\s+/g, "_")
-      .toLowerCase();
+    // Format model names
+    const formattedModelSingular = modelSingular.trim().toLowerCase();
+    const formattedModelPlural = modelPlural.trim().toLowerCase();
 
-    // Generate the migration, model, routes, and controller
-    const migration = SQLGenerator.generateCreateTableQuery(
-      formattedModelSingular,
-      fields
-    );
-    const model = SQLGenerator.generateModel(formattedModelSingular, fields);
-    const routes = RouteGenerator.generateRoutes(formattedModelSingular);
-    const controller = ControllerGenerator.generateController(
-      formattedModelSingular,
-      fields
-    );
-
-    // Create the JSON payload to send to the backend
+    // Create the payload
     const jsonPayload = {
       modelSingular: formattedModelSingular,
       modelPlural: formattedModelPlural,
       fields,
-      status: false,
-      // migration,
-      // model,
-      // routes,
-      // controller,
+      status: status, // Reflect status switch
     };
 
-    // Log the generated code and payload in the console
-    // console.log("Generated Migration Query:", migration);
-    // console.log("Generated Model:", model);
-    // console.log("Generated Routes:", routes);
-    // console.log("Generated Controller:", controller);
     console.log(
       "Payload to send to backend:",
       JSON.stringify(jsonPayload, null, 2)
     );
 
-    // Send the payload to the backend
+    // Submit to backend
     setLoading(true);
     try {
       const response = await instance.post("/diy-cms", jsonPayload);
       if (response.status === 201) {
         message.success("Model created successfully!");
+        setFields([]); // Clear fields after creation
+        setModelSingular("");
+        setModelPlural("");
       } else {
-        message.error("Failed to create model. Please try again.");
+        message.error("Failed to create model.");
       }
     } catch (error) {
-      message.error("Failed to create model. Please try again.");
+      message.error("Error occurred while creating the model.");
     } finally {
       setLoading(false);
     }
@@ -134,7 +115,7 @@ export default function ModelCreator() {
             <Input
               value={modelSingular}
               onChange={(e) => setModelSingular(e.target.value)}
-              placeholder="Enter the singular form of the model (e.g., Task)"
+              placeholder="e.g., Post"
             />
           </Form.Item>
           <Form.Item
@@ -145,27 +126,18 @@ export default function ModelCreator() {
             <Input
               value={modelPlural}
               onChange={(e) => setModelPlural(e.target.value)}
-              placeholder="Enter the plural form of the model (e.g., Tasks)"
+              placeholder="e.g., Posts"
             />
           </Form.Item>
         </div>
 
-        {/* Collapsible Fields */}
+        {/* Fields with Collapsible Panels */}
         <Collapse accordion>
           {fields.map((field, index) => (
             <Panel
               header={`${field.name} (${field.type})`}
               key={index}
               extra={
-                // <Button
-                //   onClick={(e) => {
-                //     e.stopPropagation();
-                //     handleFieldDelete(index);
-                //   }}
-                //   danger
-                // >
-                //   Delete
-                // </Button>
                 <Popconfirm
                   title="Are you sure you want to delete this field?"
                   onConfirm={() => handleFieldDelete(index)}
@@ -185,59 +157,53 @@ export default function ModelCreator() {
           ))}
         </Collapse>
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
+        {/* Add New Field Button */}
+        <Button
+          type="dashed"
+          onClick={() => handleFieldChange({ name: "", type: "string" })}
+          style={{ marginTop: "20px" }}
+          icon={<PlusOutlined />}
+        >
+          Add Field
+        </Button>
+
+        {/* Status Boolean Switch */}
+        <Form.Item label="Status" style={{ marginTop: "20px" }}>
+          <Switch
+            checked={status}
+            onChange={(checked) => setStatus(checked)}
+            checkedChildren="Active"
+            unCheckedChildren="Inactive"
+          />
+        </Form.Item>
+
+        <Popconfirm
+          title="Are you sure you want to generate the model?"
+          okText="Yes"
+          cancelText="No"
+          onConfirm={handleFormSubmit}
+          onCancel={() => message.info("Model generation cancelled.")}
         >
           <Button
-            type="dashed"
-            onClick={() => handleFieldChange({ name: "", type: "string" })}
-            style={{ marginTop: "20px" }}
-            icon={<PlusOutlined />}
+            type="primary"
+            style={{
+              marginTop: "20px",
+              padding: "2rem",
+              fontSize: "1.5rem",
+              borderRadius: "0.5rem",
+              backgroundColor: "var(--theme)",
+              color: "var(--black)",
+              border: "none",
+              cursor: "pointer",
+              transition: "all 0.3s",
+              fontWeight: "bold",
+              boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+            }}
+            loading={loading}
           >
-            Add Field
+            Generate Model
           </Button>
-
-          {/* Status Boolean Switch default false */}
-          <Form.Item label="Status" style={{ width: "100%" }}>
-            <Switch
-              checkedChildren="Active"
-              unCheckedChildren="Inactive"
-              defaultChecked={false}
-            />
-          </Form.Item>
-
-          <Popconfirm
-            title="Are you sure you want to generate the model?"
-            okText="Yes"
-            cancelText="No"
-            onConfirm={() => handleFormSubmit()}
-            onCancel={() => message.info("Model generation cancelled.")}
-          >
-            <Button
-              type="primary"
-              style={{
-                marginTop: "20px",
-                padding: "2rem 2rem",
-                fontSize: "1.5rem",
-                borderRadius: "0.5rem",
-                backgroundColor: "var(--theme)",
-                color: "var(--black)",
-                border: "none",
-                cursor: "pointer",
-                transition: "all 0.3s",
-                fontWeight: "bold",
-                boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-              }}
-            >
-              Generate Model
-            </Button>
-          </Popconfirm>
-        </div>
+        </Popconfirm>
       </Form>
     </div>
   );
