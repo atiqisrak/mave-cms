@@ -32,9 +32,10 @@ export default function ModelsShowcase() {
 
   return (
     <div
-      className="ViewContentContainer"
       style={{
-        backgroundColor: "white",
+        background: "linear-gradient(120deg, #f6f8fc, #eef1f7)",
+        padding: "2em",
+        minHeight: "100vh",
       }}
     >
       {loading ? (
@@ -45,52 +46,89 @@ export default function ModelsShowcase() {
         <div
           style={{
             display: "grid",
-            // gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-            gap: "1em",
+            gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))",
+            gap: "1.5em",
             padding: "1em",
           }}
         >
-          {dynamicModels.map((model) => (
+          {dynamicModels?.map((model) => (
             <div
               key={model.id}
               style={{
-                padding: "1em",
-                border: "1px solid #ccc",
-                borderRadius: "0.5em",
-                marginBottom: "1em",
+                padding: "1.5em",
+                border: "2px solid #00b894",
+                borderRadius: "1em",
+                backgroundColor: "#fff",
+                boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+                transition: "transform 0.2s ease-in-out",
                 display: "flex",
+                flexDirection: "column",
                 justifyContent: "space-between",
-                alignItems: "center",
               }}
+              className="model-card"
             >
-              <div style={{}}>
-                <h2>{model.model_name}</h2>
-                {JSON.parse(model.fields).map((field) => (
-                  <p key={field.id}>{field.name}</p>
-                ))}
+              <div style={{ marginBottom: "1em" }}>
+                <h2
+                  style={{
+                    fontSize: "1.5em",
+                    color: "#2d3436",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {model.model_name
+                    .replace(/([A-Z])/g, " $1")
+                    .replace(/^./, function (str) {
+                      return str.toUpperCase();
+                    })}
+                </h2>
+                <div style={{ paddingLeft: "1em" }}>
+                  {JSON.parse(model.fields).map((field, index) => (
+                    <p
+                      key={index}
+                      style={{
+                        margin: "0.25em 0",
+                        fontSize: "1.1em",
+                        color: "#636e72",
+                      }}
+                    >
+                      {field.name}
+                    </p>
+                  ))}
+                </div>
               </div>
+
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "1em",
+                  justifyContent: "space-between",
                 }}
               >
                 <code
                   style={{
-                    backgroundColor: "#f0f0f0",
-                    padding: "0.5em",
+                    backgroundColor: "#f0f4f8",
+                    padding: "0.5em 1em",
                     borderRadius: "0.5em",
+                    fontSize: "0.9em",
+                    backgroundColor: "#00b89420",
                   }}
                 >
                   {model.api_route}
                 </code>
                 <Button
+                  type="primary"
                   icon={<CopyOutlined />}
                   onClick={() => {
                     const url = `${process.env.NEXT_PUBLIC_DYNAMIC_MODEL_URL}${model.api_route}`;
                     navigator.clipboard.writeText(url);
                     message.success("Copied to clipboard!");
+                  }}
+                  style={{
+                    backgroundColor: "#0984e3",
+                    border: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 />
               </div>
