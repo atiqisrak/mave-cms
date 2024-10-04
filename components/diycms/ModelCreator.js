@@ -82,7 +82,7 @@ export default function ModelCreator() {
       const response = await instance.post("/diy-cms", jsonPayload);
       if (response.status === 201) {
         message.success("Model created successfully!");
-        setFields([]); // Clear fields after creation
+        setFields([]);
         setModelSingular("");
         setModelPlural("");
       } else {
