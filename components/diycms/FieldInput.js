@@ -13,9 +13,6 @@ const FieldInput = ({ initialFieldData, availableModels, onSave }) => {
   const [relatedModel, setRelatedModel] = useState(
     initialFieldData.relatedModel || null
   );
-  const [relatedField, setRelatedField] = useState(
-    initialFieldData.relatedField || null
-  );
   const [relationshipType, setRelationshipType] = useState(
     initialFieldData.relationshipType || ""
   );
@@ -28,11 +25,10 @@ const FieldInput = ({ initialFieldData, availableModels, onSave }) => {
     { label: "A Post belongs to Many Contributors", value: "belongsToMany" },
   ];
 
-  // If array or json type is selected, reset relationships
+  // If field type is JSON or array, reset relationships
   useEffect(() => {
     if (fieldType === "json") {
       setRelatedModel(null);
-      setRelatedField(null);
       setRelationshipType("");
     }
   }, [fieldType]);
@@ -44,8 +40,8 @@ const FieldInput = ({ initialFieldData, availableModels, onSave }) => {
     }
 
     // Ensure proper data for relationships
-    if (relatedModel && (!relatedField || !relationshipType)) {
-      alert("Please select the related field and relationship type.");
+    if (relatedModel && !relationshipType) {
+      alert("Please select the relationship type.");
       return;
     }
 
@@ -55,7 +51,7 @@ const FieldInput = ({ initialFieldData, availableModels, onSave }) => {
       required: isRequired,
       unique: isUnique,
       relatedModel: relatedModel || null,
-      relatedField: relatedField || null,
+      relatedField: relatedModel ? "id" : null, // Always connect to the 'id' field of the related model
       relationshipType: relationshipType || null,
     };
 
@@ -78,69 +74,44 @@ const FieldInput = ({ initialFieldData, availableModels, onSave }) => {
           <Option value="boolean">Boolean</Option>
           <Option value="date">Date</Option>
           <Option value="json">JSON (Use for array-like data)</Option>
-          <Option value="relationship">Relationship</Option>{" "}
+          <Option value="unsignedBigInteger">Relationship</Option>{" "}
           {/* New relationship type */}
         </Select>
       </Form.Item>
 
       {/* Relationship Handling */}
-      <Form.Item label="Connect to Other Model">
-        <Select
-          value={relatedModel}
-          onChange={(value) => setRelatedModel(value)}
-          placeholder="Select Model"
-        >
-          {availableModels?.map((model) => (
-            <Option key={model.model_name} value={model.model_name}>
-              {model.model_name}
-            </Option>
-          ))}
-        </Select>
-      </Form.Item>
-
-      {relatedModel && (
-        <Form.Item label="Field in Related Model">
-          <Select
-            value={relatedField}
-            onChange={(value) => setRelatedField(value)}
-            placeholder="Select Field"
-          >
-            {/* {availableModels
-              .find((model) => model.model_name === relatedModel)
-              ?.fields.map((field, index) => (
-                <Option key={index} value={field.name}>
-                  {field.name}
-                </Option>
-              ))} */}
-            {availableModels.find((model) => model.model_name === relatedModel)
-              ?.fields &&
-              JSON.parse(
-                availableModels.find(
-                  (model) => model.model_name === relatedModel
-                )?.fields
-              ).map((field, index) => (
-                <Option key={index} value={field.name}>
-                  {field.name}
+      {fieldType === "unsignedBigInteger" && (
+        <>
+          <Form.Item label="Connect to Other Model">
+            <Select
+              value={relatedModel}
+              onChange={(value) => setRelatedModel(value)}
+              placeholder="Select Model"
+            >
+              {availableModels.map((model) => (
+                <Option key={model.model_name} value={model.model_name}>
+                  {model.model_name}
                 </Option>
               ))}
-          </Select>
-        </Form.Item>
-      )}
+            </Select>
+          </Form.Item>
 
-      {relatedModel && relatedField && (
-        <Form.Item label="Relationship Type">
-          <Select
-            value={relationshipType}
-            onChange={(value) => setRelationshipType(value)}
-            placeholder="Select Relationship Type"
-          >
-            {relationshipOptions.map((option) => (
-              <Option key={option.value} value={option.value}>
-                {option.label}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
+          {relatedModel && (
+            <Form.Item label="Relationship Type">
+              <Select
+                value={relationshipType}
+                onChange={(value) => setRelationshipType(value)}
+                placeholder="Select Relationship Type"
+              >
+                {relationshipOptions.map((option) => (
+                  <Option key={option.value} value={option.value}>
+                    {option.label}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          )}
+        </>
       )}
 
       <Form.Item>
