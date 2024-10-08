@@ -1,181 +1,153 @@
-import React, { useState, useEffect } from "react";
+// FieldInput.js
 import { Form, Input, Select, Checkbox, Button } from "antd";
+import { useState, useEffect } from "react";
 
 const { Option } = Select;
 
-const FieldInput = ({ initialFieldData, availableModels, onSave }) => {
-  const [fieldName, setFieldName] = useState(initialFieldData.name || "");
-  const [fieldType, setFieldType] = useState(initialFieldData.type || "string");
-  const [isRequired, setIsRequired] = useState(
-    initialFieldData.required || false
-  );
-  const [isUnique, setIsUnique] = useState(initialFieldData.unique || false);
-  const [relatedModel, setRelatedModel] = useState(null);
-  const [relatedField, setRelatedField] = useState(null);
-  const [relationshipType, setRelationshipType] = useState("");
+export default function FieldInput({
+  initialFieldData,
+  availableModels,
+  onSave,
+}) {
+  const [fieldData, setFieldData] = useState({
+    ...initialFieldData,
+    required:
+      initialFieldData.required !== undefined
+        ? initialFieldData.required
+        : false,
+  });
 
-  // Filter available connection types based on field type
-  const relationshipOptions = [
-    { label: "A Task can have One Contributor", value: "hasOne" },
-    { label: "A Task can have Multiple Contributors", value: "hasMany" },
-    { label: "A Task belongs to One Contributor", value: "belongsTo" },
-    { label: "A Task belongs to Many Contributors", value: "belongsToMany" },
-  ];
+  const handleChange = (key, value) => {
+    setFieldData((prevData) => {
+      const updatedData = { ...prevData, [key]: value };
 
-  useEffect(() => {
-    // Reset relationships if array/json are selected
-    if (fieldType === "array" || fieldType === "json") {
-      setRelatedModel(null);
-      setRelatedField(null);
-      setRelationshipType("");
-    }
-  }, [fieldType]);
+      // If the field is a relationship, disable 'required' and set it to false
+      if (
+        key === "relationshipType" &&
+        value !== "None" &&
+        value !== undefined
+      ) {
+        updatedData.required = false;
+      }
 
-  // const addField = () => {
-  //   const fieldData = {
-  //     name: fieldName,
-  //     type: fieldType,
-  //     required: isRequired,
-  //     unique: isUnique,
-  //     relatedModel,
-  //     relatedField,
-  //     relationshipType,
-  //   };
-  //   onSave(fieldData);
-  // };
-  const addField = () => {
-    if (!fieldName || !fieldType) {
-      alert("Field name and type are required.");
-      return;
-    }
-
-    // If relationships are involved, ensure they are properly filled
-    if (relatedModel && (!relatedField || !relationshipType)) {
-      alert("Please select the related field and relationship type.");
-      return;
-    }
-
-    const fieldData = {
-      // name: fieldName,
-      name: fieldName.toLowerCase().replace(/ /g, "_"),
-      type: fieldType,
-      required: isRequired,
-      unique: isUnique,
-      relatedModel: relatedModel || null, // Handle empty relationships
-      relatedField: relatedField || null,
-      relationshipType: relationshipType || null,
-    };
-
-    onSave(fieldData);
+      return updatedData;
+    });
   };
 
+  useEffect(() => {
+    onSave(fieldData);
+  }, [fieldData]);
+
+  // Disable 'required' and 'unique' checkboxes when a relationship is selected
+  const isRelationshipField =
+    !!fieldData.relationshipType && fieldData.relationshipType !== "None";
+
+  // Dynamic relationship options for non-developer users
+  const relationshipOptions = [
+    {
+      label: "None",
+      value: "None",
+    },
+    {
+      label: `Belongs to a single ${fieldData.relatedModel || "..."}`,
+      value: "belongsTo",
+    },
+    {
+      label: `Belongs to multiple ${fieldData.relatedModel || "..."}`,
+      value: "belongsToMany",
+    },
+    {
+      label: `Has many ${fieldData.relatedModel || "..."}`,
+      value: "hasMany",
+    },
+    {
+      label: `Has one ${fieldData.relatedModel || "..."}`,
+      value: "hasOne",
+    },
+    {
+      label: `Morph to ${fieldData.relatedModel || "..."}`,
+      value: "morphTo",
+    },
+  ];
+
   return (
-    <div>
+    <Form layout="vertical">
       <Form.Item label="Field Name" required>
         <Input
-          value={fieldName}
-          onChange={(e) => setFieldName(e.target.value)}
+          value={fieldData.name}
+          onChange={(e) => handleChange("name", e.target.value)}
         />
       </Form.Item>
-
-      <Form.Item label="Field Type">
-        <Select value={fieldType} onChange={(value) => setFieldType(value)}>
+      <Form.Item label="Field Type" required>
+        <Select
+          value={fieldData.type}
+          onChange={(value) => handleChange("type", value)}
+        >
           <Option value="string">String</Option>
-          <Option value="integer">Number</Option>
+          <Option value="text">Text</Option>
+          <Option value="integer">Integer</Option>
           <Option value="boolean">Boolean</Option>
           <Option value="date">Date</Option>
-          <Option value="array">Array</Option>
           <Option value="json">JSON</Option>
+          <Option value="array">Array</Option>
+          <Option value="unsignedBigInteger">Unsigned Big Integer</Option>
         </Select>
       </Form.Item>
 
-      {fieldType !== "array" && fieldType !== "json" && (
-        <>
-          <Form.Item label="Connect to Other Model">
-            <Select
-              value={relatedModel}
-              onChange={(value) => setRelatedModel(value)}
-              placeholder="Select Model"
-            >
-              {availableModels.map((model) => (
-                <Option key={model.name} value={model.name}>
-                  {model.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-
-          {relatedModel && (
-            <Form.Item label="Field in Related Model">
-              <Select
-                value={relatedField}
-                onChange={(value) => setRelatedField(value)}
-                placeholder="Select Field"
-              >
-                {availableModels
-                  .find((model) => model.name === relatedModel)
-                  ?.fields.map((field) => (
-                    <Option key={field} value={field}>
-                      {field}
-                    </Option>
-                  ))}
-              </Select>
-            </Form.Item>
-          )}
-
-          {relatedModel && relatedField && (
-            <Form.Item label="Relationship Type">
-              <Select
-                value={relationshipType}
-                onChange={(value) => setRelationshipType(value)}
-                placeholder="Select Relationship Type"
-              >
-                {relationshipOptions.map((option) => (
-                  <Option key={option.value} value={option.value}>
-                    {option.label}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-          )}
-        </>
+      {/* Relationship Fields */}
+      <Form.Item label="Relationship Model">
+        <Select
+          placeholder="Select a related model"
+          value={fieldData.relatedModel}
+          onChange={(value) => {
+            handleChange("relatedModel", value);
+            // Reset relationship type when related model changes
+            handleChange("relationshipType", "None");
+          }}
+          allowClear
+        >
+          {availableModels.map((model, index) => (
+            <Option key={index} value={model}>
+              {model}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+      {fieldData.relatedModel && (
+        <Form.Item label="Relationship Type">
+          <Select
+            placeholder="Select relationship type"
+            value={fieldData.relationshipType || "None"}
+            onChange={(value) => handleChange("relationshipType", value)}
+          >
+            {relationshipOptions.map((option) => (
+              <Option key={option.value} value={option.value}>
+                {option.label}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
       )}
 
+      {/* Field Options */}
       <Form.Item>
         <Checkbox
-          checked={isRequired}
-          onChange={(e) => setIsRequired(e.target.checked)}
+          checked={fieldData.required}
+          onChange={(e) => handleChange("required", e.target.checked)}
+          disabled={isRelationshipField}
         >
           Required
         </Checkbox>
+      </Form.Item>
+      <Form.Item>
         <Checkbox
-          checked={isUnique}
-          onChange={(e) => setIsUnique(e.target.checked)}
+          checked={fieldData.unique}
+          onChange={(e) => handleChange("unique", e.target.checked)}
+          disabled={isRelationshipField}
         >
           Unique
         </Checkbox>
       </Form.Item>
-
-      <center>
-        <Button
-          onClick={addField}
-          style={{
-            backgroundColor: "#4CAF50",
-            color: "white",
-            padding: "14px 20px",
-            margin: "8px 0",
-            border: "none",
-            cursor: "pointer",
-            borderRadius: "4px",
-            boxSizing: "border-box",
-            fontSize: "16px",
-          }}
-        >
-          Save Field
-        </Button>
-      </center>
-    </div>
+    </Form>
   );
-};
-
-export default FieldInput;
+}

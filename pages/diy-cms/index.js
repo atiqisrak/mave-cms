@@ -1,7 +1,8 @@
+// DIYCMS.js
 import { Button } from "antd";
 import ModelsShowcase from "../../components/diycms/ModelsShowcase";
-
 import { useRouter } from "next/router";
+
 export default function DIYCMS() {
   const router = useRouter();
   return (
@@ -11,9 +12,7 @@ export default function DIYCMS() {
       </center>
       <p style={{ textAlign: "center", fontSize: "1.2rem", padding: "2rem 0" }}>
         This is a DIY CMS (Content Management System) where you can create your
-        own models and fields and generate SQL queries for them. This is a
-        simple example of how you can create a CMS from scratch using React and
-        Ant Design.
+        own models and fields and generate dynamic models from the frontend.
       </p>
 
       <div
@@ -36,7 +35,7 @@ export default function DIYCMS() {
             router.push("/diy-cms/lets-do-it");
           }}
         >
-          Create My Own CMS
+          Create My Own Model
         </Button>
       </div>
       <ModelsShowcase />
