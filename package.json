@@ -25,6 +25,7 @@
     "froala-editor": "^4.2.0",
     "http-proxy-middleware": "^3.0.0",
     "imagemin": "^8.0.1",
+    "lodash": "^4.17.21",
     "lottie-react": "^2.4.0",
     "lottie-web": "^5.12.2",
     "marked": "^12.0.2",

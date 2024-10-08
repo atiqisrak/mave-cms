@@ -1,9 +1,15 @@
 // ModelsShowcase.js
-import { Button, message, Popconfirm, Spin } from "antd";
+import { Button, message, Popconfirm, Spin, Table } from "antd";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import instance from "../../axios";
-import { CopyOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  CheckCircleFilled,
+  CopyOutlined,
+  DeleteOutlined,
+  EditFilled,
+} from "@ant-design/icons";
+import { snakeCase } from "lodash";
 
 export default function ModelsShowcase() {
   const [loading, setLoading] = useState(false);
@@ -51,6 +57,9 @@ export default function ModelsShowcase() {
       className="ViewContentContainer"
       style={{
         backgroundColor: "white",
+        padding: "1em",
+        width: "100%",
+        borderRadius: "0.5em",
       }}
     >
       {loading ? (
@@ -62,7 +71,7 @@ export default function ModelsShowcase() {
           style={{
             display: "grid",
             gap: "1em",
-            padding: "1em",
+            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
           }}
         >
           {dynamicModels.map((model) => (
@@ -75,24 +84,77 @@ export default function ModelsShowcase() {
                 marginBottom: "1em",
                 display: "flex",
                 flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
               <div>
-                <h2>{model.model_name}</h2>
-                <p>
-                  <strong>Status:</strong>{" "}
-                  {model.status ? "Active" : "Inactive"}
-                </p>
-                <p>
-                  <strong>Fields:</strong>
-                </p>
-                <ul>
-                  {model.fields.map((field, index) => (
-                    <li key={index}>
-                      {field.name} ({field.type})
-                    </li>
-                  ))}
-                </ul>
+                <h2
+                  style={{
+                    textAlign: "center",
+                    marginBottom: "1.5em",
+                    width: "100%",
+                    color: "var(--theme)",
+                  }}
+                >
+                  {model.model_name}
+                </h2>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "1em",
+                    justifyContent: "center",
+                    marginBottom: "1em",
+                  }}
+                >
+                  {model.status ? (
+                    <CheckCircleFilled
+                      style={{ color: "green", fontSize: "1.5em" }}
+                    />
+                  ) : (
+                    <CheckCircleFilled
+                      style={{ color: "gray", fontSize: "1.5em" }}
+                    />
+                  )}
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      router.push(`/diy-cms/models/${model.model_name}`);
+                    }}
+                    icon={<EditFilled />}
+                    style={{
+                      backgroundColor: "transparent",
+                      color: "var(--theme)",
+                    }}
+                  />
+                  <Popconfirm
+                    title="Are you sure you want to delete this model?"
+                    okText="Yes"
+                    cancelText="No"
+                    onConfirm={async () => {
+                      handleDeleteModel(model.id);
+                    }}
+                  >
+                    <DeleteOutlined style={{ color: "red" }} />
+                  </Popconfirm>
+                </div>
+                <Table
+                  dataSource={model.fields}
+                  columns={[
+                    {
+                      title: "Name",
+                      dataIndex: "name",
+                      key: "name",
+                    },
+                    {
+                      title: "Type",
+                      dataIndex: "type",
+                      key: "type",
+                    },
+                  ]}
+                  pagination={false}
+                  width="100%"
+                />
               </div>
               <div
                 style={{
@@ -119,24 +181,6 @@ export default function ModelsShowcase() {
                     message.success("Copied to clipboard!");
                   }}
                 />
-                <Button
-                  type="primary"
-                  onClick={() => {
-                    router.push(`/diy-cms/models/${model.model_name}`);
-                  }}
-                >
-                  Manage Data
-                </Button>
-                <Popconfirm
-                  title="Are you sure you want to delete this model?"
-                  okText="Yes"
-                  cancelText="No"
-                  onConfirm={async () => {
-                    handleDeleteModel(model.id);
-                  }}
-                >
-                  <DeleteOutlined style={{ color: "red" }} />
-                </Popconfirm>
               </div>
             </div>
           ))}
