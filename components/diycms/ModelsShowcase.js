@@ -1,12 +1,14 @@
-import { Button, message, Spin } from "antd";
-import router from "next/router";
+// ModelsShowcase.js
+import { Button, message, Popconfirm, Spin } from "antd";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import instance from "../../axios";
-import { CopyOutlined } from "@ant-design/icons";
+import { CopyOutlined, DeleteOutlined } from "@ant-design/icons";
 
 export default function ModelsShowcase() {
   const [loading, setLoading] = useState(false);
   const [dynamicModels, setDynamicModels] = useState([]);
+  const router = useRouter();
 
   const fetchDynamicModels = async () => {
     setLoading(true);
@@ -28,7 +30,21 @@ export default function ModelsShowcase() {
     fetchDynamicModels();
   }, []);
 
-  console.log("dynamicModels:", dynamicModels);
+  const handleDeleteModel = async (modelId) => {
+    setLoading(true);
+    try {
+      const response = await instance.delete(`/generated-models/${modelId}`);
+      if (response.data) {
+        message.success("Model deleted successfully!");
+        fetchDynamicModels();
+      }
+    } catch (error) {
+      console.error("Error deleting model:", error);
+      message.error("Error deleting model. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
@@ -45,7 +61,6 @@ export default function ModelsShowcase() {
         <div
           style={{
             display: "grid",
-            // gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
             gap: "1em",
             padding: "1em",
           }}
@@ -59,21 +74,32 @@ export default function ModelsShowcase() {
                 borderRadius: "0.5em",
                 marginBottom: "1em",
                 display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
+                flexDirection: "column",
               }}
             >
-              <div style={{}}>
+              <div>
                 <h2>{model.model_name}</h2>
-                {JSON.parse(model.fields).map((field) => (
-                  <p key={field.id}>{field.name}</p>
-                ))}
+                <p>
+                  <strong>Status:</strong>{" "}
+                  {model.status ? "Active" : "Inactive"}
+                </p>
+                <p>
+                  <strong>Fields:</strong>
+                </p>
+                <ul>
+                  {model.fields.map((field, index) => (
+                    <li key={index}>
+                      {field.name} ({field.type})
+                    </li>
+                  ))}
+                </ul>
               </div>
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
                   gap: "1em",
+                  marginTop: "1em",
                 }}
               >
                 <code
@@ -93,6 +119,24 @@ export default function ModelsShowcase() {
                     message.success("Copied to clipboard!");
                   }}
                 />
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    router.push(`/diy-cms/models/${model.model_name}`);
+                  }}
+                >
+                  Manage Data
+                </Button>
+                <Popconfirm
+                  title="Are you sure you want to delete this model?"
+                  okText="Yes"
+                  cancelText="No"
+                  onConfirm={async () => {
+                    handleDeleteModel(model.id);
+                  }}
+                >
+                  <DeleteOutlined style={{ color: "red" }} />
+                </Popconfirm>
               </div>
             </div>
           ))}

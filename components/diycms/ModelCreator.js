@@ -1,3 +1,4 @@
+// ModelCreator.js
 import {
   Form,
   Input,
@@ -7,13 +8,11 @@ import {
   Popconfirm,
   Switch,
 } from "antd";
-import FieldInput from "./FieldInput";
-import SQLGenerator from "./SQLGenerator";
-import RouteGenerator from "./RouteGenerator";
 import { useState, useEffect } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import ControllerGenerator from "./ControllerGenerator";
 import instance from "../../axios";
+import FieldInput from "./FieldInput";
+import pluralize from "pluralize";
 
 const { Panel } = Collapse;
 
@@ -22,20 +21,34 @@ export default function ModelCreator() {
   const [fields, setFields] = useState([]);
   const [modelSingular, setModelSingular] = useState("");
   const [modelPlural, setModelPlural] = useState("");
+  const [status, setStatus] = useState(false);
   const [availableModels, setAvailableModels] = useState([]);
 
   useEffect(() => {
-    // Mock fetching models from localhost
     const fetchAvailableModels = async () => {
-      const models = [
-        { name: "User", fields: ["id", "name", "email"] },
-        { name: "Post", fields: ["id", "title", "content"] },
-      ];
-      setAvailableModels(models);
+      try {
+        const response = await instance.get("/generated-models");
+        if (response.data) {
+          setAvailableModels(response.data.map((model) => model.model_name));
+        } else {
+          setAvailableModels([]);
+        }
+      } catch (error) {
+        console.error("Error fetching available models:", error);
+      }
     };
 
     fetchAvailableModels();
   }, []);
+
+  // Update plural model name in real-time using pluralize
+  useEffect(() => {
+    if (modelSingular) {
+      setModelPlural(pluralize(modelSingular));
+    } else {
+      setModelPlural("");
+    }
+  }, [modelSingular]);
 
   const handleFieldChange = (fieldData) => {
     setFields([...fields, fieldData]);
@@ -54,49 +67,32 @@ export default function ModelCreator() {
   };
 
   const handleFormSubmit = async () => {
-    // Convert model names to lowercase and replace spaces
-    const formattedModelSingular = modelSingular
-      .trim()
-      .replace(/\s+/g, "_")
-      .toLowerCase();
-    const formattedModelPlural = modelPlural
-      .trim()
-      .replace(/\s+/g, "_")
-      .toLowerCase();
+    if (!modelSingular || !modelPlural) {
+      message.error("Please provide both singular and plural model names.");
+      return;
+    }
 
-    // Generate the migration, model, routes, and controller
-    const migration = SQLGenerator.generateCreateTableQuery(
-      formattedModelSingular,
-      fields
-    );
-    const model = SQLGenerator.generateModel(formattedModelSingular, fields);
-    const routes = RouteGenerator.generateRoutes(formattedModelSingular);
-    const controller = ControllerGenerator.generateController(
-      formattedModelSingular,
-      fields
-    );
+    if (fields.length === 0) {
+      message.error("Please add at least one field to the model.");
+      return;
+    }
 
-    // Create the JSON payload to send to the backend
+    // Prepare the payload
     const jsonPayload = {
-      modelSingular: formattedModelSingular,
-      modelPlural: formattedModelPlural,
-      fields,
-      status: false,
-      // migration,
-      // model,
-      // routes,
-      // controller,
+      modelSingular: modelSingular.trim(),
+      modelPlural: modelPlural.trim(),
+      fields: fields.map((field) => {
+        // Remove 'None' relationship types
+        if (field.relationshipType === "None") {
+          delete field.relationshipType;
+          delete field.relatedModel;
+        }
+        return field;
+      }),
+      status,
     };
 
-    // Log the generated code and payload in the console
-    // console.log("Generated Migration Query:", migration);
-    // console.log("Generated Model:", model);
-    // console.log("Generated Routes:", routes);
-    // console.log("Generated Controller:", controller);
-    console.log(
-      "Payload to send to backend:",
-      JSON.stringify(jsonPayload, null, 2)
-    );
+    console.log("Payload to send to backend:", jsonPayload);
 
     // Send the payload to the backend
     setLoading(true);
@@ -104,10 +100,15 @@ export default function ModelCreator() {
       const response = await instance.post("/diy-cms", jsonPayload);
       if (response.status === 201) {
         message.success("Model created successfully!");
+        setModelSingular("");
+        setModelPlural("");
+        setFields([]);
+        setStatus(false);
       } else {
         message.error("Failed to create model. Please try again.");
       }
     } catch (error) {
+      console.error("Error creating model:", error);
       message.error("Failed to create model. Please try again.");
     } finally {
       setLoading(false);
@@ -150,22 +151,13 @@ export default function ModelCreator() {
           </Form.Item>
         </div>
 
-        {/* Collapsible Fields */}
+        {/* Fields */}
         <Collapse accordion>
           {fields.map((field, index) => (
             <Panel
               header={`${field.name} (${field.type})`}
               key={index}
               extra={
-                // <Button
-                //   onClick={(e) => {
-                //     e.stopPropagation();
-                //     handleFieldDelete(index);
-                //   }}
-                //   danger
-                // >
-                //   Delete
-                // </Button>
                 <Popconfirm
                   title="Are you sure you want to delete this field?"
                   onConfirm={() => handleFieldDelete(index)}
@@ -202,12 +194,13 @@ export default function ModelCreator() {
             Add Field
           </Button>
 
-          {/* Status Boolean Switch default false */}
+          {/* Status Switch */}
           <Form.Item label="Status" style={{ width: "100%" }}>
             <Switch
               checkedChildren="Active"
               unCheckedChildren="Inactive"
-              defaultChecked={false}
+              checked={status}
+              onChange={(checked) => setStatus(checked)}
             />
           </Form.Item>
 
@@ -220,10 +213,11 @@ export default function ModelCreator() {
           >
             <Button
               type="primary"
+              loading={loading}
               style={{
                 marginTop: "20px",
-                padding: "2rem 2rem",
-                fontSize: "1.5rem",
+                padding: "1rem 2rem",
+                fontSize: "1.2rem",
                 borderRadius: "0.5rem",
                 backgroundColor: "var(--theme)",
                 color: "var(--black)",
