@@ -13,10 +13,14 @@ import { PlusOutlined } from "@ant-design/icons";
 import instance from "../../axios";
 import FieldInput from "./FieldInput";
 import pluralize from "pluralize";
+import { snakeCase } from "lodash";
 
 const { Panel } = Collapse;
 
-export default function ModelCreator() {
+export default function ModelCreator({
+  editMode = false,
+  existingModel = null,
+}) {
   const [loading, setLoading] = useState(false);
   const [fields, setFields] = useState([]);
   const [modelSingular, setModelSingular] = useState("");
@@ -50,6 +54,16 @@ export default function ModelCreator() {
     }
   }, [modelSingular]);
 
+  // Load existing model data if in edit mode
+  useEffect(() => {
+    if (editMode && existingModel) {
+      setModelSingular(existingModel.model_name);
+      setModelPlural(pluralize(existingModel.model_name));
+      setFields(existingModel.fields);
+      setStatus(existingModel.status);
+    }
+  }, [editMode, existingModel]);
+
   const handleFieldChange = (fieldData) => {
     setFields([...fields, fieldData]);
   };
@@ -77,16 +91,32 @@ export default function ModelCreator() {
       return;
     }
 
+    // Convert model names to lowercase snake case
+    const modelSingularSnake = snakeCase(modelSingular.trim().toLowerCase());
+    const modelPluralSnake = snakeCase(modelPlural.trim().toLowerCase());
+
     // Prepare the payload
     const jsonPayload = {
-      modelSingular: modelSingular.trim(),
-      modelPlural: modelPlural.trim(),
+      modelSingular: modelSingularSnake,
+      modelPlural: modelPluralSnake,
       fields: fields.map((field) => {
         // Remove 'None' relationship types
         if (field.relationshipType === "None") {
           delete field.relationshipType;
           delete field.relatedModel;
         }
+
+        // Ensure 'required' is included and is a boolean
+        field.required = field.required === true;
+
+        // Ensure 'unique' is included and is a boolean
+        field.unique = field.unique === true;
+
+        // Convert relatedModel to snake case if it exists
+        if (field.relatedModel) {
+          field.relatedModel = snakeCase(field.relatedModel.toLowerCase());
+        }
+
         return field;
       }),
       status,
@@ -97,19 +127,35 @@ export default function ModelCreator() {
     // Send the payload to the backend
     setLoading(true);
     try {
-      const response = await instance.post("/diy-cms", jsonPayload);
-      if (response.status === 201) {
-        message.success("Model created successfully!");
-        setModelSingular("");
-        setModelPlural("");
-        setFields([]);
-        setStatus(false);
+      if (editMode && existingModel) {
+        // Update existing model
+        const response = await instance.put(
+          `/generated-models/${existingModel.id}`,
+          jsonPayload
+        );
+        if (response.status === 200) {
+          message.success("Model updated successfully!");
+          // Optionally, redirect or reset the form
+        } else {
+          message.error("Failed to update model. Please try again.");
+        }
       } else {
-        message.error("Failed to create model. Please try again.");
+        // Create new model
+        const response = await instance.post("/generate-model", jsonPayload);
+        if (response.status === 201) {
+          message.success("Model created successfully!");
+          // Optionally, reset the form
+          setModelSingular("");
+          setModelPlural("");
+          setFields([]);
+          setStatus(false);
+        } else {
+          message.error("Failed to create model. Please try again.");
+        }
       }
     } catch (error) {
-      console.error("Error creating model:", error);
-      message.error("Failed to create model. Please try again.");
+      console.error("Error saving model:", error);
+      message.error("Failed to save model. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -136,6 +182,7 @@ export default function ModelCreator() {
               value={modelSingular}
               onChange={(e) => setModelSingular(e.target.value)}
               placeholder="Enter the singular form of the model (e.g., Task)"
+              disabled={editMode} // Disable editing model name in edit mode
             />
           </Form.Item>
           <Form.Item
@@ -147,6 +194,7 @@ export default function ModelCreator() {
               value={modelPlural}
               onChange={(e) => setModelPlural(e.target.value)}
               placeholder="Enter the plural form of the model (e.g., Tasks)"
+              disabled={editMode} // Disable editing model name in edit mode
             />
           </Form.Item>
         </div>
@@ -187,7 +235,9 @@ export default function ModelCreator() {
         >
           <Button
             type="dashed"
-            onClick={() => handleFieldChange({ name: "", type: "string" })}
+            onClick={() =>
+              handleFieldChange({ name: "", type: "string", required: false })
+            }
             style={{ marginTop: "20px" }}
             icon={<PlusOutlined />}
           >
@@ -205,11 +255,17 @@ export default function ModelCreator() {
           </Form.Item>
 
           <Popconfirm
-            title="Are you sure you want to generate the model?"
+            title={`Are you sure you want to ${
+              editMode ? "update" : "generate"
+            } the model?`}
             okText="Yes"
             cancelText="No"
             onConfirm={() => handleFormSubmit()}
-            onCancel={() => message.info("Model generation cancelled.")}
+            onCancel={() =>
+              message.info(
+                `Model ${editMode ? "update" : "generation"} cancelled.`
+              )
+            }
           >
             <Button
               type="primary"
@@ -228,7 +284,7 @@ export default function ModelCreator() {
                 boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
               }}
             >
-              Generate Model
+              {editMode ? "Update Model" : "Generate Model"}
             </Button>
           </Popconfirm>
         </div>
