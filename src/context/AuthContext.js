@@ -1,6 +1,8 @@
+// src/context/AuthContext.js
+
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import instance from "../../axios"; // Axios instance for API calls
+import instance from "../../axios";
 import { message } from "antd";
 
 const AuthContext = createContext();
@@ -9,7 +11,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -19,7 +20,6 @@ export const AuthProvider = ({ children }) => {
     if (storedToken && storedUser) {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
-      setIsAuthenticated(true);
     }
 
     setLoading(false);
@@ -31,16 +31,12 @@ export const AuthProvider = ({ children }) => {
       const response = await instance.post("admin/login", { email, password });
       const { token, user } = response.data;
 
-      // Store token and user in localStorage
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
       setToken(token);
       setUser(user);
-      setIsAuthenticated(true);
       message.success("Login successful!");
-      setTimeout(() => {
-        router.push("/home");
-      }, 100);
+      router.push("/");
     } catch (error) {
       message.error("Invalid credentials. Please try again.");
     } finally {
@@ -51,7 +47,6 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setToken(null);
     setUser(null);
-    setIsAuthenticated(false);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     message.success("Logged out successfully!");
@@ -59,9 +54,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider
-      value={{ user, token, login, logout, loading, isAuthenticated }}
-    >
+    <AuthContext.Provider value={{ user, token, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

@@ -10,39 +10,43 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import instance from "../../axios"; // Assuming axios is set up correctly
 import Loader from "../../components/Loader"; // Assuming you have a Loader component
+import { useAuth } from "../../src/context/AuthContext";
 
 export default function Login() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEamil] = useState("");
+  const [password, setPassword] = useState("");
+  const { login, loading } = useAuth();
   const router = useRouter();
 
-  const handleLogin = async (values) => {
-    const { email, password } = values;
-    setIsLoading(true);
-    try {
-      const res = await instance.post("/admin/login", { email, password });
-      if (res?.status === 200) {
-        const newToken = res?.data?.token;
-        const user = JSON.stringify(res?.data?.user);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
-        localStorage.setItem("user", user);
-        localStorage.setItem("token", newToken);
-        localStorage.setItem(
-          "niloy",
-          "y$vtw#*tPECXug7SBeUqNSMVd2!TS!YkjL%#sbtBEPkxS65NtDxm&F$5mKhX(kUP"
-        );
-
-        setIsLoading(false);
-        router.push("/home"); // Ensure this redirects to the home page
-      }
-    } catch (error) {
-      setIsLoading(false);
-      console.error("Error during login:", error);
+  const handleChange = (e, inputName) => {
+    // Dynamically select the state variable to update based on inputName
+    switch (inputName) {
+      case "email":
+        setEamil(e.target.value);
+        break;
+      case "password":
+        setPassword(e.target.value);
+        break;
+      default:
+        break;
     }
   };
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  const handleLogin = (values) => {
+    const { email, password } = values;
+    if (!email || !password) {
+      message.error("Please fill in all fields");
+      return;
+    }
+    login(email, password);
+  };
+
+  if (loading) return <Loader />;
 
   return (
     <div
@@ -283,7 +287,13 @@ export default function Login() {
                       }}
                     />
                   }
-                  suffix={<EyeInvisibleOutlined style={{ fontSize: "22px" }} />}
+                  iconRender={(visible) =>
+                    visible ? (
+                      <EyeInvisibleOutlined />
+                    ) : (
+                      <EyeInvisibleOutlined />
+                    )
+                  }
                 />
               </Form.Item>
               <Form.Item>
