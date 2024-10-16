@@ -1,5 +1,7 @@
+// components/SiteContent.js
+
 import React, { useEffect, useState } from "react";
-import { Image, Layout, message } from "antd";
+import { Image, Layout } from "antd";
 import { useRouter } from "next/router";
 import { useAuth } from "../src/context/AuthContext";
 import NavItems from "./ui/NavItems";
@@ -10,12 +12,12 @@ const { Sider, Content, Header } = Layout;
 
 const SiteContent = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [theme, setTheme] = useState("light");
-  const [changeLogs, setChangeLogs] = useState([]);
-  const { user, token, logout, loading, isAuthenticated } = useAuth();
+  const { user, token, logout, loading } = useAuth();
   const router = useRouter();
   const currentRoute = router.pathname;
+
+  const authPages = ["/login", "/signup", "/forgot-password"];
 
   useEffect(() => {
     try {
@@ -43,37 +45,25 @@ const SiteContent = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (
-      !loading &&
-      !token &&
-      !isAuthenticated &&
-      currentRoute !== "/login" &&
-      currentRoute !== "/signup" &&
-      currentRoute !== "/forgot-password"
-    ) {
-      router.push("/login");
-    } else if (
-      !loading &&
-      token &&
-      isAuthenticated &&
-      currentRoute === "/login" &&
-      currentRoute === "/signup" &&
-      currentRoute === "/forgot-password"
-    ) {
-      router.push("/home");
+    if (loading) {
+      // Do nothing while loading
+      return;
     }
-  }, [isAuthenticated, loading, currentRoute, router]);
+    if (!loading) {
+      if (!token && !authPages.includes(currentRoute)) {
+        router.push("/login");
+      } else if (token && authPages.includes(currentRoute)) {
+        router.push("/");
+      }
+    }
+  }, [token, loading, currentRoute, router]);
 
   const handleCollapse = () => {
     setCollapsed(!collapsed);
   };
 
   if (loading) return <Loader />;
-  if (
-    currentRoute === "/login" ||
-    currentRoute === "/signup" ||
-    currentRoute === "/forgot-password"
-  ) {
+  if (authPages.includes(currentRoute)) {
     return <Content style={{ minHeight: "100vh" }}>{children}</Content>;
   }
 
@@ -93,14 +83,11 @@ const SiteContent = ({ children }) => {
           user={user}
           token={token}
           handleLogout={logout}
-          isModalOpen={isModalOpen}
-          setIsModalOpen={setIsModalOpen}
           theme={theme}
           setTheme={setTheme}
         />
       </Header>
       <Layout style={{ marginTop: "64px", padding: 0 }}>
-        {" "}
         <div
           className="collapse-button"
           style={{
@@ -117,19 +104,18 @@ const SiteContent = ({ children }) => {
           {collapsed ? (
             <Image
               src="/icons/mave_icons/expand.svg"
-              alt="Mave Logo"
+              alt="Expand"
               preview={false}
               style={{
                 height: "4vh",
                 marginLeft: "10px",
                 objectFit: "contain",
               }}
-              onClick={() => handleCollapse(!collapsed)}
             />
           ) : (
             <Image
               src="/icons/mave_icons/collapse.svg"
-              alt="Mave Logo"
+              alt="Collapse"
               preview={false}
               style={{
                 height: "4vh",
@@ -137,7 +123,6 @@ const SiteContent = ({ children }) => {
                 objectFit: "contain",
                 zIndex: 1201,
               }}
-              onClick={() => handleCollapse(!collapsed)}
             />
           )}
         </div>
@@ -163,7 +148,6 @@ const SiteContent = ({ children }) => {
             token={token}
             user={user}
             handleLogout={logout}
-            setIsModalOpen={setIsModalOpen}
             collapsed={collapsed}
             theme={theme}
             setTheme={setTheme}
