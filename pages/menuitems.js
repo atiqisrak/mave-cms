@@ -260,60 +260,6 @@ const MenuItems = () => {
             alignItems: "center",
           }}
         >
-          {/* <Breadcrumb
-              style={{
-                fontSize: "1.2em",
-                marginBottom: "1em",
-              }}
-              items={[
-                {
-                  href: "/",
-                  title: <HomeFilled />,
-                },
-                {
-                  title: "Components",
-                },
-                {
-                  title: "Menu Items",
-                  menu: {
-                    items: [
-                      {
-                        title: "Gallery",
-                        onClick: () => router.push("/gallery"),
-                      },
-                      {
-                        title: "Menus Items",
-                        onClick: () => router.push("/menuitems"),
-                      },
-                      {
-                        title: "Menus",
-                        onClick: () => router.push("/menus"),
-                      },
-                      {
-                        title: "Navbars",
-                        onClick: () => router.push("/navbars"),
-                      },
-                      {
-                        title: "Sliders",
-                        onClick: () => router.push("/sliders"),
-                      },
-                      {
-                        title: "Cards",
-                        onClick: () => router.push("/cards"),
-                      },
-                      {
-                        title: "Forms",
-                        onClick: () => router.push("/forms"),
-                      },
-                      {
-                        title: "Footers",
-                        onClick: () => router.push("/footer"),
-                      },
-                    ],
-                  },
-                },
-              ]}
-            /> */}
           <div className="flex justify-start items-center gap-3">
             <Image width={20} src="/icons/mave/menuitems.svg" preview={false} />
             <h2
@@ -333,22 +279,6 @@ const MenuItems = () => {
               gap: "1em",
             }}
           >
-            {/* <Button
-                type="primary"
-                style={{
-                  backgroundColor: "var(--themes)",
-                  borderColor: "var(--themes)",
-                  color: "white",
-                  borderRadius: "10px",
-                  fontSize: "1.2em",
-                  // paddingBottom: "1.8em",
-                }}
-                onClick={() => router.push("/menus")}
-                icon={<ArrowLeftOutlined />}
-              >
-                Show Menus
-              </Button> */}
-
             <Button
               type="primary"
               style={{
@@ -364,26 +294,6 @@ const MenuItems = () => {
             >
               Add New Menu Item
             </Button>
-
-            {/* <Button
-                type="primary"
-                style={{
-                  backgroundColor: "var(--theme)",
-                  borderColor: "var(--theme)",
-                  color: "white",
-                  borderRadius: "10px",
-                  fontSize: "1.2em",
-                }}
-                icon={<CopyOutlined />}
-                onClick={() => {
-                  navigator.clipboard.writeText(
-                    `${process.env.NEXT_PUBLIC_API_BASE_URL}/menuitems`
-                  );
-                  message.success("API Endpoint Copied");
-                }}
-              >
-                Copy API Endpoint
-              </Button> */}
           </div>
         </div>
         <Row
@@ -394,40 +304,7 @@ const MenuItems = () => {
             alignItems: "center",
           }}
         >
-          {/* <Col
-              span={8}
-              style={{
-                display: "flex",
-                justifyContent: "flex-start",
-                alignItems: "center",
-              }}
-            >
-              {" "}
-              <h3 style={{ fontSize: "1.4em" }}>Search: </h3>
-              <Input
-                placeholder="Search Menu Items"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                style={{
-                  width: "20vw",
-                  height: "2.8em",
-                  borderRadius: "10px",
-                  fontSize: "1.2em",
-                  padding: "0 1em",
-                  margin: "0 1em",
-                }}
-              />
-              <Button
-                danger
-                // disabled={searchTerm === ""}
-                onClick={() => handleReset()}
-                icon={<CloseCircleOutlined />}
-              >
-                Clear
-              </Button>
-            </Col> */}
           <Col
-            // span={8}
             style={{
               display: "flex",
               justifyContent: "flex-end",
@@ -589,32 +466,6 @@ const MenuItems = () => {
                     </Select>
                   </>
                 ) : (
-                  // linkType === "sisterConcern" ? (
-                  //   <Select
-                  //     showSearch
-                  //     style={{ width: "100%" }}
-                  //     placeholder="Select a Sister Concern"
-                  //     optionFilterProp="children"
-                  //     onChange={(value) => setNewMenuItemLink(value)}
-                  //     filterOption={(input, option) =>
-                  //       option.children
-                  //         .toLowerCase()
-                  //         .indexOf(input.toLowerCase()) >= 0
-                  //     }
-                  //   >
-                  //     {pages?.map((page) => {
-                  //       if (page.page_name_en?.includes("Ltd")) {
-                  //         return (
-                  //           <Select.Option
-                  //             value={`sister-concerns?pageId=${page.id}`}
-                  //           >
-                  //             {page.page_name_en}
-                  //           </Select.Option>
-                  //         );
-                  //       }
-                  //     })}
-                  //   </Select>
-                  // ) :
                   <Input
                     placeholder="Menu Item Link"
                     value={newMenuItemLink}
@@ -777,26 +628,6 @@ const MenuItems = () => {
               >
                 {editingItemId === menuItem.id ? (
                   <>
-                    {/* <h3 style={{ fontSize: "1.4em" }}>Parent Menu</h3>
-                      <Select
-                        showSearch
-                        style={{ width: "100%" }}
-                        placeholder="Select a Parent Menu"
-                        optionFilterProp="children"
-                        onChange={(value) => setParentId(value)}
-                        filterOption={(input, option) =>
-                          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                      >
-                        {
-                          menuItems?.map((menuItem) => (
-                            <Select.Option
-                              value={menuItem.id}>
-                              {menuItem.title}
-                            </Select.Option>
-                          ))
-                        }
-                      </Select> */}
                     <Radio.Group
                       onChange={(e) => setLinkType(e.target.value)}
                       value={linkType}
@@ -839,33 +670,6 @@ const MenuItems = () => {
                         </Select>
                       </>
                     ) : (
-                      // :
-                      // linkType === "sisterConcern" ? (
-                      //   <Select
-                      //     showSearch
-                      //     style={{ width: "100%" }}
-                      //     placeholder="Select a Sister Concern"
-                      //     optionFilterProp="children"
-                      //     onChange={(value) => setEditedLink(value)}
-                      //     filterOption={(input, option) =>
-                      //       option.children
-                      //         .toLowerCase()
-                      //         .indexOf(input.toLowerCase()) >= 0
-                      //     }
-                      //   >
-                      //     {pages?.map((page) => {
-                      //       if (page.page_name_en?.includes("Ltd")) {
-                      //         return (
-                      //           <Select.Option
-                      //             value={`sister-concerns?pageId=${page.id}`}
-                      //           >
-                      //             {page.page_name_en}
-                      //           </Select.Option>
-                      //         );
-                      //       }
-                      //     })}
-                      //   </Select>
-                      // )
                       <Input
                         allowClear
                         showSearch
