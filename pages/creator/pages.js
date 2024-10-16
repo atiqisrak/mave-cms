@@ -221,311 +221,303 @@ const Pages = () => {
   // spin on loading
   if (loading) {
     return (
-      <div className="ViewContainer">
-        <div className="ViewContentContainer">
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
-              height: "100vh",
-            }}
-          >
-            <Spin size="large" />
-          </div>
+      <div className="mavecontainer">
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            height: "100vh",
+          }}
+        >
+          <Spin size="large" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="ViewContainer">
-      <div className="ViewContentContainer">
-        <div
-          className="PageHeader"
+    <div className="mavecontainer">
+      <div
+        className="PageHeader"
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <Breadcrumb
           style={{
-            display: "flex",
-            justifyContent: "space-between",
+            fontSize: "1.2em",
+            marginBottom: "1em",
           }}
-        >
-          <Breadcrumb
-            style={{
-              fontSize: "1.2em",
-              marginBottom: "1em",
-            }}
-            items={[
-              {
-                href: "/",
-                title: <HomeFilled />,
+          items={[
+            {
+              href: "/",
+              title: <HomeFilled />,
+            },
+            {
+              title: "Creator Studio",
+            },
+            {
+              title: "Pages",
+              menu: {
+                items: [
+                  {
+                    title: "Pages",
+                    onClick: () => router.push("/creator/pages"),
+                  },
+                  {
+                    title: "Blogs",
+                    onClick: () => router.push("/blogs"),
+                  },
+                  {
+                    title: "Create Blogs",
+                    onClick: () => router.push("/blogs/createblog"),
+                  },
+                ],
               },
-              {
-                title: "Creator Studio",
-              },
-              {
-                title: "Pages",
-                menu: {
-                  items: [
-                    {
-                      title: "Pages",
-                      onClick: () => router.push("/creator/pages"),
-                    },
-                    {
-                      title: "Blogs",
-                      onClick: () => router.push("/blogs"),
-                    },
-                    {
-                      title: "Create Blogs",
-                      onClick: () => router.push("/blogs/createblog"),
-                    },
-                  ],
-                },
-              },
-            ]}
-          />
+            },
+          ]}
+        />
 
-          <Input
-            placeholder="Search Pages"
-            suffix={<SearchOutlined />}
+        <Input
+          placeholder="Search Pages"
+          suffix={<SearchOutlined />}
+          style={{
+            width: "20vw",
+            height: "2em",
+            borderRadius: "10px",
+            fontSize: "1.2em",
+            padding: "0 1em",
+          }}
+          onChange={(e) => handlePageSearch(e.target.value)}
+        />
+
+        {createMode ? (
+          <Button
+            danger
             style={{
-              width: "20vw",
-              height: "2em",
               borderRadius: "10px",
               fontSize: "1.2em",
-              padding: "0 1em",
+              marginRight: "1em",
+              // paddingBottom: "1.8em",
             }}
-            onChange={(e) => handlePageSearch(e.target.value)}
-          />
-
-          {createMode ? (
+            icon={<CloseCircleFilled />}
+            onClick={() => setCreateMode(false)}
+          >
+            Cancel Create
+          </Button>
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr",
+              gap: "1em",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Button
-              danger
+              type="primary"
               style={{
+                backgroundColor: "var(--theme)",
+                borderColor: "var(--theme)",
+                color: "white",
                 borderRadius: "10px",
                 fontSize: "1.2em",
                 marginRight: "1em",
                 // paddingBottom: "1.8em",
               }}
-              icon={<CloseCircleFilled />}
-              onClick={() => setCreateMode(false)}
+              icon={<CheckCircleFilled />}
+              onClick={() => openAddNewPageCard()}
             >
-              Cancel Create
+              Create New
             </Button>
-          ) : (
-            <div
+            <Button
+              type="primary"
               style={{
-                display: "grid",
-                gridTemplateColumns: "1fr",
-                gap: "1em",
-                justifyContent: "center",
-                alignItems: "center",
+                backgroundColor: "var(--theme)",
+                borderColor: "var(--theme)",
+                color: "white",
+                borderRadius: "10px",
+                fontSize: "1.2em",
+              }}
+              icon={<CopyOutlined />}
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  `${process.env.NEXT_PUBLIC_API_BASE_URL}/pages`
+                );
+                message.success("API Endpoint Copied");
               }}
             >
-              <Button
-                type="primary"
-                style={{
-                  backgroundColor: "var(--theme)",
-                  borderColor: "var(--theme)",
-                  color: "white",
-                  borderRadius: "10px",
-                  fontSize: "1.2em",
-                  marginRight: "1em",
-                  // paddingBottom: "1.8em",
-                }}
-                icon={<CheckCircleFilled />}
-                onClick={() => openAddNewPageCard()}
-              >
-                Create New
-              </Button>
-              <Button
-                type="primary"
-                style={{
-                  backgroundColor: "var(--theme)",
-                  borderColor: "var(--theme)",
-                  color: "white",
-                  borderRadius: "10px",
-                  fontSize: "1.2em",
-                }}
-                icon={<CopyOutlined />}
-                onClick={() => {
-                  navigator.clipboard.writeText(
-                    `${process.env.NEXT_PUBLIC_API_BASE_URL}/pages`
-                  );
-                  message.success("API Endpoint Copied");
-                }}
-              >
-                Copy API Endpoint
-              </Button>
-            </div>
-          )}
-        </div>
+              Copy API Endpoint
+            </Button>
+          </div>
+        )}
+      </div>
 
-        <div>
-          <div className="pageContainers">
-            <div className="pageContainer">
-              {createMode ? (
-                <>
+      <div>
+        <div className="pageContainers">
+          <div className="pageContainer">
+            {createMode ? (
+              <>
+                <div
+                  className="createMode"
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    border: "3px solid var(--theme)",
+                    borderRadius: 10,
+                    backgroundColor: "#f0f0f0",
+                    padding: "4em 1em",
+                    marginTop: "2em",
+                  }}
+                >
+                  <h1>Create Mode on</h1>
                   <div
-                    className="createMode"
+                    className="createModeContainer"
                     style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      flexDirection: "column",
-                      border: "3px solid var(--theme)",
-                      borderRadius: 10,
-                      backgroundColor: "#f0f0f0",
-                      padding: "4em 1em",
-                      marginTop: "2em",
+                      padding: "2em 0",
                     }}
                   >
-                    <h1>Create Mode on</h1>
-                    <div
-                      className="createModeContainer"
-                      style={{
-                        padding: "2em 0",
-                      }}
-                    >
-                      <div>
-                        <Row
+                    <div>
+                      <Row
+                        style={{
+                          padding: "2em 3em",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Col
+                          span={16}
                           style={{
-                            padding: "2em 3em",
-                            alignItems: "center",
+                            display: "flex",
+                            gap: "1em",
                           }}
                         >
-                          <Col
-                            span={16}
+                          <Input
+                            placeholder="Page Title En"
+                            value={newPageTitleEn}
+                            onChange={(e) => setNewPageTitleEn(e.target.value)}
                             style={{
-                              display: "flex",
-                              gap: "1em",
+                              width: "16vw",
+                              height: "2.8em",
+                              borderRadius: "10px",
+                              fontSize: "1.2em",
+                              padding: "0 1em",
                             }}
-                          >
-                            <Input
-                              placeholder="Page Title En"
-                              value={newPageTitleEn}
-                              onChange={(e) =>
-                                setNewPageTitleEn(e.target.value)
-                              }
-                              style={{
-                                width: "16vw",
-                                height: "2.8em",
-                                borderRadius: "10px",
-                                fontSize: "1.2em",
-                                padding: "0 1em",
-                              }}
-                            />
-                            <Input
-                              placeholder="Page Title Bn"
-                              value={newPageTitleBn}
-                              onChange={(e) =>
-                                setNewPageTitleBn(e.target.value)
-                              }
-                              style={{
-                                width: "16vw",
-                                height: "2.8em",
-                                borderRadius: "10px",
-                                fontSize: "1.2em",
-                                padding: "0 1em",
-                              }}
-                            />
-                          </Col>
+                          />
+                          <Input
+                            placeholder="Page Title Bn"
+                            value={newPageTitleBn}
+                            onChange={(e) => setNewPageTitleBn(e.target.value)}
+                            style={{
+                              width: "16vw",
+                              height: "2.8em",
+                              borderRadius: "10px",
+                              fontSize: "1.2em",
+                              padding: "0 1em",
+                            }}
+                          />
+                        </Col>
 
-                          <Col span={8} style={{ paddingLeft: "2em" }}>
-                            <Button
-                              type="primary"
-                              onClick={handleAddNewPage}
-                              style={{
-                                marginRight: "1em",
-                                backgroundColor: "var(--success)",
-                                borderColor: "var(--success)",
-                                color: "white",
-                                borderRadius: "10px",
-                                fontSize: "1.2em",
-                                // paddingBottom: "1.8em",
-                              }}
-                              icon={<PlusCircleOutlined />}
-                            >
-                              Create Page
-                            </Button>
-                            <Button
-                              // onClick={closeAddNewPageCard}
-                              onClick={() => setCreateMode(false)}
-                              style={{
-                                backgroundColor: "var(--themes)",
-                                borderColor: "var(--themes)",
-                                color: "white",
-                                borderRadius: "10px",
-                                fontSize: "1.2em",
-                                // paddingBottom: "1.8em",
-                              }}
-                              icon={<CloseCircleOutlined />}
-                            >
-                              Cancel
-                            </Button>
-                          </Col>
-                        </Row>
-                      </div>
+                        <Col span={8} style={{ paddingLeft: "2em" }}>
+                          <Button
+                            type="primary"
+                            onClick={handleAddNewPage}
+                            style={{
+                              marginRight: "1em",
+                              backgroundColor: "var(--success)",
+                              borderColor: "var(--success)",
+                              color: "white",
+                              borderRadius: "10px",
+                              fontSize: "1.2em",
+                              // paddingBottom: "1.8em",
+                            }}
+                            icon={<PlusCircleOutlined />}
+                          >
+                            Create Page
+                          </Button>
+                          <Button
+                            // onClick={closeAddNewPageCard}
+                            onClick={() => setCreateMode(false)}
+                            style={{
+                              backgroundColor: "var(--themes)",
+                              borderColor: "var(--themes)",
+                              color: "white",
+                              borderRadius: "10px",
+                              fontSize: "1.2em",
+                              // paddingBottom: "1.8em",
+                            }}
+                            icon={<CloseCircleOutlined />}
+                          >
+                            Cancel
+                          </Button>
+                        </Col>
+                      </Row>
                     </div>
                   </div>
-                </>
-              ) : null}
+                </div>
+              </>
+            ) : null}
 
-              {/* Pages and Subpages */}
-              <Tabs
-                centered
-                animated
-                defaultActiveKey="1"
-                type="card"
-                style={{
-                  marginTop: "2em",
-                }}
-              >
-                <Tabs.TabPane tab="Pages" key="1">
-                  <Renderpages
-                    webpages={typePages}
-                    handleEditPage={handleEditPage}
-                    handleExpand={handleExpand}
-                    expandedPageId={expandedPageId}
-                    editMode={editMode}
-                    setEditMode={setEditMode}
-                    handleSubmit={handleEditPageInfo}
-                    handleDeletePage={handleDeletePage}
-                    pageNameEn={pageNameEn}
-                    setPageNameEn={setPageNameEn}
-                    pageNameBn={pageNameBn}
-                    setPageNameBn={setPageNameBn}
-                    pageSlug={pageSlug}
-                    setPageSlug={setPageSlug}
-                    setPageType={setPageType}
-                    editPageInfo={editPageInfo}
-                    setEditPageInfo={setEditPageInfo}
-                    handleEditPageInfo={handleEditPageInfo}
-                  />
-                </Tabs.TabPane>
-                <Tabs.TabPane tab="Subpages" key="2">
-                  <Renderpages
-                    webpages={typeSubpages}
-                    handleEditPage={handleEditPage}
-                    handleExpand={handleExpand}
-                    expandedPageId={expandedPageId}
-                    editMode={editMode}
-                    setEditMode={setEditMode}
-                    handleSubmit={handleEditPageInfo}
-                    handleDeletePage={handleDeletePage}
-                    pageNameEn={pageNameEn}
-                    setPageNameEn={setPageNameEn}
-                    pageNameBn={pageNameBn}
-                    setPageNameBn={setPageNameBn}
-                    pageSlug={pageSlug}
-                    setPageSlug={setPageSlug}
-                    setPageType={setPageType}
-                    editPageInfo={editPageInfo}
-                    setEditPageInfo={setEditPageInfo}
-                    handleEditPageInfo={handleEditPageInfo}
-                  />
-                </Tabs.TabPane>
-              </Tabs>
-            </div>
+            {/* Pages and Subpages */}
+            <Tabs
+              centered
+              animated
+              defaultActiveKey="1"
+              type="card"
+              style={{
+                marginTop: "2em",
+              }}
+            >
+              <Tabs.TabPane tab="Pages" key="1">
+                <Renderpages
+                  webpages={typePages}
+                  handleEditPage={handleEditPage}
+                  handleExpand={handleExpand}
+                  expandedPageId={expandedPageId}
+                  editMode={editMode}
+                  setEditMode={setEditMode}
+                  handleSubmit={handleEditPageInfo}
+                  handleDeletePage={handleDeletePage}
+                  pageNameEn={pageNameEn}
+                  setPageNameEn={setPageNameEn}
+                  pageNameBn={pageNameBn}
+                  setPageNameBn={setPageNameBn}
+                  pageSlug={pageSlug}
+                  setPageSlug={setPageSlug}
+                  setPageType={setPageType}
+                  editPageInfo={editPageInfo}
+                  setEditPageInfo={setEditPageInfo}
+                  handleEditPageInfo={handleEditPageInfo}
+                />
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="Subpages" key="2">
+                <Renderpages
+                  webpages={typeSubpages}
+                  handleEditPage={handleEditPage}
+                  handleExpand={handleExpand}
+                  expandedPageId={expandedPageId}
+                  editMode={editMode}
+                  setEditMode={setEditMode}
+                  handleSubmit={handleEditPageInfo}
+                  handleDeletePage={handleDeletePage}
+                  pageNameEn={pageNameEn}
+                  setPageNameEn={setPageNameEn}
+                  pageNameBn={pageNameBn}
+                  setPageNameBn={setPageNameBn}
+                  pageSlug={pageSlug}
+                  setPageSlug={setPageSlug}
+                  setPageType={setPageType}
+                  editPageInfo={editPageInfo}
+                  setEditPageInfo={setEditPageInfo}
+                  handleEditPageInfo={handleEditPageInfo}
+                />
+              </Tabs.TabPane>
+            </Tabs>
           </div>
         </div>
       </div>

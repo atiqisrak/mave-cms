@@ -227,7 +227,7 @@ const Gallery = () => {
 
   return (
     <div className="login-page">
-      <div className="ViewContainer ViewContentContainer media-area login-page-section">
+      <div className="mavecontainer media-area login-page-section">
         {/* <h1 style={{ textAlign: "center" }}>Upload</h1> */}
         {/* <hr style={{ marginBottom: "1rem", marginTop: ".5rem" }} /> */}
 

@@ -65,7 +65,7 @@ const index = () => {
   return (
     <>
       {userData ? (
-        <div className="ViewContainer">
+        <div className="mavecontainer">
           <div
             style={{
               display: "grid",

@@ -44,7 +44,7 @@ export default function EditModel() {
   };
 
   return (
-    <div className="ViewContentContainer">
+    <div className="mavecontainer">
       <Breadcrumb
         style={{
           marginBottom: "1em",

@@ -83,7 +83,7 @@ const Documents = () => {
 
   return (
     <div className="login-page">
-      <div className="ViewContainer ViewContentContainer media-area login-page-section">
+      <div className="mavecontainer media-area login-page-section">
         <div>
           {documents && documents.length > 0 ? (
             <Row gutter={[16, 16]}>

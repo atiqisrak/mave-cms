@@ -49,149 +49,147 @@ function Forms() {
 
   return (
     <>
-      <div className="ViewContainer">
-        <div className="ViewContentContainer">
+      <div className="mavecontainer">
+        <div
+          className="TopbarContainer"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "3fr 1fr",
+            alignItems: "center",
+          }}
+        >
+          <Breadcrumb
+            style={{
+              fontSize: "1.2em",
+              marginBottom: "1em",
+            }}
+            items={[
+              {
+                href: "/",
+                title: <HomeFilled />,
+              },
+              {
+                title: "Components",
+              },
+              {
+                title: "Forms",
+                menu: {
+                  items: [
+                    {
+                      title: "Gallery",
+                      onClick: () => router.push("/gallery"),
+                    },
+                    {
+                      title: "Menus Items",
+                      onClick: () => router.push("/menuitems"),
+                    },
+                    {
+                      title: "Menus",
+                      onClick: () => router.push("/menus"),
+                    },
+                    {
+                      title: "Navbars",
+                      onClick: () => router.push("/navbars"),
+                    },
+                    {
+                      title: "Sliders",
+                      onClick: () => router.push("/sliders"),
+                    },
+                    {
+                      title: "Cards",
+                      onClick: () => router.push("/cards"),
+                    },
+                    {
+                      title: "Forms",
+                      onClick: () => router.push("/forms"),
+                    },
+                    {
+                      title: "Footers",
+                      onClick: () => router.push("/footer"),
+                    },
+                  ],
+                },
+              },
+            ]}
+          />
           <div
-            className="TopbarContainer"
+            className="buttonHolder"
             style={{
               display: "grid",
-              gridTemplateColumns: "3fr 1fr",
-              alignItems: "center",
+              gridTemplateColumns: "1fr",
+              gap: "1em",
+              marginBottom: "2em",
             }}
           >
-            <Breadcrumb
-              style={{
-                fontSize: "1.2em",
-                marginBottom: "1em",
-              }}
-              items={[
-                {
-                  href: "/",
-                  title: <HomeFilled />,
-                },
-                {
-                  title: "Components",
-                },
-                {
-                  title: "Forms",
-                  menu: {
-                    items: [
-                      {
-                        title: "Gallery",
-                        onClick: () => router.push("/gallery"),
-                      },
-                      {
-                        title: "Menus Items",
-                        onClick: () => router.push("/menuitems"),
-                      },
-                      {
-                        title: "Menus",
-                        onClick: () => router.push("/menus"),
-                      },
-                      {
-                        title: "Navbars",
-                        onClick: () => router.push("/navbars"),
-                      },
-                      {
-                        title: "Sliders",
-                        onClick: () => router.push("/sliders"),
-                      },
-                      {
-                        title: "Cards",
-                        onClick: () => router.push("/cards"),
-                      },
-                      {
-                        title: "Forms",
-                        onClick: () => router.push("/forms"),
-                      },
-                      {
-                        title: "Footers",
-                        onClick: () => router.push("/footer"),
-                      },
-                    ],
-                  },
-                },
-              ]}
-            />
-            <div
-              className="buttonHolder"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr",
-                gap: "1em",
-                marginBottom: "2em",
-              }}
-            >
-              {isCreateFormVisible ? (
+            {isCreateFormVisible ? (
+              <Button
+                danger
+                style={{
+                  borderRadius: "10px",
+                  fontSize: "1.2em",
+                  // paddingBottom: "1.8em",
+                }}
+                icon={<CloseCircleFilled />}
+                onClick={toggleCreateForm}
+              >
+                Cancel
+              </Button>
+            ) : (
+              <>
                 <Button
-                  danger
+                  type="primary"
                   style={{
+                    backgroundColor: "var(--themes)",
+                    borderColor: "var(--themes)",
+                    color: "white",
                     borderRadius: "10px",
                     fontSize: "1.2em",
                     // paddingBottom: "1.8em",
                   }}
-                  icon={<CloseCircleFilled />}
+                  icon={<PlusCircleOutlined />}
                   onClick={toggleCreateForm}
                 >
-                  Cancel
+                  Add New Form
                 </Button>
-              ) : (
-                <>
-                  <Button
-                    type="primary"
-                    style={{
-                      backgroundColor: "var(--themes)",
-                      borderColor: "var(--themes)",
-                      color: "white",
-                      borderRadius: "10px",
-                      fontSize: "1.2em",
-                      // paddingBottom: "1.8em",
-                    }}
-                    icon={<PlusCircleOutlined />}
-                    onClick={toggleCreateForm}
-                  >
-                    Add New Form
-                  </Button>
-                  <Button
-                    type="primary"
-                    style={{
-                      backgroundColor: "var(--theme)",
-                      borderColor: "var(--theme)",
-                      color: "white",
-                      borderRadius: "10px",
-                      fontSize: "1.2em",
-                    }}
-                    icon={<CopyOutlined />}
-                    onClick={() => {
-                      navigator.clipboard.writeText(
-                        `${process.env.NEXT_PUBLIC_API_BASE_URL}/forms`
-                      );
-                      message.success("API Endpoint Copied");
-                    }}
-                  >
-                    Copy API Endpoint
-                  </Button>
-                </>
-              )}
-            </div>
-          </div>
-          {isCreateFormVisible ? <FormBuilder /> : null}
-
-          <div
-            className="formShowcase"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gridGap: "1em",
-              border: "1px solid black",
-            }}
-          >
-            {forms?.map((formData) => (
-              <>
-                <FormComponent key={formData.id} formData={formData} />
+                <Button
+                  type="primary"
+                  style={{
+                    backgroundColor: "var(--theme)",
+                    borderColor: "var(--theme)",
+                    color: "white",
+                    borderRadius: "10px",
+                    fontSize: "1.2em",
+                  }}
+                  icon={<CopyOutlined />}
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      `${process.env.NEXT_PUBLIC_API_BASE_URL}/forms`
+                    );
+                    message.success("API Endpoint Copied");
+                  }}
+                >
+                  Copy API Endpoint
+                </Button>
               </>
-            ))}
+            )}
           </div>
+        </div>
+        {isCreateFormVisible ? <FormBuilder /> : null}
+
+        <div
+          className="formShowcase"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gridGap: "1em",
+            border: "1px solid black",
+          }}
+        >
+          {forms?.map((formData) => (
+            <>
+              <FormComponent key={formData.id} formData={formData} />
+            </>
+          ))}
         </div>
       </div>
     </>

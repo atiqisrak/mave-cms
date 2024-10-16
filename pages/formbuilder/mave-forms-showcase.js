@@ -9,7 +9,7 @@ const MaveFormsShowcase = () => {
   };
 
   return (
-    <div className="ViewContainer">
+    <div className="mavecontainer">
       <div
         style={{
           display: "flex",

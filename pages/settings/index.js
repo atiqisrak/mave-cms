@@ -8,7 +8,7 @@ import UserManagement from "../../components/settings/UserManagement";
 
 export default function Settings() {
   return (
-    <div className="ViewContainer">
+    <div className="mavecontainer">
       {/* <h1>Settings Page</h1> */}
       <Breadcrumb
         items={[

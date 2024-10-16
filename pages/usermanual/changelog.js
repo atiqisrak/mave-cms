@@ -18,7 +18,7 @@ const Changelog = () => {
   }, []);
 
   return (
-    <div className="ViewContentContainer">
+    <div className="mavecontainer">
       <Layout
         style={{
           padding: "0 24px 24px",

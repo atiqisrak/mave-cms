@@ -12,7 +12,7 @@ const { Content } = Layout;
 
 const UserManagementPage = () => {
   return (
-    <div className="ViewContainer">
+    <div className="mavecontainer">
       <Layout
         style={{
           padding: "0 24px 24px",

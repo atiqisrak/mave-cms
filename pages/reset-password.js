@@ -86,98 +86,96 @@ const resetPasword = () => {
       </>
     );
   return (
-    <div className="ViewContainer">
-      <div className="ViewContentContainer">
-        <div
-          className="MainContent"
-          style={{
-            width: "90vw",
-            maxWidth: "500px",
-            margin: "0 auto",
-            padding: "1rem",
-          }}
-        >
-          <h2 style={{ textAlign: "center" }}>Password Reset</h2>
-          <Divider />
-          <div style={{ marginTop: "1rem" }}>
-            <strong>Email</strong>
-            <Input
-              value={email}
-              required
-              onChange={(e) => handleChange(e, "email")}
-              placeholder="Email"
-              className="input-field"
-            />
-          </div>
-          <div style={{ marginTop: "1rem" }}>
-            <strong>Password</strong>
-            <Input
-              type={showPassword ? "text" : "password"}
-              value={password}
-              required
-              onChange={(e) => handleChange(e, "password")}
-              placeholder="Password"
-              className="input-field"
-              suffix={
-                showPassword ? (
-                  <EyeOutlined
-                    style={{ fontSize: "22px" }}
-                    onClick={togglePasswordVisibility}
-                  />
-                ) : (
-                  <EyeInvisibleOutlined
-                    style={{ fontSize: "22px" }}
-                    onClick={togglePasswordVisibility}
-                  />
-                )
-              }
-            />
-          </div>
-          <div style={{ marginTop: "1rem" }}>
-            <strong>Confirm Password</strong>
-            <Input
-              type={showconfirmPassword ? "text" : "password"}
-              value={confirmPassword}
-              required
-              onChange={(e) => handleChange(e, "confirmPassword")}
-              placeholder="Confirm Password"
-              className="input-field"
-              suffix={
-                showconfirmPassword ? (
-                  <EyeOutlined
-                    style={{ fontSize: "22px" }}
-                    onClick={toggleConfirmPasswordVisibility}
-                  />
-                ) : (
-                  <EyeInvisibleOutlined
-                    style={{ fontSize: "22px" }}
-                    onClick={toggleConfirmPasswordVisibility}
-                  />
-                )
-              }
-            />
-          </div>
-          <br />
-          {passwordsMatch === true && (
-            <span style={{ color: "green" }}>Passwords match</span>
-          )}
-          {passwordsMatch === false && (
-            <span style={{ color: "red" }}>Passwords do not match</span>
-          )}
-          <Space
-            direction="vertical"
-            style={{ width: "100%", marginTop: "1rem" }}
-          >
-            <Button
-              type="primary"
-              block
-              className="buttons"
-              onClick={() => handleResetPassword()}
-            >
-              Reset Password
-            </Button>
-          </Space>
+    <div className="mavecontainer">
+      <div
+        className="MainContent"
+        style={{
+          width: "90vw",
+          maxWidth: "500px",
+          margin: "0 auto",
+          padding: "1rem",
+        }}
+      >
+        <h2 style={{ textAlign: "center" }}>Password Reset</h2>
+        <Divider />
+        <div style={{ marginTop: "1rem" }}>
+          <strong>Email</strong>
+          <Input
+            value={email}
+            required
+            onChange={(e) => handleChange(e, "email")}
+            placeholder="Email"
+            className="input-field"
+          />
         </div>
+        <div style={{ marginTop: "1rem" }}>
+          <strong>Password</strong>
+          <Input
+            type={showPassword ? "text" : "password"}
+            value={password}
+            required
+            onChange={(e) => handleChange(e, "password")}
+            placeholder="Password"
+            className="input-field"
+            suffix={
+              showPassword ? (
+                <EyeOutlined
+                  style={{ fontSize: "22px" }}
+                  onClick={togglePasswordVisibility}
+                />
+              ) : (
+                <EyeInvisibleOutlined
+                  style={{ fontSize: "22px" }}
+                  onClick={togglePasswordVisibility}
+                />
+              )
+            }
+          />
+        </div>
+        <div style={{ marginTop: "1rem" }}>
+          <strong>Confirm Password</strong>
+          <Input
+            type={showconfirmPassword ? "text" : "password"}
+            value={confirmPassword}
+            required
+            onChange={(e) => handleChange(e, "confirmPassword")}
+            placeholder="Confirm Password"
+            className="input-field"
+            suffix={
+              showconfirmPassword ? (
+                <EyeOutlined
+                  style={{ fontSize: "22px" }}
+                  onClick={toggleConfirmPasswordVisibility}
+                />
+              ) : (
+                <EyeInvisibleOutlined
+                  style={{ fontSize: "22px" }}
+                  onClick={toggleConfirmPasswordVisibility}
+                />
+              )
+            }
+          />
+        </div>
+        <br />
+        {passwordsMatch === true && (
+          <span style={{ color: "green" }}>Passwords match</span>
+        )}
+        {passwordsMatch === false && (
+          <span style={{ color: "red" }}>Passwords do not match</span>
+        )}
+        <Space
+          direction="vertical"
+          style={{ width: "100%", marginTop: "1rem" }}
+        >
+          <Button
+            type="primary"
+            block
+            className="buttons"
+            onClick={() => handleResetPassword()}
+          >
+            Reset Password
+          </Button>
+        </Space>
       </div>
     </div>
   );

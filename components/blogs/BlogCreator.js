@@ -210,14 +210,14 @@ const BlogCreator = ({ creatorMode, setCreatorMode, fetchBlogs }) => {
 
   if (loading) {
     return (
-      <div className="ViewContainer">
+      <div className="mavecontainer">
         <Spin />
       </div>
     );
   }
 
   return (
-    <div className="ViewContainer">
+    <div className="mavecontainer">
       <center>
         <h1
           style={{

@@ -9,31 +9,29 @@ const Tools = () => {
   const [platinumUser, setPlatinumUser] = useState(false);
 
   return (
-    <div className="ViewContainer">
-      <div className="ViewContentContainer">
-        <h1>Tools</h1>
+    <div className="mavecontainer">
+      <h1>Tools</h1>
+      <center>
+        <Radio.Group
+          onChange={(e) => setPlatinumUser(e.target.value)}
+          value={platinumUser}
+          style={{
+            margin: "2rem 0",
+          }}
+        >
+          <Radio value={false}>Free</Radio>
+          <Radio value={true}>Premium</Radio>
+        </Radio.Group>
+      </center>
+      {platinumUser ? (
         <center>
-          <Radio.Group
-            onChange={(e) => setPlatinumUser(e.target.value)}
-            value={platinumUser}
-            style={{
-              margin: "2rem 0",
-            }}
-          >
-            <Radio value={false}>Free</Radio>
-            <Radio value={true}>Premium</Radio>
-          </Radio.Group>
+          <h1>Coming soon...</h1>
         </center>
-        {platinumUser ? (
-          <center>
-            <h1>Coming soon...</h1>
-          </center>
-        ) : (
-          <center>
-            <h1>Coming soon...</h1>
-          </center>
-        )}
-      </div>
+      ) : (
+        <center>
+          <h1>Coming soon...</h1>
+        </center>
+      )}
     </div>
   );
 };

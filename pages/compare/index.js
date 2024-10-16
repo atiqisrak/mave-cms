@@ -4,7 +4,7 @@ import router from "next/router";
 
 export default function Compare() {
   return (
-    <div className="ViewContainer">
+    <div className="mavecontainer">
       <h1>
         Welcome to the place where you will know why Mave is better than others
       </h1>

@@ -72,7 +72,7 @@ const DataPage = () => {
 
 export default function Blackbox() {
   return (
-    <div className="ViewContainer" style={{ padding: "24px" }}>
+    <div className="mavecontainer" style={{ padding: "24px" }}>
       <DataPage />
     </div>
   );

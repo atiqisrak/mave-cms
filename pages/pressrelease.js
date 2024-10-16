@@ -424,279 +424,277 @@ const PressRelease = () => {
   };
 
   return (
-    <div className="ViewContainer">
-      <div className="ViewContentContainer">
-        <div
-          className="PageHeader"
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
-          <h1>Press Releases</h1>
+    <div className="mavecontainer">
+      <div
+        className="PageHeader"
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <h1>Press Releases</h1>
 
-          {createMode ? (
-            <Button
-              danger
-              style={{
-                borderRadius: "10px",
-                fontSize: "1.2em",
-                marginRight: "1em",
-                // paddingBottom: "1.8em",
-              }}
-              icon={<CloseCircleFilled />}
-              onClick={() => setCreateMode(false)}
-            >
-              Cancel Create
-            </Button>
-          ) : (
-            <Button
-              type="primary"
-              style={{
-                backgroundColor: "var(--theme)",
-                borderColor: "var(--theme)",
-                color: "white",
-                borderRadius: "10px",
-                fontSize: "1.2em",
-                marginRight: "1em",
-                // paddingBottom: "1.8em",
-              }}
-              icon={<CheckCircleFilled />}
-              onClick={() => setCreateMode(true)}
-            >
-              Create New
-            </Button>
-          )}
-        </div>
+        {createMode ? (
+          <Button
+            danger
+            style={{
+              borderRadius: "10px",
+              fontSize: "1.2em",
+              marginRight: "1em",
+              // paddingBottom: "1.8em",
+            }}
+            icon={<CloseCircleFilled />}
+            onClick={() => setCreateMode(false)}
+          >
+            Cancel Create
+          </Button>
+        ) : (
+          <Button
+            type="primary"
+            style={{
+              backgroundColor: "var(--theme)",
+              borderColor: "var(--theme)",
+              color: "white",
+              borderRadius: "10px",
+              fontSize: "1.2em",
+              marginRight: "1em",
+              // paddingBottom: "1.8em",
+            }}
+            icon={<CheckCircleFilled />}
+            onClick={() => setCreateMode(true)}
+          >
+            Create New
+          </Button>
+        )}
+      </div>
 
-        <div className="pageContainers">
-          {createMode ? (
-            <div className="pageContainer">
+      <div className="pageContainers">
+        {createMode ? (
+          <div className="pageContainer">
+            <div
+              className="pageContainerHeader"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "2em",
+              }}
+            >
+              <h2>Create New Press Release</h2>
               <div
-                className="pageContainerHeader"
+                className="formGroup"
                 style={{
                   display: "flex",
                   flexDirection: "column",
                   gap: "2em",
                 }}
               >
-                <h2>Create New Press Release</h2>
-                <div
-                  className="formGroup"
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "2em",
-                  }}
-                >
-                  <label>Card IDs</label>
-                  <Select
-                    mode="multiple"
-                    allowClear
-                    showSearch
-                    filterOption={(input, option) =>
-                      option.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
-                    style={{ width: "100%", height: "100px" }}
-                    placeholder="Select Cards"
-                    value={formData?.card_ids}
-                    onChange={(value) => handleFormChange("card_ids", value)}
-                  >
-                    {cards?.map((card) => (
-                      <Select.Option key={card.id} value={card.id}>
-                        {
-                          <div
-                            style={{
-                              display: "flex",
-                              gap: "1em",
-                            }}
-                          >
-                            <MediaRenderEngine item={card?.media_files} />
-                            <h3>{card.title_en}</h3>
-                          </div>
-                        }
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </div>
-                <center>
-                  <Button
-                    type="primary"
-                    style={{
-                      width: "300px",
-                      backgroundColor: "var(--theme)",
-                      borderColor: "var(--theme)",
-                      color: "white",
-                      borderRadius: "10px",
-                      fontSize: "1.2em",
-                      marginRight: "1em",
-                      // paddingBottom: "1.8em",
-                    }}
-                    onClick={handleCreatePressRelease}
-                  >
-                    Create
-                  </Button>
-                </center>
-              </div>
-            </div>
-          ) : null}
-
-          <Row gutter={[16, 16]}>
-            {pressReleases?.map((pressRelease) => (
-              <Col key={pressRelease.id} span={24}>
-                <Card
-                  title={`Press Release ID: ${pressRelease.id}`}
-                  extra={
-                    <div>
-                      <Button onClick={() => handleExpand(pressRelease?.id)}>
-                        {expandedPressRelease === pressRelease.id
-                          ? "Collapse"
-                          : "Expand"}
-                      </Button>
-                    </div>
+                <label>Card IDs</label>
+                <Select
+                  mode="multiple"
+                  allowClear
+                  showSearch
+                  filterOption={(input, option) =>
+                    option.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
                   }
-                  style={{
-                    margin: "2em 0",
-                    border: "1px solid var(--theme)",
-                    borderRadius: 10,
-                  }}
+                  style={{ width: "100%", height: "100px" }}
+                  placeholder="Select Cards"
+                  value={formData?.card_ids}
+                  onChange={(value) => handleFormChange("card_ids", value)}
                 >
-                  {expandedPressRelease === pressRelease?.id && (
-                    <div>
-                      <center>
-                        {editMode ? (
-                          <>
-                            <Button
-                              danger
-                              style={{
-                                borderRadius: "10px",
-                                fontSize: "1.2em",
-                                marginRight: "1em",
-                                // paddingBottom: "1.8em",
-                              }}
-                              icon={<CloseCircleFilled />}
-                              onClick={() => {
-                                setEditMode(false);
-                              }}
-                            >
-                              Cancel Edit
-                            </Button>
-                            <Button
-                              type="primary"
-                              style={{
-                                backgroundColor: "var(--theme)",
-                                borderColor: "var(--theme)",
-                                color: "white",
-                                borderRadius: "10px",
-                                fontSize: "1.2em",
-                                marginRight: "1em",
-                                // paddingBottom: "1.8em",
-                              }}
-                              icon={<CheckCircleFilled />}
-                              onClick={handleSubmit}
-                            >
-                              Submit
-                            </Button>
-                          </>
-                        ) : (
-                          <>
-                            <Button
-                              type="primary"
-                              style={{
-                                backgroundColor: "var(--theme)",
-                                borderColor: "var(--theme)",
-                                color: "white",
-                                borderRadius: "10px",
-                                fontSize: "1.2em",
-                                marginRight: "1em",
-                                // paddingBottom: "1.8em",
-                              }}
-                              icon={<EditOutlined />}
-                              onClick={() => {
-                                handleEditPageClick(pressRelease.id);
-                              }}
-                            >
-                              Edit Press Release
-                            </Button>
-                            <Button
-                              danger
-                              style={{
-                                borderRadius: "10px",
-                                fontSize: "1.2em",
-                                marginRight: "1em",
-                                // paddingBottom: "1.8em",
-                              }}
-                              icon={<DeleteFilled />}
-                              onClick={() => {
-                                handleDeletePage(pressRelease.id);
-                              }}
-                            >
-                              Delete Press Release
-                            </Button>
-                          </>
-                        )}
-                      </center>
-                      <div className="pageContainer">
-                        {editMode ? (
-                          <>
-                            <div>
-                              <h3>Card IDs</h3>
-                              <Select
-                                mode="multiple"
-                                allowClear
-                                showSearch
-                                filterOption={(input, option) =>
-                                  option.children
-                                    .toLowerCase()
-                                    .indexOf(input.toLowerCase()) >= 0
-                                }
-                                style={{
-                                  width: "100%",
-                                  borderRadius: 10,
-                                }}
-                                placeholder="Select Tabs"
-                                defaultValue={formData?.card_ids}
-                                value={formData?.card_ids}
-                                onChange={(value) =>
-                                  handleFormChange("card_ids", value)
-                                }
-                              >
-                                {cards?.map((card) => (
-                                  <Select.Option key={card.id} value={card.id}>
-                                    {card.title_en}
-                                  </Select.Option>
-                                ))}
-                              </Select>
-                            </div>
-                          </>
-                        ) : (
-                          <div
+                  {cards?.map((card) => (
+                    <Select.Option key={card.id} value={card.id}>
+                      {
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "1em",
+                          }}
+                        >
+                          <MediaRenderEngine item={card?.media_files} />
+                          <h3>{card.title_en}</h3>
+                        </div>
+                      }
+                    </Select.Option>
+                  ))}
+                </Select>
+              </div>
+              <center>
+                <Button
+                  type="primary"
+                  style={{
+                    width: "300px",
+                    backgroundColor: "var(--theme)",
+                    borderColor: "var(--theme)",
+                    color: "white",
+                    borderRadius: "10px",
+                    fontSize: "1.2em",
+                    marginRight: "1em",
+                    // paddingBottom: "1.8em",
+                  }}
+                  onClick={handleCreatePressRelease}
+                >
+                  Create
+                </Button>
+              </center>
+            </div>
+          </div>
+        ) : null}
+
+        <Row gutter={[16, 16]}>
+          {pressReleases?.map((pressRelease) => (
+            <Col key={pressRelease.id} span={24}>
+              <Card
+                title={`Press Release ID: ${pressRelease.id}`}
+                extra={
+                  <div>
+                    <Button onClick={() => handleExpand(pressRelease?.id)}>
+                      {expandedPressRelease === pressRelease.id
+                        ? "Collapse"
+                        : "Expand"}
+                    </Button>
+                  </div>
+                }
+                style={{
+                  margin: "2em 0",
+                  border: "1px solid var(--theme)",
+                  borderRadius: 10,
+                }}
+              >
+                {expandedPressRelease === pressRelease?.id && (
+                  <div>
+                    <center>
+                      {editMode ? (
+                        <>
+                          <Button
+                            danger
                             style={{
-                              display: "grid",
-                              gridAutoColumns: "1fr",
-                              marginTop: "1em",
+                              borderRadius: "10px",
+                              fontSize: "1.2em",
+                              marginRight: "1em",
+                              // paddingBottom: "1.8em",
+                            }}
+                            icon={<CloseCircleFilled />}
+                            onClick={() => {
+                              setEditMode(false);
                             }}
                           >
-                            {console.log("Press Release", pressRelease)}
-                            {
-                              <PressReleaseViewer
-                                cardData={pressRelease?.cards_mave}
-                                media={media}
-                                fetchCards={fetchCards}
-                              />
-                            }
+                            Cancel Edit
+                          </Button>
+                          <Button
+                            type="primary"
+                            style={{
+                              backgroundColor: "var(--theme)",
+                              borderColor: "var(--theme)",
+                              color: "white",
+                              borderRadius: "10px",
+                              fontSize: "1.2em",
+                              marginRight: "1em",
+                              // paddingBottom: "1.8em",
+                            }}
+                            icon={<CheckCircleFilled />}
+                            onClick={handleSubmit}
+                          >
+                            Submit
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            type="primary"
+                            style={{
+                              backgroundColor: "var(--theme)",
+                              borderColor: "var(--theme)",
+                              color: "white",
+                              borderRadius: "10px",
+                              fontSize: "1.2em",
+                              marginRight: "1em",
+                              // paddingBottom: "1.8em",
+                            }}
+                            icon={<EditOutlined />}
+                            onClick={() => {
+                              handleEditPageClick(pressRelease.id);
+                            }}
+                          >
+                            Edit Press Release
+                          </Button>
+                          <Button
+                            danger
+                            style={{
+                              borderRadius: "10px",
+                              fontSize: "1.2em",
+                              marginRight: "1em",
+                              // paddingBottom: "1.8em",
+                            }}
+                            icon={<DeleteFilled />}
+                            onClick={() => {
+                              handleDeletePage(pressRelease.id);
+                            }}
+                          >
+                            Delete Press Release
+                          </Button>
+                        </>
+                      )}
+                    </center>
+                    <div className="pageContainer">
+                      {editMode ? (
+                        <>
+                          <div>
+                            <h3>Card IDs</h3>
+                            <Select
+                              mode="multiple"
+                              allowClear
+                              showSearch
+                              filterOption={(input, option) =>
+                                option.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              }
+                              style={{
+                                width: "100%",
+                                borderRadius: 10,
+                              }}
+                              placeholder="Select Tabs"
+                              defaultValue={formData?.card_ids}
+                              value={formData?.card_ids}
+                              onChange={(value) =>
+                                handleFormChange("card_ids", value)
+                              }
+                            >
+                              {cards?.map((card) => (
+                                <Select.Option key={card.id} value={card.id}>
+                                  {card.title_en}
+                                </Select.Option>
+                              ))}
+                            </Select>
                           </div>
-                        )}
-                      </div>
+                        </>
+                      ) : (
+                        <div
+                          style={{
+                            display: "grid",
+                            gridAutoColumns: "1fr",
+                            marginTop: "1em",
+                          }}
+                        >
+                          {console.log("Press Release", pressRelease)}
+                          {
+                            <PressReleaseViewer
+                              cardData={pressRelease?.cards_mave}
+                              media={media}
+                              fetchCards={fetchCards}
+                            />
+                          }
+                        </div>
+                      )}
                     </div>
-                  )}
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        </div>
+                  </div>
+                )}
+              </Card>
+            </Col>
+          ))}
+        </Row>
       </div>
     </div>
   );

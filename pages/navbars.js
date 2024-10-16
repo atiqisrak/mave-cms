@@ -215,332 +215,331 @@ const Navbars = () => {
 
   return (
     <>
-      <div className="ViewContainer">
-        <div className="ViewContentContainer">
+      <div className="mavecontainer">
+        <div
+          className="TopbarContainer"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "3fr 1fr",
+            alignItems: "center",
+          }}
+        >
+          <Breadcrumb
+            style={{
+              fontSize: "1.2em",
+              marginBottom: "1em",
+            }}
+            items={[
+              {
+                href: "/",
+                title: <HomeFilled />,
+              },
+              {
+                title: "Components",
+              },
+              {
+                title: "Navbars",
+                menu: {
+                  items: [
+                    {
+                      title: "Gallery",
+                      onClick: () => router.push("/gallery"),
+                    },
+                    {
+                      title: "Menus",
+                      onClick: () => router.push("/menus"),
+                    },
+                    {
+                      title: "Menu Items",
+                      onClick: () => router.push("/menuitems"),
+                    },
+                    {
+                      title: "Sliders",
+                      onClick: () => router.push("/sliders"),
+                    },
+                    {
+                      title: "Cards",
+                      onClick: () => router.push("/cards"),
+                    },
+                    {
+                      title: "Forms",
+                      onClick: () => router.push("/forms"),
+                    },
+                    {
+                      title: "Footers",
+                      onClick: () => router.push("/footer"),
+                    },
+                  ],
+                },
+              },
+            ]}
+          />
+
           <div
-            className="TopbarContainer"
+            className="buttonHolder"
             style={{
               display: "grid",
-              gridTemplateColumns: "3fr 1fr",
+              gridTemplateColumns: "1fr",
+              gap: "1em",
               alignItems: "center",
+              justifyContent: "center",
+              marginBottom: "2em",
             }}
           >
-            <Breadcrumb
+            <Button
+              type="primary"
               style={{
+                backgroundColor: "var(--themes)",
+                borderColor: "var(--themes)",
+                color: "white",
+                borderRadius: "10px",
                 fontSize: "1.2em",
-                marginBottom: "1em",
+                // paddingBottom: "1.8em",
               }}
-              items={[
-                {
-                  href: "/",
-                  title: <HomeFilled />,
-                },
-                {
-                  title: "Components",
-                },
-                {
-                  title: "Navbars",
-                  menu: {
-                    items: [
-                      {
-                        title: "Gallery",
-                        onClick: () => router.push("/gallery"),
-                      },
-                      {
-                        title: "Menus",
-                        onClick: () => router.push("/menus"),
-                      },
-                      {
-                        title: "Menu Items",
-                        onClick: () => router.push("/menuitems"),
-                      },
-                      {
-                        title: "Sliders",
-                        onClick: () => router.push("/sliders"),
-                      },
-                      {
-                        title: "Cards",
-                        onClick: () => router.push("/cards"),
-                      },
-                      {
-                        title: "Forms",
-                        onClick: () => router.push("/forms"),
-                      },
-                      {
-                        title: "Footers",
-                        onClick: () => router.push("/footer"),
-                      },
-                    ],
-                  },
-                },
-              ]}
-            />
-
-            <div
-              className="buttonHolder"
+              icon={<PlusCircleOutlined />}
+              onClick={toggleCreateNavbarForm}
+            >
+              Add New Navbar
+            </Button>
+            <Button
+              type="primary"
               style={{
-                display: "grid",
-                gridTemplateColumns: "1fr",
-                gap: "1em",
-                alignItems: "center",
-                justifyContent: "center",
-                marginBottom: "2em",
+                backgroundColor: "var(--theme)",
+                borderColor: "var(--theme)",
+                color: "white",
+                borderRadius: "10px",
+                fontSize: "1.2em",
+              }}
+              icon={<CopyOutlined />}
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  `${process.env.NEXT_PUBLIC_API_BASE_URL}/navbars`
+                );
+                message.success("API Endpoint Copied");
               }}
             >
-              <Button
-                type="primary"
-                style={{
-                  backgroundColor: "var(--themes)",
-                  borderColor: "var(--themes)",
-                  color: "white",
-                  borderRadius: "10px",
-                  fontSize: "1.2em",
-                  // paddingBottom: "1.8em",
-                }}
-                icon={<PlusCircleOutlined />}
-                onClick={toggleCreateNavbarForm}
-              >
-                Add New Navbar
-              </Button>
-              <Button
-                type="primary"
-                style={{
-                  backgroundColor: "var(--theme)",
-                  borderColor: "var(--theme)",
-                  color: "white",
-                  borderRadius: "10px",
-                  fontSize: "1.2em",
-                }}
-                icon={<CopyOutlined />}
-                onClick={() => {
-                  navigator.clipboard.writeText(
-                    `${process.env.NEXT_PUBLIC_API_BASE_URL}/navbars`
-                  );
-                  message.success("API Endpoint Copied");
-                }}
-              >
-                Copy API Endpoint
-              </Button>
-            </div>
+              Copy API Endpoint
+            </Button>
           </div>
-          <div className="NavbarListContainer">
-            {/* Create Navbar */}
-            {isCreateNavbarFormVisible && (
-              <div>
-                <form
-                  onSubmit={(e) => handleCreateNavbar(e)}
+        </div>
+        <div className="NavbarListContainer">
+          {/* Create Navbar */}
+          {isCreateNavbarFormVisible && (
+            <div>
+              <form
+                onSubmit={(e) => handleCreateNavbar(e)}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: "1em",
+                  border: "2px solid var(--theme)",
+                  borderRadius: "10px",
+                  marginBottom: "1em",
+                }}
+              >
+                <div
                   style={{
                     display: "flex",
-                    justifyContent: "space-between",
+                    justifyContent: "center",
                     alignItems: "center",
-                    padding: "1em",
-                    border: "2px solid var(--theme)",
-                    borderRadius: "10px",
-                    marginBottom: "1em",
+                    flexDirection: "column",
+                    gap: "2em",
                   }}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      flexDirection: "column",
-                      gap: "2em",
-                    }}
-                  >
-                    <div>
-                      <label>
-                        Navbar Title (English)
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <Input
-                        style={{
-                          width: "50%",
-                        }}
-                        allowClear
-                        type="text"
-                        name="title_en"
-                        placeholder="Enter Navbar Title"
-                        value={navbarTitleEn}
-                        onChange={(e) => setNavbarTitleEn(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label>
-                        Navbar Title (Bangla)
-                        <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <Input
-                        style={{
-                          width: "50%",
-                        }}
-                        allowClear
-                        type="text"
-                        name="title_bn"
-                        placeholder="Enter Navbar Title (Bangla)"
-                        value={navbarTitleBn}
-                        onChange={(e) => setNavbarTitleBn(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    {selectedLogo ? (
-                      <img
-                        src={selectedLogo}
-                        alt="Selected Logo"
-                        style={{ width: "150px" }}
-                      />
-                    ) : (
-                      <img
-                        src="/images/Image_Placeholder.png"
-                        alt="Logo"
-                        style={{ width: "150px" }}
-                      />
-                    )}
-                    <SingleMediaSelect
-                      media={media}
-                      onMediaSelect={(mediaId) => setSelectedMediaId(mediaId)}
-                      visible={mediaSelectionVisible2}
-                      onCancel={() => setMediaSelectionVisible2(false)}
-                      setSelectedMenuId={setSelectedMenuId}
-                    />
-                    <Button
-                      className="change-media-button"
+                  <div>
+                    <label>
+                      Navbar Title (English)
+                      <span style={{ color: "red" }}>*</span>
+                    </label>
+                    <Input
                       style={{
-                        fontSize: "1rem",
-                        background: "rgba(0, 0, 0, 0.6)",
-                        color: "#fff",
-                        padding: "18px 16px",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginLeft: "1em",
+                        width: "50%",
                       }}
-                      onClick={() => handleOpenMediaSelectionModal2()}
-                    >
-                      Choose Logo
-                    </Button>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      flexDirection: "column",
-                    }}
-                  >
-                    <label htmlFor="menu">Select Menu:</label>
-                    <Select
-                      showSearch
                       allowClear
-                      style={{ width: "100%" }}
-                      placeholder="Select a menu"
-                      onChange={(selectedMenuId) =>
-                        handleMediaChange(selectedMenuId)
-                      }
-                      value={formData.menu_id}
-                    >
-                      {menus?.map((menu) => (
-                        <>
-                          {" "}
-                          <Option key={menu.id} value={menu?.id}>
-                            {menu.name}{" "}
-                          </Option>
-                        </>
-                      ))}{" "}
-                    </Select>
+                      type="text"
+                      name="title_en"
+                      placeholder="Enter Navbar Title"
+                      value={navbarTitleEn}
+                      onChange={(e) => setNavbarTitleEn(e.target.value)}
+                    />
                   </div>
                   <div>
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      icon={<CheckCircleOutlined />}
+                    <label>
+                      Navbar Title (Bangla)
+                      <span style={{ color: "red" }}>*</span>
+                    </label>
+                    <Input
                       style={{
-                        backgroundColor: "var(--theme)",
-                        borderColor: "var(--theme)",
-                        color: "white",
-                        borderRadius: "10px",
-                        fontSize: "1.2em",
-                        // paddingBottom: "1.8em",
-                        marginRight: "1em",
+                        width: "50%",
                       }}
-                      onClick={handleCreateNavbar}
-                    >
-                      Create
-                    </Button>
-                    <Button
-                      type="primary"
-                      danger
-                      onClick={toggleCreateNavbarForm}
-                      style={{
-                        backgroundColor: "var(--themes)",
-                        borderColor: "var(--themes)",
-                        color: "white",
-                        borderRadius: "10px",
-                        fontSize: "1.2em",
-                        // paddingBottom: "1.8em",
-                      }}
-                    >
-                      Cancel
-                    </Button>
+                      allowClear
+                      type="text"
+                      name="title_bn"
+                      placeholder="Enter Navbar Title (Bangla)"
+                      value={navbarTitleBn}
+                      onChange={(e) => setNavbarTitleBn(e.target.value)}
+                    />
                   </div>
-                </form>
-              </div>
-            )}
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 5fr",
-                gap: "1em",
-                marginBottom: "1em",
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "var(--theme)",
-                color: "white",
-                padding: "1em",
-                borderRadius: "10px",
-              }}
-            >
-              <h3>Navbar Names</h3>
-              <h3
-                style={{
-                  textAlign: "center",
-                  borderLeft: "1px solid white",
-                }}
-              >
-                Navbars
-              </h3>
-            </div>
-            {loading ? (
-              <Loader />
-            ) : (
-              <>
-                {navbars?.map((navbar) => (
-                  <div
-                    className="navbarContainer"
-                    key={navbar.id}
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {selectedLogo ? (
+                    <img
+                      src={selectedLogo}
+                      alt="Selected Logo"
+                      style={{ width: "150px" }}
+                    />
+                  ) : (
+                    <img
+                      src="/images/Image_Placeholder.png"
+                      alt="Logo"
+                      style={{ width: "150px" }}
+                    />
+                  )}
+                  <SingleMediaSelect
+                    media={media}
+                    onMediaSelect={(mediaId) => setSelectedMediaId(mediaId)}
+                    visible={mediaSelectionVisible2}
+                    onCancel={() => setMediaSelectionVisible2(false)}
+                    setSelectedMenuId={setSelectedMenuId}
+                  />
+                  <Button
+                    className="change-media-button"
                     style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 5fr",
-                      gap: "1em",
-                      marginBottom: "1em",
+                      fontSize: "1rem",
+                      background: "rgba(0, 0, 0, 0.6)",
+                      color: "#fff",
+                      padding: "18px 16px",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      display: "flex",
+                      justifyContent: "center",
                       alignItems: "center",
+                      marginLeft: "1em",
+                    }}
+                    onClick={() => handleOpenMediaSelectionModal2()}
+                  >
+                    Choose Logo
+                  </Button>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexDirection: "column",
+                  }}
+                >
+                  <label htmlFor="menu">Select Menu:</label>
+                  <Select
+                    showSearch
+                    allowClear
+                    style={{ width: "100%" }}
+                    placeholder="Select a menu"
+                    onChange={(selectedMenuId) =>
+                      handleMediaChange(selectedMenuId)
+                    }
+                    value={formData.menu_id}
+                  >
+                    {menus?.map((menu) => (
+                      <>
+                        {" "}
+                        <Option key={menu.id} value={menu?.id}>
+                          {menu.name}{" "}
+                        </Option>
+                      </>
+                    ))}{" "}
+                  </Select>
+                </div>
+                <div>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    icon={<CheckCircleOutlined />}
+                    style={{
+                      backgroundColor: "var(--theme)",
+                      borderColor: "var(--theme)",
+                      color: "white",
+                      borderRadius: "10px",
+                      fontSize: "1.2em",
+                      // paddingBottom: "1.8em",
+                      marginRight: "1em",
+                    }}
+                    onClick={handleCreateNavbar}
+                  >
+                    Create
+                  </Button>
+                  <Button
+                    type="primary"
+                    danger
+                    onClick={toggleCreateNavbarForm}
+                    style={{
+                      backgroundColor: "var(--themes)",
+                      borderColor: "var(--themes)",
+                      color: "white",
+                      borderRadius: "10px",
+                      fontSize: "1.2em",
+                      // paddingBottom: "1.8em",
                     }}
                   >
-                    <div>
-                      {editMode && editedNavbar?.id === navbar.id ? (
-                        <div className="editModeForm">
-                          <form>
-                            {/* <div
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 5fr",
+              gap: "1em",
+              marginBottom: "1em",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "var(--theme)",
+              color: "white",
+              padding: "1em",
+              borderRadius: "10px",
+            }}
+          >
+            <h3>Navbar Names</h3>
+            <h3
+              style={{
+                textAlign: "center",
+                borderLeft: "1px solid white",
+              }}
+            >
+              Navbars
+            </h3>
+          </div>
+          {loading ? (
+            <Loader />
+          ) : (
+            <>
+              {navbars?.map((navbar) => (
+                <div
+                  className="navbarContainer"
+                  key={navbar.id}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 5fr",
+                    gap: "1em",
+                    marginBottom: "1em",
+                    alignItems: "center",
+                  }}
+                >
+                  <div>
+                    {editMode && editedNavbar?.id === navbar.id ? (
+                      <div className="editModeForm">
+                        <form>
+                          {/* <div
                               style={{
                                 display: "flex",
                                 gap: "1em",
@@ -557,122 +556,111 @@ const Navbars = () => {
                                 }
                               />
                             </div> */}
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                flexDirection: "column",
-                                gap: "2em",
-                              }}
-                            >
-                              <div>
-                                <label>
-                                  Navbar Title (English)
-                                  <span style={{ color: "red" }}>*</span>
-                                </label>
-                                <Input
-                                  style={{
-                                    width: "70%",
-                                  }}
-                                  allowClear
-                                  type="text"
-                                  name="title_en"
-                                  placeholder={navbar?.title_en}
-                                  defaultValue={navbar?.title_en}
-                                  value={navbarTitleEn}
-                                  onChange={(e) =>
-                                    setNavbarTitleEn(e.target.value)
-                                  }
-                                />
-                              </div>
-                              <div>
-                                <label>
-                                  Navbar Title (Bangla)
-                                  <span style={{ color: "red" }}>*</span>
-                                </label>
-                                <Input
-                                  style={{
-                                    width: "70%",
-                                  }}
-                                  allowClear
-                                  type="text"
-                                  name="title_bn"
-                                  placeholder={navbar?.title_bn}
-                                  defaultValue={navbar?.title_bn}
-                                  value={navbarTitleBn}
-                                  onChange={(e) =>
-                                    setNavbarTitleBn(e.target.value)
-                                  }
-                                />
-                              </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              flexDirection: "column",
+                              gap: "2em",
+                            }}
+                          >
+                            <div>
+                              <label>
+                                Navbar Title (English)
+                                <span style={{ color: "red" }}>*</span>
+                              </label>
+                              <Input
+                                style={{
+                                  width: "70%",
+                                }}
+                                allowClear
+                                type="text"
+                                name="title_en"
+                                placeholder={navbar?.title_en}
+                                defaultValue={navbar?.title_en}
+                                value={navbarTitleEn}
+                                onChange={(e) =>
+                                  setNavbarTitleEn(e.target.value)
+                                }
+                              />
                             </div>
-                          </form>
-                        </div>
-                      ) : (
-                        <div>
-                          <h3>{navbar.title_en}</h3>
-                          <h3>{navbar.title_bn}</h3>
-                        </div>
-                      )}
-                    </div>
-                    <div
-                      className="column"
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "2fr 3fr 3fr",
-                        padding: "1em 2em",
-                        marginBottom: "1em",
-                        border: "1px solid var(--themes)",
-                        borderRadius: 10,
-                      }}
-                    >
-                      {/* 1st Column: Logo */}
-                      <div className="logoColumn">
-                        {editMode && editedNavbar?.id === navbar.id ? (
-                          <div className="editModeForm">
-                            <form>
-                              <div>
-                                <div
-                                  className="navbar-media"
-                                  style={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                  }}
-                                >
-                                  {media.length > 0 ? (
-                                    media[0].file_path.endsWith(".mp4") ? (
-                                      <video
-                                        controls
-                                        muted
-                                        style={{
-                                          height: "200px",
-                                          width: "15vw",
-                                          objectFit: "cover",
-                                          borderRadius: 10,
-                                        }}
-                                      >
-                                        <source
-                                          src={`${MEDIA_URL}/${media[0].file_path}`}
-                                          type="video/mp4"
-                                        />
-                                      </video>
-                                    ) : (
-                                      <img
-                                        alt={navbar.title_en}
-                                        src={`${MEDIA_URL}/${navbar.logo.file_path}`}
-                                        style={{
-                                          height: "200px",
-                                          width: "18vw",
-                                          objectFit: "cover",
-                                          borderRadius: 10,
-                                        }}
+                            <div>
+                              <label>
+                                Navbar Title (Bangla)
+                                <span style={{ color: "red" }}>*</span>
+                              </label>
+                              <Input
+                                style={{
+                                  width: "70%",
+                                }}
+                                allowClear
+                                type="text"
+                                name="title_bn"
+                                placeholder={navbar?.title_bn}
+                                defaultValue={navbar?.title_bn}
+                                value={navbarTitleBn}
+                                onChange={(e) =>
+                                  setNavbarTitleBn(e.target.value)
+                                }
+                              />
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    ) : (
+                      <div>
+                        <h3>{navbar.title_en}</h3>
+                        <h3>{navbar.title_bn}</h3>
+                      </div>
+                    )}
+                  </div>
+                  <div
+                    className="column"
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "2fr 3fr 3fr",
+                      padding: "1em 2em",
+                      marginBottom: "1em",
+                      border: "1px solid var(--themes)",
+                      borderRadius: 10,
+                    }}
+                  >
+                    {/* 1st Column: Logo */}
+                    <div className="logoColumn">
+                      {editMode && editedNavbar?.id === navbar.id ? (
+                        <div className="editModeForm">
+                          <form>
+                            <div>
+                              <div
+                                className="navbar-media"
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                }}
+                              >
+                                {media.length > 0 ? (
+                                  media[0].file_path.endsWith(".mp4") ? (
+                                    <video
+                                      controls
+                                      muted
+                                      style={{
+                                        height: "200px",
+                                        width: "15vw",
+                                        objectFit: "cover",
+                                        borderRadius: 10,
+                                      }}
+                                    >
+                                      <source
+                                        src={`${MEDIA_URL}/${media[0].file_path}`}
+                                        type="video/mp4"
                                       />
-                                    )
+                                    </video>
                                   ) : (
                                     <img
-                                      src="/images/Image_Placeholder.png"
+                                      alt={navbar.title_en}
+                                      src={`${MEDIA_URL}/${navbar.logo.file_path}`}
                                       style={{
                                         height: "200px",
                                         width: "18vw",
@@ -680,239 +668,247 @@ const Navbars = () => {
                                         borderRadius: 10,
                                       }}
                                     />
-                                  )}
-                                  {(!editMode ||
-                                    editedNavbarId !== navbar.id) && (
-                                    <>
-                                      <Button
-                                        className="change-media-button"
-                                        style={{
-                                          fontSize: "1rem",
-                                          position: "absolute",
-                                          background: "rgba(0, 0, 0, 0.6)",
-                                          color: "#fff",
-                                          padding: "18px 16px",
-                                          borderRadius: "4px",
-                                          cursor: "pointer",
-                                          display: "flex",
-                                          justifyContent: "center",
-                                          alignItems: "center",
-                                        }}
-                                        onClick={() =>
-                                          handleOpenMediaSelectionModal(
-                                            navbar.id
-                                          )
-                                        }
-                                      >
-                                        Change
-                                      </Button>
-                                    </>
-                                  )}{" "}
-                                </div>
+                                  )
+                                ) : (
+                                  <img
+                                    src="/images/Image_Placeholder.png"
+                                    style={{
+                                      height: "200px",
+                                      width: "18vw",
+                                      objectFit: "cover",
+                                      borderRadius: 10,
+                                    }}
+                                  />
+                                )}
+                                {(!editMode ||
+                                  editedNavbarId !== navbar.id) && (
+                                  <>
+                                    <Button
+                                      className="change-media-button"
+                                      style={{
+                                        fontSize: "1rem",
+                                        position: "absolute",
+                                        background: "rgba(0, 0, 0, 0.6)",
+                                        color: "#fff",
+                                        padding: "18px 16px",
+                                        borderRadius: "4px",
+                                        cursor: "pointer",
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                      }}
+                                      onClick={() =>
+                                        handleOpenMediaSelectionModal(navbar.id)
+                                      }
+                                    >
+                                      Change
+                                    </Button>
+                                  </>
+                                )}{" "}
                               </div>
-                            </form>
-                          </div>
-                        ) : (
-                          <img
-                            src={`${MEDIA_URL}/${navbar.logo.file_path}`}
-                            alt={navbar.logo.file_name}
-                            style={{ maxWidth: "150px" }}
-                          />
-                        )}{" "}
-                      </div>
+                            </div>
+                          </form>
+                        </div>
+                      ) : (
+                        <img
+                          src={`${MEDIA_URL}/${navbar.logo.file_path}`}
+                          alt={navbar.logo.file_name}
+                          style={{ maxWidth: "150px" }}
+                        />
+                      )}{" "}
+                    </div>
 
-                      {/* 2nd Column: Menu Items or Selection Dropdown */}
-                      <div
-                        className="menuColumn"
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        {editMode && editedNavbar?.id === navbar.id ? (
-                          <div className="editModeForm">
-                            <form>
-                              <div
+                    {/* 2nd Column: Menu Items or Selection Dropdown */}
+                    <div
+                      className="menuColumn"
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      {editMode && editedNavbar?.id === navbar.id ? (
+                        <div className="editModeForm">
+                          <form>
+                            <div
+                              style={{
+                                display: "flex",
+                                gap: "1em",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <label htmlFor="menuItems">Menu:</label>
+                              <Select
+                                showSearch
+                                allowClear
+                                style={{ width: "100%" }}
+                                placeholder="Select a menu"
+                                onChange={(selectedMenuId) =>
+                                  setFormData({
+                                    ...formData,
+                                    menu_id: selectedMenuId,
+                                  })
+                                }
+                                value={formData.menu_id}
+                              >
+                                {menus?.map((menu) => (
+                                  <Option key={menu.id} value={menu.id}>
+                                    {menu.name}{" "}
+                                  </Option>
+                                ))}{" "}
+                              </Select>
+                            </div>
+                          </form>
+                        </div>
+                      ) : (
+                        <div
+                          className="menu"
+                          style={{
+                            display: "flex",
+                            gap: "1em",
+                            justifyContent: "center",
+                          }}
+                        >
+                          {/* show menu items if more than 3 items, put dropdown */}
+                          {navbar.menu.menu_items.length > 4 ? (
+                            <>
+                              <Button
+                                icon={<MenuOutlined />}
                                 style={{
+                                  backgroundColor: "var(--themes)",
+                                  borderColor: "var(--themes)",
+                                  color: "white",
+                                  borderRadius: "10px",
+                                  fontSize: "1.2em",
+                                  padding: "1em 3em",
                                   display: "flex",
-                                  gap: "1em",
                                   justifyContent: "center",
                                   alignItems: "center",
                                 }}
-                              >
-                                <label htmlFor="menuItems">Menu:</label>
-                                <Select
-                                  showSearch
-                                  allowClear
-                                  style={{ width: "100%" }}
-                                  placeholder="Select a menu"
-                                  onChange={(selectedMenuId) =>
-                                    setFormData({
-                                      ...formData,
-                                      menu_id: selectedMenuId,
-                                    })
-                                  }
-                                  value={formData.menu_id}
-                                >
-                                  {menus?.map((menu) => (
-                                    <Option key={menu.id} value={menu.id}>
-                                      {menu.name}{" "}
-                                    </Option>
-                                  ))}{" "}
-                                </Select>
-                              </div>
-                            </form>
-                          </div>
-                        ) : (
-                          <div
-                            className="menu"
-                            style={{
-                              display: "flex",
-                              gap: "1em",
-                              justifyContent: "center",
-                            }}
-                          >
-                            {/* show menu items if more than 3 items, put dropdown */}
-                            {navbar.menu.menu_items.length > 4 ? (
-                              <>
-                                <Button
-                                  icon={<MenuOutlined />}
+                                onClick={() => {
+                                  setUnfolded((prevState) => ({
+                                    ...prevState,
+                                    [navbar.id]: !prevState[navbar.id],
+                                  }));
+                                }}
+                              />
+                              {unfolded[navbar.id] && (
+                                <div
                                   style={{
+                                    position: "absolute",
                                     backgroundColor: "var(--themes)",
-                                    borderColor: "var(--themes)",
                                     color: "white",
                                     borderRadius: "10px",
                                     fontSize: "1.2em",
                                     padding: "1em 3em",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
+                                    zIndex: 1,
+                                    marginTop: "3em",
                                   }}
-                                  onClick={() => {
-                                    setUnfolded((prevState) => ({
-                                      ...prevState,
-                                      [navbar.id]: !prevState[navbar.id],
-                                    }));
-                                  }}
-                                />
-                                {unfolded[navbar.id] && (
+                                >
+                                  {/* arrow triangle on top */}
                                   <div
                                     style={{
                                       position: "absolute",
-                                      backgroundColor: "var(--themes)",
-                                      color: "white",
-                                      borderRadius: "10px",
-                                      fontSize: "1.2em",
-                                      padding: "1em 3em",
-                                      zIndex: 1,
-                                      marginTop: "3em",
+                                      top: "-1em",
+                                      left: "5.5em",
+                                      width: 0,
+                                      height: 0,
+                                      borderLeft: "1em solid transparent",
+                                      borderRight: "1em solid transparent",
+                                      borderBottom: "1em solid var(--themes)",
                                     }}
-                                  >
-                                    {/* arrow triangle on top */}
+                                  />
+
+                                  {navbar.menu.menu_items?.map((menuItem) => (
                                     <div
+                                      key={menuItem.id}
                                       style={{
-                                        position: "absolute",
-                                        top: "-1em",
-                                        left: "5.5em",
-                                        width: 0,
-                                        height: 0,
-                                        borderLeft: "1em solid transparent",
-                                        borderRight: "1em solid transparent",
-                                        borderBottom: "1em solid var(--themes)",
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        borderBottom: "1px solid white",
+                                        padding: "1em 0",
                                       }}
-                                    />
-
-                                    {navbar.menu.menu_items?.map((menuItem) => (
-                                      <div
-                                        key={menuItem.id}
-                                        style={{
-                                          display: "flex",
-                                          justifyContent: "center",
-                                          alignItems: "center",
-                                          borderBottom: "1px solid white",
-                                          padding: "1em 0",
-                                        }}
-                                      >
-                                        <p>{menuItem.title}</p>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-                              </>
-                            ) : (
-                              navbar.menu.menu_items?.map((menuItem) => (
-                                <div key={menuItem.id}>
-                                  <p>{menuItem.title}</p>
+                                    >
+                                      <p>{menuItem.title}</p>
+                                    </div>
+                                  ))}
                                 </div>
-                              ))
-                            )}
-                          </div>
-                        )}{" "}
-                      </div>
+                              )}
+                            </>
+                          ) : (
+                            navbar.menu.menu_items?.map((menuItem) => (
+                              <div key={menuItem.id}>
+                                <p>{menuItem.title}</p>
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      )}{" "}
+                    </div>
 
-                      {/* 3rd Column: Action Buttons */}
-                      <div
-                        className="actionColumn"
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        {editMode && editedNavbar?.id === navbar.id ? (
-                          <Button
-                            type="primary"
-                            icon={<EditOutlined />}
-                            onClick={() => handleUpdateNavbar(navbar)}
-                            style={{
-                              marginRight: "1em",
-                              backgroundColor: "var(--theme)",
-                            }}
-                          >
-                            Update
+                    {/* 3rd Column: Action Buttons */}
+                    <div
+                      className="actionColumn"
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      {editMode && editedNavbar?.id === navbar.id ? (
+                        <Button
+                          type="primary"
+                          icon={<EditOutlined />}
+                          onClick={() => handleUpdateNavbar(navbar)}
+                          style={{
+                            marginRight: "1em",
+                            backgroundColor: "var(--theme)",
+                          }}
+                        >
+                          Update
+                        </Button>
+                      ) : (
+                        <Button
+                          type="primary"
+                          icon={<EditOutlined />}
+                          onClick={() => handleEditClick(navbar)}
+                          style={{
+                            marginRight: "1em",
+                            backgroundColor: "var(--theme)",
+                          }}
+                        >
+                          Edit
+                        </Button>
+                      )}
+                      {editMode && editedNavbar?.id === navbar.id ? (
+                        <Button
+                          type="primary"
+                          icon={<CloseCircleOutlined />}
+                          onClick={() => handleCancelEdit()}
+                          danger
+                        >
+                          Cancel
+                        </Button>
+                      ) : (
+                        <Popconfirm
+                          title="Are you sure you want to delete this navbar?"
+                          onConfirm={() => handleDeleteNavbar(navbar.id)}
+                          okText="Yes"
+                          cancelText="No"
+                        >
+                          <Button danger icon={<DeleteOutlined />}>
+                            Delete
                           </Button>
-                        ) : (
-                          <Button
-                            type="primary"
-                            icon={<EditOutlined />}
-                            onClick={() => handleEditClick(navbar)}
-                            style={{
-                              marginRight: "1em",
-                              backgroundColor: "var(--theme)",
-                            }}
-                          >
-                            Edit
-                          </Button>
-                        )}
-                        {editMode && editedNavbar?.id === navbar.id ? (
-                          <Button
-                            type="primary"
-                            icon={<CloseCircleOutlined />}
-                            onClick={() => handleCancelEdit()}
-                            danger
-                          >
-                            Cancel
-                          </Button>
-                        ) : (
-                          <Popconfirm
-                            title="Are you sure you want to delete this navbar?"
-                            onConfirm={() => handleDeleteNavbar(navbar.id)}
-                            okText="Yes"
-                            cancelText="No"
-                          >
-                            <Button danger icon={<DeleteOutlined />}>
-                              Delete
-                            </Button>
-                          </Popconfirm>
-                        )}{" "}
-                      </div>
+                        </Popconfirm>
+                      )}{" "}
                     </div>
                   </div>
-                ))}
-              </>
-            )}
-          </div>
+                </div>
+              ))}
+            </>
+          )}
         </div>
       </div>
 

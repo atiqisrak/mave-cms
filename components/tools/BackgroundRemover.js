@@ -70,8 +70,8 @@ const BackgroundRemover = () => {
   };
 
   return (
-    <div className="ViewContainer">
-      <div className="ViewContentContainer">
+    <div className="mavecontainer">
+      <div>
         <Upload.Dragger
           name="image"
           accept="image/*"

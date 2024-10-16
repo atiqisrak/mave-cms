@@ -17,7 +17,7 @@ import { HomeOutlined } from "@ant-design/icons";
 const Documentation = () => {
   const { Content } = Layout;
   return (
-    <div className="ViewContainer ViewContentContainer">
+    <div className="mavecontainer">
       <Layout
         style={{
           padding: "0 24px 24px",

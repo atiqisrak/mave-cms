@@ -29,7 +29,7 @@ export default function SingleTemplate() {
 
   if (!product) {
     return (
-      <div className="ViewContainer">
+      <div className="mavecontainer">
         <Spin size="large" />
       </div>
     );
