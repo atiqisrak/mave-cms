@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 export default function DIYCMS() {
   const router = useRouter();
   return (
-    <div className="ViewContentContainer">
+    <div className="mavecontainer">
       <center>
         <h1>Welcome to the Mave DIY CMS</h1>
       </center>

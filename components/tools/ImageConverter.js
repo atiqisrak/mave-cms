@@ -141,7 +141,7 @@ const ImageConverter = () => {
   };
 
   return (
-    <div className="ViewContainer ViewContentContainer">
+    <div className="mavecontainer">
       <h1>Image Converter</h1>
       <Upload.Dragger
         showUploadList={false}

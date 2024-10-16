@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 export default function LetsDoIt() {
   const router = useRouter();
   return (
-    <div className="ViewContentContainer">
+    <div className="mavecontainer">
       <Breadcrumb
         style={{
           marginBottom: "1em",

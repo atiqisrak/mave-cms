@@ -22,7 +22,7 @@ export default function Roles() {
     },
   ];
   return (
-    <div className="ViewContainer">
+    <div className="mavecontainer">
       <div
         style={{
           display: "flex",
@@ -33,7 +33,7 @@ export default function Roles() {
         <Breadcrumb
           style={{ margin: "16px 0", fontWeight: "600" }}
           separator=">"
-          className="ViewContainer"
+          className="mavecontainer"
           items={[
             {
               title: (

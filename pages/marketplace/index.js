@@ -39,7 +39,7 @@ export default function marketplace() {
         }}
       />
       <div
-        className="ViewContainer"
+        className="mavecontainer"
         style={{
           width: "80%",
           maxWidth: "1500px",

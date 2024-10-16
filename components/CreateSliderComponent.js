@@ -88,7 +88,7 @@ const CreateSliderComponent = ({
   };
   return (
     <div className="login-page">
-      <div className="ViewContiner  ViewContentContainer media-area login-page-section">
+      <div className="mavecontainer media-area login-page-section">
         <div className="ViewContentContiner">
           <h1 style={{ textAlign: "center" }}>Create Slider</h1>
           <hr style={{ marginBottom: "1rem", marginTop: ".5rem" }} />

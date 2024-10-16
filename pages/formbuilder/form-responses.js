@@ -47,7 +47,7 @@ const FormResponses = () => {
   loading && responses.length === 0 && <Spin />;
 
   return (
-    <div className="ViewContainer ViewContentContainer">
+    <div className="mavecontainer">
       <div
         style={{
           display: "flex",

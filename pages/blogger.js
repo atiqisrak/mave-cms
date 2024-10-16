@@ -7,7 +7,7 @@ function Blogger() {
     setIsBrowser(true);
   }, []);
 
-  return <div className="ViewContainer">{isBrowser && <h1>Welcome</h1>}</div>;
+  return <div className="mavecontainer">{isBrowser && <h1>Welcome</h1>}</div>;
 }
 
 export default Blogger;

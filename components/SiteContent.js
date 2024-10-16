@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { Image, Layout } from "antd";
 import { useRouter } from "next/router";
-import { useAuth } from "../src/context/AuthContext";
 import NavItems from "./ui/NavItems";
 import SideMenuItems from "./ui/SideMenuItems";
 import Loader from "./Loader";
+import { useAuth } from "../src/context/AuthContext";
 
 const { Sider, Content, Header } = Layout;
 
@@ -69,16 +69,7 @@ const SiteContent = ({ children }) => {
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <Header
-        style={{
-          position: "fixed",
-          width: "100%",
-          zIndex: 1000,
-          padding: 0,
-          backgroundColor: theme === "dark" ? "#001529" : "#ffffff",
-          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-        }}
-      >
+      <Header className="fixed z-50 w-full p-0 bg-white shadow-md">
         <NavItems
           user={user}
           token={token}
@@ -87,18 +78,11 @@ const SiteContent = ({ children }) => {
           setTheme={setTheme}
         />
       </Header>
-      <Layout style={{ marginTop: "64px", padding: 0 }}>
+      <Layout className="mt-16">
         <div
-          className="collapse-button"
-          style={{
-            position: "fixed",
-            top: 90,
-            left: collapsed ? 30 : 226,
-            cursor: "pointer",
-            color: "#fff",
-            zIndex: 1200,
-            transition: "left 0.5s",
-          }}
+          className={`collapse-button fixed z-50 cursor-pointer text-white ${
+            collapsed ? "left-0" : "left-64"
+          } transition-all duration-700 top-20`}
           onClick={() => handleCollapse(!collapsed)}
         >
           {collapsed ? (
@@ -106,23 +90,18 @@ const SiteContent = ({ children }) => {
               src="/icons/mave_icons/expand.svg"
               alt="Expand"
               preview={false}
-              style={{
-                height: "4vh",
-                marginLeft: "10px",
-                objectFit: "contain",
-              }}
+              className="ml-16 duration-700"
+              width={40}
+              height={40}
             />
           ) : (
             <Image
               src="/icons/mave_icons/collapse.svg"
               alt="Collapse"
               preview={false}
-              style={{
-                height: "4vh",
-                marginLeft: "10px",
-                objectFit: "contain",
-                zIndex: 1201,
-              }}
+              className="ml-4 duration-700"
+              width={40}
+              height={40}
             />
           )}
         </div>
@@ -160,9 +139,10 @@ const SiteContent = ({ children }) => {
           }}
         >
           <Content
+            className="bg-bggray"
             style={{
-              padding: "24px",
-              marginTop: 0,
+              paddingTop: "5em",
+              marginLeft: collapsed ? 0 : 120,
               transition: "all 0.3s",
             }}
           >

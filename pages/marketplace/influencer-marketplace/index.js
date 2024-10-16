@@ -45,7 +45,7 @@ export default function InfluencerMarketplace() {
         }}
       />
       <div
-        className="ViewContainer"
+        className="mavecontainer"
         style={{
           width: "80%",
           maxWidth: "1500px",

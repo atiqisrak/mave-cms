@@ -112,7 +112,7 @@ const DataPage = () => {
 
 export default function Blackbox() {
   return (
-    <div className="ViewContainer">
+    <div className="mavecontainer">
       <DataPage />
     </div>
   );

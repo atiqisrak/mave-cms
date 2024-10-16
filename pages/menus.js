@@ -283,7 +283,7 @@ const Menus = () => {
   const [filterMode, setFilterMode] = useState(false);
 
   return (
-    <div className="ViewContainer ViewContentContainer">
+    <div className="mavecontainer">
       <div
         className="TopbarContainer"
         style={{

@@ -31,7 +31,7 @@ export default function UserRegistrationPage() {
     },
   ];
   return (
-    <div className="ViewContainer ViewContentContainer">
+    <div className="mavecontainer">
       <UsersTopbar
         menuItems={menuItems}
         active={active}

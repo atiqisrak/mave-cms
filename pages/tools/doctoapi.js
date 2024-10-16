@@ -66,7 +66,7 @@ const DoctoAPI = () => {
   };
 
   return (
-    <div className="ViewContainer ViewContentContainer">
+    <div className="mavecontainer">
       <Head>
         <title>Doc to API</title>
       </Head>

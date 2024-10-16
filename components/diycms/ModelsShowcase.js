@@ -54,7 +54,7 @@ export default function ModelsShowcase() {
 
   return (
     <div
-      className="ViewContentContainer"
+      className="mavecontainer"
       style={{
         backgroundColor: "white",
         padding: "1em",

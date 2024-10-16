@@ -138,319 +138,317 @@ const Gases = () => {
 
   return (
     <>
-      <div className="ViewContainer">
-        <div className="ViewContentContainer">
-          <div
-            className="PageHeader"
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <h1>Gases</h1>
-            {createMode ? (
-              <Button
-                danger
-                style={{
-                  borderRadius: "10px",
-                  fontSize: "1.2em",
-                  marginRight: "1em",
-                  // paddingBottom: "1.8em",
-                }}
-                icon={<CloseCircleFilled />}
-                onClick={() => setCreateMode(false)}
-              >
-                Cancel Create
-              </Button>
-            ) : (
+      <div className="mavecontainer">
+        <div
+          className="PageHeader"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <h1>Gases</h1>
+          {createMode ? (
+            <Button
+              danger
+              style={{
+                borderRadius: "10px",
+                fontSize: "1.2em",
+                marginRight: "1em",
+                // paddingBottom: "1.8em",
+              }}
+              icon={<CloseCircleFilled />}
+              onClick={() => setCreateMode(false)}
+            >
+              Cancel Create
+            </Button>
+          ) : (
+            <Button
+              type="primary"
+              style={{
+                backgroundColor: "var(--theme)",
+                borderColor: "var(--theme)",
+                color: "white",
+                borderRadius: "10px",
+                fontSize: "1.2em",
+                marginRight: "1em",
+                // paddingBottom: "1.8em",
+              }}
+              icon={<CheckCircleFilled />}
+              onClick={() => setCreateMode(true)}
+            >
+              Create New
+            </Button>
+          )}
+        </div>
+
+        {createMode ? (
+          <div className="PageBody">
+            <Modal
+              title="Create Gas"
+              open={createMode}
+              onOk={handleCreate}
+              onCancel={() => setCreateMode(false)}
+            >
               <Button
                 type="primary"
                 style={{
-                  backgroundColor: "var(--theme)",
-                  borderColor: "var(--theme)",
-                  color: "white",
-                  borderRadius: "10px",
-                  fontSize: "1.2em",
-                  marginRight: "1em",
-                  // paddingBottom: "1.8em",
+                  position: "initial",
                 }}
                 icon={<CheckCircleFilled />}
-                onClick={() => setCreateMode(true)}
+                onClick={handleOpenModal}
               >
-                Create New
+                <Image
+                  src={
+                    formData?.media_mave
+                      ? `${MEDIA_URL}/${formData?.media_mave?.file_path}`
+                      : "/images/Image_Placeholder.png"
+                  }
+                  style={{
+                    width: "200px",
+                    height: "200px",
+                    objectFit: "cover",
+                    borderRadius: 20,
+                  }}
+                  preview={false}
+                />
               </Button>
-            )}
-          </div>
 
-          {createMode ? (
-            <div className="PageBody">
-              <Modal
-                title="Create Gas"
-                open={createMode}
-                onOk={handleCreate}
-                onCancel={() => setCreateMode(false)}
+              <Input
+                placeholder="Gas Type"
+                value={formData?.type}
+                onChange={(e) =>
+                  setFormData({ ...formData, gas_type: e.target.value })
+                }
+              />
+              <Input
+                placeholder="Gas Weight"
+                value={formData?.weight}
+                onChange={(e) =>
+                  setFormData({ ...formData, gas_weight: e.target.value })
+                }
+              />
+              <Input
+                placeholder="Unit Price"
+                value={formData?.unit_price}
+                onChange={(e) =>
+                  setFormData({ ...formData, unit_price: e.target.value })
+                }
+              />
+            </Modal>
+          </div>
+        ) : null}
+
+        <div className="PageBody">
+          <Row
+            gutter={[16, 16]}
+            style={{
+              padding: "2em 0",
+            }}
+          >
+            <Col span={4}>
+              <h3>Gas Image</h3>
+            </Col>
+            <Col span={4}>
+              <h3>Gas Type</h3>
+            </Col>
+            <Col span={4}>
+              <h3>Gas Weight</h3>
+            </Col>
+            <Col span={4}>
+              <h3>Unit Price</h3>
+            </Col>
+            <Col span={8}>
+              <h3>Actions</h3>
+            </Col>
+          </Row>
+          {gases?.map((gas, index) =>
+            editMode && selectedPageId === gas.id ? (
+              <Row
+                gutter={[16, 16]}
+                key={index}
+                style={{
+                  padding: "2em 0",
+                }}
               >
-                <Button
-                  type="primary"
-                  style={{
-                    position: "initial",
-                  }}
-                  icon={<CheckCircleFilled />}
-                  onClick={handleOpenModal}
-                >
-                  <Image
-                    src={
-                      formData?.media_mave
-                        ? `${MEDIA_URL}/${formData?.media_mave?.file_path}`
-                        : "/images/Image_Placeholder.png"
-                    }
+                <Col span={4}>
+                  <Button
+                    type="primary"
                     style={{
-                      width: "200px",
-                      height: "200px",
-                      objectFit: "cover",
-                      borderRadius: 20,
+                      backgroundColor: "var(--theme)",
+                      borderColor: "var(--theme)",
+                      color: "white",
+                      borderRadius: "10px",
+                      fontSize: "1.2em",
+                      marginRight: "1em",
+                      // paddingBottom: "1.8em",
                     }}
-                    preview={false}
+                    icon={<CheckCircleFilled />}
+                    onClick={handleOpenModal}
+                  >
+                    Change Image
+                  </Button>
+                  <SingleMediaSelect
+                    visible={modalVisible}
+                    onCancel={handleModalCancel}
+                    onMediaSelect={handleMediaSelect}
+                    media={media}
                   />
-                </Button>
-
-                <Input
-                  placeholder="Gas Type"
-                  value={formData?.type}
-                  onChange={(e) =>
-                    setFormData({ ...formData, gas_type: e.target.value })
-                  }
-                />
-                <Input
-                  placeholder="Gas Weight"
-                  value={formData?.weight}
-                  onChange={(e) =>
-                    setFormData({ ...formData, gas_weight: e.target.value })
-                  }
-                />
-                <Input
-                  placeholder="Unit Price"
-                  value={formData?.unit_price}
-                  onChange={(e) =>
-                    setFormData({ ...formData, unit_price: e.target.value })
-                  }
-                />
-              </Modal>
-            </div>
-          ) : null}
-
-          <div className="PageBody">
-            <Row
-              gutter={[16, 16]}
-              style={{
-                padding: "2em 0",
-              }}
-            >
-              <Col span={4}>
-                <h3>Gas Image</h3>
-              </Col>
-              <Col span={4}>
-                <h3>Gas Type</h3>
-              </Col>
-              <Col span={4}>
-                <h3>Gas Weight</h3>
-              </Col>
-              <Col span={4}>
-                <h3>Unit Price</h3>
-              </Col>
-              <Col span={8}>
-                <h3>Actions</h3>
-              </Col>
-            </Row>
-            {gases?.map((gas, index) =>
-              editMode && selectedPageId === gas.id ? (
-                <Row
-                  gutter={[16, 16]}
-                  key={index}
+                </Col>
+                <Col span={4} className="flexed-center">
+                  <Input
+                    placeholder="Gas Type"
+                    value={formData?.type}
+                    onChange={(e) =>
+                      setFormData({ ...formData, gas_type: e.target.value })
+                    }
+                  />
+                </Col>
+                <Col span={4} className="flexed-center">
+                  <Input
+                    placeholder="Gas Weight"
+                    value={formData?.weight}
+                    onChange={(e) =>
+                      setFormData({ ...formData, gas_weight: e.target.value })
+                    }
+                  />
+                </Col>
+                <Col span={4} className="flexed-center">
+                  <Input
+                    placeholder="Unit Price"
+                    value={formData?.unit_price}
+                    onChange={(e) =>
+                      setFormData({ ...formData, unit_price: e.target.value })
+                    }
+                  />
+                </Col>
+                <Col
+                  span={8}
                   style={{
-                    padding: "2em 0",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  <Col span={4}>
-                    <Button
-                      type="primary"
-                      style={{
-                        backgroundColor: "var(--theme)",
-                        borderColor: "var(--theme)",
-                        color: "white",
-                        borderRadius: "10px",
-                        fontSize: "1.2em",
-                        marginRight: "1em",
-                        // paddingBottom: "1.8em",
-                      }}
-                      icon={<CheckCircleFilled />}
-                      onClick={handleOpenModal}
-                    >
-                      Change Image
-                    </Button>
-                    <SingleMediaSelect
-                      visible={modalVisible}
-                      onCancel={handleModalCancel}
-                      onMediaSelect={handleMediaSelect}
-                      media={media}
-                    />
-                  </Col>
-                  <Col span={4} className="flexed-center">
-                    <Input
-                      placeholder="Gas Type"
-                      value={formData?.type}
-                      onChange={(e) =>
-                        setFormData({ ...formData, gas_type: e.target.value })
-                      }
-                    />
-                  </Col>
-                  <Col span={4} className="flexed-center">
-                    <Input
-                      placeholder="Gas Weight"
-                      value={formData?.weight}
-                      onChange={(e) =>
-                        setFormData({ ...formData, gas_weight: e.target.value })
-                      }
-                    />
-                  </Col>
-                  <Col span={4} className="flexed-center">
-                    <Input
-                      placeholder="Unit Price"
-                      value={formData?.unit_price}
-                      onChange={(e) =>
-                        setFormData({ ...formData, unit_price: e.target.value })
-                      }
-                    />
-                  </Col>
-                  <Col
-                    span={8}
+                  <Button
+                    type="primary"
                     style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
+                      backgroundColor: "var(--theme)",
+                      borderColor: "var(--theme)",
+                      color: "white",
+                      borderRadius: "10px",
+                      fontSize: "1.2em",
+                      marginRight: "1em",
+                      // paddingBottom: "1.8em",
+                    }}
+                    icon={<CheckCircleFilled />}
+                    onClick={() => handleUpdate(gas.id)}
+                  >
+                    Update
+                  </Button>
+                  <Button
+                    danger
+                    style={{
+                      borderRadius: "10px",
+                      fontSize: "1.2em",
+                      marginRight: "1em",
+                      // paddingBottom: "1.8em",
+                    }}
+                    icon={<CloseCircleFilled />}
+                    onClick={() => {
+                      setEditMode(false);
+                      setSelectedPageId(null);
                     }}
                   >
-                    <Button
-                      type="primary"
+                    Cancel
+                  </Button>
+                </Col>
+              </Row>
+            ) : (
+              <Row
+                gutter={[16, 16]}
+                key={index}
+                style={{
+                  padding: "2em 0",
+                }}
+              >
+                <Col span={4}>
+                  {gas.media_mave && gas.media_mave.length > 0 ? (
+                    <Image
+                      src={`${MEDIA_URL}/${gas?.media_mave?.file_path}`}
                       style={{
-                        backgroundColor: "var(--theme)",
-                        borderColor: "var(--theme)",
-                        color: "white",
-                        borderRadius: "10px",
-                        fontSize: "1.2em",
-                        marginRight: "1em",
-                        // paddingBottom: "1.8em",
+                        width: "12vw",
+                        height: "10vw",
+                        objectFit: "cover",
+                        borderRadius: 20,
                       }}
-                      icon={<CheckCircleFilled />}
-                      onClick={() => handleUpdate(gas.id)}
-                    >
-                      Update
-                    </Button>
-                    <Button
-                      danger
+                      preview={false}
+                    />
+                  ) : (
+                    <img
+                      src="/images/Image_Placeholder.png"
                       style={{
-                        borderRadius: "10px",
-                        fontSize: "1.2em",
-                        marginRight: "1em",
-                        // paddingBottom: "1.8em",
+                        height: "100px",
+                        width: "100px",
+                        objectFit: "cover",
+                        borderRadius: 10,
                       }}
-                      icon={<CloseCircleFilled />}
-                      onClick={() => {
-                        setEditMode(false);
-                        setSelectedPageId(null);
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                  </Col>
-                </Row>
-              ) : (
-                <Row
-                  gutter={[16, 16]}
-                  key={index}
+                    />
+                  )}
+                </Col>
+                <Col span={4} className="flexed-center">
+                  <h3>{gas.type}</h3>
+                </Col>
+                <Col span={4} className="flexed-center">
+                  <h3>{gas.weight}</h3>
+                </Col>
+                <Col span={4} className="flexed-center">
+                  <h3>{gas.unit_price}</h3>
+                </Col>
+                <Col
+                  span={8}
                   style={{
-                    padding: "2em 0",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  <Col span={4}>
-                    {gas.media_mave && gas.media_mave.length > 0 ? (
-                      <Image
-                        src={`${MEDIA_URL}/${gas?.media_mave?.file_path}`}
-                        style={{
-                          width: "12vw",
-                          height: "10vw",
-                          objectFit: "cover",
-                          borderRadius: 20,
-                        }}
-                        preview={false}
-                      />
-                    ) : (
-                      <img
-                        src="/images/Image_Placeholder.png"
-                        style={{
-                          height: "100px",
-                          width: "100px",
-                          objectFit: "cover",
-                          borderRadius: 10,
-                        }}
-                      />
-                    )}
-                  </Col>
-                  <Col span={4} className="flexed-center">
-                    <h3>{gas.type}</h3>
-                  </Col>
-                  <Col span={4} className="flexed-center">
-                    <h3>{gas.weight}</h3>
-                  </Col>
-                  <Col span={4} className="flexed-center">
-                    <h3>{gas.unit_price}</h3>
-                  </Col>
-                  <Col
-                    span={8}
+                  <Button
+                    type="primary"
                     style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
+                      backgroundColor: "var(--theme)",
+                      borderColor: "var(--theme)",
+                      color: "white",
+                      borderRadius: "10px",
+                      fontSize: "1.2em",
+                      marginRight: "1em",
+                      // paddingBottom: "1.8em",
+                    }}
+                    icon={<EditOutlined />}
+                    onClick={() => {
+                      setEditMode(true);
+                      setSelectedPageId(gas.id);
+                      setFormData(gas);
                     }}
                   >
-                    <Button
-                      type="primary"
-                      style={{
-                        backgroundColor: "var(--theme)",
-                        borderColor: "var(--theme)",
-                        color: "white",
-                        borderRadius: "10px",
-                        fontSize: "1.2em",
-                        marginRight: "1em",
-                        // paddingBottom: "1.8em",
-                      }}
-                      icon={<EditOutlined />}
-                      onClick={() => {
-                        setEditMode(true);
-                        setSelectedPageId(gas.id);
-                        setFormData(gas);
-                      }}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      danger
-                      style={{
-                        borderRadius: "10px",
-                        fontSize: "1.2em",
-                        marginRight: "1em",
-                        // paddingBottom: "1.8em",
-                      }}
-                      icon={<DeleteFilled />}
-                      onClick={() => handleDelete(gas.id)}
-                    >
-                      Delete
-                    </Button>
-                  </Col>
-                </Row>
-              )
-            )}
-          </div>
+                    Edit
+                  </Button>
+                  <Button
+                    danger
+                    style={{
+                      borderRadius: "10px",
+                      fontSize: "1.2em",
+                      marginRight: "1em",
+                      // paddingBottom: "1.8em",
+                    }}
+                    icon={<DeleteFilled />}
+                    onClick={() => handleDelete(gas.id)}
+                  >
+                    Delete
+                  </Button>
+                </Col>
+              </Row>
+            )
+          )}
         </div>
       </div>
     </>

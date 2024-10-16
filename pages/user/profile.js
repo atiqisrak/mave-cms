@@ -144,7 +144,7 @@ const Profile = () => {
   const canModifyUsers = userData?.role_id === "1" || userData?.role_id === "2";
 
   return (
-    <div className="ViewContainer ViewContentContainer">
+    <div className="mavecontainer">
       <UserProfileHeader
         userData={userData}
         setUserData={setUserData}

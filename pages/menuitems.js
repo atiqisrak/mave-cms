@@ -251,16 +251,16 @@ const MenuItems = () => {
 
   return (
     <>
-      <div className="ViewContainer">
-        <div className="ViewContentContainer">
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "3fr 1fr",
-              alignItems: "center",
-            }}
-          >
-            <Breadcrumb
+      <div className="mavecontainer">
+        <div
+          className=""
+          style={{
+            display: "grid",
+            gridTemplateColumns: "3fr 1fr",
+            alignItems: "center",
+          }}
+        >
+          {/* <Breadcrumb
               style={{
                 fontSize: "1.2em",
                 marginBottom: "1em",
@@ -313,16 +313,27 @@ const MenuItems = () => {
                   },
                 },
               ]}
-            />
-            <div
-              className="buttonHolder"
+            /> */}
+          <div className="flex justify-start items-center gap-3">
+            <Image width={20} src="/icons/mave/menuitems.svg" preview={false} />
+            <h2
               style={{
-                display: "grid",
-                gridTemplateColumns: "1fr",
-                gap: "1em",
+                fontSize: "1.8em",
+                fontWeight: "semibold",
               }}
             >
-              <Button
+              Menu Items
+            </h2>
+          </div>
+          <div
+            className="buttonHolder"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr",
+              gap: "1em",
+            }}
+          >
+            {/* <Button
                 type="primary"
                 style={{
                   backgroundColor: "var(--themes)",
@@ -336,25 +347,25 @@ const MenuItems = () => {
                 icon={<ArrowLeftOutlined />}
               >
                 Show Menus
-              </Button>
+              </Button> */}
 
-              <Button
-                type="primary"
-                style={{
-                  backgroundColor: "var(--themes)",
-                  borderColor: "var(--themes)",
-                  color: "white",
-                  borderRadius: "10px",
-                  fontSize: "1.2em",
-                  // paddingBottom: "1.8em",
-                }}
-                onClick={openAddMenuItemCard}
-                icon={<PlusCircleOutlined />}
-              >
-                Add New Menu Item
-              </Button>
+            <Button
+              type="primary"
+              style={{
+                backgroundColor: "var(--themes)",
+                borderColor: "var(--themes)",
+                color: "white",
+                borderRadius: "10px",
+                fontSize: "1.2em",
+                // paddingBottom: "1.8em",
+              }}
+              onClick={openAddMenuItemCard}
+              icon={<PlusCircleOutlined />}
+            >
+              Add New Menu Item
+            </Button>
 
-              <Button
+            {/* <Button
                 type="primary"
                 style={{
                   backgroundColor: "var(--theme)",
@@ -372,18 +383,18 @@ const MenuItems = () => {
                 }}
               >
                 Copy API Endpoint
-              </Button>
-            </div>
+              </Button> */}
           </div>
-          <Row
-            style={{
-              padding: "2em 3em",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            {/* <Col
+        </div>
+        <Row
+          style={{
+            padding: "2em 3em",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {/* <Col
               span={8}
               style={{
                 display: "flex",
@@ -415,361 +426,358 @@ const MenuItems = () => {
                 Clear
               </Button>
             </Col> */}
-            <Col
-              // span={8}
+          <Col
+            // span={8}
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+          >
+            <h3 style={{ fontSize: "1.4em" }}>Sort by:</h3>
+            {/* Toggle Switch Button */}
+            <Switch
+              size="large"
+              checkedChildren="Last"
+              unCheckedChildren="First"
+              defaultChecked
+              onChange={(checked) =>
+                checked ? setSortType("asc") : setSortType("desc")
+              }
               style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
+                marginLeft: "1em",
+              }}
+            />
+          </Col>
+        </Row>
+        <Row style={{ padding: "2em 3em" }}>
+          <Col span={2}>
+            <h3 style={{ fontSize: "1.4em" }}>Item ID</h3>
+          </Col>
+          <Col span={4}>
+            <h3 style={{ fontSize: "1.4em" }}>Item Name</h3>
+          </Col>
+          <Col span={4}>
+            <h3 style={{ fontSize: "1.4em" }}>আইটেম নাম</h3>
+          </Col>
+          <Col span={4}>
+            <h3 style={{ fontSize: "1.4em" }}>Parent Menu</h3>
+          </Col>
+          <Col span={4}>
+            <h3 style={{ fontSize: "1.4em" }}>Item Link</h3>
+          </Col>
+          <Col span={6}>
+            <h3
+              style={{
+                fontSize: "1.4em",
+                paddingLeft: "2em",
               }}
             >
-              <h3 style={{ fontSize: "1.4em" }}>Sort by:</h3>
-              {/* Toggle Switch Button */}
-              <Switch
-                size="large"
-                checkedChildren="Last"
-                unCheckedChildren="First"
-                defaultChecked
-                onChange={(checked) =>
-                  checked ? setSortType("asc") : setSortType("desc")
-                }
+              Actions
+            </h3>
+          </Col>
+        </Row>
+        {isAddMenuItemOpen ? (
+          <div>
+            <Row
+              span={24}
+              style={{
+                padding: "2em 3em",
+                alignItems: "center",
+                gap: "1em",
+              }}
+            >
+              <Col span={1}>
+                <h3 style={{ fontSize: "1.4em" }}>New</h3>
+              </Col>
+              <Col span={4} style={{ marginRight: "0em" }}>
+                <Input
+                  placeholder="Menu Item Title"
+                  value={newMenuItemTitle}
+                  onChange={(e) => setNewMenuItemTitle(e.target.value)}
+                  style={{
+                    // width: "16vw",
+                    height: "2.8em",
+                    borderRadius: "10px",
+                    fontSize: "1.2em",
+                    padding: "0 1em",
+                  }}
+                />
+              </Col>
+              <Col span={4} style={{ marginRight: "0em" }}>
+                <Input
+                  placeholder="মেনু আইটেম শিরোনাম"
+                  value={newMenuItemTitleBn}
+                  onChange={(e) => setNewMenuItemTitleBn(e.target.value)}
+                  style={{
+                    // width: "16vw",
+                    height: "2.8em",
+                    borderRadius: "10px",
+                    fontSize: "1.2em",
+                    padding: "0 1em",
+                  }}
+                />
+              </Col>
+              <Col span={4} style={{ marginRight: "0em" }}>
+                <Select
+                  showSearch
+                  style={{ width: "100%" }}
+                  placeholder="Select a Parent Menu"
+                  optionFilterProp="children"
+                  onChange={(value) => setNewParentId(value)}
+                  filterOption={(input, option) =>
+                    option.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  <Select.Option value={null}>No Parent</Select.Option>
+                  {menuItems?.map((menuItem) => (
+                    <Select.Option value={menuItem.id}>
+                      {menuItem.title}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Col>
+              <Col
+                span={4}
                 style={{
-                  marginLeft: "1em",
-                }}
-              />
-            </Col>
-          </Row>
-          <Row style={{ padding: "2em 3em" }}>
-            <Col span={2}>
-              <h3 style={{ fontSize: "1.4em" }}>Item ID</h3>
-            </Col>
-            <Col span={4}>
-              <h3 style={{ fontSize: "1.4em" }}>Item Name</h3>
-            </Col>
-            <Col span={4}>
-              <h3 style={{ fontSize: "1.4em" }}>আইটেম নাম</h3>
-            </Col>
-            <Col span={4}>
-              <h3 style={{ fontSize: "1.4em" }}>Parent Menu</h3>
-            </Col>
-            <Col span={4}>
-              <h3 style={{ fontSize: "1.4em" }}>Item Link</h3>
-            </Col>
-            <Col span={6}>
-              <h3
-                style={{
-                  fontSize: "1.4em",
-                  paddingLeft: "2em",
-                }}
-              >
-                Actions
-              </h3>
-            </Col>
-          </Row>
-          {isAddMenuItemOpen ? (
-            <div>
-              <Row
-                span={24}
-                style={{
-                  padding: "2em 3em",
-                  alignItems: "center",
+                  marginLeft: "0em",
+                  display: "flex",
+                  flexDirection: "column",
                   gap: "1em",
                 }}
               >
-                <Col span={1}>
-                  <h3 style={{ fontSize: "1.4em" }}>New</h3>
-                </Col>
-                <Col span={4} style={{ marginRight: "0em" }}>
-                  <Input
-                    placeholder="Menu Item Title"
-                    value={newMenuItemTitle}
-                    onChange={(e) => setNewMenuItemTitle(e.target.value)}
-                    style={{
-                      // width: "16vw",
-                      height: "2.8em",
-                      borderRadius: "10px",
-                      fontSize: "1.2em",
-                      padding: "0 1em",
-                    }}
-                  />
-                </Col>
-                <Col span={4} style={{ marginRight: "0em" }}>
-                  <Input
-                    placeholder="মেনু আইটেম শিরোনাম"
-                    value={newMenuItemTitleBn}
-                    onChange={(e) => setNewMenuItemTitleBn(e.target.value)}
-                    style={{
-                      // width: "16vw",
-                      height: "2.8em",
-                      borderRadius: "10px",
-                      fontSize: "1.2em",
-                      padding: "0 1em",
-                    }}
-                  />
-                </Col>
-                <Col span={4} style={{ marginRight: "0em" }}>
-                  <Select
-                    showSearch
-                    style={{ width: "100%" }}
-                    placeholder="Select a Parent Menu"
-                    optionFilterProp="children"
-                    onChange={(value) => setNewParentId(value)}
-                    filterOption={(input, option) =>
-                      option.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
-                  >
-                    <Select.Option value={null}>No Parent</Select.Option>
-                    {menuItems?.map((menuItem) => (
-                      <Select.Option value={menuItem.id}>
-                        {menuItem.title}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Col>
-                <Col
-                  span={4}
+                <br />
+                <Radio.Group
+                  onChange={(e) => setLinkType(e.target.value)}
+                  value={linkType}
                   style={{
-                    marginLeft: "0em",
                     display: "flex",
+                    justifyContent: "center",
                     flexDirection: "column",
-                    gap: "1em",
                   }}
                 >
-                  <br />
-                  <Radio.Group
-                    onChange={(e) => setLinkType(e.target.value)}
-                    value={linkType}
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      flexDirection: "column",
-                    }}
-                  >
-                    <Radio value="independent">Independent</Radio>
-                    <Radio value="page">Page</Radio>
-                    {/* <Radio value="sisterConcern">Sister Concern</Radio> */}
-                  </Radio.Group>
+                  <Radio value="independent">Independent</Radio>
+                  <Radio value="page">Page</Radio>
+                  {/* <Radio value="sisterConcern">Sister Concern</Radio> */}
+                </Radio.Group>
 
-                  {linkType === "page" ? (
-                    <>
-                      <Select
-                        showSearch
-                        style={{ width: "100%" }}
-                        placeholder="Select a page"
-                        optionFilterProp="children"
-                        onChange={(value) => setNewMenuItemLink(value)}
-                        filterOption={(input, option) =>
-                          option.children
-                            .toLowerCase()
-                            .indexOf(input.toLowerCase()) >= 0
-                        }
-                      >
-                        {pages?.map((page) => (
-                          <Select.Option
-                            value={`${page.slug}?pageId=${
-                              page?.id
-                            }&pageName=${page?.page_name_en.replace(
-                              /\s/g,
-                              "-"
-                            )}`}
-                          >
-                            {page.page_name_en}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    </>
-                  ) : (
-                    // linkType === "sisterConcern" ? (
-                    //   <Select
-                    //     showSearch
-                    //     style={{ width: "100%" }}
-                    //     placeholder="Select a Sister Concern"
-                    //     optionFilterProp="children"
-                    //     onChange={(value) => setNewMenuItemLink(value)}
-                    //     filterOption={(input, option) =>
-                    //       option.children
-                    //         .toLowerCase()
-                    //         .indexOf(input.toLowerCase()) >= 0
-                    //     }
-                    //   >
-                    //     {pages?.map((page) => {
-                    //       if (page.page_name_en?.includes("Ltd")) {
-                    //         return (
-                    //           <Select.Option
-                    //             value={`sister-concerns?pageId=${page.id}`}
-                    //           >
-                    //             {page.page_name_en}
-                    //           </Select.Option>
-                    //         );
-                    //       }
-                    //     })}
-                    //   </Select>
-                    // ) :
-                    <Input
-                      placeholder="Menu Item Link"
-                      value={newMenuItemLink}
-                      onChange={(e) => setNewMenuItemLink(e.target.value)}
-                      style={{
-                        // width: "16vw",
-                        height: "2.8em",
-                        borderRadius: "10px",
-                        fontSize: "1.2em",
-                        padding: "0 1em",
-                      }}
-                    />
-                  )}
-                </Col>
-                <Col span={5}>
-                  <Button
-                    type="primary"
-                    onClick={handleAddMenuItem}
+                {linkType === "page" ? (
+                  <>
+                    <Select
+                      showSearch
+                      style={{ width: "100%" }}
+                      placeholder="Select a page"
+                      optionFilterProp="children"
+                      onChange={(value) => setNewMenuItemLink(value)}
+                      filterOption={(input, option) =>
+                        option.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                    >
+                      {pages?.map((page) => (
+                        <Select.Option
+                          value={`${page.slug}?pageId=${
+                            page?.id
+                          }&pageName=${page?.page_name_en.replace(/\s/g, "-")}`}
+                        >
+                          {page.page_name_en}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  </>
+                ) : (
+                  // linkType === "sisterConcern" ? (
+                  //   <Select
+                  //     showSearch
+                  //     style={{ width: "100%" }}
+                  //     placeholder="Select a Sister Concern"
+                  //     optionFilterProp="children"
+                  //     onChange={(value) => setNewMenuItemLink(value)}
+                  //     filterOption={(input, option) =>
+                  //       option.children
+                  //         .toLowerCase()
+                  //         .indexOf(input.toLowerCase()) >= 0
+                  //     }
+                  //   >
+                  //     {pages?.map((page) => {
+                  //       if (page.page_name_en?.includes("Ltd")) {
+                  //         return (
+                  //           <Select.Option
+                  //             value={`sister-concerns?pageId=${page.id}`}
+                  //           >
+                  //             {page.page_name_en}
+                  //           </Select.Option>
+                  //         );
+                  //       }
+                  //     })}
+                  //   </Select>
+                  // ) :
+                  <Input
+                    placeholder="Menu Item Link"
+                    value={newMenuItemLink}
+                    onChange={(e) => setNewMenuItemLink(e.target.value)}
                     style={{
-                      marginRight: "1em",
-                      backgroundColor: "var(--success)",
-                      borderColor: "var(--success)",
-                      color: "white",
+                      // width: "16vw",
+                      height: "2.8em",
                       borderRadius: "10px",
                       fontSize: "1.2em",
-                      // paddingBottom: "1.8em",
+                      padding: "0 1em",
                     }}
-                    icon={<PlusCircleOutlined />}
-                  >
-                    Add
-                  </Button>
-                  <Button
-                    onClick={closeAddMenuItemCard}
+                  />
+                )}
+              </Col>
+              <Col span={5}>
+                <Button
+                  type="primary"
+                  onClick={handleAddMenuItem}
+                  style={{
+                    marginRight: "1em",
+                    backgroundColor: "var(--success)",
+                    borderColor: "var(--success)",
+                    color: "white",
+                    borderRadius: "10px",
+                    fontSize: "1.2em",
+                    // paddingBottom: "1.8em",
+                  }}
+                  icon={<PlusCircleOutlined />}
+                >
+                  Add
+                </Button>
+                <Button
+                  onClick={closeAddMenuItemCard}
+                  style={{
+                    backgroundColor: "var(--themes)",
+                    borderColor: "var(--themes)",
+                    color: "white",
+                    borderRadius: "10px",
+                    fontSize: "1.2em",
+                    // paddingBottom: "1.8em",
+                  }}
+                  icon={<CloseCircleOutlined />}
+                >
+                  Cancel
+                </Button>
+              </Col>
+            </Row>
+          </div>
+        ) : (
+          ""
+        )}
+        {menuItems.length !== 0 ? (
+          menuItems?.map((menuItem) => (
+            <Row
+              style={{
+                padding: "2em 3em",
+                borderBottom: "1px solid #ccc",
+              }}
+            >
+              <Col span={2}>
+                <p style={{ fontSize: "1.2em" }}>{menuItem.id} </p>
+              </Col>
+              <Col span={4}>
+                {editingItemId === menuItem?.id ? (
+                  <Input
+                    allowClear
+                    showSearch
+                    name="title"
+                    value={editedTitleEn}
+                    onChange={(e) => setEditedTitleEn(e.target.value)}
+                  />
+                ) : (
+                  <p
                     style={{
-                      backgroundColor: "var(--themes)",
-                      borderColor: "var(--themes)",
-                      color: "white",
-                      borderRadius: "10px",
                       fontSize: "1.2em",
-                      // paddingBottom: "1.8em",
+                      textWrap: "wrap",
+                      wordWrap: "break-word",
+                      paddingRight: "1em",
                     }}
-                    icon={<CloseCircleOutlined />}
                   >
-                    Cancel
-                  </Button>
-                </Col>
-              </Row>
-            </div>
-          ) : (
-            ""
-          )}
-          {menuItems.length !== 0 ? (
-            menuItems?.map((menuItem) => (
-              <Row
+                    {menuItem.title}{" "}
+                  </p>
+                )}{" "}
+              </Col>
+              {/* Title BN */}
+              <Col span={4}>
+                {editingItemId === menuItem.id ? (
+                  <Input
+                    allowClear
+                    showSearch
+                    name="title_bn"
+                    value={editedTitleBn}
+                    onChange={(e) => setEditedTitleBn(e.target.value)}
+                  />
+                ) : (
+                  <p
+                    style={{
+                      fontSize: "1.2em",
+
+                      textWrap: "wrap",
+                      wordWrap: "break-word",
+                      paddingRight: "1em",
+                    }}
+                  >
+                    {menuItem?.title_bn ? menuItem?.title_bn : "N/A"}{" "}
+                  </p>
+                )}{" "}
+              </Col>
+              <Col span={4}>
+                {editingItemId === menuItem.id ? (
+                  <>
+                    <Select
+                      showSearch
+                      style={{ width: "100%" }}
+                      placeholder="Select a Parent Menu"
+                      optionFilterProp="children"
+                      onChange={(value) => setEditedParentId(value)}
+                      filterOption={(input, option) =>
+                        option.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                    >
+                      <Select.Option value={null}>No Parent</Select.Option>
+                      {menuItems?.map(
+                        (menuItem) =>
+                          menuItem.id !== editingItemId && (
+                            <Select.Option value={menuItem.id}>
+                              {menuItem.title}
+                            </Select.Option>
+                          )
+                      )}
+                    </Select>
+                  </>
+                ) : (
+                  <p
+                    style={{
+                      fontSize: "1.2em",
+                      textWrap: "wrap",
+                      wordWrap: "break-word",
+                      paddingRight: "1em",
+                    }}
+                  >
+                    {menuItem?.parent_id
+                      ? menuItems?.find(
+                          (item) => item.id === parseInt(menuItem?.parent_id)
+                        )?.title
+                      : "N/A"}
+                  </p>
+                )}{" "}
+              </Col>
+              <Col
+                span={4}
                 style={{
-                  padding: "2em 3em",
-                  borderBottom: "1px solid #ccc",
+                  marginLeft: "0em",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1em",
                 }}
               >
-                <Col span={2}>
-                  <p style={{ fontSize: "1.2em" }}>{menuItem.id} </p>
-                </Col>
-                <Col span={4}>
-                  {editingItemId === menuItem?.id ? (
-                    <Input
-                      allowClear
-                      showSearch
-                      name="title"
-                      value={editedTitleEn}
-                      onChange={(e) => setEditedTitleEn(e.target.value)}
-                    />
-                  ) : (
-                    <p
-                      style={{
-                        fontSize: "1.2em",
-                        textWrap: "wrap",
-                        wordWrap: "break-word",
-                        paddingRight: "1em",
-                      }}
-                    >
-                      {menuItem.title}{" "}
-                    </p>
-                  )}{" "}
-                </Col>
-                {/* Title BN */}
-                <Col span={4}>
-                  {editingItemId === menuItem.id ? (
-                    <Input
-                      allowClear
-                      showSearch
-                      name="title_bn"
-                      value={editedTitleBn}
-                      onChange={(e) => setEditedTitleBn(e.target.value)}
-                    />
-                  ) : (
-                    <p
-                      style={{
-                        fontSize: "1.2em",
-
-                        textWrap: "wrap",
-                        wordWrap: "break-word",
-                        paddingRight: "1em",
-                      }}
-                    >
-                      {menuItem?.title_bn ? menuItem?.title_bn : "N/A"}{" "}
-                    </p>
-                  )}{" "}
-                </Col>
-                <Col span={4}>
-                  {editingItemId === menuItem.id ? (
-                    <>
-                      <Select
-                        showSearch
-                        style={{ width: "100%" }}
-                        placeholder="Select a Parent Menu"
-                        optionFilterProp="children"
-                        onChange={(value) => setEditedParentId(value)}
-                        filterOption={(input, option) =>
-                          option.children
-                            .toLowerCase()
-                            .indexOf(input.toLowerCase()) >= 0
-                        }
-                      >
-                        <Select.Option value={null}>No Parent</Select.Option>
-                        {menuItems?.map(
-                          (menuItem) =>
-                            menuItem.id !== editingItemId && (
-                              <Select.Option value={menuItem.id}>
-                                {menuItem.title}
-                              </Select.Option>
-                            )
-                        )}
-                      </Select>
-                    </>
-                  ) : (
-                    <p
-                      style={{
-                        fontSize: "1.2em",
-                        textWrap: "wrap",
-                        wordWrap: "break-word",
-                        paddingRight: "1em",
-                      }}
-                    >
-                      {menuItem?.parent_id
-                        ? menuItems?.find(
-                            (item) => item.id === parseInt(menuItem?.parent_id)
-                          )?.title
-                        : "N/A"}
-                    </p>
-                  )}{" "}
-                </Col>
-                <Col
-                  span={4}
-                  style={{
-                    marginLeft: "0em",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "1em",
-                  }}
-                >
-                  {editingItemId === menuItem.id ? (
-                    <>
-                      {/* <h3 style={{ fontSize: "1.4em" }}>Parent Menu</h3>
+                {editingItemId === menuItem.id ? (
+                  <>
+                    {/* <h3 style={{ fontSize: "1.4em" }}>Parent Menu</h3>
                       <Select
                         showSearch
                         style={{ width: "100%" }}
@@ -789,205 +797,204 @@ const MenuItems = () => {
                           ))
                         }
                       </Select> */}
-                      <Radio.Group
-                        onChange={(e) => setLinkType(e.target.value)}
-                        value={linkType}
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          flexDirection: "column",
-                        }}
-                      >
-                        <Radio value="independent">Independent</Radio>
-                        <Radio value="page">Page</Radio>
-                        {/* <Radio value="sisterConcern">Sister Concern</Radio> */}
-                      </Radio.Group>
-                      {linkType === "page" ? (
-                        <>
-                          <Select
-                            showSearch
-                            style={{ width: "100%" }}
-                            placeholder="Select a page"
-                            optionFilterProp="children"
-                            onChange={(value) => setEditedLink("/" + value)}
-                            filterOption={(input, option) =>
-                              option.children
-                                .toLowerCase()
-                                .indexOf(input.toLowerCase()) >= 0
-                            }
-                          >
-                            {pages?.map((page) => (
-                              <Select.Option
-                                value={`${page.slug}?pageId=${
-                                  page?.id
-                                }&pageName=${page?.page_name_en.replace(
-                                  /\s/g,
-                                  "-"
-                                )}`}
-                              >
-                                {page.page_name_en}
-                              </Select.Option>
-                            ))}
-                          </Select>
-                        </>
-                      ) : (
-                        // :
-                        // linkType === "sisterConcern" ? (
-                        //   <Select
-                        //     showSearch
-                        //     style={{ width: "100%" }}
-                        //     placeholder="Select a Sister Concern"
-                        //     optionFilterProp="children"
-                        //     onChange={(value) => setEditedLink(value)}
-                        //     filterOption={(input, option) =>
-                        //       option.children
-                        //         .toLowerCase()
-                        //         .indexOf(input.toLowerCase()) >= 0
-                        //     }
-                        //   >
-                        //     {pages?.map((page) => {
-                        //       if (page.page_name_en?.includes("Ltd")) {
-                        //         return (
-                        //           <Select.Option
-                        //             value={`sister-concerns?pageId=${page.id}`}
-                        //           >
-                        //             {page.page_name_en}
-                        //           </Select.Option>
-                        //         );
-                        //       }
-                        //     })}
-                        //   </Select>
-                        // )
-                        <Input
-                          allowClear
-                          showSearch
-                          name="link"
-                          value={editedLink}
-                          onChange={(e) => setEditedLink(e.target.value)}
-                        />
-                      )}
-                    </>
-                  ) : (
-                    <p
+                    <Radio.Group
+                      onChange={(e) => setLinkType(e.target.value)}
+                      value={linkType}
                       style={{
-                        color: "var(--themes)",
-                        textDecoration: "underline",
-                        fontSize: "1.2em",
-                        textWrap: "wrap",
-                        wordWrap: "break-word",
-                        paddingRight: "1em",
+                        display: "flex",
+                        justifyContent: "center",
+                        flexDirection: "column",
                       }}
                     >
-                      {menuItem.link}{" "}
-                    </p>
-                  )}{" "}
-                </Col>
-                <Col span={6} style={{ paddingLeft: "2em" }}>
-                  {editingItemId === menuItem.id ? (
-                    <>
+                      <Radio value="independent">Independent</Radio>
+                      <Radio value="page">Page</Radio>
+                      {/* <Radio value="sisterConcern">Sister Concern</Radio> */}
+                    </Radio.Group>
+                    {linkType === "page" ? (
+                      <>
+                        <Select
+                          showSearch
+                          style={{ width: "100%" }}
+                          placeholder="Select a page"
+                          optionFilterProp="children"
+                          onChange={(value) => setEditedLink("/" + value)}
+                          filterOption={(input, option) =>
+                            option.children
+                              .toLowerCase()
+                              .indexOf(input.toLowerCase()) >= 0
+                          }
+                        >
+                          {pages?.map((page) => (
+                            <Select.Option
+                              value={`${page.slug}?pageId=${
+                                page?.id
+                              }&pageName=${page?.page_name_en.replace(
+                                /\s/g,
+                                "-"
+                              )}`}
+                            >
+                              {page.page_name_en}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      </>
+                    ) : (
+                      // :
+                      // linkType === "sisterConcern" ? (
+                      //   <Select
+                      //     showSearch
+                      //     style={{ width: "100%" }}
+                      //     placeholder="Select a Sister Concern"
+                      //     optionFilterProp="children"
+                      //     onChange={(value) => setEditedLink(value)}
+                      //     filterOption={(input, option) =>
+                      //       option.children
+                      //         .toLowerCase()
+                      //         .indexOf(input.toLowerCase()) >= 0
+                      //     }
+                      //   >
+                      //     {pages?.map((page) => {
+                      //       if (page.page_name_en?.includes("Ltd")) {
+                      //         return (
+                      //           <Select.Option
+                      //             value={`sister-concerns?pageId=${page.id}`}
+                      //           >
+                      //             {page.page_name_en}
+                      //           </Select.Option>
+                      //         );
+                      //       }
+                      //     })}
+                      //   </Select>
+                      // )
+                      <Input
+                        allowClear
+                        showSearch
+                        name="link"
+                        value={editedLink}
+                        onChange={(e) => setEditedLink(e.target.value)}
+                      />
+                    )}
+                  </>
+                ) : (
+                  <p
+                    style={{
+                      color: "var(--themes)",
+                      textDecoration: "underline",
+                      fontSize: "1.2em",
+                      textWrap: "wrap",
+                      wordWrap: "break-word",
+                      paddingRight: "1em",
+                    }}
+                  >
+                    {menuItem.link}{" "}
+                  </p>
+                )}{" "}
+              </Col>
+              <Col span={6} style={{ paddingLeft: "2em" }}>
+                {editingItemId === menuItem.id ? (
+                  <>
+                    <Button
+                      type="primary"
+                      style={{
+                        backgroundColor: "var(--success)",
+                        borderColor: "var(--success)",
+                        color: "white",
+                        borderRadius: "10px",
+                        fontSize: "1.2em",
+                        fontSize: "1em",
+                        width: "clamp(100px, 4vw, 200px)",
+                        marginRight: "1em",
+                      }}
+                      onClick={() => handleUpdate(menuItem.id)}
+                      icon={<SyncOutlined />}
+                    >
+                      Update
+                    </Button>
+                    <Button
+                      style={{
+                        backgroundColor: "var(--themes)",
+                        borderColor: "var(--themes)",
+                        color: "white",
+                        borderRadius: "10px",
+                        fontSize: "1em",
+                        width: "clamp(100px, 4vw, 200px)",
+                      }}
+                      onClick={handleCancelEdit}
+                      icon={<CloseCircleOutlined />}
+                    >
+                      Cancel
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      type="primary"
+                      htmlType="button"
+                      style={{
+                        backgroundColor: "var(--theme)",
+                        borderColor: "var(--theme)",
+                        color: "white",
+                        borderRadius: "10px",
+                        fontSize: "1.2em",
+                        marginRight: "1em",
+                        // paddingBottom: "1.8em",
+                      }}
+                      onClick={(e) => handleEdit(menuItem?.id, e)}
+                      icon={<EditOutlined />}
+                    >
+                      Edit
+                    </Button>
+                    <Popconfirm
+                      title="Are you sure you want to delete this menu item?"
+                      onConfirm={() => handleDelete(menuItem?.id)}
+                      okText="Sure"
+                      cancelText="Cancel"
+                      open={
+                        deleteConfirmationVisible &&
+                        deleteItemId === menuItem.id
+                      }
+                      onOpenChange={(visible) => {
+                        if (!visible) {
+                          handleCancelDelete();
+                        }
+                      }}
+                    >
                       <Button
                         type="primary"
+                        danger
                         style={{
-                          backgroundColor: "var(--success)",
-                          borderColor: "var(--success)",
-                          color: "white",
                           borderRadius: "10px",
                           fontSize: "1.2em",
-                          fontSize: "1em",
-                          width: "clamp(100px, 4vw, 200px)",
-                          marginRight: "1em",
-                        }}
-                        onClick={() => handleUpdate(menuItem.id)}
-                        icon={<SyncOutlined />}
-                      >
-                        Update
-                      </Button>
-                      <Button
-                        style={{
-                          backgroundColor: "var(--themes)",
-                          borderColor: "var(--themes)",
-                          color: "white",
-                          borderRadius: "10px",
-                          fontSize: "1em",
-                          width: "clamp(100px, 4vw, 200px)",
-                        }}
-                        onClick={handleCancelEdit}
-                        icon={<CloseCircleOutlined />}
-                      >
-                        Cancel
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button
-                        type="primary"
-                        htmlType="button"
-                        style={{
-                          backgroundColor: "var(--theme)",
-                          borderColor: "var(--theme)",
-                          color: "white",
-                          borderRadius: "10px",
-                          fontSize: "1.2em",
-                          marginRight: "1em",
                           // paddingBottom: "1.8em",
                         }}
-                        onClick={(e) => handleEdit(menuItem?.id, e)}
-                        icon={<EditOutlined />}
+                        onClick={() => showDeleteConfirmation(menuItem.id)}
+                        icon={<DeleteOutlined />}
                       >
-                        Edit
+                        Delete
                       </Button>
-                      <Popconfirm
-                        title="Are you sure you want to delete this menu item?"
-                        onConfirm={() => handleDelete(menuItem?.id)}
-                        okText="Sure"
-                        cancelText="Cancel"
-                        open={
-                          deleteConfirmationVisible &&
-                          deleteItemId === menuItem.id
-                        }
-                        onOpenChange={(visible) => {
-                          if (!visible) {
-                            handleCancelDelete();
-                          }
-                        }}
-                      >
-                        <Button
-                          type="primary"
-                          danger
-                          style={{
-                            borderRadius: "10px",
-                            fontSize: "1.2em",
-                            // paddingBottom: "1.8em",
-                          }}
-                          onClick={() => showDeleteConfirmation(menuItem.id)}
-                          icon={<DeleteOutlined />}
-                        >
-                          Delete
-                        </Button>
-                      </Popconfirm>
-                    </>
-                  )}{" "}
-                </Col>
-              </Row>
-            ))
-          ) : (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "50vh",
-              }}
-            >
-              {/* <Loader /> */}
-              {!loading && menuItems.length === 0 ? (
-                <h1>No Menu Items Found</h1>
-              ) : (
-                <Loader />
-              )}
-            </div>
-          )}{" "}
-        </div>
+                    </Popconfirm>
+                  </>
+                )}{" "}
+              </Col>
+            </Row>
+          ))
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "50vh",
+            }}
+          >
+            {/* <Loader /> */}
+            {!loading && menuItems.length === 0 ? (
+              <h1>No Menu Items Found</h1>
+            ) : (
+              <Loader />
+            )}
+          </div>
+        )}{" "}
       </div>
     </>
   );

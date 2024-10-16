@@ -145,7 +145,7 @@ export default function ManageData() {
   ];
 
   return (
-    <div className="ViewContentContainer">
+    <div className="mavecontainer">
       <Breadcrumb
         style={{
           marginBottom: "1em",

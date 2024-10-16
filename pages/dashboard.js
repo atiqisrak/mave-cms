@@ -31,7 +31,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className="ViewContainer ViewContentContainer">
+      <div className="mavecontainer">
         {user && token ? (
           <>
             <div className="dashboard-area">

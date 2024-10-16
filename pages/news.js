@@ -244,7 +244,7 @@ const News = () => {
 
   return (
     <>
-      <div className="ViewContainer ViewContentContainer">
+      <div className="mavecontainer">
         <div
           className="PageHeader"
           style={{

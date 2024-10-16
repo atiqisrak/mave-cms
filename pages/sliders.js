@@ -215,10 +215,10 @@ const Sliders = () => {
   };
 
   return (
-    <div className="ViewContainer ViewContentContainer">
+    <div className="mavecontainer">
       <div className="login-page">
         {contextHolder}
-        <div className="ViewContiner  ViewContentContainer media-area login-page-section">
+        <div className="mavecontainer media-area login-page-section">
           <div className="ViewContentContiner" style={{ marginBottom: "5rem" }}>
             <Space
               style={{

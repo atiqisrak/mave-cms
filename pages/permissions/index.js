@@ -48,7 +48,7 @@ export default function Permissions() {
   permissions && console.log("Permissions received index");
 
   return (
-    <div className="ViewContainer">
+    <div className="mavecontainer">
       <div
         style={{
           display: "flex",
@@ -59,7 +59,7 @@ export default function Permissions() {
         <Breadcrumb
           style={{ margin: "16px 0", fontWeight: "600" }}
           separator=">"
-          className="ViewContainer"
+          className="mavecontainer"
           items={[
             {
               title: (

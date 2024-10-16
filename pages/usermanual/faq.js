@@ -50,7 +50,7 @@ const faq = () => {
   };
 
   return (
-    <div className="ViewContainer ViewContentContainer">
+    <div className="mavecontainer">
       <Layout
         style={{
           padding: "0 24px 24px",
