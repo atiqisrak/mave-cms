@@ -532,3 +532,9 @@ a:hover {
   > .ant-menu-submenu-title {
   color: var(--theme);
 }
+:where(.css-dev-only-do-not-override-f7vrd6).ant-radio-wrapper
+  .ant-radio-checked
+  .ant-radio-inner {
+  border-color: var(--theme);
+  background-color: var(--theme);
+}

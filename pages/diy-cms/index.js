@@ -20,7 +20,7 @@ export default function DIYCMS() {
           display: "flex",
           justifyContent: "center",
           gap: "2rem",
-          marginTop: "2rem",
+          margin: "2rem 0",
         }}
       >
         <Button

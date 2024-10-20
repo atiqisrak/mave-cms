@@ -1,7 +1,7 @@
-// components/MenuItems/MenuItemsHeader.js
+// components/Menus/MenusHeader.js
 
 import React from "react";
-import { Input, Switch, Button, Select } from "antd";
+import { Input, Switch, Button, Select, message } from "antd";
 import {
   CheckCircleFilled,
   FilterOutlined,
@@ -10,36 +10,36 @@ import {
 } from "@ant-design/icons";
 import Image from "next/image";
 
-const MenuItemsHeader = ({
-  onAddMenuItem,
+const MenusHeader = ({
+  onAddMenu,
   searchTerm,
   setSearchTerm,
   sortType,
   setSortType,
-  handleFilter,
-  onShowChange,
   handleSelectAll,
   allSelected,
+  onShowChange,
+  handleReset,
 }) => {
   return (
     <>
       <div className="flex flex-col md:flex-row justify-between items-center mb-4 border-b-4 border-gray-300 px-6 pt-8 pb-4">
         <div className="flex items-center gap-4">
-          <div className=" border-2 border-gray-300 bg-white rounded-md py-2 px-3">
+          <div className="border-2 border-gray-300 bg-white rounded-md py-2 px-3">
             <Image
-              src="/icons/mave/menuitems.svg"
+              src="/icons/mave/menus.svg"
               width={24}
               height={24}
-              alt="Menu Items"
+              alt="Menus"
               className="w-6"
             />
           </div>
-          <h2 className="text-2xl font-semibold">Menu Items</h2>
+          <h2 className="text-2xl font-semibold">Menus</h2>
         </div>
         <div className="flex items-center gap-2 mt-4 md:mt-0">
           <Button
             icon={<PlusCircleOutlined />}
-            onClick={onAddMenuItem}
+            onClick={onAddMenu}
             className="bg-theme border-2 border-[#E3A611] py-5 font-bold text-lg text-white"
           >
             Add New Menu
@@ -78,7 +78,9 @@ const MenuItemsHeader = ({
           <Button
             icon={<FilterOutlined />}
             className="bg-white text-gray-500 font-semibold text-lg py-5 shadow-md border-2 border-gray-300 w-fit"
-            onClick={handleFilter}
+            onClick={() => {
+              message.info("Filtering is not yet implemented!");
+            }}
           >
             Filter
           </Button>
@@ -96,4 +98,4 @@ const MenuItemsHeader = ({
   );
 };
 
-export default MenuItemsHeader;
+export default MenusHeader;
