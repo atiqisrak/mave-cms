@@ -27,6 +27,8 @@ const MenuItemRow = ({
   setMenuItems,
   editingItemId,
   setEditingItemId,
+  selectedItemIds,
+  setSelectedItemIds,
 }) => {
   const [editedTitleEn, setEditedTitleEn] = useState(menuItem.title);
   const [editedTitleBn, setEditedTitleBn] = useState(menuItem.title_bn);
@@ -81,19 +83,31 @@ const MenuItemRow = ({
 
   const isEditing = editingItemId === menuItem.id;
 
+  const handleCheckboxChange = (e) => {
+    const checked = e.target.checked;
+    if (checked) {
+      setSelectedItemIds([...selectedItemIds, menuItem.id]);
+    } else {
+      setSelectedItemIds(selectedItemIds.filter((id) => id !== menuItem.id));
+    }
+  };
+
+  const isSelected = selectedItemIds.includes(menuItem.id);
+
   return (
     <Row className="border-b py-2 items-center">
-      {/* <Col xs={2} md={2}>
-        <Checkbox />
-      </Col> */}
-      <Col xs={4} md={2}>
+      <Col xs={2} md={1}>
+        <Checkbox checked={isSelected} onChange={handleCheckboxChange} />
+      </Col>
+      <Col xs={2} md={2}>
         <p>{menuItem.id}</p>
       </Col>
-      <Col xs={8} md={4}>
+      <Col xs={8} md={3}>
         {isEditing ? (
           <Input
             value={editedTitleEn}
             onChange={(e) => setEditedTitleEn(e.target.value)}
+            className="w-11/12"
           />
         ) : (
           <p>{menuItem.title}</p>
@@ -104,6 +118,7 @@ const MenuItemRow = ({
           <Input
             value={editedTitleBn}
             onChange={(e) => setEditedTitleBn(e.target.value)}
+            className="w-11/12"
           />
         ) : (
           <p>{menuItem.title_bn || "N/A"}</p>
@@ -116,7 +131,7 @@ const MenuItemRow = ({
             placeholder="Select a Parent Menu"
             optionFilterProp="children"
             onChange={(value) => setEditedParentId(value)}
-            className="w-full"
+            className="w-11/12"
             allowClear
             defaultValue={menuItem.parent_id}
           >
@@ -153,7 +168,7 @@ const MenuItemRow = ({
                 placeholder="Select a page"
                 optionFilterProp="children"
                 onChange={(value) => setEditedLink("/" + value)}
-                className="w-full mt-2"
+                className="w-11/12 mt-2"
               >
                 {pages.map((page) => (
                   <Select.Option
@@ -170,27 +185,32 @@ const MenuItemRow = ({
               <Input
                 value={editedLink}
                 onChange={(e) => setEditedLink(e.target.value)}
-                className="mt-2"
+                className="mt-2 w-11/12"
               />
             )}
           </>
         ) : (
-          <p className="text-theme underline">{menuItem.link}</p>
+          <p className="text-theme underline">
+            {menuItem.link.length > 20
+              ? menuItem.link.slice(0, 20) + "..."
+              : menuItem.link}
+          </p>
         )}
       </Col>
       <Col xs={24} md={6} className="flex gap-2 mt-2 md:mt-0">
         {isEditing ? (
           <>
             <Button
-              type="primary"
               icon={<SyncOutlined />}
               onClick={handleUpdate}
+              className="bg-theme"
             >
               Update
             </Button>
             <Button
               icon={<CloseCircleOutlined />}
               onClick={() => setEditingItemId(null)}
+              danger
             >
               Cancel
             </Button>
@@ -198,7 +218,6 @@ const MenuItemRow = ({
         ) : (
           <>
             <Button
-              type="primary"
               icon={<EditOutlined />}
               onClick={() => setEditingItemId(menuItem.id)}
               className="bg-theme"

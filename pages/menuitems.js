@@ -1,14 +1,7 @@
 // pages/MenuItems.js
 
 import React, { useState, useEffect } from "react";
-import { Row, Col, Input, Switch, Button, message } from "antd";
-import {
-  PlusCircleOutlined,
-  CloseCircleOutlined,
-  SyncOutlined,
-  EditOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
+import { message, Modal } from "antd";
 import instance from "../axios";
 import { setPageTitle } from "../global/constants/pageTitle";
 import Loader from "../components/Loader";
@@ -30,6 +23,7 @@ const MenuItems = () => {
   const [pages, setPages] = useState([]);
   const [sortType, setSortType] = useState("asc");
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedItemIds, setSelectedItemIds] = useState([]);
 
   const fetchMenuItems = async () => {
     try {
@@ -108,6 +102,14 @@ const MenuItems = () => {
     console.log(value);
   };
 
+  const handleSelectAll = () => {
+    if (selectedItemIds.length === menuItems.length) {
+      setSelectedItemIds([]);
+    } else {
+      setSelectedItemIds(menuItems.map((item) => item.id));
+    }
+  };
+
   return (
     <div className="mavecontainer bg-gray-50 rounded-xl">
       <MenuItemsHeader
@@ -119,15 +121,40 @@ const MenuItems = () => {
         handleReset={handleReset}
         handleFilter={handleFilter}
         onShowChange={onShowChange}
+        handleSelectAll={handleSelectAll}
+        allSelected={selectedItemIds.length === menuItems.length}
       />
-      {isAddMenuItemOpen && (
+      <Modal
+        open={isAddMenuItemOpen}
+        onCancel={handleCancelAddMenuItem}
+        footer={null}
+        title={
+          <div className="flex items-center gap-2 pb-5 border border-b-2 border-gray-200 border-t-transparent border-l-transparent border-r-transparent">
+            <img
+              src="/icons/mave/menuitems.svg"
+              alt="Menu Items"
+              className="w-6"
+            />
+            <span>Add Menu Item</span>
+          </div>
+        }
+        width={800}
+      >
         <AddMenuItemForm
           pages={pages}
           menuItems={menuItems}
           onCancel={handleCancelAddMenuItem}
           fetchMenuItems={fetchMenuItems}
         />
-      )}
+      </Modal>
+      {/* {isAddMenuItemOpen && (
+        <AddMenuItemForm
+          pages={pages}
+          menuItems={menuItems}
+          onCancel={handleCancelAddMenuItem}
+          fetchMenuItems={fetchMenuItems}
+        />
+      )} */}
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <Loader />
@@ -139,6 +166,8 @@ const MenuItems = () => {
           setMenuItems={setMenuItems}
           editingItemId={editingItemId}
           setEditingItemId={setEditingItemId}
+          selectedItemIds={selectedItemIds}
+          setSelectedItemIds={setSelectedItemIds}
         />
       )}
     </div>

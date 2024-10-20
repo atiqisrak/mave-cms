@@ -1,4 +1,5 @@
 // ModelsShowcase.js
+
 import { Button, message, Popconfirm, Spin, Table } from "antd";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -9,11 +10,11 @@ import {
   DeleteOutlined,
   EditFilled,
 } from "@ant-design/icons";
-import { snakeCase } from "lodash";
 
 export default function ModelsShowcase() {
   const [loading, setLoading] = useState(false);
   const [dynamicModels, setDynamicModels] = useState([]);
+  const [error, setError] = useState(null);
   const router = useRouter();
 
   const fetchDynamicModels = async () => {
@@ -21,12 +22,21 @@ export default function ModelsShowcase() {
     try {
       const response = await instance.get("/generated-models");
       if (response.data) {
-        setDynamicModels(response.data);
+        // Check if 'fields' is a string and parse it, else use it as is
+        const models = response.data.map((model) => ({
+          ...model,
+          fields:
+            typeof model.fields === "string"
+              ? JSON.parse(model.fields)
+              : model.fields,
+        }));
+        setDynamicModels(models);
       } else {
         setDynamicModels([]);
       }
     } catch (error) {
       console.error("Error fetching dynamic models:", error);
+      setError("Error fetching dynamic models. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -53,68 +63,31 @@ export default function ModelsShowcase() {
   };
 
   return (
-    <div
-      className="mavecontainer"
-      style={{
-        backgroundColor: "white",
-        padding: "1em",
-        width: "100%",
-        borderRadius: "0.5em",
-      }}
-    >
+    <div className="mavecontainer bg-white p-4 w-full rounded-lg">
       {loading ? (
-        <div style={{ textAlign: "center" }}>
+        <div className="text-center">
           <Spin />
         </div>
-      ) : (
-        <div
-          style={{
-            display: "grid",
-            gap: "1em",
-            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-          }}
-        >
+      ) : error ? (
+        <div className="text-center text-red-500">
+          <p>{error}</p>
+        </div>
+      ) : dynamicModels.length > 0 ? (
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {dynamicModels.map((model) => (
             <div
               key={model.id}
-              style={{
-                padding: "1em",
-                border: "1px solid #ccc",
-                borderRadius: "0.5em",
-                marginBottom: "1em",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
+              className="p-4 border border-gray-300 rounded-lg mb-4 flex flex-col justify-center items-center"
             >
               <div>
-                <h2
-                  style={{
-                    textAlign: "center",
-                    marginBottom: "1.5em",
-                    width: "100%",
-                    color: "var(--theme)",
-                  }}
-                >
+                <h2 className="text-center mb-6 w-full text-theme">
                   {model.model_name}
                 </h2>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "1em",
-                    justifyContent: "center",
-                    marginBottom: "1em",
-                  }}
-                >
+                <div className="flex gap-4 justify-center mb-4">
                   {model.status ? (
-                    <CheckCircleFilled
-                      style={{ color: "green", fontSize: "1.5em" }}
-                    />
+                    <CheckCircleFilled className="text-green-500 text-xl" />
                   ) : (
-                    <CheckCircleFilled
-                      style={{ color: "gray", fontSize: "1.5em" }}
-                    />
+                    <CheckCircleFilled className="text-gray-500 text-xl" />
                   )}
                   <Button
                     type="primary"
@@ -122,10 +95,7 @@ export default function ModelsShowcase() {
                       router.push(`/diy-cms/models/${model.model_name}`);
                     }}
                     icon={<EditFilled />}
-                    style={{
-                      backgroundColor: "transparent",
-                      color: "var(--theme)",
-                    }}
+                    className="bg-transparent text-theme border-none shadow-none"
                   />
                   <Popconfirm
                     title="Are you sure you want to delete this model?"
@@ -135,7 +105,7 @@ export default function ModelsShowcase() {
                       handleDeleteModel(model.id);
                     }}
                   >
-                    <DeleteOutlined style={{ color: "red" }} />
+                    <DeleteOutlined className="text-red-500 cursor-pointer" />
                   </Popconfirm>
                 </div>
                 <Table
@@ -156,21 +126,8 @@ export default function ModelsShowcase() {
                   width="100%"
                 />
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "1em",
-                  marginTop: "1em",
-                }}
-              >
-                <code
-                  style={{
-                    backgroundColor: "#f0f0f0",
-                    padding: "0.5em",
-                    borderRadius: "0.5em",
-                  }}
-                >
+              <div className="flex items-center gap-4 mt-4">
+                <code className="bg-gray-100 p-2 rounded-lg">
                   {model.api_route}
                 </code>
                 <Button
@@ -184,6 +141,10 @@ export default function ModelsShowcase() {
               </div>
             </div>
           ))}
+        </div>
+      ) : (
+        <div className="text-center">
+          <p>No models found.</p>
         </div>
       )}
     </div>

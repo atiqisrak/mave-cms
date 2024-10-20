@@ -1,7 +1,16 @@
 // components/MenuItems/AddMenuItemForm.js
 
 import React, { useState } from "react";
-import { Row, Col, Input, Select, Button, Radio, message } from "antd";
+import {
+  Row,
+  Col,
+  Input,
+  Select,
+  Button,
+  Radio,
+  message,
+  Typography,
+} from "antd";
 import { PlusCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import instance from "../../axios";
 
@@ -35,29 +44,32 @@ const AddMenuItemForm = ({ pages, menuItems, onCancel, fetchMenuItems }) => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-md shadow-md mb-4">
+    <div>
       <Row gutter={[16, 16]}>
-        <Col xs={24} md={4}>
+        <Col xs={24} md={12}>
+          <Typography.Title level={5}>Item Name</Typography.Title>
           <Input
             placeholder="Menu Item Title"
             value={newMenuItemTitle}
             onChange={(e) => setNewMenuItemTitle(e.target.value)}
           />
         </Col>
-        <Col xs={24} md={4}>
+        <Col xs={24} md={12}>
+          <Typography.Title level={5}>আইটেম নাম</Typography.Title>
           <Input
             placeholder="মেনু আইটেম শিরোনাম"
             value={newMenuItemTitleBn}
             onChange={(e) => setNewMenuItemTitleBn(e.target.value)}
           />
         </Col>
-        <Col xs={24} md={4}>
+        <Col xs={24} md={12}>
+          <Typography.Title level={5}>Parent Menu</Typography.Title>
           <Select
             showSearch
             placeholder="Select a Parent Menu"
             optionFilterProp="children"
             onChange={(value) => setNewParentId(value)}
-            className="w-full"
+            className="w-full mt-2"
             allowClear
           >
             <Select.Option value={null}>No Parent</Select.Option>
@@ -68,23 +80,24 @@ const AddMenuItemForm = ({ pages, menuItems, onCancel, fetchMenuItems }) => {
             ))}
           </Select>
         </Col>
-        <Col xs={24} md={4}>
-          <Radio.Group
-            onChange={(e) => setLinkType(e.target.value)}
-            value={linkType}
-          >
-            <Radio value="independent">Independent</Radio>
-            <Radio value="page">Page</Radio>
-          </Radio.Group>
-        </Col>
-        <Col xs={24} md={4}>
+        <Col xs={24} md={12}>
+          <div className="flex justify-between">
+            <Typography.Title level={5}>Item Link</Typography.Title>
+            <Radio.Group
+              onChange={(e) => setLinkType(e.target.value)}
+              value={linkType}
+            >
+              <Radio value="independent">Independent</Radio>
+              <Radio value="page">Page</Radio>
+            </Radio.Group>
+          </div>
           {linkType === "page" ? (
             <Select
               showSearch
               placeholder="Select a page"
               optionFilterProp="children"
               onChange={(value) => setNewMenuItemLink(value)}
-              className="w-full"
+              className="w-full mt-2"
             >
               {pages.map((page) => (
                 <Select.Option
@@ -102,22 +115,27 @@ const AddMenuItemForm = ({ pages, menuItems, onCancel, fetchMenuItems }) => {
               placeholder="Menu Item Link"
               value={newMenuItemLink}
               onChange={(e) => setNewMenuItemLink(e.target.value)}
+              className="mt-2"
             />
           )}
         </Col>
-        <Col xs={24} md={4} className="flex items-center gap-2">
-          <Button
-            type="primary"
-            icon={<PlusCircleOutlined />}
-            onClick={handleAddMenuItem}
-          >
-            Add
-          </Button>
-          <Button icon={<CloseCircleOutlined />} onClick={onCancel}>
-            Cancel
-          </Button>
-        </Col>
       </Row>
+      <div className="flex justify-end mt-4 gap-5">
+        <Button
+          icon={<PlusCircleOutlined />}
+          onClick={handleAddMenuItem}
+          className="bg-theme text-white"
+        >
+          Add
+        </Button>
+        <Button
+          icon={<CloseCircleOutlined />}
+          onClick={onCancel}
+          className="mr-2 bg-gray-500 text-white"
+        >
+          Cancel
+        </Button>
+      </div>
     </div>
   );
 };

@@ -141,7 +141,7 @@ export default function ModelCreator({
         }
       } else {
         // Create new model
-        const response = await instance.post("/generate-model", jsonPayload);
+        const response = await instance.post("/diy-cms", jsonPayload);
         if (response.status === 201) {
           message.success("Model created successfully!");
           // Optionally, reset the form
@@ -201,7 +201,8 @@ export default function ModelCreator({
 
         {/* Fields */}
         <Collapse accordion>
-          {fields.map((field, index) => (
+          {console.log("Fields:", fields)}
+          {fields?.map((field, index) => (
             <Panel
               header={`${field.name} (${field.type})`}
               key={index}
