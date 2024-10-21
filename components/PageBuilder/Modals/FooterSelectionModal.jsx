@@ -26,17 +26,19 @@ const FooterSelectionModal = ({ isVisible, onClose, onSelectFooter }) => {
     }
   }, [isVisible]);
 
+  console.log("Footer List", footerList);
+
   return (
     <Modal
       title="Select Footer"
-      visible={isVisible}
+      open={isVisible}
       onCancel={onClose}
       footer={null}
       width={800}
     >
       <List
         loading={loading}
-        grid={{ gutter: 16, column: 3 }}
+        grid={{ gutter: 16, column: 1 }}
         dataSource={footerList}
         renderItem={(item) => (
           <List.Item>
@@ -46,15 +48,7 @@ const FooterSelectionModal = ({ isVisible, onClose, onSelectFooter }) => {
               block
               className="text-left"
             >
-              {item.logo && (
-                <Image
-                  src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${item.logo.file_path}`}
-                  alt="Footer Logo"
-                  width={100}
-                  preview={false}
-                />
-              )}
-              <Paragraph ellipsis={{ rows: 2 }}>{item.text}</Paragraph>
+              <Paragraph ellipsis={{ rows: 2 }}>{item.title_en}</Paragraph>
             </Button>
           </List.Item>
         )}
