@@ -2,8 +2,13 @@
 
 import React, { useState } from "react";
 import { Button, Modal } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import RichTextEditor from "../../RichTextEditor";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  CheckOutlined,
+  CloseOutlined,
+} from "@ant-design/icons";
+import RichTextEditor from "../../RichTextEditor"; // Adjust the path as necessary
 
 const ParagraphComponent = ({
   component,
@@ -11,10 +16,22 @@ const ParagraphComponent = ({
   deleteComponent,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [value, setValue] = useState(component.value);
+  const [tempValue, setTempValue] = useState(component.value || "");
 
-  const handleSave = () => {
-    updateComponent({ ...component, value });
+  const handleSubmit = () => {
+    if (tempValue.trim() === "") {
+      Modal.error({
+        title: "Validation Error",
+        content: "Paragraph cannot be empty.",
+      });
+      return;
+    }
+    updateComponent({ ...component, value: tempValue });
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setTempValue(component.value || "");
     setIsEditing(false);
   };
 
@@ -22,27 +39,46 @@ const ParagraphComponent = ({
     Modal.confirm({
       title: "Are you sure you want to delete this component?",
       onOk: deleteComponent,
+      okText: "Yes",
+      cancelText: "No",
     });
   };
 
   return (
-    <div>
+    <div className="border p-4 rounded-md bg-gray-50">
       <div className="flex justify-between items-center mb-2">
-        <h3>Paragraph Component</h3>
+        <h3 className="text-lg font-semibold">Paragraph Component</h3>
         <div>
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => setIsEditing(!isEditing)}
-            className="mr-2"
-          />
-          <Button icon={<DeleteOutlined />} onClick={handleDelete} danger />
+          {isEditing ? (
+            <>
+              <Button
+                type="primary"
+                icon={<CheckOutlined />}
+                onClick={handleSubmit}
+                className="mr-2"
+              >
+                Submit
+              </Button>
+              <Button icon={<CloseOutlined />} onClick={handleCancel} danger>
+                Cancel
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                icon={<EditOutlined />}
+                onClick={() => setIsEditing(true)}
+                className="mr-2"
+              />
+              <Button icon={<DeleteOutlined />} onClick={handleDelete} danger />
+            </>
+          )}
         </div>
       </div>
       {isEditing ? (
-        // <ReactQuill value={value} onChange={setValue} onBlur={handleSave} />
         <RichTextEditor
-          defaultValue={value}
-          onChange={(html) => setValue(html)}
+          defaultValue={tempValue}
+          onChange={(html) => setTempValue(html)}
           editMode={true}
         />
       ) : (
