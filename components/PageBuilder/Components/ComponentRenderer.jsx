@@ -26,13 +26,11 @@ const ComponentRenderer = ({ component, index, components, setComponents }) => {
   switch (component.type) {
     case "title":
       return (
-        <>
-          <TextComponent
-            component={component}
-            updateComponent={updateComponent}
-            deleteComponent={deleteComponent}
-          />
-        </>
+        <TextComponent
+          component={component}
+          updateComponent={updateComponent}
+          deleteComponent={deleteComponent}
+        />
       );
     case "description":
       return (
