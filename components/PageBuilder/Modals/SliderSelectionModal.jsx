@@ -56,7 +56,7 @@ const SliderSelectionModal = ({ isVisible, onClose, onSelectSlider }) => {
   return (
     <Modal
       title="Select Slider"
-      visible={isVisible}
+      open={isVisible}
       onCancel={onClose}
       footer={null}
       width={900}
