@@ -56,7 +56,8 @@
     "react-virtualized": "^9.22.5",
     "recharts": "^2.12.7",
     "remark-gfm": "^4.0.0",
-    "swr": "^2.2.5"
+    "swr": "^2.2.5",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",

@@ -3,6 +3,10 @@
 import React from "react";
 import Site from "../components/Site";
 import "../styles/globals.css";
+// Import React Quill CSS here
+import "react-quill/dist/quill.snow.css";
+import "react-quill/dist/quill.bubble.css";
+import "react-quill/dist/quill.core.css";
 import Head from "next/head";
 import { AuthProvider } from "../src/context/AuthContext";
 
