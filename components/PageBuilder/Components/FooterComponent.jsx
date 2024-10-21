@@ -28,6 +28,8 @@ const FooterComponent = ({ component, updateComponent, deleteComponent }) => {
     });
   };
 
+  console.log("Footer Component", footerData);
+
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
@@ -43,7 +45,7 @@ const FooterComponent = ({ component, updateComponent, deleteComponent }) => {
       </div>
       {footerData ? (
         <div className="p-4 border rounded-md">
-          <Paragraph strong>{footerData.text}</Paragraph>
+          <Paragraph strong>{footerData.title_en}</Paragraph>
           {footerData.logo && (
             <Image
               src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${footerData.logo.file_path}`}
