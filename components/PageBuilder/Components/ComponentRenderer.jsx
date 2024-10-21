@@ -27,7 +27,6 @@ const ComponentRenderer = ({ component, index, components, setComponents }) => {
     case "title":
       return (
         <>
-          {console.log("TextComponent: ", component)}
           <TextComponent
             component={component}
             updateComponent={updateComponent}

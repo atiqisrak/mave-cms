@@ -1,8 +1,13 @@
 // components/PageBuilder/Components/MenuComponent.jsx
 
 import React, { useState } from "react";
-import { Button, Modal } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Button, Menu, Modal } from "antd";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  ArrowRightOutlined,
+  CodepenCircleOutlined,
+} from "@ant-design/icons";
 import MenuSelectionModal from "../Modals/MenuSelectionModal";
 
 const MenuComponent = ({ component, updateComponent, deleteComponent }) => {
@@ -22,10 +27,23 @@ const MenuComponent = ({ component, updateComponent, deleteComponent }) => {
     });
   };
 
+  const renderMenuItems = (menuItems) => {
+    return menuItems.map((item) => {
+      if (item.all_children && item.all_children.length > 0) {
+        return (
+          <Menu.SubMenu key={item.id} title={item.title}>
+            {renderMenuItems(item.all_children)}
+          </Menu.SubMenu>
+        );
+      } else {
+        return <Menu.Item key={item.id}>{item.title}</Menu.Item>;
+      }
+    });
+  };
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
-        <h3>Menu Component</h3>
+        <h3 className="text-xl font-semibold">Menu Component</h3>
         <div>
           <Button
             icon={<EditOutlined />}
@@ -36,8 +54,14 @@ const MenuComponent = ({ component, updateComponent, deleteComponent }) => {
         </div>
       </div>
       {menuData ? (
-        <div>
-          <p>Selected Menu: {menuData.name}</p>
+        <div className="flex gap-6 items-center">
+          <h2 className="text-xl font-semibold text-theme">
+            Selected Menu: {menuData.name}
+          </h2>
+          <ArrowRightOutlined />
+          <Menu mode="horizontal" className="flex-grow">
+            {renderMenuItems(menuData?.menu_items)}
+          </Menu>
         </div>
       ) : (
         <p>No menu selected.</p>

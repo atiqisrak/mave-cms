@@ -84,7 +84,7 @@ const MediaComponent = ({ component, updateComponent, deleteComponent }) => {
     <div className="border p-4 rounded-md bg-gray-50">
       {/* Header with Component Title and Action Buttons */}
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">Media Component</h3>
+        <h3 className="text-xl font-semibold">Media Component</h3>
         <div>
           {!isEditing ? (
             <>
