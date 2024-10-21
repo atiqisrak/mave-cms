@@ -68,8 +68,6 @@ const SideMenuItems = ({
     } else {
       console.log("Selected item not found for key:", key);
     }
-    console.log("item", item);
-    console.log("selectedItem", selectedItem);
   };
 
   return (
