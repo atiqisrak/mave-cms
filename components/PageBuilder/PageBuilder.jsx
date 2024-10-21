@@ -54,7 +54,10 @@ const PageBuilder = ({ pageId }) => {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">{pageData.page_name_en}</h1>
-      <Button type="primary" onClick={savePageData} className="mb-4">
+      <Button
+        onClick={savePageData}
+        className="mb-4 bg-theme text-gray-600 font-bold border-2 border-yellow-600"
+      >
         Save Page
       </Button>
       <SectionList
