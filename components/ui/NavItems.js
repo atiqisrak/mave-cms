@@ -65,6 +65,7 @@ export default function NavItems({
           width={120}
           height={40}
           objectFit="contain"
+          preview={false}
         />
         {/* Version */}
         <Link href={"/usermanual/changelog"}>
