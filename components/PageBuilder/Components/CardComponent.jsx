@@ -27,7 +27,7 @@ const CardComponent = ({ component, updateComponent, deleteComponent }) => {
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
-        <h3>Card Component</h3>
+        <h3 className="text-xl font-semibold">Card Component</h3>
         <div>
           <Button
             icon={<EditOutlined />}

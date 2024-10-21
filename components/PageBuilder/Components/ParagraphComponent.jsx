@@ -47,7 +47,7 @@ const ParagraphComponent = ({
   return (
     <div className="border p-4 rounded-md bg-gray-50">
       <div className="flex justify-between items-center mb-2">
-        <h3 className="text-lg font-semibold">Paragraph Component</h3>
+        <h3 className="text-xl font-semibold">Paragraph Component</h3>
         <div>
           {isEditing ? (
             <>

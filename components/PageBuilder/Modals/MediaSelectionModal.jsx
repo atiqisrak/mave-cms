@@ -15,26 +15,25 @@ const MediaSelectionModal = ({
   isVisible,
   onClose,
   onSelectMedia,
-  selectionMode = "single", // "single" or "multiple"
+  selectionMode = "single",
 }) => {
   const [mediaList, setMediaList] = useState([]);
   const [sortedMedia, setSortedMedia] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [sortOrder, setSortOrder] = useState("desc"); // "asc" or "desc"
+  const [sortOrder, setSortOrder] = useState("desc");
   const [selectedMedia, setSelectedMedia] = useState([]);
 
   useEffect(() => {
     if (isVisible) {
       fetchMedia();
     }
-    // Reset selections when modal opens/closes
     setSelectedMedia([]);
   }, [isVisible]);
 
   const fetchMedia = async () => {
     setLoading(true);
     try {
-      const response = await instance.get("/media"); // Replace with your actual API endpoint
+      const response = await instance.get("/media");
       setMediaList(response.data);
       setSortedMedia(sortMedia(response.data, sortOrder));
     } catch (error) {
@@ -62,10 +61,8 @@ const MediaSelectionModal = ({
       setSelectedMedia([item]);
     } else {
       if (selectedMedia.some((media) => media.id === item.id)) {
-        // Deselect if already selected
         setSelectedMedia(selectedMedia.filter((media) => media.id !== item.id));
       } else {
-        // Select
         setSelectedMedia([...selectedMedia, item]);
       }
     }
@@ -153,11 +150,11 @@ const MediaSelectionModal = ({
                 objectFit="cover"
                 preview={false}
                 loading="lazy"
-                className="rounded-t-md"
+                className="rounded-md"
               />
               <p className="mt-2 text-center">{item.title}</p>
               {isItemSelected(item) && (
-                <div className="absolute top-0 left-0 w-full h-full bg-black opacity-90 rounded-t-md">
+                <div className="absolute top-0 left-0 w-full h-full bg-black opacity-90 rounded-md">
                   <div className="flex justify-center items-center w-full h-full">
                     <p className="text-white text-xl font-bold">Selected</p>
                   </div>

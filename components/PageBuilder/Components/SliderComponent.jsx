@@ -31,7 +31,7 @@ const SliderComponent = ({ component, updateComponent, deleteComponent }) => {
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
-        <h3>Slider Component</h3>
+        <h3 className="text-xl font-semibold">Slider Component</h3>
         <div>
           <Button
             icon={<EditOutlined />}
