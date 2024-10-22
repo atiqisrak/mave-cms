@@ -73,12 +73,15 @@ body::-webkit-scrollbar-track {
 
 /* Viewcontiner */
 .mavecontainer {
-  width: 80%;
-  max-width: 1920px;
+  width: 100%;
+  max-width: 1000px;
   margin: 0 auto;
   padding-bottom: 6em;
 }
 
+.ant-menu-light.ant-menu-root.ant-menu-inline {
+  border-inline-end: 1px solid transparent;
+}
 a {
   color: inherit;
   text-decoration: none;

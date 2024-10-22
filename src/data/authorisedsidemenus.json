@@ -1,12 +1,5 @@
 [
     {
-        "id": 1,
-        "menu": "Dashboard",
-        "title": "Dashboard",
-        "icon": "/icons/mave/dashboard.svg",
-        "link": "/dashboard"
-    },
-    {
         "id": 2,
         "menu": "Components",
         "title": "Components",

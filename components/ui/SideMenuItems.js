@@ -2,7 +2,7 @@
 
 import { LoginOutlined } from "@ant-design/icons";
 import { Menu } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import AuthorizedSideMenuData from "../../src/data/authorisedsidemenus.json";
 import UnAuthorizedSideMenuData from "../../src/data/unauthorisedsidemenu.json";
@@ -19,8 +19,8 @@ const SideMenuItems = ({
   setTheme,
 }) => {
   const [sideMenuData, setSideMenuData] = useState([]);
-  const [selectedMenuItem, setSelectedMenuItem] = useState("1");
-  const [godfather, setGodfather] = useState([]);
+  const [selectedMenuItem, setSelectedMenuItem] = useState("");
+  const [godfatherData, setGodfatherData] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -30,16 +30,22 @@ const SideMenuItems = ({
         user?.email === "atiqisrak@niloy.com" ||
         user?.email === "Zeeshan.akhtar@webable.digital"
       ) {
-        setGodfather(Godfather);
+        setGodfatherData(Godfather);
+      } else {
+        setGodfatherData([]);
       }
     } else {
       setSideMenuData(UnAuthorizedSideMenuData);
+      setGodfatherData([]);
     }
   }, [token, user]);
 
+  const allMenuData = useMemo(() => {
+    return [...sideMenuData, ...godfatherData];
+  }, [sideMenuData, godfatherData]);
+
   useEffect(() => {
-    if (router.isReady && (sideMenuData.length > 0 || godfather.length > 0)) {
-      const allMenuData = [...sideMenuData, ...godfather];
+    if (router.isReady && allMenuData.length > 0) {
       const currentPath = router.pathname;
       const selectedItem =
         allMenuData.find((item) => item.link === currentPath) ||
@@ -49,14 +55,14 @@ const SideMenuItems = ({
         {};
       if (selectedItem.id !== undefined) {
         setSelectedMenuItem(selectedItem.id.toString());
+      } else {
+        setSelectedMenuItem("");
       }
     }
-  }, [router.pathname, sideMenuData, godfather]);
+  }, [router.pathname, allMenuData]);
 
-  const handleMenuClick = (item) => {
-    setSelectedMenuItem(item.key);
-    const key = item.key;
-    const allMenuData = [...sideMenuData, ...godfather];
+  const handleMenuClick = ({ key }) => {
+    setSelectedMenuItem(key);
     const selectedItem =
       allMenuData.find((menuItem) => menuItem.id.toString() === key) ||
       allMenuData
@@ -65,8 +71,6 @@ const SideMenuItems = ({
 
     if (selectedItem) {
       router.push(selectedItem.link);
-    } else {
-      console.log("Selected item not found for key:", key);
     }
   };
 
@@ -76,34 +80,40 @@ const SideMenuItems = ({
       mode="inline"
       selectedKeys={[selectedMenuItem]}
       onClick={handleMenuClick}
-      className="border-transparent"
+      className="w-full h-full"
     >
-      {sideMenuData && sideMenuData.length > 0 ? (
-        sideMenuData.map((item) =>
+      {allMenuData && allMenuData.length > 0 ? (
+        allMenuData.map((item) =>
           item?.submenu?.length > 0 ? (
             <Menu.SubMenu
               key={item.id.toString()}
               title={
                 <div className="flex items-center gap-2">
-                  <Image src={item.icon} alt="logo" width={25} height={25} />
-                  {!collapsed && <>{item.title}</>}
+                  <Image
+                    src={item.icon}
+                    alt={`${item.title} icon`}
+                    width={collapsed ? 50 : 40}
+                    height={collapsed ? 50 : 40}
+                  />
+                  {!collapsed && <span>{item.title}</span>}
                 </div>
               }
-              className="font-bold mt-2 border-2 border-gray-200 rounded-md"
+              className="border-2 border-gray-400 mb-2"
             >
-              {item.submenu.map((subItem) => (
+              {item.submenu?.map((subItem) => (
                 <Menu.Item
                   key={subItem.id.toString()}
-                  className="mt-2 font-bold"
+                  className="border-2 border-gray-400"
                 >
                   <div className="flex items-center gap-2">
                     <Image
                       src={subItem.icon}
-                      alt="logo"
-                      width={25}
-                      height={25}
+                      alt={`${subItem.title} icon`}
+                      width={30}
+                      height={30}
                     />
-                    <>{subItem.title}</>
+                    {/* {!collapsed && <span>{subItem.title}</span>} */}
+                    <span className="text-sm">{subItem.title}</span>
                   </div>
                 </Menu.Item>
               ))}
@@ -111,15 +121,16 @@ const SideMenuItems = ({
           ) : (
             <Menu.Item
               key={item.id.toString()}
-              className={`mt-2 font-bold border-2 border-gray-200 rounded-md ${
-                selectedMenuItem === item.id.toString()
-                  ? "bg-theme text-white"
-                  : ""
-              }`}
+              className="border-2 border-yellow-400"
             >
               <div className="flex items-center gap-2">
-                <Image src={item.icon} alt="logo" width={25} height={25} />
-                {!collapsed && <>{item.title}</>}
+                <Image
+                  src={item.icon}
+                  alt={`${item.title} icon`}
+                  width={20}
+                  height={20}
+                />
+                {!collapsed && <span>{item.title}</span>}
               </div>
             </Menu.Item>
           )
@@ -128,62 +139,15 @@ const SideMenuItems = ({
         <Menu.Item key="no-data">No data found</Menu.Item>
       )}
 
-      {/* Handle godfather menus */}
-      {user &&
-        godfather?.length > 0 &&
-        godfather.map((item) =>
-          item?.submenu?.length > 0 ? (
-            <Menu.SubMenu
-              key={item.id.toString()}
-              title={
-                <div className="flex items-center gap-2">
-                  <Image src={item.icon} alt="logo" width={25} height={25} />
-                  {!collapsed && <>{item.title}</>}
-                </div>
-              }
-              className="font-bold mt-2 border-2 border-gray-200 rounded-md"
-            >
-              {item.submenu.map((subItem) => (
-                <Menu.Item
-                  key={subItem.id.toString()}
-                  className="mt-2 font-bold"
-                >
-                  <div className="flex items-center gap-2">
-                    <Image
-                      src={subItem.icon}
-                      alt="logo"
-                      width={25}
-                      height={25}
-                    />
-                    <>{subItem.title}</>
-                  </div>
-                </Menu.Item>
-              ))}
-            </Menu.SubMenu>
-          ) : (
-            <Menu.Item
-              key={item.id.toString()}
-              className={`mt-2 font-bold border-2 border-gray-700 rounded-md ${
-                selectedMenuItem === item.id.toString()
-                  ? "bg-blue-500 text-white"
-                  : ""
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <Image src={item.icon} alt="logo" width={25} height={25} />
-                {!collapsed && <>{item.title}</>}
-              </div>
-            </Menu.Item>
-          )
-        )}
-
-      {!user && (
+      {/* Login Menu Item for Unauthorized Users */}
+      {!token && (
         <Menu.Item
           key="login"
           icon={<LoginOutlined />}
           onClick={() => setIsModalOpen(true)}
+          className="border-2 border-gray-400 mt-4"
         >
-          Login
+          {!collapsed && <span>Login</span>}
         </Menu.Item>
       )}
     </Menu>
