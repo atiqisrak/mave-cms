@@ -88,7 +88,7 @@ const AddNavbarForm = ({ menus, media, onCancel, fetchNavbars }) => {
         <Button
           icon={<PlusCircleOutlined />}
           onClick={handleAddNavbar}
-          className="bg-theme border-2 border-[#E3A611] py-5 font-bold text-lg text-white"
+          className="mavebutton"
         >
           Create
         </Button>

@@ -103,7 +103,7 @@ const SliderComponent = ({ component, updateComponent, deleteComponent }) => {
               <Button
                 icon={<CheckOutlined />}
                 onClick={handleSubmit}
-                className="mr-2 bg-theme text-white font-bold border-2 border-yellow-600"
+                className="mavebutton"
               >
                 Submit
               </Button>

@@ -39,7 +39,7 @@ const NavbarHeader = ({
           <Button
             icon={<PlusCircleOutlined />}
             onClick={onAddNavbar}
-            className="bg-theme border-2 border-[#E3A611] py-5 font-bold text-lg text-white"
+            className="mavebutton"
           >
             Add New Navbar
           </Button>

@@ -53,13 +53,12 @@ const PageBuilder = ({ pageId }) => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">{pageData.page_name_en}</h1>
-      <Button
-        onClick={savePageData}
-        className="mb-4 bg-theme text-gray-600 font-bold border-2 border-yellow-600"
-      >
-        Save Page
-      </Button>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">{pageData.page_name_en} Page</h1>
+        <Button onClick={savePageData} className="mavebutton">
+          Save Page
+        </Button>
+      </div>
       <SectionList
         sections={pageData.body}
         setSections={(newSections) => {

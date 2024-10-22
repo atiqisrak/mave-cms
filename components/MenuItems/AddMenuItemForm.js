@@ -124,7 +124,7 @@ const AddMenuItemForm = ({ pages, menuItems, onCancel, fetchMenuItems }) => {
         <Button
           icon={<PlusCircleOutlined />}
           onClick={handleAddMenuItem}
-          className="bg-theme text-white"
+          className="mavebutton"
         >
           Add
         </Button>

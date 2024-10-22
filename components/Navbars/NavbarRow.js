@@ -195,7 +195,7 @@ const NavbarRow = ({
             <Button
               icon={<SyncOutlined />}
               onClick={handleUpdate}
-              className="bg-theme text-white"
+              className="mavebutton"
             >
               Update
             </Button>
@@ -212,7 +212,7 @@ const NavbarRow = ({
             <Button
               icon={<EditOutlined />}
               onClick={() => setEditingNavbarId(navbar.id)}
-              className="bg-theme text-white"
+              className="mavebutton"
             >
               Edit
             </Button>

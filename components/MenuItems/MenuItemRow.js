@@ -203,7 +203,7 @@ const MenuItemRow = ({
             <Button
               icon={<SyncOutlined />}
               onClick={handleUpdate}
-              className="bg-theme"
+              className="mavebutton"
             >
               Update
             </Button>
@@ -220,7 +220,7 @@ const MenuItemRow = ({
             <Button
               icon={<EditOutlined />}
               onClick={() => setEditingItemId(menuItem.id)}
-              className="bg-theme"
+              className="mavebutton"
             >
               Edit
             </Button>
