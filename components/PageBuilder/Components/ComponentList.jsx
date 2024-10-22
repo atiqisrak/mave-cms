@@ -37,7 +37,7 @@ const ComponentList = ({ components, setComponents }) => {
               {components.map((component, index) => (
                 <Draggable
                   key={component._id || component.id}
-                  draggableId={component._id || component.id.toString()}
+                  draggableId={component?._id || component?.id?.toString()}
                   index={index}
                 >
                   {(provided) => (

@@ -478,48 +478,56 @@ const Pages = () => {
               }}
             >
               <Tabs.TabPane tab="Pages" key="1">
-                <Renderpages
-                  webpages={typePages}
-                  handleEditPage={handleEditPage}
-                  handleExpand={handleExpand}
-                  expandedPageId={expandedPageId}
-                  editMode={editMode}
-                  setEditMode={setEditMode}
-                  handleSubmit={handleEditPageInfo}
-                  handleDeletePage={handleDeletePage}
-                  pageNameEn={pageNameEn}
-                  setPageNameEn={setPageNameEn}
-                  pageNameBn={pageNameBn}
-                  setPageNameBn={setPageNameBn}
-                  pageSlug={pageSlug}
-                  setPageSlug={setPageSlug}
-                  setPageType={setPageType}
-                  editPageInfo={editPageInfo}
-                  setEditPageInfo={setEditPageInfo}
-                  handleEditPageInfo={handleEditPageInfo}
-                />
+                {typePages ? (
+                  <Renderpages
+                    webpages={typePages}
+                    handleEditPage={handleEditPage}
+                    handleExpand={handleExpand}
+                    expandedPageId={expandedPageId}
+                    editMode={editMode}
+                    setEditMode={setEditMode}
+                    handleSubmit={handleEditPageInfo}
+                    handleDeletePage={handleDeletePage}
+                    pageNameEn={pageNameEn}
+                    setPageNameEn={setPageNameEn}
+                    pageNameBn={pageNameBn}
+                    setPageNameBn={setPageNameBn}
+                    pageSlug={pageSlug}
+                    setPageSlug={setPageSlug}
+                    setPageType={setPageType}
+                    editPageInfo={editPageInfo}
+                    setEditPageInfo={setEditPageInfo}
+                    handleEditPageInfo={handleEditPageInfo}
+                  />
+                ) : (
+                  <Spin size="large" />
+                )}
               </Tabs.TabPane>
               <Tabs.TabPane tab="Subpages" key="2">
-                <Renderpages
-                  webpages={typeSubpages}
-                  handleEditPage={handleEditPage}
-                  handleExpand={handleExpand}
-                  expandedPageId={expandedPageId}
-                  editMode={editMode}
-                  setEditMode={setEditMode}
-                  handleSubmit={handleEditPageInfo}
-                  handleDeletePage={handleDeletePage}
-                  pageNameEn={pageNameEn}
-                  setPageNameEn={setPageNameEn}
-                  pageNameBn={pageNameBn}
-                  setPageNameBn={setPageNameBn}
-                  pageSlug={pageSlug}
-                  setPageSlug={setPageSlug}
-                  setPageType={setPageType}
-                  editPageInfo={editPageInfo}
-                  setEditPageInfo={setEditPageInfo}
-                  handleEditPageInfo={handleEditPageInfo}
-                />
+                {typeSubpages ? (
+                  <Renderpages
+                    webpages={typeSubpages}
+                    handleEditPage={handleEditPage}
+                    handleExpand={handleExpand}
+                    expandedPageId={expandedPageId}
+                    editMode={editMode}
+                    setEditMode={setEditMode}
+                    handleSubmit={handleEditPageInfo}
+                    handleDeletePage={handleDeletePage}
+                    pageNameEn={pageNameEn}
+                    setPageNameEn={setPageNameEn}
+                    pageNameBn={pageNameBn}
+                    setPageNameBn={setPageNameBn}
+                    pageSlug={pageSlug}
+                    setPageSlug={setPageSlug}
+                    setPageType={setPageType}
+                    editPageInfo={editPageInfo}
+                    setEditPageInfo={setEditPageInfo}
+                    handleEditPageInfo={handleEditPageInfo}
+                  />
+                ) : (
+                  <Spin size="large" />
+                )}
               </Tabs.TabPane>
             </Tabs>
           </div>

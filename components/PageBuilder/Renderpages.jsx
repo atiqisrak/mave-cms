@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Row, Col, Spin } from "antd";
-import PageCard from "./Components/PageCard";
+import PageCard from "./PageCard";
 
 const RenderPages = ({
   webpages = [], // Ensure default value is an empty array
@@ -20,6 +20,7 @@ const RenderPages = ({
             <Col key={page.id} xs={24} sm={24} md={12} lg={12} xl={12}>
               <PageCard
                 page={page}
+                handleEditPage={handleEditPage}
                 handleExpand={handleExpand}
                 expandedPageId={expandedPageId}
                 handleDeletePage={handleDeletePage}
