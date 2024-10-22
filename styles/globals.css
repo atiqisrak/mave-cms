@@ -117,6 +117,12 @@ a:hover {
   min-height: 200px;
 }
 
+:where(.css-dev-only-do-not-override-f7vrd6).ant-layout
+  .ant-layout-sider-light
+  .ant-layout-sider-trigger {
+  display: none;
+}
+
 .container {
   max-width: var(--max-width);
   margin: 0 auto;
