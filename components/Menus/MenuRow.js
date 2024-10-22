@@ -151,7 +151,7 @@ const MenuRow = ({
             <Button
               icon={<CloseCircleOutlined />}
               onClick={() => setEditingMenuId(null)}
-              danger
+              className="mavecancelbutton"
             >
               Cancel
             </Button>

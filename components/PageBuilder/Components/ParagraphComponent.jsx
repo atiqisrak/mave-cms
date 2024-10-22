@@ -52,15 +52,18 @@ const ParagraphComponent = ({
           {isEditing ? (
             <>
               <Button
-                type="primary"
                 icon={<CheckOutlined />}
                 onClick={handleSubmit}
-                className="mr-2"
+                className="mavebutton"
               >
                 Submit
               </Button>
-              <Button icon={<CloseOutlined />} onClick={handleCancel} danger>
-                Cancel
+              <Button
+                icon={<CloseOutlined />}
+                onClick={handleCancel}
+                className="mavecancelbutton"
+              >
+                Discard
               </Button>
             </>
           ) : (

@@ -61,6 +61,7 @@ const RichTextEditor = ({ defaultValue, onChange, editMode }) => {
           onChange={handleChange}
           modules={modules}
           theme="snow"
+          className="bg-white"
         />
       ) : (
         <div dangerouslySetInnerHTML={{ __html: editorHtml }} />

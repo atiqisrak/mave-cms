@@ -69,7 +69,7 @@ const AddMenuForm = ({ menuItems, onCancel, fetchMenus }) => {
         <Button
           icon={<CloseCircleOutlined />}
           onClick={onCancel}
-          className="mr-2 bg-gray-500 text-white"
+          className="mavecancelbutton"
         >
           Cancel
         </Button>
