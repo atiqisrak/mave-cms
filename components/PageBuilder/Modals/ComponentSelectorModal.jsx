@@ -1,17 +1,18 @@
 // components/PageBuilder/Modals/ComponentSelectorModal.jsx
 
 import React from "react";
-import { Modal, List, Button } from "antd";
+import { Modal, List, Button, Drawer } from "antd";
+import Image from "next/image";
 
 const componentOptions = [
-  { type: "title", name: "Title" },
-  { type: "description", name: "Paragraph" },
-  { type: "media", name: "Media" },
-  { type: "menu", name: "Menu" },
-  { type: "navbar", name: "Navbar" },
-  { type: "slider", name: "Slider" },
-  { type: "card", name: "Card" },
-  { type: "footer", name: "Footer" },
+  { type: "title", name: "Title", icon: "/icons/mave/font.svg" },
+  { type: "description", name: "Paragraph", icon: "/icons/mave/paragraph.svg" },
+  { type: "media", name: "Media", icon: "/icons/mave/gallery.svg" },
+  { type: "menu", name: "Menu", icon: "/icons/mave/menus.svg" },
+  { type: "navbar", name: "Navbar", icon: "/icons/mave/navbar.svg" },
+  { type: "slider", name: "Slider", icon: "/icons/mave/slider.svg" },
+  { type: "card", name: "Card", icon: "/icons/mave/cards.svg" },
+  { type: "footer", name: "Footer", icon: "/icons/mave/footer.svg" },
 ];
 
 const ComponentSelectorModal = ({ isVisible, onClose, onSelectComponent }) => {
@@ -22,23 +23,30 @@ const ComponentSelectorModal = ({ isVisible, onClose, onSelectComponent }) => {
   };
 
   return (
-    <Modal
+    <Drawer
       title="Select Component Type"
       open={isVisible}
-      onCancel={onClose}
-      footer={null}
+      onClose={onClose}
+      placement="right"
     >
-      <List
-        dataSource={componentOptions}
-        renderItem={(item) => (
-          <List.Item>
-            <Button type="link" onClick={() => handleSelect(item.type)} block>
-              {item.name}
-            </Button>
-          </List.Item>
-        )}
-      />
-    </Modal>
+      <div className="grid grid-cols-2 gap-4">
+        {componentOptions.map((component) => (
+          <div
+            key={component.type}
+            className="flex flex-col items-center justify-center cursor-pointer border border-gray-200 rounded-lg p-4 hover:bg-theme"
+            onClick={() => handleSelect(component.type)}
+          >
+            <Image
+              src={component.icon}
+              width={48}
+              height={48}
+              alt={component.name}
+            />
+            <p className="mt-2 text-md font-semibold">{component.name}</p>
+          </div>
+        ))}
+      </div>
+    </Drawer>
   );
 };
 

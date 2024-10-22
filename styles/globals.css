@@ -8,7 +8,7 @@
   --white: #ffffff;
   --black: #343434;
   --gray: #f5f5f5;
-  --gray-dark: #4b5563;
+  --gray-dark: #797b7e;
   /* --theme: #9012ff; */
   --theme: #fcb813;
   --theme-dark: #ffa17c;
@@ -91,13 +91,30 @@ a:hover {
 
 .mavebutton {
   background-color: var(--theme);
-  color: var(--gray-dark);
+  color: var(--black);
   border: 2px solid var(--theme-dark);
   padding: 0.8rem 1rem;
   border-radius: 5px;
   cursor: pointer;
   font-size: 1.2rem;
   font-weight: 600;
+  margin-right: clamp(0.5rem, 1vw, 1rem);
+}
+
+.mavecancelbutton {
+  background-color: var(--gray-dark);
+  color: var(--white);
+  border: 2px solid var(--gray-dark);
+  padding: 0.8rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-right: clamp(0.5rem, 1vw, 1rem);
+}
+
+.ql-editor {
+  min-height: 200px;
 }
 
 .container {

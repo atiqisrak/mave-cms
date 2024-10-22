@@ -107,8 +107,12 @@ const SliderComponent = ({ component, updateComponent, deleteComponent }) => {
               >
                 Submit
               </Button>
-              <Button icon={<CloseOutlined />} onClick={handleCancel} danger>
-                Cancel
+              <Button
+                icon={<CloseOutlined />}
+                onClick={handleCancel}
+                className="mavecancelbutton"
+              >
+                Discard
               </Button>
             </>
           )}

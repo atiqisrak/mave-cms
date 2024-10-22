@@ -83,18 +83,26 @@ const SectionHeader = ({
               onClick={handleEdit}
               className="mr-2"
             />
-            <Button icon={<DeleteOutlined />} onClick={handleDelete} danger />
+            <Button
+              icon={<DeleteOutlined />}
+              onClick={handleDelete}
+              className="mavecancelbutton"
+            />
           </>
         ) : (
           <>
             <Button
               icon={<CheckOutlined />}
               onClick={handleSubmit}
-              className="mr-2 mavebutton"
+              className="mavebutton"
             >
               Submit
             </Button>
-            <Button icon={<CloseOutlined />} onClick={handleCancel} danger>
+            <Button
+              icon={<CloseOutlined />}
+              onClick={handleCancel}
+              className="mavecancelbutton"
+            >
               Cancel
             </Button>
           </>
