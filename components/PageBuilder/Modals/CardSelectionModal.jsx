@@ -143,22 +143,14 @@ const CardSelectionModal = ({ isVisible, onClose, onSelectCard }) => {
           <Button
             icon={<SortAscendingOutlined />}
             onClick={() => handleSortChange("asc")}
-            className={`mr-2 ${
-              sortOrder === "asc"
-                ? "text-gray-600 border-2 border-yellow-600 font-semibold bg-theme"
-                : ""
-            }`}
+            className={`mr-2 ${sortOrder === "asc" ? "mavebutton" : ""}`}
           >
             Ascending
           </Button>
           <Button
             icon={<SortDescendingOutlined />}
             onClick={() => handleSortChange("desc")}
-            className={`${
-              sortOrder === "desc"
-                ? "text-gray-600 border-2 border-yellow-600 font-semibold bg-theme"
-                : ""
-            }`}
+            className={`${sortOrder === "desc" ? "mavebutton" : ""}`}
           >
             Descending
           </Button>

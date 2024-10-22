@@ -69,7 +69,7 @@ export default function NavItems({
         />
         {/* Version */}
         <Link href={"/usermanual/changelog"}>
-          <h3 className="px-2 py-1 rounded-md text-white text-sm font-bold bg-theme">
+          <h3 className="px-2 py-1 rounded-md text-white text-sm font-bold bg-theme border-2 border-themedark">
             {changeLogs && changeLogs.length > 0
               ? changeLogs[0].version
               : "v 1.0.0"}

@@ -164,10 +164,14 @@ const Pages = () => {
     setDeleteConfirmationVisible(false);
   };
 
+  // const handleEditPage = (id) => {
+  //   setCreateMode(true);
+  //   localStorage.setItem("creatorMode", true);
+  //   router.push({ pathname: "/creator", query: { id: id } });
+  // };
+
   const handleEditPage = (id) => {
-    setCreateMode(true);
-    localStorage.setItem("creatorMode", true);
-    router.push({ pathname: "/creator", query: { id: id } });
+    router.push(`/page-builder/${id}`);
   };
 
   const handleCancelEdit = () => {

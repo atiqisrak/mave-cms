@@ -95,22 +95,14 @@ const MediaSelectionModal = ({
           <Button
             icon={<SortAscendingOutlined />}
             onClick={() => handleSortChange("asc")}
-            className={`mr-2 ${
-              sortOrder === "asc"
-                ? "text-gray-600 border-2 border-yellow-600 font-semibold bg-theme"
-                : ""
-            }`}
+            className={`mr-2 ${sortOrder === "asc" ? "mavebutton" : ""}`}
           >
             Ascending
           </Button>
           <Button
             icon={<SortDescendingOutlined />}
             onClick={() => handleSortChange("desc")}
-            className={`${
-              sortOrder === "desc"
-                ? "text-gray-600 border-2 border-yellow-600 font-semibold bg-theme"
-                : ""
-            }`}
+            className={`${sortOrder === "desc" ? "mavebutton" : ""}`}
           >
             Descending
           </Button>
@@ -123,10 +115,7 @@ const MediaSelectionModal = ({
           <Option value="asc">Sort by Date (Ascending)</Option>
           <Option value="desc">Sort by Date (Descending)</Option>
         </Select> */}
-        <Button
-          onClick={handleSubmit}
-          className="bg-theme text-gray-600 border-2 border-yellow-600 font-semibold"
-        >
+        <Button onClick={handleSubmit} className="mavebutton">
           Submit
         </Button>
       </div>

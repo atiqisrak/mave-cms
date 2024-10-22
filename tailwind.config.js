@@ -13,6 +13,7 @@ module.exports = {
         white: "#ffffff",
         black: "#343434",
         bggray: "#E8E8E9",
+        themedark: "#ffa17c",
       },
     },
   },

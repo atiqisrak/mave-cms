@@ -144,7 +144,7 @@ const MenuRow = ({
             <Button
               icon={<SyncOutlined />}
               onClick={handleUpdate}
-              className="bg-theme text-white"
+              className="mavebutton"
             >
               Update
             </Button>
@@ -161,7 +161,7 @@ const MenuRow = ({
             <Button
               icon={<EditOutlined />}
               onClick={() => setEditingMenuId(menu.id)}
-              className="bg-theme text-white"
+              className="mavebutton"
             >
               Edit
             </Button>
