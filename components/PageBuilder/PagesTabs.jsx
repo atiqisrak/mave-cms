@@ -1,7 +1,7 @@
 // components/PageBuilder/PagesTabs.jsx
 
 import React from "react";
-import { Tabs } from "antd";
+import { Spin, Tabs } from "antd";
 import RenderPages from "./Renderpages";
 
 const { TabPane } = Tabs;
@@ -16,26 +16,34 @@ const PagesTabs = ({
   handleEditPageInfo,
 }) => {
   return (
-    <Tabs centered animated defaultActiveKey="1" type="card" className="mt-8">
+    <Tabs centered animated defaultActiveKey="1" className="mt-8">
       <TabPane tab="Pages" key="1">
-        <RenderPages
-          webpages={typePages}
-          handleEditPage={handleEditPage}
-          handleExpand={handleExpand}
-          expandedPageId={expandedPageId}
-          handleDeletePage={handleDeletePage}
-          handleEditPageInfo={handleEditPageInfo}
-        />
+        {typePages ? (
+          <RenderPages
+            webpages={typePages}
+            handleEditPage={handleEditPage}
+            handleExpand={handleExpand}
+            expandedPageId={expandedPageId}
+            handleDeletePage={handleDeletePage}
+            handleEditPageInfo={handleEditPageInfo}
+          />
+        ) : (
+          <Spin size="large" />
+        )}
       </TabPane>
       <TabPane tab="Subpages" key="2">
-        <RenderPages
-          webpages={typeSubpages}
-          handleEditPage={handleEditPage}
-          handleExpand={handleExpand}
-          expandedPageId={expandedPageId}
-          handleDeletePage={handleDeletePage}
-          handleEditPageInfo={handleEditPageInfo}
-        />
+        {typeSubpages ? (
+          <RenderPages
+            webpages={typeSubpages}
+            handleEditPage={handleEditPage}
+            handleExpand={handleExpand}
+            expandedPageId={expandedPageId}
+            handleDeletePage={handleDeletePage}
+            handleEditPageInfo={handleEditPageInfo}
+          />
+        ) : (
+          <Spin size="large" />
+        )}
       </TabPane>
     </Tabs>
   );

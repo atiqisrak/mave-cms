@@ -1,7 +1,7 @@
 // components/PageBuilder/Modals/MediaSelectionModal.jsx
 
 import React, { useState, useEffect } from "react";
-import { Modal, List, Button, Select, message } from "antd";
+import { Modal, List, Button, message, Select, Pagination } from "antd";
 import {
   SortAscendingOutlined,
   SortDescendingOutlined,
@@ -23,11 +23,16 @@ const MediaSelectionModal = ({
   const [sortOrder, setSortOrder] = useState("desc");
   const [selectedMedia, setSelectedMedia] = useState([]);
 
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 12; // Number of items per page
+
   useEffect(() => {
     if (isVisible) {
       fetchMedia();
     }
     setSelectedMedia([]);
+    setCurrentPage(1);
   }, [isVisible]);
 
   const fetchMedia = async () => {
@@ -54,6 +59,7 @@ const MediaSelectionModal = ({
   const handleSortChange = (value) => {
     setSortOrder(value);
     setSortedMedia(sortMedia(mediaList, value));
+    setCurrentPage(1); // Reset to first page on sort change
   };
 
   const handleSelection = (item) => {
@@ -81,52 +87,85 @@ const MediaSelectionModal = ({
     return selectedMedia.some((media) => media.id === item.id);
   };
 
+  // Handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  // Calculate items for the current page
+  const paginatedMedia = sortedMedia.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
   return (
     <Modal
       title="Select Media"
-      open={isVisible}
+      visible={isVisible}
       onCancel={onClose}
       onOk={handleSubmit}
       okText="Submit"
       width={900}
-    >
-      <div className="flex justify-between items-center mb-4">
-        <div>
-          <Button
-            icon={<SortAscendingOutlined />}
-            onClick={() => handleSortChange("asc")}
-            className={`mr-2 ${sortOrder === "asc" ? "mavebutton" : ""}`}
-          >
-            Ascending
-          </Button>
-          <Button
-            icon={<SortDescendingOutlined />}
-            onClick={() => handleSortChange("desc")}
-            className={`${sortOrder === "desc" ? "mavebutton" : ""}`}
-          >
-            Descending
-          </Button>
-        </div>
-        {/* <Select
-          value={sortOrder}
-          onChange={handleSortChange}
-          style={{ width: 200 }}
+      footer={[
+        <Button key="cancel" onClick={onClose} className="mavecancelbutton">
+          Cancel
+        </Button>,
+        <Button
+          key="submit"
+          type="primary"
+          onClick={handleSubmit}
+          disabled={selectedMedia.length === 0}
+          className="mavebutton"
         >
-          <Option value="asc">Sort by Date (Ascending)</Option>
-          <Option value="desc">Sort by Date (Descending)</Option>
-        </Select> */}
-        <Button onClick={handleSubmit} className="mavebutton">
           Submit
-        </Button>
+        </Button>,
+      ]}
+    >
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4">
+        {/* Sorting Controls */}
+        <div className="flex items-center gap-2">
+          <span className="font-semibold">Sort By:</span>
+          <Select
+            value={sortOrder}
+            onChange={handleSortChange}
+            className="w-32"
+            size="large"
+          >
+            <Option value="asc">Ascending</Option>
+            <Option value="desc">Descending</Option>
+          </Select>
+        </div>
+
+        {/* Submit Button */}
+        {selectionMode === "single" && (
+          <Button
+            type="primary"
+            onClick={handleSubmit}
+            disabled={selectedMedia.length === 0}
+            className="mavebutton"
+          >
+            Submit
+          </Button>
+        )}
       </div>
+
+      {/* Media List */}
       <List
-        grid={{ gutter: 16, column: 4 }}
-        dataSource={sortedMedia}
+        grid={{
+          gutter: 16,
+          xs: 1,
+          sm: 2,
+          md: 3,
+          lg: 4,
+          xl: 4,
+          xxl: 6,
+        }}
+        dataSource={paginatedMedia}
         loading={loading}
         renderItem={(item) => (
           <List.Item>
             <div
-              className={`border-2 border-theme rounded-md cursor-pointer ${
+              className={`relative border-2 rounded-md cursor-pointer ${
                 isItemSelected(item) ? "border-theme" : "border-transparent"
               }`}
               onClick={() => handleSelection(item)}
@@ -137,22 +176,36 @@ const MediaSelectionModal = ({
                 width={250}
                 height={200}
                 objectFit="cover"
-                preview={false}
-                loading="lazy"
+                layout="responsive"
                 className="rounded-md"
+                priority={false}
               />
-              <p className="mt-2 text-center">{item.title}</p>
+              <p className="mt-2 text-center text-sm font-medium">
+                {item.title}
+              </p>
               {isItemSelected(item) && (
-                <div className="absolute top-0 left-0 w-full h-full bg-black opacity-90 rounded-md">
-                  <div className="flex justify-center items-center w-full h-full">
-                    <p className="text-white text-xl font-bold">Selected</p>
-                  </div>
+                <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center rounded-md">
+                  <span className="text-white text-lg font-semibold">
+                    Selected
+                  </span>
                 </div>
               )}
             </div>
           </List.Item>
         )}
       />
+
+      {/* Pagination Controls */}
+      <div className="flex justify-center mt-4">
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={sortedMedia.length}
+          onChange={handlePageChange}
+          showSizeChanger={false}
+          showQuickJumper
+        />
+      </div>
     </Modal>
   );
 };

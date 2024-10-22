@@ -1,3 +1,5 @@
+// pages/pages.jsx
+
 import { message, Spin } from "antd";
 import React, { useState, useEffect } from "react";
 import instance from "../../axios";
@@ -7,14 +9,13 @@ import CreatePageModal from "../../components/PageBuilder/CreatePageModal";
 import PagesTabs from "../../components/PageBuilder/PagesTabs";
 
 const Pages = () => {
-  const [pages, setPages] = useState([]);
   const [typePages, setTypePages] = useState([]);
   const [typeSubpages, setTypeSubpages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [expandedPageId, setExpandedPageId] = useState(null);
   const [sortType, setSortType] = useState("asc");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [itemsPerPage, setItemsPerPage] = useState(10); // Default items per page
 
   const router = useRouter();
 
@@ -53,8 +54,9 @@ const Pages = () => {
     fetchPages();
   }, []);
 
+  // Sort typePages whenever sortType changes
   useEffect(() => {
-    const sortedPages = typePages.sort((a, b) => {
+    const sortedPages = [...typePages].sort((a, b) => {
       if (sortType === "asc") {
         return a.id - b.id;
       } else {
@@ -63,12 +65,6 @@ const Pages = () => {
     });
     setTypePages(sortedPages);
   }, [sortType]);
-
-  const handleReset = () => {
-    fetchPages();
-    setSortType("asc");
-    setSearchTerm("");
-  };
 
   const handleExpand = (pageId) => {
     setExpandedPageId((prevId) => (prevId === pageId ? null : pageId));
@@ -111,6 +107,11 @@ const Pages = () => {
     pageNameBn,
     slug,
     pageType,
+    metaTitle,
+    metaDescription,
+    keywords,
+    metaImage,
+    metaImageAlt,
   }) => {
     try {
       const response = await instance.put(`/pages/${id}`, {
@@ -120,6 +121,11 @@ const Pages = () => {
         additional: [
           {
             pageType: pageType,
+            metaTitle: metaTitle,
+            metaDescription: metaDescription,
+            keywords: keywords,
+            metaImage: metaImage,
+            metaImageAlt: metaImageAlt,
           },
         ],
       });
@@ -134,12 +140,20 @@ const Pages = () => {
                   page_name_en: pageNameEn,
                   page_name_bn: pageNameBn,
                   slug: slug,
-                  additional: [{ pageType }],
+                  additional: [
+                    {
+                      pageType,
+                      metaTitle,
+                      metaDescription,
+                      keywords,
+                      metaImage,
+                      metaImageAlt,
+                    },
+                  ],
                 }
               : page
           )
         );
-        fetchPages();
       } else {
         message.error("Failed to update page info.");
       }
@@ -167,6 +181,15 @@ const Pages = () => {
     setTypeSubpages(filteredSubPages);
   };
 
+  const handleShowChange = (value) => {
+    setItemsPerPage(value);
+  };
+
+  const handleFilter = () => {
+    // Implement your filter logic here
+    message.info("Filter functionality is not implemented yet.");
+  };
+
   // Loading State
   if (loading) {
     return (
@@ -177,7 +200,7 @@ const Pages = () => {
   }
 
   return (
-    <div className="mavecontainer bg-gray-50 rounded-xl">
+    <div className="mavecontainer bg-gray-50 rounded-xl p-4">
       {/* Header */}
       <PagesHeader
         onSearch={handlePageSearch}
@@ -186,6 +209,8 @@ const Pages = () => {
         onCancelCreate={closeCreateModal}
         sortType={sortType}
         setSortType={setSortType}
+        onShowChange={handleShowChange}
+        handleFilter={handleFilter}
       />
 
       {/* Create Page Modal */}
@@ -193,12 +218,14 @@ const Pages = () => {
         visible={createModalVisible}
         onCancel={closeCreateModal}
         onPageCreated={handlePageCreated}
+        fetchPages={fetchPages}
+        setCreateModalVisible={setCreateModalVisible}
       />
 
       {/* Tabs for Pages and Subpages */}
       <PagesTabs
-        typePages={typePages}
-        typeSubpages={typeSubpages}
+        typePages={typePages.slice(0, itemsPerPage)}
+        typeSubpages={typeSubpages.slice(0, itemsPerPage)}
         handleExpand={handleExpand}
         expandedPageId={expandedPageId}
         handleDeletePage={handleDeletePage}

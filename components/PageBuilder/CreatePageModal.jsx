@@ -5,7 +5,13 @@ import { Modal, Input, Button, Row, Col, message } from "antd";
 import { PlusCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import instance from "../../axios";
 
-const CreatePageModal = ({ visible, onCancel, onPageCreated }) => {
+const CreatePageModal = ({
+  visible,
+  onCancel,
+  onPageCreated,
+  fetchPages,
+  setCreateModalVisible,
+}) => {
   const [newPageTitleEn, setNewPageTitleEn] = useState("");
   const [newPageTitleBn, setNewPageTitleBn] = useState("");
   const [newSlug, setNewSlug] = useState("");
@@ -38,6 +44,16 @@ const CreatePageModal = ({ visible, onCancel, onPageCreated }) => {
         type: "Page",
         favicon_id: 10, // Assuming default favicon_id; adjust as needed
         slug: newSlug,
+        additional: [
+          {
+            pageType: "Page",
+            metaTitle: newPageTitleEn,
+            metaDescription: "",
+            keywords: [],
+            metaImage: "",
+            metaImageAlt: "",
+          },
+        ],
       });
 
       if (response.status === 201) {
@@ -47,6 +63,9 @@ const CreatePageModal = ({ visible, onCancel, onPageCreated }) => {
         setNewPageTitleEn("");
         setNewPageTitleBn("");
         setNewSlug("");
+        fetchPages();
+        // setCreateModalVisible(false);
+        handleCancel();
       } else {
         message.error("Failed to create page.");
       }
@@ -66,9 +85,15 @@ const CreatePageModal = ({ visible, onCancel, onPageCreated }) => {
     onCancel();
   };
 
+  // Generate slug from page title with hyphens instead of spaces and lowercase
+  const generateSlug = () => {
+    const slug = newPageTitleEn.trim().toLowerCase().replace(/\s+/g, "-");
+    setNewSlug(slug);
+  };
+
   return (
     <Modal
-      visible={visible}
+      open={visible}
       title="Create New Page"
       onCancel={handleCancel}
       footer={null}
@@ -92,12 +117,17 @@ const CreatePageModal = ({ visible, onCancel, onPageCreated }) => {
           />
         </Col>
         <Col span={24}>
-          <Input
-            placeholder="Page Slug (e.g., about-us)"
-            value={newSlug}
-            onChange={(e) => setNewSlug(e.target.value)}
-            className="text-lg"
-          />
+          <div className="flex gap-2 items-center">
+            <Input
+              placeholder="Page Slug (e.g., about-us)"
+              className="text-lg"
+              value={newSlug}
+              onChange={(e) => setNewSlug(e.target.value)}
+            />
+            <Button onClick={() => generateSlug()} className="mavebutton">
+              Generate
+            </Button>
+          </div>
           <span className="text-xs text-gray-500">
             *Use only lowercase letters, numbers, and hyphens.
           </span>

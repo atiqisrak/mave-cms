@@ -2,6 +2,7 @@
 
 import React, { useEffect } from "react";
 import RenderPages from "./Renderpages";
+import { Spin } from "antd";
 
 const PagesListContainer = ({
   pages,
@@ -15,7 +16,7 @@ const PagesListContainer = ({
     // Any additional logic if needed
   }, [pages]);
 
-  return (
+  return pages ? (
     <RenderPages
       webpages={pages}
       handleEditPage={handleEditPage}
@@ -24,6 +25,8 @@ const PagesListContainer = ({
       handleDeletePage={handleDeletePage}
       handleEditPageInfo={handleEditPageInfo}
     />
+  ) : (
+    <Spin size="large" />
   );
 };
 

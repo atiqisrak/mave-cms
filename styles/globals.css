@@ -123,6 +123,23 @@ a:hover {
   display: none;
 }
 
+.ant-tabs .ant-tabs-tab-btn {
+  color: var(--black);
+  font-size: clamp(0.8rem, 1vw, 1.2rem);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+.ant-tabs .ant-tabs-tab-btn:hover {
+  color: var(--theme);
+  cursor: pointer;
+}
+.ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--theme);
+  font-size: clamp(0.8rem, 1vw, 1.2rem);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
 .container {
   max-width: var(--max-width);
   margin: 0 auto;
