@@ -16,7 +16,6 @@ import {
 import UploadMedia from "../components/UploadMedia";
 import instance from "../axios";
 import { setPageTitle } from "../global/constants/pageTitle";
-import Loader from "../components/Loader";
 import {
   CheckCircleTwoTone,
   CloseCircleOutlined,
@@ -36,7 +35,6 @@ import {
   VideoCameraOutlined,
 } from "@ant-design/icons";
 const { Option } = Select;
-import { Document, Page } from "react-pdf";
 import Image from "next/image";
 import Documents from "./documents";
 
@@ -55,14 +53,7 @@ const Gallery = () => {
   const [pdfs, setPdfs] = useState([]);
   const [editMode, setEditMode] = useState(false);
 
-  const [numPages, setNumPages] = useState();
-  const [pageNumber, setPageNumber] = useState(1);
-
   const [bulkSelectionVisible, setBulkSelectionVisible] = useState(false);
-
-  const onDocumentLoadSuccess = ({ numPages }) => {
-    setNumPages(numPages);
-  };
 
   const [currentPage, setCurrentPage] = useState(1);
   const showModal = () => {
@@ -228,9 +219,6 @@ const Gallery = () => {
   return (
     <div className="login-page">
       <div className="mavecontainer media-area login-page-section">
-        {/* <h1 style={{ textAlign: "center" }}>Upload</h1> */}
-        {/* <hr style={{ marginBottom: "1rem", marginTop: ".5rem" }} /> */}
-
         <center>
           <div
             onClick={showModal}
@@ -241,8 +229,6 @@ const Gallery = () => {
               justifyContent: "center",
               alignItems: "center",
               marginBottom: "0 5rem 5rem",
-              // backgroundColor: "#e2f3ff",
-              // border: "1px dashed #006eff",
               borderRadius: "15px",
               padding: "0 3rem 3rem",
               margin: "0 2rem 2rem",

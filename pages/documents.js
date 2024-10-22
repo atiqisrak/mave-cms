@@ -1,25 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Button,
-  Col,
-  Image,
-  Modal,
-  Pagination,
-  Row,
-  Select,
-  Skeleton,
-  Spin,
-  message,
-} from "antd";
+import { Button, Col, Modal, Row, message } from "antd";
 import instance from "../axios";
 import { setPageTitle } from "../global/constants/pageTitle";
 import Loader from "../components/Loader";
-import {
-  FilterOutlined,
-  SyncOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
-const { Option } = Select;
 const DOC_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
 
 const Documents = () => {
