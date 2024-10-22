@@ -84,7 +84,7 @@ const CMSComponentGallery = ({ children, router }) => {
   const toggleCreatorMode = () => {
     setCreatormode(!creatormode);
     localStorage.setItem("creatormode", !creatormode);
-    creatormode ? router.push("/dashboard") : router.push("/creator");
+    creatormode ? router.push("/dashboard") : router.push("/pages");
   };
 
   return (

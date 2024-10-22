@@ -269,7 +269,7 @@ const Pages = () => {
                 items: [
                   {
                     title: "Pages",
-                    onClick: () => router.push("/creator/pages"),
+                    onClick: () => router.push("/pages"),
                   },
                   {
                     title: "Blogs",

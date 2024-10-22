@@ -147,14 +147,6 @@ const MenuItems = () => {
           fetchMenuItems={fetchMenuItems}
         />
       </Modal>
-      {/* {isAddMenuItemOpen && (
-        <AddMenuItemForm
-          pages={pages}
-          menuItems={menuItems}
-          onCancel={handleCancelAddMenuItem}
-          fetchMenuItems={fetchMenuItems}
-        />
-      )} */}
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <Loader />

@@ -7,7 +7,7 @@ import { Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
 
-const SectionList = ({ sections, setSections }) => {
+const SectionList = ({ sections = [], setSections }) => {
   const onDragEnd = (result) => {
     if (!result.destination) {
       return;
@@ -26,7 +26,7 @@ const SectionList = ({ sections, setSections }) => {
       sectionTitle: "New Section",
       data: [],
     };
-    setSections([...sections, newSection]);
+    setSections([...(sections || []), newSection]);
   };
 
   return (
