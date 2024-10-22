@@ -35,7 +35,7 @@ const SectionList = ({ sections, setSections }) => {
         <Droppable droppableId="droppable-sections" type="SECTION">
           {(provided) => (
             <div ref={provided.innerRef} {...provided.droppableProps}>
-              {sections.map((section, index) => (
+              {sections?.map((section, index) => (
                 <Section
                   key={section._id}
                   section={section}

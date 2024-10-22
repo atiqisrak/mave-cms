@@ -24,7 +24,7 @@ const ComponentSelectorModal = ({ isVisible, onClose, onSelectComponent }) => {
   return (
     <Modal
       title="Select Component Type"
-      visible={isVisible}
+      open={isVisible}
       onCancel={onClose}
       footer={null}
     >
