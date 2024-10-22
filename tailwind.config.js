@@ -17,6 +17,10 @@ module.exports = {
         themedark: "#ffa17c",
         darkgray: "#797B7E",
       },
+      spacing: {
+        80: "20rem",
+        260: "65rem",
+      },
     },
   },
   plugins: [],

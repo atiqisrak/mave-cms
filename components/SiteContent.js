@@ -1,7 +1,7 @@
-// components/SiteContent.js
+// components/SiteContent.jsx
 
 import React, { useEffect, useState } from "react";
-import { Image, Layout } from "antd";
+import { Image, Layout, Button, Modal } from "antd";
 import { useRouter } from "next/router";
 import NavItems from "./ui/NavItems";
 import SideMenuItems from "./ui/SideMenuItems";
@@ -64,12 +64,13 @@ const SiteContent = ({ children }) => {
 
   if (loading) return <Loader />;
   if (authPages.includes(currentRoute)) {
-    return <Content style={{ minHeight: "100vh" }}>{children}</Content>;
+    return <Content className="min-h-screen">{children}</Content>;
   }
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Header className="fixed z-50 w-full p-0 bg-white shadow-md">
+    <Layout className="min-h-screen">
+      {/* Fixed Header */}
+      <Header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md flex items-center px-4 md:px-8">
         <NavItems
           user={user}
           token={token}
@@ -78,75 +79,69 @@ const SiteContent = ({ children }) => {
           setTheme={setTheme}
         />
       </Header>
-      <Layout className="mt-16">
-        <div
-          className={`collapse-button fixed z-50 cursor-pointer text-white ${
-            collapsed ? "left-0" : "left-64"
-          } transition-all duration-700 top-20`}
-          onClick={() => handleCollapse(!collapsed)}
-        >
-          {collapsed ? (
-            <Image
-              src="/icons/mave_icons/expand.svg"
-              alt="Expand"
-              preview={false}
-              className="ml-16 duration-700"
-              width={40}
-              height={40}
-            />
-          ) : (
-            <Image
-              src="/icons/mave_icons/collapse.svg"
-              alt="Collapse"
-              preview={false}
-              className="ml-4 duration-700"
-              width={40}
-              height={40}
-            />
-          )}
-        </div>
-        <Sider
-          collapsible
-          collapsed={collapsed}
-          onCollapse={handleCollapse}
-          theme={theme}
-          width={260}
-          style={{
-            height: "100vh",
-            position: "fixed",
-            left: 0,
-            top: 64,
-            bottom: 0,
-            padding: "4rem 1.4rem 0 1.4rem",
-            borderRight: "1px solid #f0f0f0",
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.6)",
-            transition: "all 0.5s",
-          }}
-        >
-          <SideMenuItems
-            token={token}
-            user={user}
-            handleLogout={logout}
+
+      <Layout className="pt-16">
+        {/* Side Navigation */}
+        <div className="fixed">
+          <Sider
+            collapsible
             collapsed={collapsed}
+            onCollapse={handleCollapse}
             theme={theme}
-            setTheme={setTheme}
-          />
-        </Sider>
-        <Layout
-          className="site-layout"
-          style={{
-            transition: "margin-left 0.5s, padding-left 0.5s",
-          }}
-        >
-          <Content
-            className="bg-bggray"
-            style={{
-              paddingTop: "5em",
-              marginLeft: collapsed ? 0 : 120,
-              transition: "all 0.3s",
-            }}
+            width={220}
+            className="top-0 left-0 h-screen py-20 px-2 fixed z-40
+          bg-white shadow-lg transition-all duration-300"
+            breakpoint="lg"
+            collapsedWidth={80}
+            trigger={null}
           >
-            {children}
+            <SideMenuItems
+              token={token}
+              user={user}
+              handleLogout={logout}
+              collapsed={collapsed}
+              theme={theme}
+              setTheme={setTheme}
+            />
+          </Sider>
+        </div>
+        {/* Main Content Area */}
+        <Layout
+          className={`transition-all duration-300 ${
+            collapsed ? "lg:ml-[0px]" : "lg:ml-[200px]"
+          }`}
+        >
+          {/* Collapse Button */}
+          <div
+            className={`hidden lg:flex fixed top-24 z-40
+              ${
+                collapsed
+                  ? "left-[50px] lg:left-[52px]"
+                  : "left-[160px] lg:left-[200px]"
+              } transition-all duration-300
+              `}
+          >
+            <Button
+              onClick={handleCollapse}
+              className={`bg-transparent border-0 rounded-full p-2 transition-all duration-300`}
+            >
+              <Image
+                src={
+                  collapsed
+                    ? "/icons/mave_icons/expand.svg"
+                    : "/icons/mave_icons/collapse.svg"
+                }
+                alt={collapsed ? "Expand" : "Collapse"}
+                width={32}
+                height={32}
+                preview={false}
+              />
+            </Button>
+          </div>
+
+          <Content className="flex-1 py-4 md:py-8 bg-gray-100">
+            {/* Responsive Container */}
+            <div className="mx-auto">{children}</div>
           </Content>
         </Layout>
       </Layout>
