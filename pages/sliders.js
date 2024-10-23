@@ -1,77 +1,50 @@
-import {
-  Breadcrumb,
-  Button,
-  Carousel,
-  Col,
-  Form,
-  Image,
-  Input,
-  Modal,
-  Popconfirm,
-  Radio,
-  Row,
-  Segmented,
-  Select,
-  Space,
-  Tabs,
-  Typography,
-  message,
-  notification,
-} from "antd";
+// pages/sliders.jsx
+
 import React, { useEffect, useState } from "react";
-import instance from "../axios";
-import Loader from "../components/Loader";
+import { Breadcrumb, Button, Tabs, message, Spin, Space, Form } from "antd";
 import {
-  CloseOutlined,
-  CopyOutlined,
-  DeleteOutlined,
-  EditOutlined,
   HomeFilled,
-  LeftOutlined,
   PlusCircleOutlined,
+  CopyOutlined,
+  LeftOutlined,
   RightOutlined,
-  UploadOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
-import MediaSelectionModal from "../components/MediaSelectionModal";
-import CreateSliderComponent from "../components/CreateSliderComponent";
-import RichTextEditor from "../components/RichTextEditor";
-import ImageSliders from "../components/ImageSliders";
-import CardSliders from "../components/CardSliders";
-import router from "next/router";
+import instance from "../axios";
+import Loader from "../components/Loader";
+import SliderList from "../components/slider/SliderList";
+import SliderForm from "../components/slider/SliderForm";
+import SlidersHeader from "../components/slider/SlidersHeader";
+
+const { TabPane } = Tabs;
 
 const Sliders = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const router = useRouter();
+  const [isFormVisible, setIsFormVisible] = useState(false);
   const [sliders, setSliders] = useState([]);
   const [imageSliders, setImageSliders] = useState([]);
   const [cardSliders, setCardSliders] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { Title } = Typography;
   const [selectedMedia, setSelectedMedia] = useState([]);
-  const [api, contextHolder] = notification.useNotification();
-  const [form] = Form.useForm();
-  const [response, setResponse] = useState();
+  const [selectedCards, setSelectedCards] = useState([]);
   const [editingItemId, setEditingItemId] = useState(null);
-  const [responseData, setResponseData] = useState();
-  const [showCreateSliderForm, setShowCreateSliderForm] = useState(false);
-  const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
-  const [cards, setCards] = useState([]);
+  const [form] = Form.useForm();
   const [type, setType] = useState("image");
+  const [filterOptions, setFilterOptions] = useState({
+    parentMenus: [], // Example filter option, adjust as needed
+  });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortType, setSortType] = useState("asc");
+
+  const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
 
   const CustomPrevArrow = ({ onClick }) => (
     <Button
       icon={<LeftOutlined />}
       onClick={onClick}
       size="large"
-      style={{
-        position: "absolute",
-        top: "50%",
-        left: 0,
-        zIndex: "1",
-        backgroundColor: "transparent",
-        border: "none",
-      }}
-    ></Button>
+      className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-transparent border-none"
+    />
   );
 
   const CustomNextArrow = ({ onClick }) => (
@@ -79,337 +52,192 @@ const Sliders = () => {
       icon={<RightOutlined />}
       onClick={onClick}
       size="large"
-      style={{
-        position: "absolute",
-        top: "50%",
-        right: 0,
-        zIndex: "1",
-        backgroundColor: "transparent",
-        border: "none",
-      }}
-    ></Button>
+      className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-transparent border-none"
+    />
   );
 
   const fetchSliders = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const response = await instance("/sliders");
+      const response = await instance.get("/sliders");
       if (response.data) {
-        setSliders(response.data?.sort((a, b) => b.id - a.id));
-
-        response.data?.map((slider) => {
-          if (slider.type === "card") {
-            setCardSliders((prev) => [...prev, slider]);
-          } else {
-            setImageSliders((prev) => [...prev, slider]);
-          }
-        });
-        setLoading(false);
+        setSliders(response.data);
+        setImageSliders(
+          response.data.filter((slider) => slider.type === "image")
+        );
+        setCardSliders(
+          response.data.filter((slider) => slider.type === "card")
+        );
       } else {
-        message.error("Sliders couldn't be fetched");
+        message.error("Failed to fetch sliders.");
       }
     } catch (error) {
-      message.error("Sliders couldn't be fetched");
+      message.error("Failed to fetch sliders.");
     }
+    setLoading(false);
   };
 
-  const fetchCards = async () => {
-    try {
-      setLoading(true);
-      const response = await instance.get("/cards");
-      if (response.data) {
-        setCards(response.data);
-        console.log("Cards fetched successfully");
-        setLoading(false);
-      } else {
-        message.error("Cards couldn't be fetched");
-      }
-    } catch (error) {
-      message.error("Cards couldn't be fetched");
-    }
-  };
+  const fetchFilterOptions = async () => {};
 
   useEffect(() => {
-    fetchCards();
+    // fetchFilterOptions();
     fetchSliders();
-  }, [responseData, response]);
+  }, []);
 
-  const showModal = () => {
-    setIsModalVisible(true);
-    // router.push("/create-slider");
+  const handleAddSlider = () => {
+    setIsFormVisible(true);
   };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
+  const handleCancelForm = () => {
+    setIsFormVisible(false);
+    setEditingItemId(null);
+    form.resetFields();
+    setSelectedMedia([]);
+    setSelectedCards([]);
   };
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-  const handleShowCreateSliderForm = () => {
-    setShowCreateSliderForm((prev) => !prev);
+  const handleEditClick = (id) => {
+    setEditingItemId(id);
+    setIsFormVisible(true);
+    const slider = sliders.find((s) => s.id === id);
+    if (slider) {
+      form.setFieldsValue({
+        title_en: slider.title_en,
+        title_bn: slider.title_bn,
+        description_en: slider.description_en,
+        description_bn: slider.description_bn,
+        type: slider.type,
+      });
+      setSelectedMedia(slider.media_ids || []);
+      setSelectedCards(slider.card_ids || []);
+      setType(slider.type);
+    }
   };
 
-  const handDeleteSlider = async (e, id) => {
+  const handleDeleteSlider = async (id) => {
     try {
       setLoading(true);
-      const response = await instance.delete(`/sliders/${id}`);
-
-      if (response?.data) {
-        setResponseData(response?.data);
-        console.log("Slider deleted successfully");
-        setLoading(false);
-      } else {
-        // console.error("Error deleting slider:", response.data);
-        message.error("Error deleting slider");
-        setLoading(false);
-      }
-    } catch (e) {
-      // console.error("Error deleting slider:", e);
-      message.error("Error deleting slider");
+      await instance.delete(`/sliders/${id}`);
+      message.success("Slider deleted successfully.");
+      fetchSliders();
+    } catch (error) {
+      message.error("Failed to delete slider.");
       setLoading(false);
     }
   };
-  const handleEditClick = (itemId) => {
-    setEditingItemId(itemId);
-  };
-  const handleCancelEdit = () => {
-    setEditingItemId(null);
-  };
-  const handleSubmit = async (values) => {
+
+  const handleSearch = async (value) => {
+    if (!value) {
+      fetchSliders();
+      return;
+    }
     setLoading(true);
-
-    const slider = sliders.find((slider) => slider.id === editingItemId);
-    const updatedSlider = {
-      title_en: values.title_en ? values.title_en : slider?.title_en,
-      title_bn: values.title_bn ? values.title_bn : slider?.title_bn,
-      description_en: values.description_en
-        ? values.description_en
-        : slider?.description_en,
-      description_bn: values.description_bn
-        ? values.description_bn
-        : slider?.description_bn,
-      type: values.type ? values.type : slider?.type,
-      media_ids: selectedMedia.length ? selectedMedia : slider?.media_ids,
-      card_ids: values.card_ids ? values.card_ids : slider?.card_ids,
-    };
-
     try {
-      const response = await instance.put(
-        `/sliders/${editingItemId}`,
-        updatedSlider
-      );
-      if (response.status === 200) {
-        setResponse(response);
-        setEditingItemId(null);
-        setSelectedMedia([]);
-        setLoading(false);
-        window.location.reload();
+      const response = await instance.get("/sliders/search", {
+        params: { query: value },
+      });
+      if (response.data) {
+        setSliders(response.data);
+        setImageSliders(
+          response.data.filter((slider) => slider.type === "image")
+        );
+        setCardSliders(
+          response.data.filter((slider) => slider.type === "card")
+        );
       } else {
-        console.error("Error updating slider:", response.data);
+        message.error("No sliders found.");
       }
     } catch (error) {
-      console.error("Error updating slider:", error);
-      setLoading(false);
+      message.error("Search failed.");
     }
+    setLoading(false);
+  };
+
+  const handleFilter = () => {
+    setIsFilterModalVisible(true);
+  };
+
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
+
+  const applyFilters = (filters) => {
+    // Implement your filter logic based on the filters received
+    // For example, filter by slider type or other criteria
+    let filteredSliders = [...sliders];
+    if (filters.type) {
+      filteredSliders = filteredSliders.filter(
+        (slider) => slider.type === filters.type
+      );
+    }
+    // Add more filter conditions as needed
+    setSliders(filteredSliders);
+    setImageSliders(
+      filteredSliders.filter((slider) => slider.type === "image")
+    );
+    setCardSliders(filteredSliders.filter((slider) => slider.type === "card"));
+  };
+
+  const resetFilters = () => {
+    fetchSliders();
   };
 
   return (
-    <div className="mavecontainer">
-      <div className="login-page">
-        {contextHolder}
-        <div className="mavecontainer media-area login-page-section">
-          <div className="ViewContentContiner" style={{ marginBottom: "5rem" }}>
-            <Space
-              style={{
-                display: "grid",
-                gridTemplateColumns: "3fr 1fr",
-                alignItems: "center",
-              }}
-            >
-              <Breadcrumb
-                style={{
-                  fontSize: "1.2em",
-                  marginBottom: "1em",
-                }}
-                items={[
-                  {
-                    href: "/",
-                    title: <HomeFilled />,
-                  },
-                  {
-                    title: "Components",
-                  },
-                  {
-                    title: "Sliders",
-                    menu: {
-                      items: [
-                        {
-                          title: "Gallery",
-                          onClick: () => router.push("/gallery"),
-                        },
-                        {
-                          title: "Menus Items",
-                          onClick: () => router.push("/menuitems"),
-                        },
-                        {
-                          title: "Menus",
-                          onClick: () => router.push("/menus"),
-                        },
-                        {
-                          title: "Navbars",
-                          onClick: () => router.push("/navbars"),
-                        },
-                        {
-                          title: "Cards",
-                          onClick: () => router.push("/cards"),
-                        },
-                        {
-                          title: "Forms",
-                          onClick: () => router.push("/forms"),
-                        },
-                        {
-                          title: "Footers",
-                          onClick: () => router.push("/footer"),
-                        },
-                      ],
-                    },
-                  },
-                ]}
-              />
-              <div
-                className="buttonHolder"
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr",
-                  gap: "1em",
-                }}
-              >
-                <Button
-                  type="primary"
-                  onClick={() => handleShowCreateSliderForm()}
-                  icon={<PlusCircleOutlined />}
-                  style={{
-                    backgroundColor: "var(--themes)",
-                    borderColor: "var(--themes)",
-                    color: "white",
-                    borderRadius: "10px",
-                    fontSize: "1.2em",
-                    // paddingBottom: "1.8em",
-                    width: "15em",
-                  }}
-                >
-                  Add New Slider
-                </Button>
-
-                <Button
-                  type="primary"
-                  style={{
-                    backgroundColor: "var(--theme)",
-                    borderColor: "var(--theme)",
-                    color: "white",
-                    borderRadius: "10px",
-                    fontSize: "1.2em",
-                  }}
-                  icon={<CopyOutlined />}
-                  onClick={() => {
-                    navigator.clipboard.writeText(
-                      `${process.env.NEXT_PUBLIC_API_BASE_URL}/sliders`
-                    );
-                    message.success("API Endpoint Copied");
-                  }}
-                >
-                  Copy API Endpoint
-                </Button>
-              </div>
-            </Space>
-
-            {showCreateSliderForm && (
-              <CreateSliderComponent
-                loading={loading}
-                setLoading={setLoading}
-                response={response}
-                setResponse={setResponse}
-                setShowCreateSliderForm={setShowCreateSliderForm}
-                cards={cards}
-              ></CreateSliderComponent>
-            )}
-
-            {loading ? (
-              <Loader />
-            ) : (
-              <>
-                <>
-                  <Tabs
-                    defaultActiveKey="1"
-                    type="card"
-                    animated
-                    centered
-                    onChange={(key) => {
-                      console.log(key);
-                    }}
-                    style={{
-                      marginTop: "2rem",
-                    }}
-                  >
-                    <Tabs.TabPane tab="Image Sliders" key="1">
-                      <ImageSliders
-                        sliders={imageSliders}
-                        CustomNextArrow={CustomNextArrow}
-                        CustomPrevArrow={CustomPrevArrow}
-                        MEDIA_URL={MEDIA_URL}
-                        handleEditClick={handleEditClick}
-                        handleCancelEdit={handleCancelEdit}
-                        handDeleteSlider={handDeleteSlider}
-                        editingItemId={editingItemId}
-                        handleSubmit={handleSubmit}
-                        form={form}
-                        cards={cards}
-                        showModal={showModal}
-                        isModalVisible={isModalVisible}
-                        setIsModalVisible={setIsModalVisible}
-                        handleOk={handleOk}
-                        handleCancel={handleCancel}
-                        selectedMedia={selectedMedia}
-                        setSelectedMedia={setSelectedMedia}
-                        setType={setType}
-                        type={type}
-                        fetchSliders={fetchSliders}
-                      />
-                    </Tabs.TabPane>
-                    <Tabs.TabPane tab="Card Sliders" key="2">
-                      <CardSliders
-                        sliders={cardSliders}
-                        CustomNextArrow={CustomNextArrow}
-                        CustomPrevArrow={CustomPrevArrow}
-                        MEDIA_URL={MEDIA_URL}
-                        handleEditClick={handleEditClick}
-                        handleCancelEdit={handleCancelEdit}
-                        handDeleteSlider={handDeleteSlider}
-                        editingItemId={editingItemId}
-                        handleSubmit={handleSubmit}
-                        form={form}
-                        cards={cards}
-                        showModal={showModal}
-                        isModalVisible={isModalVisible}
-                        setIsModalVisible={setIsModalVisible}
-                        handleOk={handleOk}
-                        handleCancel={handleCancel}
-                        selectedMedia={selectedMedia}
-                        setSelectedMedia={setSelectedMedia}
-                        setType={setType}
-                        type={type}
-                        fetchSliders={fetchSliders}
-                      />
-                    </Tabs.TabPane>
-                  </Tabs>
-                  {/* </Segmented> */}
-                </>
-              </>
-            )}
-          </div>
+    <div className="mavecontainer bg-gray-50 rounded-xl">
+      <SlidersHeader
+        onAddSlider={handleAddSlider}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        sortType={sortType}
+        setSortType={setSortType}
+        handleFilter={handleFilter}
+        onShowChange={(value) => {
+          // Handle items per page change if needed
+          // For now, it's managed in SliderList
+        }}
+        handleSelectAll={() => {
+          // Implement select all logic if applicable
+        }}
+        allSelected={false} // Adjust based on your selection logic
+        filterOptions={filterOptions}
+        applyFilters={applyFilters}
+        resetFilters={resetFilters}
+      />
+      <SliderForm
+        form={form}
+        type={type}
+        setType={setType}
+        selectedMedia={selectedMedia}
+        setSelectedMedia={setSelectedMedia}
+        selectedCards={selectedCards}
+        setSelectedCards={setSelectedCards}
+        editingItemId={editingItemId}
+        fetchSliders={fetchSliders}
+        onCancelEdit={handleCancelForm}
+        isFormVisible={isFormVisible}
+      />
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <Spin size="large" />
         </div>
-      </div>
+      ) : (
+        <SliderList
+          imageSliders={imageSliders}
+          cardSliders={cardSliders}
+          CustomNextArrow={CustomNextArrow}
+          CustomPrevArrow={CustomPrevArrow}
+          MEDIA_URL={MEDIA_URL}
+          handleEditClick={handleEditClick}
+          handleDeleteSlider={handleDeleteSlider}
+          handleSearch={handleSearch}
+          handleFilter={handleFilter}
+          sortType={sortType}
+          setSortType={setSortType}
+          itemsPerPage={12} // Adjust as needed or manage via state
+          setItemsPerPage={() => {}} // Implement if managing via state
+          currentPage={1} // Adjust as needed or manage via state
+          setCurrentPage={() => {}} // Implement if managing via state
+          totalSliders={sliders.length}
+        />
+      )}
     </div>
   );
 };
