@@ -11,7 +11,7 @@
   --gray-dark: #797b7e;
   /* --theme: #9012ff; */
   --theme: #fcb813;
-  --theme-dark: #ffa17c;
+  --theme-dark: #e3a611;
   --themelite: #fcb61364;
   --theme-transparent: #f3ecf8;
   /* --themes: #f1612a; */
@@ -73,8 +73,8 @@ body::-webkit-scrollbar-track {
 
 /* Viewcontiner */
 .mavecontainer {
-  width: 100%;
-  max-width: 1000px;
+  width: 100lvw;
+  max-width: 86%;
   margin: 0 auto;
   padding-bottom: 6em;
 }
@@ -518,23 +518,19 @@ a:hover {
   .ant-menu-sub.ant-menu-inline {
   background-color: transparent;
 }
+.ant-layout .ant-layout-sider-children .ant-menu.ant-menu-inline-collapsed {
+  border: none;
+}
 
-.request-purchase-button {
-  margin-top: 2rem;
-  border-radius: 1.5rem;
-  padding: 0.5rem 1rem 2.2rem 1rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: white;
-  background-color: #2d68ff;
-  border: 2px solid #2d68ff;
+.ant-menu-light.ant-menu-horizontal > .ant-menu-item-selected {
+  color: var(--theme);
 }
-.request-purchase-button:hover {
-  color: #2d68ff;
-  background-color: #ffffff;
-  border: 2px solid #2d68ff;
-  transition: all 0.5s;
+
+.ant-menu-light.ant-menu-horizontal > .ant-menu-item:hover::after,
+.ant-menu-light.ant-menu-horizontal > .ant-menu-item-active::after {
+  border-bottom-color: var(--theme);
 }
+
 .ant-tabs-tab-btn {
   color: var(--mild-black);
 }
@@ -578,6 +574,7 @@ a:hover {
 :where(.css-dev-only-do-not-override-f7vrd6).ant-layout-header {
   padding: 0;
 }
+/* Active Main Menu */
 :where(.css-dev-only-do-not-override-f7vrd6).ant-menu-light
   .ant-menu-submenu-selected
   > .ant-menu-submenu-title,
@@ -592,4 +589,34 @@ a:hover {
   .ant-radio-inner {
   border-color: var(--theme);
   background-color: var(--theme);
+}
+.ant-menu .ant-menu-submenu-selected {
+  background-color: var(--theme);
+}
+.ant-menu .ant-menu-submenu-selected > .ant-menu-submenu-title {
+  background-color: var(--white);
+}
+.ant-menu .ant-menu-submenu-selected > .ant-menu-submenu-title:hover {
+  background-color: var(--white);
+}
+.ant-menu-light .ant-menu-item-selected {
+  background-color: var(--theme-dark);
+}
+.collapse-button.ant-btn-default {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+/* Sidebar icons */
+:where(.css-dev-only-do-not-override-f7vrd6).ant-menu-inline-collapsed
+  > .ant-menu-submenu
+  > .ant-menu-submenu-title {
+  padding-inline: 10px;
+  height: fit-content;
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-menu-vertical
+  .ant-menu-submenu-title {
+  height: fit-content;
+  line-height: auto;
+  padding-inline: 0;
 }

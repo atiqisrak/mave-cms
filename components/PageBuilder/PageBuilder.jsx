@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import SectionList from "./Sections/SectionList";
-import { Button, message } from "antd";
+import { Button, message, Spin } from "antd";
 import instance from "../../axios";
 
 const PageBuilder = ({ pageId }) => {
@@ -44,7 +44,11 @@ const PageBuilder = ({ pageId }) => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="m-auto">
+        <Spin />
+      </div>
+    );
   }
 
   if (!pageData) {

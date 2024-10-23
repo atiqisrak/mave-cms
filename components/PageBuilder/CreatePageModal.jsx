@@ -1,6 +1,6 @@
 // components/PageBuilder/CreatePageModal.jsx
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Input, Button, Row, Col, message } from "antd";
 import { PlusCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import instance from "../../axios";
@@ -16,6 +16,15 @@ const CreatePageModal = ({
   const [newPageTitleBn, setNewPageTitleBn] = useState("");
   const [newSlug, setNewSlug] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isAltTitleManuallyEdited, setIsAltTitleManuallyEdited] =
+    useState(false);
+
+  // Sync Alt Title with Main Title unless manually edited
+  useEffect(() => {
+    if (!isAltTitleManuallyEdited) {
+      setNewPageTitleBn(newPageTitleEn);
+    }
+  }, [newPageTitleEn, isAltTitleManuallyEdited]);
 
   const handleCreatePage = async () => {
     if (
@@ -63,8 +72,8 @@ const CreatePageModal = ({
         setNewPageTitleEn("");
         setNewPageTitleBn("");
         setNewSlug("");
+        setIsAltTitleManuallyEdited(false);
         fetchPages();
-        // setCreateModalVisible(false);
         handleCancel();
       } else {
         message.error("Failed to create page.");
@@ -82,11 +91,16 @@ const CreatePageModal = ({
     setNewPageTitleEn("");
     setNewPageTitleBn("");
     setNewSlug("");
+    setIsAltTitleManuallyEdited(false);
     onCancel();
   };
 
   // Generate slug from page title with hyphens instead of spaces and lowercase
   const generateSlug = () => {
+    if (newPageTitleEn.trim() === "") {
+      message.info("Please enter the page title first.");
+      return;
+    }
     const slug = newPageTitleEn.trim().toLowerCase().replace(/\s+/g, "-");
     setNewSlug(slug);
   };
@@ -112,7 +126,10 @@ const CreatePageModal = ({
           <Input
             placeholder="Page Alt Title"
             value={newPageTitleBn}
-            onChange={(e) => setNewPageTitleBn(e.target.value)}
+            onChange={(e) => {
+              setNewPageTitleBn(e.target.value);
+              setIsAltTitleManuallyEdited(true);
+            }}
             className="text-lg"
           />
         </Col>
@@ -124,7 +141,7 @@ const CreatePageModal = ({
               value={newSlug}
               onChange={(e) => setNewSlug(e.target.value)}
             />
-            <Button onClick={() => generateSlug()} className="mavebutton">
+            <Button onClick={generateSlug} className="mavebutton">
               Generate
             </Button>
           </div>

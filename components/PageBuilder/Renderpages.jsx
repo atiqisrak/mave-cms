@@ -1,7 +1,7 @@
 // components/PageBuilder/RenderPages.jsx
 
 import React from "react";
-import { Row, Col, Spin } from "antd";
+import { Spin } from "antd";
 import PageCard from "./PageCard";
 
 const RenderPages = ({
@@ -14,26 +14,25 @@ const RenderPages = ({
 }) => {
   return (
     <div>
-      <Row gutter={[16, 16]}>
-        {webpages.length > 0 ? (
-          webpages.map((page) => (
-            <Col key={page.id} xs={24} sm={24} md={12} lg={12} xl={12}>
-              <PageCard
-                page={page}
-                handleEditPage={handleEditPage}
-                handleExpand={handleExpand}
-                expandedPageId={expandedPageId}
-                handleDeletePage={handleDeletePage}
-                handleEditPageInfo={handleEditPageInfo}
-              />
-            </Col>
-          ))
-        ) : (
-          <div className="flex items-center justify-center w-full">
-            <Spin size="large" />
-          </div>
-        )}
-      </Row>
+      {webpages.length > 0 ? (
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2 2xl:grid-cols-3">
+          {webpages.map((page) => (
+            <PageCard
+              key={page.id}
+              page={page}
+              handleEditPage={handleEditPage}
+              handleExpand={handleExpand}
+              expandedPageId={expandedPageId}
+              handleDeletePage={handleDeletePage}
+              handleEditPageInfo={handleEditPageInfo}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="flex items-center justify-center w-full h-full">
+          <Spin size="large" />
+        </div>
+      )}
     </div>
   );
 };

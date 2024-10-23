@@ -1,7 +1,7 @@
 // components/ui/NavItems.js
 
 import { SearchOutlined, LoginOutlined } from "@ant-design/icons";
-import { Image, Input, Space, Layout, Dropdown, Button } from "antd";
+import { Image, Input, Space, Layout, Dropdown, Button, Menu } from "antd";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Changelog from "../../pages/usermanual/changelog.json";
@@ -56,7 +56,7 @@ export default function NavItems({
     >
       {/* Logo and Version */}
       <div
-        className="flex items-center gap-2 cursor-pointer pl-16 col-span-2"
+        className="flex items-center gap-2 cursor-pointer lg:pl-0 col-span-2"
         onClick={() => router.push("/")}
       >
         <Image
@@ -69,7 +69,7 @@ export default function NavItems({
         />
         {/* Version */}
         <Link href={"/usermanual/changelog"}>
-          <h3 className="px-2 py-1 rounded-md text-white text-sm font-bold bg-theme border-2 border-themedark">
+          <h3 className="px-2 py-1 rounded-md text-white lg:text-sm font-bold bg-theme border-2 border-themedark">
             {changeLogs && changeLogs.length > 0
               ? changeLogs[0].version
               : "v 1.0.0"}
@@ -80,12 +80,12 @@ export default function NavItems({
       {user && token ? (
         <>
           {/* Menu Items */}
-          <div className="flex flex-1 justify-center items-center space-x-4  col-span-5">
+          {/* <div className="flex flex-1 justify-center items-center md:space-x-2 lg:space-x-1 col-span-5">
             {topNavData &&
               topNavData.map((item) => (
                 <div
                   key={item.id}
-                  className={`text-base font-semibold px-4 py-2 rounded-md cursor-pointer ${
+                  className={`text-base font-semibold rounded-md cursor-pointer ${
                     selectedMenuItem === item.name
                       ? "bg-transparent text-theme"
                       : theme === "dark"
@@ -100,14 +100,37 @@ export default function NavItems({
                   {item.name}
                 </div>
               ))}
-          </div>
+          </div> */}
+          <Menu
+            mode="horizontal"
+            selectedKeys={[selectedMenuItem]}
+            className="flex flex-1 justify-center items-center md:space-x-2 lg:space-x-0 col-span-5 bg-transparent"
+          >
+            {topNavData &&
+              topNavData.map((item) => (
+                <Menu.Item
+                  key={item.name}
+                  onClick={() => {
+                    setSelectedMenuItem(item.name);
+                  }}
+                  className="text-md font-semibold rounded-md cursor-pointer"
+                >
+                  <Link
+                    className="text-base font-semibold rounded-md cursor-pointer "
+                    href={item.link}
+                  >
+                    {item.name}
+                  </Link>
+                </Menu.Item>
+              ))}
+          </Menu>
 
           {/* Search Bar */}
-          <div className="flex flex-1 justify-center items-center  col-span-3">
+          <div className="flex flex-1 justify-center items-center col-span-3 mr-6">
             <Input
               placeholder="Try searching «Headless CMS»"
               suffix={<SearchOutlined />}
-              className="w-full max-w-md h-10 rounded-full px-4 shadow-inner"
+              className="w-full max-w-md h-10 rounded-full shadow-inner"
             />
           </div>
 
