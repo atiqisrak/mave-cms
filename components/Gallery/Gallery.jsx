@@ -2,17 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 import { Modal, Spin, message } from "antd";
-import {
-  SyncOutlined,
-  FilterOutlined,
-  PlusCircleOutlined,
-} from "@ant-design/icons";
 import instance from "../../axios";
 import { setPageTitle } from "../../global/constants/pageTitle";
 import GalleryHeader from "./GalleryHeader";
 import MediaTabs from "./MediaTabs";
 import PaginationComponent from "./PaginationComponent";
 import UploadMedia from "./UploadMedia";
+import PreviewModal from "./PreviewModal";
 
 const Gallery = () => {
   useEffect(() => {
@@ -25,6 +21,8 @@ const Gallery = () => {
   const [isUploadModalVisible, setIsUploadModalVisible] = useState(false);
   const [mediaAssets, setMediaAssets] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedMedia, setSelectedMedia] = useState(null);
+  const [isPreviewModalVisible, setIsPreviewModalVisible] = useState(false);
 
   // Pagination States
   const [currentPage, setCurrentPage] = useState(1);
@@ -136,12 +134,19 @@ const Gallery = () => {
     fetchMediaAssets(currentPage, itemsPerPage);
   };
 
-  // Handle Edit Media
-  const handleEdit = (mediaId) => {
-    // Implement edit functionality, e.g., open an edit modal
-    message.info(
-      `Edit functionality for media ID ${mediaId} is not implemented yet.`
+  // Handle Preview Media
+  const handlePreview = (media) => {
+    setSelectedMedia(media);
+    setIsPreviewModalVisible(true);
+  };
+
+  // Handle Edit Media from PreviewModal
+  const handleEdit = (updatedMedia) => {
+    const updatedMediaAssets = mediaAssets.map((media) =>
+      media.id === updatedMedia.id ? updatedMedia : media
     );
+    setMediaAssets(updatedMediaAssets);
+    message.success("Media updated successfully.");
   };
 
   // Handle Delete Media
@@ -169,12 +174,6 @@ const Gallery = () => {
     }
   };
 
-  // Handle Preview Media
-  const handlePreview = (media) => {
-    // Implement preview functionality if needed
-    // Since each MediaCard handles its own preview, this can be left empty or used for additional logic
-  };
-
   return (
     <div className="gallery-page">
       {/* Upload Media Modal */}
@@ -187,6 +186,23 @@ const Gallery = () => {
       >
         <UploadMedia onUploadSuccess={handleUploadModalClose} />
       </Modal>
+
+      {/* Preview/Edit Media Modal */}
+      {selectedMedia && (
+        <PreviewModal
+          visible={isPreviewModalVisible}
+          onClose={() => setIsPreviewModalVisible(false)}
+          media={selectedMedia}
+          mediaType={
+            selectedMedia.file_type.startsWith("image/")
+              ? "image"
+              : selectedMedia.file_type.startsWith("video/")
+              ? "video"
+              : "document"
+          }
+          handleEdit={handleEdit}
+        />
+      )}
 
       {/* Header */}
       <GalleryHeader
