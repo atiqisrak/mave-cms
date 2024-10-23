@@ -88,21 +88,24 @@ const SiteContent = ({ children }) => {
             collapsed={collapsed}
             onCollapse={handleCollapse}
             theme={theme}
-            width={220}
-            className="top-0 left-0 h-screen py-20 px-2 fixed z-40
+            width={260}
+            style={{ height: "70vh" }}
+            className="top-0 left-0 px-2 z-40 rounded-r-2xl mt-20
           bg-white shadow-lg transition-all duration-300"
             breakpoint="lg"
             collapsedWidth={80}
             trigger={null}
           >
-            <SideMenuItems
-              token={token}
-              user={user}
-              handleLogout={logout}
-              collapsed={collapsed}
-              theme={theme}
-              setTheme={setTheme}
-            />
+            <div className="flex pt-20">
+              <SideMenuItems
+                token={token}
+                user={user}
+                handleLogout={logout}
+                collapsed={collapsed}
+                theme={theme}
+                setTheme={setTheme}
+              />
+            </div>
           </Sider>
         </div>
         {/* Main Content Area */}
@@ -113,30 +116,27 @@ const SiteContent = ({ children }) => {
         >
           {/* Collapse Button */}
           <div
-            className={`hidden lg:flex fixed top-24 z-40
+            className={`hidden lg:flex fixed lg:top-32 z-40
               ${
                 collapsed
                   ? "left-[50px] lg:left-[52px]"
-                  : "left-[160px] lg:left-[200px]"
+                  : "left-[160px] lg:left-[235px]"
               } transition-all duration-300
               `}
           >
-            <Button
+            <Image
+              src={
+                collapsed
+                  ? "/icons/mave_icons/expand.svg"
+                  : "/icons/mave_icons/collapse.svg"
+              }
+              alt={collapsed ? "Expand" : "Collapse"}
+              width={40}
+              height={40}
+              preview={false}
+              className="cursor-pointer collapse-button border-0 transition-all duration-300"
               onClick={handleCollapse}
-              className={`bg-transparent border-0 rounded-full p-2 transition-all duration-300`}
-            >
-              <Image
-                src={
-                  collapsed
-                    ? "/icons/mave_icons/expand.svg"
-                    : "/icons/mave_icons/collapse.svg"
-                }
-                alt={collapsed ? "Expand" : "Collapse"}
-                width={32}
-                height={32}
-                preview={false}
-              />
-            </Button>
+            />
           </div>
 
           <Content className="flex-1 py-4 md:py-8 bg-gray-100">

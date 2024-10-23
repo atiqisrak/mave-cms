@@ -88,23 +88,22 @@ const SideMenuItems = ({
             <Menu.SubMenu
               key={item.id.toString()}
               title={
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 font-semibold">
                   <Image
                     src={item.icon}
                     alt={`${item.title} icon`}
                     width={collapsed ? 50 : 40}
                     height={collapsed ? 50 : 40}
+                    className="main-menu-icon"
                   />
                   {!collapsed && <span>{item.title}</span>}
                 </div>
               }
-              className="border-2 border-gray-400 mb-2"
+              className="border-2 border-gray-200 mb-2"
             >
               {item.submenu?.map((subItem) => (
-                <Menu.Item
-                  key={subItem.id.toString()}
-                  className="border-2 border-gray-400"
-                >
+                <Menu.Item key={subItem.id.toString()} className="">
+                  {/* Active Sub Menu */}
                   <div className="flex items-center gap-2">
                     <Image
                       src={subItem.icon}
@@ -112,8 +111,9 @@ const SideMenuItems = ({
                       width={30}
                       height={30}
                     />
-                    {/* {!collapsed && <span>{subItem.title}</span>} */}
-                    <span className="text-sm">{subItem.title}</span>
+                    <span className="text-md font-semibold text-gray-500">
+                      {subItem.title}
+                    </span>
                   </div>
                 </Menu.Item>
               ))}
