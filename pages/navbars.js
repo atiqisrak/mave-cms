@@ -165,6 +165,7 @@ const Navbars = () => {
           setEditingNavbarId={setEditingNavbarId}
           selectedNavbarIds={selectedNavbarIds}
           setSelectedNavbarIds={setSelectedNavbarIds}
+          fetchNavbars={fetchNavbars}
         />
       )}
     </div>

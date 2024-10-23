@@ -13,6 +13,7 @@ const NavbarsList = ({
   setEditingNavbarId,
   selectedNavbarIds,
   setSelectedNavbarIds,
+  fetchNavbars,
 }) => {
   const allSelected =
     selectedNavbarIds.length === navbars.length && navbars.length > 0;
@@ -54,6 +55,7 @@ const NavbarsList = ({
             setEditingNavbarId={setEditingNavbarId}
             selectedNavbarIds={selectedNavbarIds}
             setSelectedNavbarIds={setSelectedNavbarIds}
+            fetchNavbars={fetchNavbars}
           />
         ))
       ) : (

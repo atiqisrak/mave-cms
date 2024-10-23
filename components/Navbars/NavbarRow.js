@@ -20,8 +20,8 @@ import {
   FileImageFilled,
 } from "@ant-design/icons";
 import instance from "../../axios";
-import MediaModal from "./MediaModal";
 import Image from "next/image";
+import MediaSelectionModal from "../PageBuilder/Modals/MediaSelectionModal";
 
 const NavbarRow = ({
   navbar,
@@ -32,6 +32,7 @@ const NavbarRow = ({
   setEditingNavbarId,
   selectedNavbarIds,
   setSelectedNavbarIds,
+  fetchNavbars,
 }) => {
   const [editedNavbarTitleEn, setEditedNavbarTitleEn] = useState(
     navbar.title_en
@@ -39,9 +40,10 @@ const NavbarRow = ({
   const [editedNavbarTitleBn, setEditedNavbarTitleBn] = useState(
     navbar.title_bn
   );
-  const [editedLogoId, setEditedLogoId] = useState(navbar.logo.id);
-  const [editedMenuId, setEditedMenuId] = useState(navbar.menu.id);
+  const [editedLogoId, setEditedLogoId] = useState(navbar?.logo?.id || null);
+  const [editedMenuId, setEditedMenuId] = useState(navbar.menu.id || null);
   const [mediaModalVisible, setMediaModalVisible] = useState(false);
+  const [selectedLogoMedia, setSelectedLogoMedia] = useState(null); // New state
 
   const handleUpdate = async () => {
     try {
@@ -63,6 +65,8 @@ const NavbarRow = ({
           )
         );
         setEditingNavbarId(null);
+        setSelectedLogoMedia(null); // Reset selected logo media
+        fetchNavbars();
       } else {
         message.error("Error updating navbar");
       }
@@ -102,10 +106,10 @@ const NavbarRow = ({
 
   return (
     <Row className="border-b py-2 items-center">
-      <Col xs={2} md={1}>
+      <Col xs={2} md={1} className="pr-10">
         <Checkbox checked={isSelected} onChange={handleCheckboxChange} />
       </Col>
-      <Col xs={8} md={5}>
+      <Col xs={8} md={5} className="pr-10">
         {isEditing ? (
           <>
             <Input
@@ -113,12 +117,14 @@ const NavbarRow = ({
               onChange={(e) => setEditedNavbarTitleEn(e.target.value)}
               className="w-full mb-2"
               placeholder="Title (English)"
+              allowClear
             />
             <Input
               value={editedNavbarTitleBn}
               onChange={(e) => setEditedNavbarTitleBn(e.target.value)}
               className="w-full"
               placeholder="Title (Bangla)"
+              allowClear
             />
           </>
         ) : (
@@ -128,43 +134,74 @@ const NavbarRow = ({
           </>
         )}
       </Col>
-      <Col xs={8} md={4}>
+      <Col xs={8} md={4} className="pr-10">
         {isEditing ? (
-          <>
+          <div className="flex gap-2 items-center">
+            <Image
+              src={
+                navbar?.logo?.file_path
+                  ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${navbar.logo.file_path}`
+                  : "/images/Image_placeholder.png"
+              }
+              alt={
+                navbar?.logo?.file_name ? navbar.logo.file_name : "Navbar Logo"
+              }
+              className="w-16 h-16 object-cover rounded-full"
+              width={64}
+              height={64}
+            />
             <Button
               icon={<FileImageFilled />}
               onClick={() => setMediaModalVisible(true)}
             >
               Change Logo
             </Button>
-            <MediaModal
-              mediaList={media}
-              visible={mediaModalVisible}
-              onCancel={() => setMediaModalVisible(false)}
-              onSelect={(selectedMedia) => {
+            <MediaSelectionModal
+              isVisible={mediaModalVisible}
+              onClose={() => setMediaModalVisible(false)}
+              selectionMode="single"
+              onSelectMedia={(selectedMedia) => {
                 setEditedLogoId(selectedMedia.id);
+                setSelectedLogoMedia(selectedMedia); // Set selected media
                 setMediaModalVisible(false);
               }}
             />
-          </>
+            {selectedLogoMedia && ( // Display selected media
+              <div className="mt-2">
+                <Image
+                  src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedLogoMedia.file_path}`}
+                  alt={selectedLogoMedia.file_name}
+                  className="w-16 h-16 object-cover rounded-full"
+                  width={64}
+                  height={64}
+                />
+              </div>
+            )}
+          </div>
         ) : (
           <Image
-            src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${navbar.logo.file_path}`}
-            alt={navbar.logo.file_name}
-            className="w-16 h-16 object-cover"
+            src={
+              navbar?.logo?.file_path
+                ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${navbar.logo.file_path}`
+                : "/images/Image_placeholder.png"
+            }
+            alt={
+              navbar?.logo?.file_name ? navbar.logo.file_name : "Navbar Logo"
+            }
+            className="w-16 h-16 object-cover rounded-full"
             width={64}
             height={64}
           />
         )}
       </Col>
-      <Col xs={8} md={10}>
+      <Col xs={8} md={10} className="pr-10">
         {isEditing ? (
           <Select
             showSearch
             placeholder="Select a Menu"
             optionFilterProp="children"
             onChange={(value) => setEditedMenuId(value)}
-            className="w-full"
+            className="w-60"
             allowClear
             defaultValue={navbar.menu.id}
           >
@@ -189,7 +226,7 @@ const NavbarRow = ({
           </Collapse>
         )}
       </Col>
-      <Col xs={24} md={4} className="flex gap-2 mt-2 md:mt-0">
+      <Col xs={24} md={4} className="flex gap-2 mt-2 md:mt-0 pr-10">
         {isEditing ? (
           <>
             <Button
@@ -201,7 +238,10 @@ const NavbarRow = ({
             </Button>
             <Button
               icon={<CloseCircleOutlined />}
-              onClick={() => setEditingNavbarId(null)}
+              onClick={() => {
+                setEditingNavbarId(null);
+                setSelectedLogoMedia(null); // Reset selected media on cancel
+              }}
               danger
             >
               Cancel
