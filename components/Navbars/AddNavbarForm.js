@@ -4,7 +4,8 @@ import React, { useState } from "react";
 import { Row, Col, Input, Select, Button, message } from "antd";
 import { PlusCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import instance from "../../axios";
-import MediaModal from "./MediaModal";
+import MediaSelectionModal from "../PageBuilder/Modals/MediaSelectionModal";
+import Image from "next/image";
 
 const AddNavbarForm = ({ menus, media, onCancel, fetchNavbars }) => {
   const [newNavbarTitleEn, setNewNavbarTitleEn] = useState("");
@@ -59,6 +60,27 @@ const AddNavbarForm = ({ menus, media, onCancel, fetchNavbars }) => {
           <Button onClick={() => setMediaModalVisible(true)}>
             {newLogoId ? "Change Logo" : "Select Logo"}
           </Button>
+          {newLogoId && media.find((item) => item.id === newLogoId) ? (
+            <div className="mt-2">
+              <Image
+                src={
+                  media.find((item) => item.id === newLogoId).file_path
+                    ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${
+                        media.find((item) => item.id === newLogoId).file_path
+                      }`
+                    : "/images/Image_placeholder.png"
+                }
+                alt={
+                  media.find((item) => item.id === newLogoId).file_name
+                    ? media.find((item) => item.id === newLogoId).file_name
+                    : "Navbar Logo"
+                }
+                width={100}
+                height={100}
+                className="rounded-lg object-cover"
+              />
+            </div>
+          ) : null}
         </Col>
         <Col xs={24} md={12}>
           <Select
@@ -68,6 +90,7 @@ const AddNavbarForm = ({ menus, media, onCancel, fetchNavbars }) => {
             onChange={(value) => setNewMenuId(value)}
             className="w-full"
             allowClear
+            value={newMenuId}
           >
             {menus.map((menu) => (
               <Select.Option key={menu.id} value={menu.id}>
@@ -93,11 +116,11 @@ const AddNavbarForm = ({ menus, media, onCancel, fetchNavbars }) => {
           Create
         </Button>
       </div>
-      <MediaModal
-        mediaList={media}
-        visible={mediaModalVisible}
-        onCancel={() => setMediaModalVisible(false)}
-        onSelect={(selectedMedia) => {
+      <MediaSelectionModal
+        isVisible={mediaModalVisible}
+        onClose={() => setMediaModalVisible(false)}
+        selectionMode="single"
+        onSelectMedia={(selectedMedia) => {
           setNewLogoId(selectedMedia.id);
           setMediaModalVisible(false);
         }}

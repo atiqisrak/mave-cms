@@ -1,77 +1,172 @@
 // components/UploadMedia.jsx
 
 import React, { useState } from "react";
-import { Upload, Button, message } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { Upload, Button, message, Progress, Tag } from "antd";
+import {
+  UploadOutlined,
+  InboxOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import instance from "../../axios";
+import Image from "next/image";
+
+const { Dragger } = Upload;
 
 const UploadMedia = ({ onUploadSuccess }) => {
   const [fileList, setFileList] = useState([]);
   const [uploading, setUploading] = useState(false);
 
-  const props = {
-    multiple: true,
-    beforeUpload: (file) => {
-      // Validate file size and type if needed
-      const isValid =
-        file.size / 1024 / 1024 < 2 && // Less than 2MB
-        ["image/jpeg", "image/png", "video/mp4", "application/pdf"].includes(
-          file.type
-        );
-      if (!isValid) {
-        message.error(
-          "File must be smaller than 2MB and of type JPG, PNG, MP4, or PDF."
-        );
-      }
-      return isValid || Upload.LIST_IGNORE;
-    },
-    onChange: ({ fileList: newFileList }) => {
-      setFileList(newFileList);
-    },
-    fileList,
+  const handleBeforeUpload = (file) => {
+    const isValidSize = file.size / 1024 / 1024 < 10; // Less than 10MB
+    const isValidType = [
+      "image/jpeg",
+      "image/png",
+      "image/jpg",
+      "image/webp",
+      "video/mp4",
+      "application/pdf",
+    ].includes(file.type);
+    if (!isValidSize) {
+      message.error("File must be smaller than 10MB.");
+    }
+    if (!isValidType) {
+      message.error(
+        "Unsupported file type. Only JPG, PNG, MP4, and PDF are allowed."
+      );
+    }
+    return isValidSize && isValidType;
   };
 
-  const handleUpload = async () => {
-    const formData = new FormData();
-    fileList.forEach((file) => {
-      formData.append("media", file.originFileObj);
-    });
+  const handleChange = ({ file, fileList: newFileList }) => {
+    // Update the fileList with progress and status
+    setFileList(
+      newFileList.map((f) => {
+        if (f.response) {
+          f.status = "done";
+        }
+        return f;
+      })
+    );
+  };
 
-    setUploading(true);
+  const handleRemove = (file) => {
+    setFileList((prev) => prev.filter((f) => f.uid !== file.uid));
+  };
+
+  const customUpload = async ({ onSuccess, onError, file, onProgress }) => {
+    const formData = new FormData();
+    formData.append("file[]", file);
+
     try {
       const response = await instance.post("/media/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        onUploadProgress: (progressEvent) => {
+          const percent = Math.round(
+            (progressEvent.loaded / progressEvent.total) * 100
+          );
+          onProgress({ percent });
+        },
       });
-      if (response.status === 200) {
-        message.success("Upload successful.");
-        setFileList([]);
-        onUploadSuccess(); // Refresh media assets
-      } else {
-        message.error("Upload failed.");
-      }
+      onSuccess(response.data, file);
+      message.success(`${file.name} uploaded successfully.`);
+      onUploadSuccess();
     } catch (error) {
       console.error("Upload error:", error);
-      message.error("An error occurred during upload.");
-    } finally {
-      setUploading(false);
+      onError(error);
+      message.error(`${file.name} upload failed.`);
     }
   };
 
   return (
-    <div>
-      <Upload {...props} listType="picture">
-        <Button icon={<UploadOutlined />}>Select Files</Button>
-      </Upload>
+    <div className="p-4 bg-white rounded-md shadow-md">
+      <Dragger
+        multiple
+        beforeUpload={handleBeforeUpload}
+        customRequest={customUpload}
+        onChange={handleChange}
+        onRemove={handleRemove}
+        fileList={fileList}
+        listType="picture"
+        className="border-2 border-dashed border-gray-300 rounded-md"
+      >
+        <p className="ant-upload-drag-icon">
+          <InboxOutlined className="text-4xl text-gray-400" />
+        </p>
+        <p className="ant-upload-text text-lg">
+          Click or drag files to this area to upload
+        </p>
+        <p className="ant-upload-hint text-sm text-gray-500">
+          Support for a single or bulk upload. Strictly prohibit from uploading
+          company data or other band files
+        </p>
+      </Dragger>
+      {fileList.length > 0 && (
+        <div className="mt-4">
+          {fileList.map((file) => (
+            <div
+              key={file.uid}
+              className="flex items-center justify-between p-2 mb-2 bg-gray-100 rounded-md"
+            >
+              <div className="flex items-center">
+                {file.type.startsWith("image/") ? (
+                  <Image
+                    src={file.thumbUrl || "/icons/image-placeholder.svg"}
+                    alt={file.name}
+                    width={50}
+                    height={50}
+                    className="object-cover rounded-md"
+                  />
+                ) : file.type.startsWith("video/") ? (
+                  <Image
+                    src="/icons/video-placeholder.svg"
+                    alt={file.name}
+                    width={50}
+                    height={50}
+                  />
+                ) : (
+                  <Image
+                    src="/icons/document-placeholder.svg"
+                    alt={file.name}
+                    width={50}
+                    height={50}
+                  />
+                )}
+                <div className="ml-4">
+                  <p className="font-semibold">{file.name}</p>
+                  {file.status === "uploading" && (
+                    <Progress percent={file.percent} size="small" />
+                  )}
+                  {file.status === "done" && <Tag color="green">Uploaded</Tag>}
+                  {file.status === "error" && <Tag color="red">Error</Tag>}
+                </div>
+              </div>
+              <Button
+                type="text"
+                icon={<DeleteOutlined className="text-red-500" />}
+                onClick={() => handleRemove(file)}
+              />
+            </div>
+          ))}
+        </div>
+      )}
       <Button
         type="primary"
-        onClick={handleUpload}
-        disabled={fileList.length === 0}
+        onClick={() => {
+          if (fileList.length === 0) {
+            message.warning("Please select at least one file to upload.");
+            return;
+          }
+          // Trigger upload for all files
+          // Handled by customRequest
+        }}
+        disabled={fileList.length === 0 || uploading}
         loading={uploading}
-        style={{ marginTop: 16 }}
+        className="mt-4 w-full"
+        icon={<UploadOutlined />}
       >
-        {uploading ? "Uploading" : "Start Upload"}
+        Start Upload
       </Button>
     </div>
   );

@@ -79,7 +79,11 @@ const MediaSelectionModal = ({
       message.warning("Please select at least one media item.");
       return;
     }
-    onSelectMedia(selectedMedia);
+    if (selectionMode === "single") {
+      onSelectMedia(selectedMedia[0]); // Pass single media object
+    } else {
+      onSelectMedia(selectedMedia);
+    }
     onClose();
   };
 
@@ -106,6 +110,7 @@ const MediaSelectionModal = ({
       onOk={handleSubmit}
       okText="Submit"
       width={900}
+      centered
       footer={[
         <Button key="cancel" onClick={onClose} className="mavecancelbutton">
           Cancel
@@ -136,8 +141,8 @@ const MediaSelectionModal = ({
           </Select>
         </div>
 
-        {/* Submit Button */}
-        {selectionMode === "single" && (
+        {/* Submit Button for Multiple Selection */}
+        {selectionMode === "multiple" && (
           <Button
             type="primary"
             onClick={handleSubmit}
