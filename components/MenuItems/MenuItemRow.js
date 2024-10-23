@@ -1,6 +1,6 @@
 // components/MenuItems/MenuItemRow.js
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Row,
   Col,
@@ -20,6 +20,8 @@ import {
 } from "@ant-design/icons";
 import instance from "../../axios";
 
+const { Option } = Select;
+
 const MenuItemRow = ({
   menuItem,
   menuItems,
@@ -33,8 +35,22 @@ const MenuItemRow = ({
   const [editedTitleEn, setEditedTitleEn] = useState(menuItem.title);
   const [editedTitleBn, setEditedTitleBn] = useState(menuItem.title_bn);
   const [editedLink, setEditedLink] = useState(menuItem.link);
-  const [linkType, setLinkType] = useState("independent");
+  const [linkType, setLinkType] = useState(
+    menuItem.link && menuItem.link.startsWith("/") ? "page" : "independent"
+  );
   const [editedParentId, setEditedParentId] = useState(menuItem.parent_id);
+
+  useEffect(() => {
+    if (isEditing) {
+      setEditedTitleEn(menuItem.title);
+      setEditedTitleBn(menuItem.title_bn);
+      setEditedLink(menuItem.link);
+      setLinkType(
+        menuItem.link && menuItem.link.startsWith("/") ? "page" : "independent"
+      );
+      setEditedParentId(menuItem.parent_id);
+    }
+  }, [isEditing, menuItem]);
 
   const handleUpdate = async () => {
     try {
@@ -53,7 +69,7 @@ const MenuItemRow = ({
         message.success("Menu item updated successfully");
         setMenuItems((prevMenuItems) =>
           prevMenuItems.map((item) =>
-            item.id === menuItem.id ? updatedMenuItem : item
+            item.id === menuItem.id ? response.data : item
           )
         );
         setEditingItemId(null);
@@ -133,15 +149,15 @@ const MenuItemRow = ({
             onChange={(value) => setEditedParentId(value)}
             className="w-11/12"
             allowClear
-            defaultValue={menuItem.parent_id}
+            value={editedParentId}
           >
-            <Select.Option value={null}>No Parent</Select.Option>
+            <Option value={null}>No Parent</Option>
             {menuItems
               .filter((item) => item.id !== menuItem.id)
               .map((item) => (
-                <Select.Option key={item.id} value={item.id}>
+                <Option key={item.id} value={item.id}>
                   {item.title}
-                </Select.Option>
+                </Option>
               ))}
           </Select>
         ) : (
@@ -169,16 +185,21 @@ const MenuItemRow = ({
                 optionFilterProp="children"
                 onChange={(value) => setEditedLink("/" + value)}
                 className="w-11/12 mt-2"
+                value={
+                  menuItem.link && menuItem.link.startsWith("/")
+                    ? menuItem.link.replace("/", "").split("?")[0]
+                    : undefined
+                }
               >
                 {pages.map((page) => (
-                  <Select.Option
+                  <Option
                     key={page.id}
                     value={`${page.slug}?pageId=${
                       page.id
                     }&pageName=${page.page_name_en.replace(/\s/g, "-")}`}
                   >
                     {page.page_name_en}
-                  </Select.Option>
+                  </Option>
                 ))}
               </Select>
             ) : (

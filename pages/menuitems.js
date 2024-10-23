@@ -1,7 +1,7 @@
 // pages/MenuItems.js
 
 import React, { useState, useEffect } from "react";
-import { message, Modal } from "antd";
+import { message, Modal, Pagination } from "antd";
 import instance from "../axios";
 import { setPageTitle } from "../global/constants/pageTitle";
 import Loader from "../components/Loader";
@@ -21,24 +21,40 @@ const MenuItems = () => {
   const [isAddMenuItemOpen, setIsAddMenuItemOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [pages, setPages] = useState([]);
-  const [sortType, setSortType] = useState("asc");
+  const [sortType, setSortType] = useState("desc");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItemIds, setSelectedItemIds] = useState([]);
+
+  // Pagination States
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [totalMenuItems, setTotalMenuItems] = useState(0);
+
+  // Filter States
+  const [filters, setFilters] = useState({
+    parent_id: undefined,
+    // Add more filter fields if needed
+  });
 
   const fetchMenuItems = async () => {
     try {
       setLoading(true);
       const response = await instance("/menuitems");
       if (response.data) {
-        const sortedData = response.data.sort((a, b) => b.id - a.id);
+        let sortedData = response.data.sort((a, b) =>
+          sortType === "asc" ? a.id - b.id : b.id - a.id
+        );
         setMenuItems(sortedData);
         setInitialMenuItems(sortedData);
+        setTotalMenuItems(sortedData.length);
         setLoading(false);
       } else {
         message.error("Menu items couldn't be fetched");
+        setLoading(false);
       }
     } catch (error) {
       message.error("Menu items couldn't be fetched");
+      setLoading(false);
     }
   };
 
@@ -51,32 +67,39 @@ const MenuItems = () => {
         setLoading(false);
       } else {
         message.error("Pages couldn't be fetched");
+        setLoading(false);
       }
     } catch (error) {
       message.error("Pages couldn't be fetched");
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchMenuItems();
     fetchPages();
-  }, []);
-
-  useEffect(() => {
-    // Handle search
-    const results = initialMenuItems.filter((menuItem) =>
-      menuItem.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setMenuItems(results);
-  }, [searchTerm]);
-
-  useEffect(() => {
-    // Handle sorting
-    const sortedMenuItems = [...menuItems].sort((a, b) =>
-      sortType === "asc" ? a.id - b.id : b.id - a.id
-    );
-    setMenuItems(sortedMenuItems);
   }, [sortType]);
+
+  useEffect(() => {
+    // Handle search and filter
+    let filteredItems = [...initialMenuItems];
+
+    if (searchTerm) {
+      filteredItems = filteredItems.filter((menuItem) =>
+        menuItem.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (filters.parent_id) {
+      filteredItems = filteredItems.filter(
+        (menuItem) => menuItem.parent_id === filters.parent_id
+      );
+    }
+
+    setMenuItems(filteredItems);
+    setTotalMenuItems(filteredItems.length);
+    setCurrentPage(1); // Reset to first page when filters change
+  }, [searchTerm, filters, initialMenuItems]);
 
   const handleAddMenuItem = () => {
     setIsAddMenuItemOpen(true);
@@ -89,17 +112,20 @@ const MenuItems = () => {
   const handleReset = () => {
     setSearchTerm("");
     setSortType("asc");
+    setFilters({
+      parent_id: undefined,
+    });
     fetchMenuItems();
   };
 
   const handleFilter = () => {
-    const filteredMenuItems = menuItems.filter((menuItem) => menuItem.title);
-    setMenuItems(filteredMenuItems);
+    // The filter modal is handled within MenuItemsHeader
   };
 
   const onShowChange = (value) => {
     // show number of items
-    console.log(value);
+    setItemsPerPage(parseInt(value, 10));
+    setCurrentPage(1); // Reset to first page when items per page change
   };
 
   const handleSelectAll = () => {
@@ -110,6 +136,27 @@ const MenuItems = () => {
     }
   };
 
+  const applyFilters = (filterValues) => {
+    setFilters(filterValues);
+  };
+
+  const resetFilters = () => {
+    setFilters({
+      parent_id: undefined,
+    });
+  };
+
+  const handlePaginationChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  // Calculate items for the current page
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedMenuItems = menuItems.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
+
   return (
     <div className="mavecontainer bg-gray-50 rounded-xl">
       <MenuItemsHeader
@@ -118,11 +165,15 @@ const MenuItems = () => {
         setSearchTerm={setSearchTerm}
         sortType={sortType}
         setSortType={setSortType}
-        handleReset={handleReset}
         handleFilter={handleFilter}
         onShowChange={onShowChange}
         handleSelectAll={handleSelectAll}
         allSelected={selectedItemIds.length === menuItems.length}
+        filterOptions={{
+          parentMenus: pages, // Assuming pages are used as parent menus
+        }}
+        applyFilters={applyFilters}
+        resetFilters={resetFilters}
       />
       <Modal
         open={isAddMenuItemOpen}
@@ -152,15 +203,26 @@ const MenuItems = () => {
           <Loader />
         </div>
       ) : (
-        <MenuItemsList
-          menuItems={menuItems}
-          pages={pages}
-          setMenuItems={setMenuItems}
-          editingItemId={editingItemId}
-          setEditingItemId={setEditingItemId}
-          selectedItemIds={selectedItemIds}
-          setSelectedItemIds={setSelectedItemIds}
-        />
+        <>
+          <MenuItemsList
+            menuItems={paginatedMenuItems}
+            pages={pages}
+            setMenuItems={setMenuItems}
+            editingItemId={editingItemId}
+            setEditingItemId={setEditingItemId}
+            selectedItemIds={selectedItemIds}
+            setSelectedItemIds={setSelectedItemIds}
+          />
+          <div className="flex justify-end mt-4">
+            <Pagination
+              current={currentPage}
+              pageSize={itemsPerPage}
+              total={totalMenuItems}
+              onChange={handlePaginationChange}
+              showSizeChanger={false}
+            />
+          </div>
+        </>
       )}
     </div>
   );

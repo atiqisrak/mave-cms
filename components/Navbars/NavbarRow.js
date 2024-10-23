@@ -188,9 +188,16 @@ const NavbarRow = ({
             alt={
               navbar?.logo?.file_name ? navbar.logo.file_name : "Navbar Logo"
             }
-            className="w-16 h-16 object-cover rounded-full"
+            className="w-16 h-16 object-cover rounded-full cursor-pointer"
             width={64}
             height={64}
+            onClick={() =>
+              navbar?.logo?.file_path
+                ? window.open(
+                    `${process.env.NEXT_PUBLIC_MEDIA_URL}/${navbar.logo.file_path}`
+                  )
+                : message.warning("No logo found")
+            }
           />
         )}
       </Col>

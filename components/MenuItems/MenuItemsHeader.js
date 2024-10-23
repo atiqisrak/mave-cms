@@ -1,7 +1,7 @@
 // components/MenuItems/MenuItemsHeader.js
 
-import React from "react";
-import { Input, Switch, Button, Select } from "antd";
+import React, { useState } from "react";
+import { Input, Switch, Button, Select, Modal, Form } from "antd";
 import {
   CheckCircleFilled,
   FilterOutlined,
@@ -9,6 +9,8 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import Image from "next/image";
+
+const { Option } = Select;
 
 const MenuItemsHeader = ({
   onAddMenuItem,
@@ -20,7 +22,32 @@ const MenuItemsHeader = ({
   onShowChange,
   handleSelectAll,
   allSelected,
+  filterOptions,
+  applyFilters,
+  resetFilters,
 }) => {
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
+  const [form] = Form.useForm();
+
+  const openFilterModal = () => {
+    setIsFilterModalVisible(true);
+  };
+
+  const closeFilterModal = () => {
+    setIsFilterModalVisible(false);
+  };
+
+  const onFinish = (values) => {
+    applyFilters(values);
+    closeFilterModal();
+  };
+
+  const handleResetFilters = () => {
+    form.resetFields();
+    resetFilters();
+    closeFilterModal();
+  };
+
   return (
     <>
       <div className="flex flex-col md:flex-row justify-between items-center mb-4 border-b-4 border-gray-300 px-6 pt-8 pb-4">
@@ -71,14 +98,14 @@ const MenuItemsHeader = ({
             className=" w-fit h-11 border-1 border-gray-300 rounded-md"
             onChange={onShowChange}
           >
-            <Select.Option value="10">10</Select.Option>
-            <Select.Option value="20">20</Select.Option>
-            <Select.Option value="30">30</Select.Option>
+            <Option value="10">10</Option>
+            <Option value="20">20</Option>
+            <Option value="30">30</Option>
           </Select>
           <Button
             icon={<FilterOutlined />}
             className="bg-white text-gray-500 font-semibold text-lg py-5 shadow-md border-2 border-gray-300 w-fit"
-            onClick={handleFilter}
+            onClick={openFilterModal}
           >
             Filter
           </Button>
@@ -92,6 +119,44 @@ const MenuItemsHeader = ({
           />
         </div>
       </div>
+
+      {/* Filter Modal */}
+      <Modal
+        title="Filter Menu Items"
+        visible={isFilterModalVisible}
+        onCancel={closeFilterModal}
+        footer={null}
+      >
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          initialValues={{
+            parent_id: undefined,
+          }}
+        >
+          <Form.Item label="Parent Menu" name="parent_id">
+            <Select placeholder="Select a Parent Menu" allowClear>
+              {filterOptions.parentMenus.map((menu) => (
+                <Option key={menu.id} value={menu.id}>
+                  {menu.title}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+          {/* Add more filter fields here if needed */}
+          <Form.Item>
+            <div className="flex justify-end gap-2">
+              <Button onClick={handleResetFilters} className="mavecancelbutton">
+                Reset
+              </Button>
+              <Button type="primary" htmlType="submit" className="mavebutton">
+                Apply
+              </Button>
+            </div>
+          </Form.Item>
+        </Form>
+      </Modal>
     </>
   );
 };
