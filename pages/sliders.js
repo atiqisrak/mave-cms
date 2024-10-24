@@ -15,6 +15,7 @@ import Loader from "../components/Loader";
 import SliderList from "../components/slider/SliderList";
 import SliderForm from "../components/slider/SliderForm";
 import SlidersHeader from "../components/slider/SlidersHeader";
+import { debounce } from "lodash";
 
 const { TabPane } = Tabs;
 
@@ -24,6 +25,7 @@ const Sliders = () => {
   const [sliders, setSliders] = useState([]);
   const [imageSliders, setImageSliders] = useState([]);
   const [cardSliders, setCardSliders] = useState([]);
+  const [itemsPerPage, setItemsPerPage] = useState(6);
   const [loading, setLoading] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState([]);
   const [selectedCards, setSelectedCards] = useState([]);
@@ -237,15 +239,14 @@ const Sliders = () => {
           MEDIA_URL={MEDIA_URL}
           handleEditClick={handleEditClick}
           handleDeleteSlider={handleDeleteSlider}
-          handleSearch={handleSearch}
+          // handleSearch={handleSearch}
           handleFilter={handleFilter}
           sortType={sortType}
           setSortType={setSortType}
-          itemsPerPage={12} // Adjust as needed or manage via state
-          setItemsPerPage={() => {}} // Implement if managing via state
-          currentPage={1} // Adjust as needed or manage via state
-          setCurrentPage={() => {}} // Implement if managing via state
           totalSliders={sliders.length}
+          itemsPerPage={itemsPerPage}
+          setItemsPerPage={setItemsPerPage}
+          handleSearch={debounce(handleSearch, 500)}
         />
       )}
     </div>
