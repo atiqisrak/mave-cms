@@ -39,7 +39,8 @@ const SliderList = ({
   return (
     <div className="bg-gray-100 p-6 rounded-lg shadow-md">
       <Tabs defaultActiveKey="1" centered>
-        <TabPane tab={`Image Sliders (${imageSliders.length})`} key="1">
+        {/* <TabPane tab={`Image Sliders (${imageSliders.length})`} key="1"> */}
+        <TabPane tab={"Image Sliders"} key="1">
           {paginatedImageSliders.length > 0 ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -79,7 +80,8 @@ const SliderList = ({
             </div>
           )}
         </TabPane>
-        <TabPane tab={`Card Sliders (${cardSliders.length})`} key="2">
+        {/* <TabPane tab={`Card Sliders (${cardSliders.length})`} key="2"> */}
+        <TabPane tab={"Card Sliders"} key="2">
           {paginatedCardSliders.length > 0 ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
