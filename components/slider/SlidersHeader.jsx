@@ -1,49 +1,17 @@
 // components/slider/SlidersHeader.jsx
 
-import React, { useState } from "react";
-import { Input, Button, Select, Modal, Form, Space } from "antd";
-import {
-  FilterOutlined,
-  PlusCircleOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
+import React from "react";
+import { Input, Button } from "antd";
+import { PlusCircleOutlined, SearchOutlined } from "@ant-design/icons";
 import Image from "next/image";
-
-const { Option } = Select;
 
 const SlidersHeader = ({
   onAddSlider,
   searchTerm,
-  setSearchTerm,
+  onSearchChange,
   sortType,
   setSortType,
-  handleFilter,
-  filterOptions,
-  applyFilters,
-  resetFilters,
 }) => {
-  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
-  const [form] = Form.useForm();
-
-  const openFilterModal = () => {
-    setIsFilterModalVisible(true);
-  };
-
-  const closeFilterModal = () => {
-    setIsFilterModalVisible(false);
-  };
-
-  const onFinish = (values) => {
-    applyFilters(values);
-    closeFilterModal();
-  };
-
-  const handleResetFilters = () => {
-    form.resetFields();
-    resetFilters();
-    closeFilterModal();
-  };
-
   return (
     <>
       {/* Header Section */}
@@ -94,22 +62,11 @@ const SlidersHeader = ({
           </Button>
         </div>
         <div className="flex justify-end items-center gap-5 mt-4 md:mt-0">
-          {/* Items Per Page Selector */}
-          {/* <Select
-            defaultValue="10"
-            className="w-fit h-11 border border-gray-300 rounded-md"
-            onChange={(value) => handleFilter("itemsPerPage", value)}
-          >
-            <Option value="10">10</Option>
-            <Option value="20">20</Option>
-            <Option value="30">30</Option>
-          </Select> */}
-
           {/* Search Input */}
           <Input
             placeholder="Search Sliders"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={onSearchChange}
             className="w-48 md:w-72 h-11 border-2 border-gray-300 rounded-md"
             allowClear
             prefix={<SearchOutlined />}

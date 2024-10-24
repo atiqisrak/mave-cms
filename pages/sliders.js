@@ -1,121 +1,169 @@
 // pages/sliders.jsx
 
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Button, Tabs, message, Spin, Space, Form } from "antd";
-import {
-  HomeFilled,
-  PlusCircleOutlined,
-  CopyOutlined,
-  LeftOutlined,
-  RightOutlined,
-} from "@ant-design/icons";
-import { useRouter } from "next/router";
+import { message, Spin, Form } from "antd";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import instance from "../axios";
-import Loader from "../components/Loader";
 import SliderList from "../components/slider/SliderList";
 import SliderForm from "../components/slider/SliderForm";
 import SlidersHeader from "../components/slider/SlidersHeader";
-import { debounce } from "lodash";
-
-const { TabPane } = Tabs;
 
 const Sliders = () => {
-  const router = useRouter();
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [sliders, setSliders] = useState([]);
+  const [allSliders, setAllSliders] = useState([]);
+  const [displayedSliders, setDisplayedSliders] = useState([]);
   const [imageSliders, setImageSliders] = useState([]);
   const [cardSliders, setCardSliders] = useState([]);
-  const [itemsPerPage, setItemsPerPage] = useState(6);
   const [loading, setLoading] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState([]);
   const [selectedCards, setSelectedCards] = useState([]);
   const [editingItemId, setEditingItemId] = useState(null);
   const [form] = Form.useForm();
   const [type, setType] = useState("image");
-  const [filterOptions, setFilterOptions] = useState({
-    parentMenus: [], // Example filter option, adjust as needed
-  });
   const [searchTerm, setSearchTerm] = useState("");
   const [sortType, setSortType] = useState("asc");
 
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
 
   const CustomPrevArrow = ({ onClick }) => (
-    <Button
-      icon={<LeftOutlined />}
+    <button
       onClick={onClick}
-      size="large"
       className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-transparent border-none"
-    />
+      aria-label="Previous Slide"
+    >
+      <LeftOutlined style={{ fontSize: "24px", color: "#000" }} />
+    </button>
   );
 
   const CustomNextArrow = ({ onClick }) => (
-    <Button
-      icon={<RightOutlined />}
+    <button
       onClick={onClick}
-      size="large"
       className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-transparent border-none"
-    />
+      aria-label="Next Slide"
+    >
+      <RightOutlined style={{ fontSize: "24px", color: "#000" }} />
+    </button>
   );
 
+  // Fetch all sliders once
   const fetchSliders = async () => {
     setLoading(true);
     try {
       const response = await instance.get("/sliders");
-      if (response.data) {
-        setSliders(response.data);
-        setImageSliders(
-          response.data.filter((slider) => slider.type === "image")
-        );
-        setCardSliders(
-          response.data.filter((slider) => slider.type === "card")
-        );
+      if (response.data && Array.isArray(response.data)) {
+        setAllSliders(response.data);
       } else {
-        message.error("Failed to fetch sliders.");
+        message.error("Failed to fetch sliders. Invalid data format.");
       }
     } catch (error) {
+      console.error("Error fetching sliders:", error);
       message.error("Failed to fetch sliders.");
     }
     setLoading(false);
   };
 
-  const fetchFilterOptions = async () => {};
-
   useEffect(() => {
-    // fetchFilterOptions();
     fetchSliders();
   }, []);
 
-  const handleAddSlider = () => {
-    setIsFormVisible(true);
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
   };
 
+  // Update displayedSliders based on searchTerm and sortType
+  useEffect(() => {
+    let filteredSliders = [...allSliders];
+
+    // Apply search filter
+    if (searchTerm.trim() !== "") {
+      const lowerSearch = searchTerm.toLowerCase();
+      filteredSliders = filteredSliders.filter(
+        (slider) =>
+          (slider.title_en &&
+            slider.title_en.toLowerCase().includes(lowerSearch)) ||
+          (slider.title_bn &&
+            slider.title_bn.toLowerCase().includes(lowerSearch))
+      );
+    }
+
+    // Apply sorting
+    if (sortType === "asc") {
+      // Newest first
+      filteredSliders.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      );
+    } else {
+      // Oldest first
+      filteredSliders.sort(
+        (a, b) => new Date(a.created_at) - new Date(b.created_at)
+      );
+    }
+
+    setDisplayedSliders(filteredSliders);
+  }, [allSliders, searchTerm, sortType]);
+
+  // Update imageSliders and cardSliders based on displayedSliders
+  useEffect(() => {
+    const images = displayedSliders.filter(
+      (slider) => slider.type && slider.type.toLowerCase() === "image"
+    );
+    const cards = displayedSliders.filter(
+      (slider) => slider.type && slider.type.toLowerCase() === "card"
+    );
+
+    setImageSliders(images);
+    setCardSliders(cards);
+  }, [displayedSliders]);
+
+  // Handle adding a new slider
+  const handleAddSlider = () => {
+    setIsFormVisible(true);
+    setEditingItemId(null);
+    form.resetFields();
+    setSelectedMedia([]);
+    setSelectedCards([]);
+    setType("image");
+  };
+
+  // Handle cancelling the form
   const handleCancelForm = () => {
     setIsFormVisible(false);
     setEditingItemId(null);
     form.resetFields();
     setSelectedMedia([]);
     setSelectedCards([]);
+    setType("image");
   };
 
-  const handleEditClick = (id) => {
+  // Handle editing a slider
+  const handleEditClick = async (id) => {
     setEditingItemId(id);
     setIsFormVisible(true);
-    const slider = sliders.find((s) => s.id === id);
-    if (slider) {
-      form.setFieldsValue({
-        title_en: slider.title_en,
-        title_bn: slider.title_bn,
-        description_en: slider.description_en,
-        description_bn: slider.description_bn,
-        type: slider.type,
-      });
-      setSelectedMedia(slider.medias || []);
-      setSelectedCards(slider.card_ids || []);
-      setType(slider.type);
+    try {
+      const response = await instance.get(`/sliders/${id}`);
+      const slider = response.data;
+      if (slider) {
+        form.setFieldsValue({
+          title_en: slider.title_en,
+          title_bn: slider.title_bn,
+          description_en: slider.description_en,
+          description_bn: slider.description_bn,
+          type: slider.type,
+        });
+        setSelectedMedia(slider.medias || []);
+        setSelectedCards(slider.card_ids || []);
+        setType(slider.type);
+      }
+    } catch (error) {
+      console.error("Error fetching slider details:", error);
+      message.error("Failed to fetch slider details.");
+      setIsFormVisible(false);
+      setEditingItemId(null);
     }
   };
 
+  // Handle deleting a slider
   const handleDeleteSlider = async (id) => {
     try {
       setLoading(true);
@@ -123,94 +171,44 @@ const Sliders = () => {
       message.success("Slider deleted successfully.");
       fetchSliders();
     } catch (error) {
+      console.error("Error deleting slider:", error);
       message.error("Failed to delete slider.");
-      setLoading(false);
-    }
-  };
-
-  const handleSearch = async (value) => {
-    if (!value) {
-      fetchSliders();
-      return;
-    }
-    setLoading(true);
-    try {
-      const response = await instance.get("/sliders/search", {
-        params: { query: value },
-      });
-      if (response.data) {
-        setSliders(response.data);
-        setImageSliders(
-          response.data.filter((slider) => slider.type === "image")
-        );
-        setCardSliders(
-          response.data.filter((slider) => slider.type === "card")
-        );
-      } else {
-        message.error("No sliders found.");
-      }
-    } catch (error) {
-      message.error("Search failed.");
     }
     setLoading(false);
   };
 
-  const handleFilter = () => {
-    setIsFilterModalVisible(true);
+  // Handle sort type change
+  const handleSortTypeChange = (type) => {
+    setSortType(type);
   };
 
-  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
-
+  // Handle applying filters (if any additional filters are implemented)
   const applyFilters = (filters) => {
     // Implement your filter logic based on the filters received
-    // For example, filter by slider type or other criteria
-    let filteredSliders = [...sliders];
-    if (filters.type) {
-      filteredSliders = filteredSliders.filter(
-        (slider) => slider.type === filters.type
-      );
-    }
+    // This example assumes filters are already handled in the useEffect for search and sort
     // Add more filter conditions as needed
-    setSliders(filteredSliders);
-    setImageSliders(
-      filteredSliders.filter((slider) => slider.type === "image")
-    );
-    setCardSliders(filteredSliders.filter((slider) => slider.type === "card"));
+    message.success("Filters applied successfully.");
   };
 
+  // Handle resetting filters
   const resetFilters = () => {
-    fetchSliders();
-  };
-
-  const onCancelEdit = () => {
-    setIsFormVisible(false);
-    setEditingItemId(null);
-    setSelectedMedia([]);
-    setSelectedCards([]);
-    setType("image");
+    setSearchTerm("");
+    setSortType("asc");
+    message.success("Filters reset successfully.");
   };
 
   return (
-    <div className="mavecontainer bg-gray-50 rounded-xl">
+    <div className="mavecontainer bg-gray-50 rounded-xl p-4">
+      {/* Header Section */}
       <SlidersHeader
         onAddSlider={handleAddSlider}
         searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
+        onSearchChange={handleSearchChange}
         sortType={sortType}
-        setSortType={setSortType}
-        handleFilter={handleFilter}
-        onShowChange={(value) => {
-          // Handle items per page change if needed
-          // For now, it's managed in SliderList
-        }}
-        handleSelectAll={() => {
-          // Implement select all logic if applicable
-        }}
-        allSelected={false} // Adjust based on your selection logic
-        filterOptions={filterOptions}
-        applyFilters={applyFilters}
-        resetFilters={resetFilters}
+        setSortType={handleSortTypeChange}
       />
+
+      {/* Slider Form Modal */}
       <SliderForm
         form={form}
         type={type}
@@ -223,9 +221,9 @@ const Sliders = () => {
         fetchSliders={fetchSliders}
         onCancelEdit={handleCancelForm}
         isFormVisible={isFormVisible}
-        setIsFormVisible={setIsFormVisible}
-        onCancel={onCancelEdit}
       />
+
+      {/* Slider List Section */}
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <Spin size="large" />
@@ -239,14 +237,7 @@ const Sliders = () => {
           MEDIA_URL={MEDIA_URL}
           handleEditClick={handleEditClick}
           handleDeleteSlider={handleDeleteSlider}
-          // handleSearch={handleSearch}
-          handleFilter={handleFilter}
-          sortType={sortType}
-          setSortType={setSortType}
-          totalSliders={sliders.length}
-          itemsPerPage={itemsPerPage}
-          setItemsPerPage={setItemsPerPage}
-          handleSearch={debounce(handleSearch, 500)}
+          itemsPerPage={6} // Set default items per page
         />
       )}
     </div>
