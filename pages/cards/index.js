@@ -23,6 +23,7 @@ const CardsPage = () => {
   const [selectedCard, setSelectedCard] = useState(null);
   const [isPreviewModalVisible, setIsPreviewModalVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [selectedPageFilter, setSelectedPageFilter] = useState(null);
 
   const [form] = Form.useForm();
 
@@ -63,10 +64,6 @@ const CardsPage = () => {
     setIsCreateCardFormVisible(true);
   };
 
-  const handleFilter = () => {
-    message.info("Filter functionality is not implemented yet.");
-  };
-
   const onItemsPerPageChange = (value) => {
     setItemsPerPage(value);
     setCurrentPage(1);
@@ -76,13 +73,23 @@ const CardsPage = () => {
     setSearchTerm(value);
   };
 
-  // Handle search and sorting
+  const handlePageFilterChange = (value) => {
+    setSelectedPageFilter(value);
+  };
+
+  // Handle search, sorting, and filtering
   useEffect(() => {
     let tempCards = [...cardsData];
 
     if (searchTerm) {
       tempCards = tempCards.filter((card) =>
         card.title_en.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (selectedPageFilter) {
+      tempCards = tempCards.filter(
+        (card) => card.page_name === selectedPageFilter
       );
     }
 
@@ -96,7 +103,7 @@ const CardsPage = () => {
 
     setFilteredCards(tempCards);
     setCurrentPage(1);
-  }, [cardsData, searchTerm, sortType]);
+  }, [cardsData, searchTerm, sortType, selectedPageFilter]);
 
   // Pagination
   const indexOfLastCard = currentPage * itemsPerPage;
@@ -128,8 +135,36 @@ const CardsPage = () => {
 
   const handleEditCard = () => {
     setIsEditing(true);
+
+    // Determine link type based on link_url
+    const linkType =
+      selectedCard.link_url &&
+      (selectedCard.link_url.includes("page_id") ||
+        selectedCard.link_url.includes("pageName"))
+        ? "page"
+        : "independent";
+
+    // If link type is page, extract link_page_name
+    let linkPageName = null;
+    if (linkType === "page") {
+      // Extract page_id or pageName from link_url to find the linked page
+      const urlParams = new URLSearchParams(
+        selectedCard.link_url.split("?")[1]
+      );
+      const pageNameParam = urlParams.get("pageName");
+      linkPageName = pages.find(
+        (page) => page.page_name_en === pageNameParam
+      )?.page_name;
+    }
+
     form.setFieldsValue({
       ...selectedCard,
+      status: selectedCard.status === 1,
+      page_name: selectedCard.page_name || undefined, // Always present page field
+      media_ids: selectedCard.media_ids,
+      link_type: linkType,
+      link_page_name: linkPageName || undefined, // Conditional link page field
+      link_url: linkType === "independent" ? selectedCard.link_url : undefined,
     });
   };
 
@@ -141,16 +176,32 @@ const CardsPage = () => {
   const handleSaveEdit = async () => {
     try {
       const values = await form.validateFields();
+
+      let link_url = values.link_url;
+      let link_page_name = null;
+
+      if (values.link_type === "page" && values.link_page_name) {
+        const selectedPage = pages.find(
+          (page) => page.page_name === values.link_page_name
+        );
+        if (selectedPage) {
+          link_url = `/${selectedPage.slug}?page_id=${selectedPage.id}&pageName=${selectedPage.page_name_en}`;
+          link_page_name = values.link_page_name;
+        } else {
+          message.error("Selected page not found.");
+          return;
+        }
+      }
+
       const payload = {
-        title_en: values.title_en,
-        title_bn: values.title_bn,
-        description_en: values.description_en,
-        description_bn: values.description_bn,
+        ...values,
         media_ids: values.media_ids,
+        status: values.status ? 1 : 0,
+        link_url: link_url,
+        // page_name is the always present field
         page_name: values.page_name,
-        link_url: values.link_url,
-        status: values.status,
       };
+
       await instance.put(`/cards/${selectedCard.id}`, payload);
       message.success("Card updated successfully.");
       setIsEditing(false);
@@ -169,8 +220,10 @@ const CardsPage = () => {
         setSortType={setSortType}
         itemsPerPage={itemsPerPage}
         onItemsPerPageChange={onItemsPerPageChange}
-        handleFilter={handleFilter}
         onSearch={onSearch}
+        pages={pages}
+        selectedPageFilter={selectedPageFilter}
+        handlePageFilterChange={handlePageFilterChange}
       />
 
       {isCreateCardFormVisible && (
