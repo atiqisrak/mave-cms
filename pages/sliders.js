@@ -108,7 +108,7 @@ const Sliders = () => {
         description_bn: slider.description_bn,
         type: slider.type,
       });
-      setSelectedMedia(slider.media_ids || []);
+      setSelectedMedia(slider.medias || []);
       setSelectedCards(slider.card_ids || []);
       setType(slider.type);
     }
@@ -180,6 +180,14 @@ const Sliders = () => {
     fetchSliders();
   };
 
+  const onCancelEdit = () => {
+    setIsFormVisible(false);
+    setEditingItemId(null);
+    setSelectedMedia([]);
+    setSelectedCards([]);
+    setType("image");
+  };
+
   return (
     <div className="mavecontainer bg-gray-50 rounded-xl">
       <SlidersHeader
@@ -213,6 +221,8 @@ const Sliders = () => {
         fetchSliders={fetchSliders}
         onCancelEdit={handleCancelForm}
         isFormVisible={isFormVisible}
+        setIsFormVisible={setIsFormVisible}
+        onCancel={onCancelEdit}
       />
       {loading ? (
         <div className="flex justify-center items-center h-64">

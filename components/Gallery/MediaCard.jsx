@@ -1,7 +1,7 @@
 // components/Gallery/MediaCard.jsx
 
 import React, { useEffect, useState } from "react";
-import { Card, Button } from "antd";
+import { Card, Button, Space } from "antd";
 import { EditOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import PreviewModal from "./PreviewModal";
 import Image from "next/image";
@@ -127,7 +127,7 @@ const MediaCard = ({
         actions={actions}
         className="media-card shadow-md rounded-md"
       >
-        <div className="media-card-meta flex flex-col sm:flex-row justify-between items-start sm:items-center">
+        <Space className="media-card-meta flex flex-col sm:flex-row justify-between items-start sm:items-center">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
             <h3 className="text-lg font-semibold truncate max-w-xs">
               {media.file_name.slice(0, media.file_name.lastIndexOf("."))}
@@ -139,7 +139,7 @@ const MediaCard = ({
           <span className="text-lg text-gray-400 font-semibold capitalize flex items-center">
             {mediaType}
           </span>
-        </div>
+        </Space>
       </Card>
 
       {/* Preview Modal */}

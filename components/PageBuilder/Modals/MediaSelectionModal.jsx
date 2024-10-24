@@ -16,12 +16,13 @@ const MediaSelectionModal = ({
   onClose,
   onSelectMedia,
   selectionMode = "single",
+  initialSelectedMedia = [],
 }) => {
   const [mediaList, setMediaList] = useState([]);
   const [sortedMedia, setSortedMedia] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sortOrder, setSortOrder] = useState("desc");
-  const [selectedMedia, setSelectedMedia] = useState([]);
+  const [selectedMedia, setSelectedMedia] = useState(initialSelectedMedia);
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,9 +31,11 @@ const MediaSelectionModal = ({
   useEffect(() => {
     if (isVisible) {
       fetchMedia();
+      // Set selectedMedia to initialSelectedMedia when the modal opens
+      setSelectedMedia(initialSelectedMedia);
+      setCurrentPage(1);
     }
-    setSelectedMedia([]);
-    setCurrentPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible]);
 
   const fetchMedia = async () => {
@@ -82,7 +85,7 @@ const MediaSelectionModal = ({
     if (selectionMode === "single") {
       onSelectMedia(selectedMedia[0]); // Pass single media object
     } else {
-      onSelectMedia(selectedMedia);
+      onSelectMedia(selectedMedia); // Pass array of media objects
     }
     onClose();
   };
@@ -177,7 +180,7 @@ const MediaSelectionModal = ({
             >
               <Image
                 src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${item.file_path}`}
-                alt={item.title}
+                alt={item.title || "Media Unavailable"}
                 width={250}
                 height={200}
                 objectFit="cover"
@@ -186,7 +189,7 @@ const MediaSelectionModal = ({
                 priority={false}
               />
               <p className="mt-2 text-center text-sm font-medium">
-                {item.title}
+                {item.title || "Untitled"}
               </p>
               {isItemSelected(item) && (
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center rounded-md">

@@ -23,9 +23,13 @@ const SliderForm = ({
   fetchSliders,
   onCancelEdit,
   isFormVisible,
+  setIsFormVisible,
 }) => {
-  const [isModalVisible, setIsModalVisible] = useState(isFormVisible);
+  const [isMediaModalVisible, setIsMediaModalVisible] = useState(false);
   const [cards, setCards] = useState([]);
+
+  // Define selectionMode as a constant
+  const selectionMode = "multiple";
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -41,46 +45,98 @@ const SliderForm = ({
     fetchCards();
   }, []);
 
+  // Ensure that when the form is closed, the media modal is also closed
+  useEffect(() => {
+    if (!isFormVisible) {
+      setIsMediaModalVisible(false);
+    }
+  }, [isFormVisible]);
+
+  // Prepopulate form fields and selections when editing
+  useEffect(() => {
+    if (editingItemId) {
+      const populateForm = async () => {
+        try {
+          const response = await instance.get(`/sliders/${editingItemId}`);
+          const slider = response.data;
+          if (slider) {
+            form.setFieldsValue({
+              title_en: slider.title_en,
+              title_bn: slider.title_bn,
+              description_en: slider.description_en,
+              description_bn: slider.description_bn,
+              type: slider.type,
+            });
+            setSelectedMedia(slider.medias || []);
+            setSelectedCards(slider.card_ids || []);
+            setType(slider.type);
+          }
+        } catch (error) {
+          message.error("Failed to fetch slider details.");
+        }
+      };
+      populateForm();
+    } else {
+      // Reset form when creating a new slider
+      form.resetFields();
+      setSelectedMedia([]);
+      setSelectedCards([]);
+      setType("image");
+    }
+  }, [editingItemId, form, setType]);
+
   const handleTypeChange = (value) => {
     setType(value);
     form.setFieldsValue({ type: value });
+
     if (value === "image") {
       setSelectedCards([]);
-    } else {
+    } else if (value === "card") {
       setSelectedMedia([]);
     }
   };
 
   const handleSubmit = async (values) => {
-    const updatedSlider = {
+    const payload = {
       title_en: values.title_en,
       title_bn: values.title_bn,
       description_en: values.description_en,
       description_bn: values.description_bn,
       type: values.type,
-      media_ids: selectedMedia,
-      card_ids: selectedCards,
     };
+
+    if (values.type === "image") {
+      payload.media_ids = selectedMedia.map((media) => media.id);
+      // Ensure card_ids are cleared
+      payload.card_ids = [];
+    } else if (values.type === "card") {
+      payload.card_ids = selectedCards;
+      // Ensure media_ids are cleared
+      payload.media_ids = [];
+    }
 
     try {
       if (editingItemId) {
         const response = await instance.put(
           `/sliders/${editingItemId}`,
-          updatedSlider
+          payload
         );
         if (response.status === 200) {
           message.success("Slider updated successfully.");
           fetchSliders();
           onCancelEdit();
+          setIsFormVisible(false);
         }
       } else {
-        const response = await instance.post("/sliders", updatedSlider);
+        const response = await instance.post("/sliders", payload);
         if (response.status === 201) {
           message.success("Slider created successfully.");
           fetchSliders();
           form.resetFields();
           setSelectedMedia([]);
           setSelectedCards([]);
+          setType("image");
+          setIsFormVisible(false);
         }
       }
     } catch (error) {
@@ -88,21 +144,27 @@ const SliderForm = ({
     }
   };
 
+  // Placeholder images
+  const imagePlaceholder = "/images/Image_Placeholder.png";
+  const cardPlaceholder = "/images/Card_Placeholder.png";
+
   return (
     <Modal
       title={editingItemId ? "Edit Slider" : "Add Slider"}
       open={isFormVisible}
-      onCancel={!isFormVisible}
+      onCancel={onCancelEdit}
       footer={null}
       width={800}
+      destroyOnClose
     >
       <Form
         form={form}
         layout="vertical"
         onFinish={handleSubmit}
         initialValues={{ type: "image" }}
-        className="bg-white p-6 rounded-lg shadow-md mb-6"
+        className="bg-white p-6 rounded-lg shadow-md"
       >
+        {/* Title in English */}
         <Form.Item
           label="Title English"
           name="title_en"
@@ -112,6 +174,8 @@ const SliderForm = ({
         >
           <Input placeholder="Enter title in English" />
         </Form.Item>
+
+        {/* Title in Bangla */}
         <Form.Item
           label="Title Bangla"
           name="title_bn"
@@ -121,6 +185,8 @@ const SliderForm = ({
         >
           <Input placeholder="Enter title in Bangla" />
         </Form.Item>
+
+        {/* Description in English */}
         <Form.Item
           label="Description English"
           name="description_en"
@@ -133,6 +199,8 @@ const SliderForm = ({
         >
           <RichTextEditor editMode={true} />
         </Form.Item>
+
+        {/* Description in Bangla */}
         <Form.Item
           label="Description Bangla"
           name="description_bn"
@@ -145,6 +213,8 @@ const SliderForm = ({
         >
           <RichTextEditor editMode={true} />
         </Form.Item>
+
+        {/* Slider Type */}
         <Form.Item
           label="Slider Type"
           name="type"
@@ -152,30 +222,42 @@ const SliderForm = ({
             { required: true, message: "Please select the slider type." },
           ]}
         >
-          <Tabs defaultActiveKey="image" onChange={handleTypeChange} centered>
+          <Tabs
+            activeKey={type}
+            onChange={handleTypeChange}
+            centered
+            type="card"
+          >
             <TabPane tab="Image" key="image" />
             <TabPane tab="Card" key="card" />
           </Tabs>
         </Form.Item>
+
+        {/* Media Selection for Image Sliders */}
         {type === "image" ? (
           <Form.Item label="Media">
             <Button
               icon={<UploadOutlined />}
-              onClick={() => setIsModalVisible(true)}
+              onClick={() => setIsMediaModalVisible(true)}
               className="mavebutton"
             >
               Select Media
             </Button>
-            {selectedMedia.length > 0 && (
+            {selectedMedia.length > 0 ? (
               <div className="mt-4 grid grid-cols-3 gap-4">
                 {selectedMedia.map((media) => (
-                  <div key={media.id} className="relative">
+                  <div key={media?.id} className="relative">
                     <Image
-                      src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}
-                      alt={media.file_name}
+                      src={
+                        media?.file_path
+                          ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`
+                          : imagePlaceholder
+                      }
+                      alt={media?.file_name || "Image Unavailable"}
                       width={100}
                       height={100}
-                      className="rounded-md"
+                      className="rounded-md object-cover"
+                      fallback={imagePlaceholder}
                     />
                     <Button
                       type="text"
@@ -190,9 +272,12 @@ const SliderForm = ({
                   </div>
                 ))}
               </div>
+            ) : (
+              <div className="mt-4 text-gray-500">No media selected.</div>
             )}
           </Form.Item>
         ) : (
+          /* Card Selection for Card Sliders */
           <Form.Item label="Select Cards">
             <Select
               mode="multiple"
@@ -200,15 +285,61 @@ const SliderForm = ({
               value={selectedCards}
               onChange={setSelectedCards}
               className="w-full"
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                option.children.toLowerCase().includes(input.toLowerCase())
+              }
             >
-              {cards.map((card) => (
-                <Option key={card.id} value={card.id}>
-                  {card.title_en}
-                </Option>
-              ))}
+              {cards.length > 0 ? (
+                cards.map((card) => (
+                  <Option key={card.id} value={card.id}>
+                    {card.title_en || "Title Unavailable"}
+                  </Option>
+                ))
+              ) : (
+                <Option disabled>No cards available</Option>
+              )}
             </Select>
+            {selectedCards.length > 0 && (
+              <div className="mt-4 grid grid-cols-3 gap-4">
+                {selectedCards.map((cardId) => {
+                  const card = cards.find((c) => c.id === cardId);
+                  return (
+                    <div key={cardId} className="relative">
+                      <Image
+                        src={
+                          card?.media_files?.file_path
+                            ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${card.media_files.file_path}`
+                            : cardPlaceholder
+                        }
+                        alt={card?.title_en || "Card Unavailable"}
+                        width={100}
+                        height={100}
+                        className="rounded-md object-cover"
+                        fallback={cardPlaceholder}
+                      />
+                      <Button
+                        type="text"
+                        icon={<CloseCircleOutlined className="text-red-500" />}
+                        onClick={() =>
+                          setSelectedCards(
+                            selectedCards.filter((id) => id !== cardId)
+                          )
+                        }
+                        className="absolute top-0 right-0"
+                      />
+                      <div className="mt-1 text-center text-sm">
+                        {card?.title_en || "Title Unavailable"}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </Form.Item>
         )}
+
+        {/* Form Actions */}
         <Form.Item>
           <Space>
             <Button type="primary" htmlType="submit" className="bg-blue-500">
@@ -221,11 +352,21 @@ const SliderForm = ({
             )}
           </Space>
         </Form.Item>
+
+        {/* Media Selection Modal */}
         <MediaSelectionModal
-          isVisible={isModalVisible}
-          onClose={() => setIsModalVisible(false)}
-          onSelectMedia={(media) => setSelectedMedia(media)}
-          selectionMode="multiple"
+          isVisible={isMediaModalVisible}
+          onClose={() => setIsMediaModalVisible(false)}
+          onSelectMedia={(media) => {
+            // Replace the entire selectedMedia array when selection is updated
+            if (selectionMode === "single") {
+              setSelectedMedia([media]);
+            } else {
+              setSelectedMedia(media); // 'media' is an array of selected media objects
+            }
+          }}
+          selectionMode={selectionMode}
+          initialSelectedMedia={selectedMedia}
         />
       </Form>
     </Modal>
