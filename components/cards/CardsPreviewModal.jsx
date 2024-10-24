@@ -1,6 +1,6 @@
 // components/cards/CardsPreviewModal.jsx
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   Form,
@@ -10,6 +10,7 @@ import {
   Table,
   message,
   Switch,
+  Radio,
 } from "antd";
 import MediaSelectionModal from "../PageBuilder/Modals/MediaSelectionModal";
 import RichTextEditor from "../RichTextEditor";
@@ -30,8 +31,23 @@ const CardsPreviewModal = ({
   pages,
   media,
 }) => {
+  console.log("selectedCard", selectedCard);
   const [isMediaModalVisible, setIsMediaModalVisible] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState(null);
+  const [linkType, setLinkType] = useState("independent");
+
+  useEffect(() => {
+    if (selectedCard) {
+      // Determine link type based on link_url
+      const linkType =
+        selectedCard.link_url &&
+        (selectedCard.link_url.includes("page_id") ||
+          selectedCard.link_url.includes("pageName"))
+          ? "page"
+          : "independent";
+      setLinkType(linkType);
+    }
+  }, [selectedCard]);
 
   const handleMediaSelect = (mediaItem) => {
     setSelectedMedia(mediaItem);
@@ -115,6 +131,13 @@ const CardsPreviewModal = ({
       key: "details",
     },
   ];
+
+  const handleLinkTypeChange = (e) => {
+    setLinkType(e.target.value);
+    if (e.target.value === "page") {
+      form.setFieldsValue({ link_url: undefined });
+    }
+  };
 
   return (
     <Modal
@@ -235,8 +258,9 @@ const CardsPreviewModal = ({
                 </div>
               </Form.Item>
 
+              {/* Always present Page field */}
               <Form.Item
-                label="Page Name"
+                label="Page"
                 name="page_name"
                 rules={[{ required: true, message: "Please select a page" }]}
               >
@@ -244,6 +268,32 @@ const CardsPreviewModal = ({
                   {pages
                     ?.filter((page) => page.page_name_en)
                     .map((page) => (
+                      <Option key={page.page_name_en} value={page.page_name_en}>
+                        {page.page_name_en}
+                      </Option>
+                    ))}
+                </Select>
+              </Form.Item>
+
+              <Form.Item
+                label="Link Type"
+                name="link_type"
+                initialValue={linkType}
+              >
+                <Radio.Group onChange={handleLinkTypeChange}>
+                  <Radio value="page">Page Link</Radio>
+                  <Radio value="independent">Independent Link</Radio>
+                </Radio.Group>
+              </Form.Item>
+
+              {linkType === "page" && (
+                <Form.Item
+                  label="Select the page to link"
+                  name="link_page_name"
+                  rules={[{ required: true, message: "Please select a page" }]}
+                >
+                  <Select placeholder="Select a Page to link" allowClear>
+                    {pages?.map((page) => (
                       <Select.Option
                         key={page.page_name_en}
                         value={page.page_name_en}
@@ -251,18 +301,21 @@ const CardsPreviewModal = ({
                         {page.page_name_en}
                       </Select.Option>
                     ))}
-                </Select>
-              </Form.Item>
+                  </Select>
+                </Form.Item>
+              )}
 
-              <Form.Item
-                label="Link URL"
-                name="link_url"
-                rules={[
-                  { required: true, message: "Please enter the link URL" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
+              {linkType === "independent" && (
+                <Form.Item
+                  label="Link URL"
+                  name="link_url"
+                  rules={[
+                    { required: true, message: "Please enter the link URL" },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+              )}
 
               <Form.Item
                 label="Status"

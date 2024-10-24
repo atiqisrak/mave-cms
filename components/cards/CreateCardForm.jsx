@@ -1,7 +1,16 @@
 // components/cards/CreateCardForm.jsx
 
 import React, { useState } from "react";
-import { Modal, Form, Input, Select, Button, message } from "antd";
+import {
+  Modal,
+  Form,
+  Input,
+  Select,
+  Button,
+  message,
+  Radio,
+  Switch,
+} from "antd";
 import MediaSelectionModal from "../PageBuilder/Modals/MediaSelectionModal";
 import RichTextEditor from "../RichTextEditor";
 import instance from "../../axios";
@@ -14,6 +23,7 @@ const CreateCardForm = ({ onSuccess, onCancel, pages }) => {
   const [submitting, setSubmitting] = useState(false);
   const [isMediaModalVisible, setIsMediaModalVisible] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState(null);
+  const [linkType, setLinkType] = useState("independent");
 
   const handleSubmit = async (values) => {
     if (!selectedMedia) {
@@ -21,6 +31,21 @@ const CreateCardForm = ({ onSuccess, onCancel, pages }) => {
       return;
     }
     setSubmitting(true);
+
+    let link_url = values.link_url;
+    if (values.link_type === "page" && values.page_name) {
+      const selectedPage = pages.find(
+        (page) => page.page_name === values.page_name
+      );
+      if (selectedPage) {
+        link_url = `/${selectedPage.slug}?page_id=${selectedPage.id}&pageName=${selectedPage.page_name_en}`;
+      } else {
+        message.error("Selected page not found.");
+        setSubmitting(false);
+        return;
+      }
+    }
+
     try {
       const payload = {
         title_en: values.title_en,
@@ -28,9 +53,9 @@ const CreateCardForm = ({ onSuccess, onCancel, pages }) => {
         description_en: values.description_en,
         description_bn: values.description_bn,
         media_ids: selectedMedia.id,
-        page_name: values.page_name,
-        link_url: values.link_url,
-        status: values.status,
+        page_name: values.link_type === "page" ? values.page_name : null,
+        link_url: link_url,
+        status: values.status ? 1 : 0,
       };
 
       await instance.post("/cards", payload);
@@ -47,6 +72,13 @@ const CreateCardForm = ({ onSuccess, onCancel, pages }) => {
   const handleMediaSelect = (media) => {
     setSelectedMedia(media);
     setIsMediaModalVisible(false);
+  };
+
+  const handleLinkTypeChange = (e) => {
+    setLinkType(e.target.value);
+    if (e.target.value === "page") {
+      form.setFieldsValue({ link_url: "" });
+    }
   };
 
   return (
@@ -69,10 +101,10 @@ const CreateCardForm = ({ onSuccess, onCancel, pages }) => {
         </Form.Item>
 
         <Form.Item
-          label="Title (Bangla)"
+          label="Title (Alternate)"
           name="title_bn"
           rules={[
-            { required: true, message: "Please enter the title in Bangla" },
+            { required: true, message: "Please enter the title in Alternate" },
           ]}
         >
           <Input />
@@ -92,12 +124,12 @@ const CreateCardForm = ({ onSuccess, onCancel, pages }) => {
         </Form.Item>
 
         <Form.Item
-          label="Description (Bangla)"
+          label="Description (Alternate)"
           name="description_bn"
           rules={[
             {
               required: true,
-              message: "Please enter the description in Bangla",
+              message: "Please enter the description in Alternate",
             },
           ]}
         >
@@ -122,37 +154,48 @@ const CreateCardForm = ({ onSuccess, onCancel, pages }) => {
           </div>
         </Form.Item>
 
-        <Form.Item
-          label="Page Name"
-          name="page_name"
-          rules={[{ required: true, message: "Please select a page" }]}
-        >
-          <Select placeholder="Select Page">
-            {pages.map((page) => (
-              <Option key={page.page_name} value={page.page_name}>
-                {page.page_name_en}
-              </Option>
-            ))}
-          </Select>
+        <Form.Item label="Link Type" name="link_type" initialValue={linkType}>
+          <Radio.Group onChange={handleLinkTypeChange}>
+            <Radio value="page">Page Link</Radio>
+            <Radio value="independent">Independent Link</Radio>
+          </Radio.Group>
         </Form.Item>
 
-        <Form.Item
-          label="Link URL"
-          name="link_url"
-          rules={[{ required: true, message: "Please enter the link URL" }]}
-        >
-          <Input />
-        </Form.Item>
+        {linkType === "page" && (
+          <Form.Item
+            label="Page Name"
+            name="page_name"
+            rules={[{ required: true, message: "Please select a page" }]}
+          >
+            <Select placeholder="Select Page" allowClear>
+              {pages
+                ?.filter((page) => page.page_name_en)
+                .map((page) => (
+                  <Option key={page.page_name} value={page.page_name}>
+                    {page.page_name_en}
+                  </Option>
+                ))}
+            </Select>
+          </Form.Item>
+        )}
+
+        {linkType === "independent" && (
+          <Form.Item
+            label="Link URL"
+            name="link_url"
+            rules={[{ required: true, message: "Please enter the link URL" }]}
+          >
+            <Input />
+          </Form.Item>
+        )}
 
         <Form.Item
           label="Status"
           name="status"
+          valuePropName="checked"
           rules={[{ required: true, message: "Please select a status" }]}
         >
-          <Select placeholder="Select Status">
-            <Option value={1}>Active</Option>
-            <Option value={0}>Inactive</Option>
-          </Select>
+          <Switch checkedChildren="Active" unCheckedChildren="Inactive" />
         </Form.Item>
 
         <Form.Item>
