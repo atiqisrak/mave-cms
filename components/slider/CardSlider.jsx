@@ -50,17 +50,11 @@ const CardSlider = ({
       hoverable
       cover={
         hasCards ? (
-          <Carousel
-            autoplay
-            arrows
-            prevArrow={<CustomPrevArrow />}
-            nextArrow={<CustomNextArrow />}
-            className="mb-4"
-          >
-            {slider.cards.map((card) => (
+          <Carousel autoplay className="mb-4">
+            {slider?.cards?.map((card) => (
               <div key={card.id}>
-                <div className="flex flex-col items-center justify-center h-64 bg-gray-200">
-                  <Title level={4}>
+                <div className="flex flex-col items-center justify-center h-64 bg-gray-200 pt-6">
+                  <Title level={5}>
                     {card.title_en || "Title Unavailable"}
                   </Title>
                   <Image
@@ -72,7 +66,7 @@ const CardSlider = ({
                     alt={card.title_en || "Card Unavailable"}
                     width={400}
                     height={200}
-                    objectFit="contain"
+                    objectFit="cover"
                     className="rounded-md"
                     fallback={cardPlaceholder}
                   />
