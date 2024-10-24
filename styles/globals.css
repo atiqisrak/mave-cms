@@ -620,3 +620,6 @@ a:hover {
   line-height: auto;
   padding-inline: 0;
 }
+.ant-card .ant-card-body {
+  padding: 0 1rem 1rem;
+}
