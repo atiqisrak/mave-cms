@@ -2,11 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Modal, List, Button, message, Select, Pagination } from "antd";
-import {
-  SortAscendingOutlined,
-  SortDescendingOutlined,
-} from "@ant-design/icons";
-import instance from "../../../axios"; // Adjust the path as necessary
+import instance from "../../../axios";
 import Image from "next/image";
 
 const { Option } = Select;
@@ -108,7 +104,7 @@ const MediaSelectionModal = ({
   return (
     <Modal
       title="Select Media"
-      visible={isVisible}
+      open={isVisible}
       onCancel={onClose}
       onOk={handleSubmit}
       okText="Submit"
@@ -178,17 +174,37 @@ const MediaSelectionModal = ({
               }`}
               onClick={() => handleSelection(item)}
             >
-              <Image
-                src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${item.file_path}`}
-                alt={item.title || "Media Unavailable"}
-                width={250}
-                height={200}
-                objectFit="cover"
-                layout="responsive"
-                className="rounded-md"
-                priority={false}
-              />
-              <p className="mt-2 text-center text-sm font-medium">
+              {item.file_type.startsWith("image/") ? (
+                <Image
+                  src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${item.file_path}`}
+                  alt={item.title || "Media Unavailable"}
+                  width={250}
+                  height={200}
+                  objectFit="cover"
+                  layout="responsive"
+                  className="rounded-md"
+                />
+              ) : item.file_type.startsWith("video/") ? (
+                <div className="relative">
+                  <video
+                    src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${item.file_path}`}
+                    className="rounded-md w-full h-48 object-cover"
+                    muted
+                    preload="metadata"
+                  />
+                  <div className="absolute inset-0 flex justify-center items-center">
+                    <EyeOutlined className="text-white text-3xl opacity-75" />
+                  </div>
+                </div>
+              ) : (
+                <div className="document-preview flex flex-col items-center justify-center h-48 bg-gray-100 rounded-md">
+                  <InboxOutlined className="text-4xl text-gray-400" />
+                  <p className="mt-2 text-center text-sm font-medium truncate w-40">
+                    {item.title || item.file_name}
+                  </p>
+                </div>
+              )}
+              <p className="mt-2 text-center text-sm font-medium truncate">
                 {item.title || "Untitled"}
               </p>
               {isItemSelected(item) && (
