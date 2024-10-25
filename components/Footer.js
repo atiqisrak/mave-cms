@@ -27,7 +27,7 @@ import {
 } from "@ant-design/icons";
 import Loader from "./Loader";
 import router from "next/router";
-import MediaSelectionModal1 from "./MediaSelectionModal1";
+import MediaSelectionModal1 from "./PageBuilder/Modals/MediaSelectionModal.jsx";
 const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
 const { Panel } = Collapse;
 const Footer = () => {

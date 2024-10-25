@@ -97,7 +97,6 @@ const MediaCard = ({
               src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}
               width="100%"
               height="100%"
-              frameBorder="0"
             />
             {/* <p className="mt-2 text-sm text-gray-700">{media.file_name}</p> */}
           </div>
