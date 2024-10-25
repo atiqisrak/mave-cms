@@ -1,11 +1,25 @@
 // components/PageBuilder/Modals/MediaSelectionModal.jsx
 
 import React, { useState, useEffect } from "react";
-import { Modal, List, Button, message, Select, Pagination } from "antd";
+import {
+  Modal,
+  List,
+  Button,
+  message,
+  Select,
+  Pagination,
+  Tabs,
+  Input,
+  Switch,
+} from "antd";
+import { EyeOutlined, SyncOutlined } from "@ant-design/icons";
 import instance from "../../../axios";
 import Image from "next/image";
+import UploadMedia from "../../UploadMedia";
 
 const { Option } = Select;
+const { TabPane } = Tabs;
+const { Search } = Input;
 
 const MediaSelectionModal = ({
   isVisible,
@@ -19,6 +33,7 @@ const MediaSelectionModal = ({
   const [loading, setLoading] = useState(false);
   const [sortOrder, setSortOrder] = useState("desc");
   const [selectedMedia, setSelectedMedia] = useState(initialSelectedMedia);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,6 +44,7 @@ const MediaSelectionModal = ({
       fetchMedia();
       // Set selectedMedia to initialSelectedMedia when the modal opens
       setSelectedMedia(initialSelectedMedia);
+      setSearchQuery("");
       setCurrentPage(1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -39,15 +55,23 @@ const MediaSelectionModal = ({
     try {
       const response = await instance.get("/media");
       setMediaList(response.data);
-      setSortedMedia(sortMedia(response.data, sortOrder));
+      const filteredAndSorted = filterAndSortMedia(
+        response.data,
+        searchQuery,
+        sortOrder
+      );
+      setSortedMedia(filteredAndSorted);
     } catch (error) {
       message.error("Failed to fetch media items.");
     }
     setLoading(false);
   };
 
-  const sortMedia = (list, order) => {
-    const sorted = [...list].sort((a, b) => {
+  const filterAndSortMedia = (list, query, order) => {
+    const filtered = list.filter((media) =>
+      media.title.toLowerCase().includes(query.toLowerCase())
+    );
+    const sorted = filtered.sort((a, b) => {
       const dateA = new Date(a.created_at);
       const dateB = new Date(b.created_at);
       return order === "asc" ? dateA - dateB : dateB - dateA;
@@ -57,8 +81,17 @@ const MediaSelectionModal = ({
 
   const handleSortChange = (value) => {
     setSortOrder(value);
-    setSortedMedia(sortMedia(mediaList, value));
+    const filteredAndSorted = filterAndSortMedia(mediaList, searchQuery, value);
+    setSortedMedia(filteredAndSorted);
     setCurrentPage(1); // Reset to first page on sort change
+  };
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    const filteredAndSorted = filterAndSortMedia(mediaList, value, sortOrder);
+    setSortedMedia(filteredAndSorted);
+    setCurrentPage(1); // Reset to first page on search
   };
 
   const handleSelection = (item) => {
@@ -78,11 +111,7 @@ const MediaSelectionModal = ({
       message.warning("Please select at least one media item.");
       return;
     }
-    if (selectionMode === "single") {
-      onSelectMedia(selectedMedia[0]); // Pass single media object
-    } else {
-      onSelectMedia(selectedMedia); // Pass array of media objects
-    }
+    onSelectMedia(selectedMedia); // Always pass an array
     onClose();
   };
 
@@ -101,135 +130,159 @@ const MediaSelectionModal = ({
     currentPage * pageSize
   );
 
+  const handleUploadSuccess = (uploadedMedia) => {
+    // Refresh media list after upload
+    fetchMedia();
+
+    // Automatically select the uploaded media
+    if (selectionMode === "single") {
+      const singleMedia = Array.isArray(uploadedMedia)
+        ? uploadedMedia[0]
+        : uploadedMedia;
+      setSelectedMedia([singleMedia]);
+      onSelectMedia([singleMedia]);
+      onClose();
+    } else {
+      const newSelected = Array.isArray(uploadedMedia)
+        ? [...selectedMedia, ...uploadedMedia]
+        : [...selectedMedia, uploadedMedia];
+      setSelectedMedia(newSelected);
+      onSelectMedia(newSelected);
+    }
+
+    message.success("Media uploaded and selected successfully.");
+  };
+
   return (
     <Modal
       title="Select Media"
       open={isVisible}
       onCancel={onClose}
-      onOk={handleSubmit}
-      okText="Submit"
+      footer={null}
       width={900}
       centered
-      footer={[
-        <Button key="cancel" onClick={onClose} className="mavecancelbutton">
-          Cancel
-        </Button>,
-        <Button
-          key="submit"
-          type="primary"
-          onClick={handleSubmit}
-          disabled={selectedMedia.length === 0}
-          className="mavebutton"
-        >
-          Submit
-        </Button>,
-      ]}
     >
-      <div className="flex flex-col md:flex-row justify-between items-center mb-4">
-        {/* Sorting Controls */}
-        <div className="flex items-center gap-2">
-          <span className="font-semibold">Sort By:</span>
-          <Select
-            value={sortOrder}
-            onChange={handleSortChange}
-            className="w-32"
-            size="large"
-          >
-            <Option value="asc">Ascending</Option>
-            <Option value="desc">Descending</Option>
-          </Select>
-        </div>
-
-        {/* Submit Button for Multiple Selection */}
-        {selectionMode === "multiple" && (
-          <Button
-            type="primary"
-            onClick={handleSubmit}
-            disabled={selectedMedia.length === 0}
-            className="mavebutton"
-          >
-            Submit
-          </Button>
-        )}
-      </div>
-
-      {/* Media List */}
-      <List
-        grid={{
-          gutter: 16,
-          xs: 1,
-          sm: 2,
-          md: 3,
-          lg: 4,
-          xl: 4,
-          xxl: 6,
-        }}
-        dataSource={paginatedMedia}
-        loading={loading}
-        renderItem={(item) => (
-          <List.Item>
-            <div
-              className={`relative border-2 rounded-md cursor-pointer ${
-                isItemSelected(item) ? "border-theme" : "border-transparent"
-              }`}
-              onClick={() => handleSelection(item)}
-            >
-              {item.file_type.startsWith("image/") ? (
-                <Image
-                  src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${item.file_path}`}
-                  alt={item.title || "Media Unavailable"}
-                  width={250}
-                  height={200}
-                  objectFit="cover"
-                  layout="responsive"
-                  className="rounded-md"
-                />
-              ) : item.file_type.startsWith("video/") ? (
-                <div className="relative">
-                  <video
-                    src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${item.file_path}`}
-                    className="rounded-md w-full h-48 object-cover"
-                    muted
-                    preload="metadata"
-                  />
-                  <div className="absolute inset-0 flex justify-center items-center">
-                    <EyeOutlined className="text-white text-3xl opacity-75" />
-                  </div>
-                </div>
-              ) : (
-                <div className="document-preview flex flex-col items-center justify-center h-48 bg-gray-100 rounded-md">
-                  <InboxOutlined className="text-4xl text-gray-400" />
-                  <p className="mt-2 text-center text-sm font-medium truncate w-40">
-                    {item.title || item.file_name}
-                  </p>
-                </div>
-              )}
-              <p className="mt-2 text-center text-sm font-medium truncate">
-                {item.title || "Untitled"}
-              </p>
-              {isItemSelected(item) && (
-                <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center rounded-md">
-                  <span className="text-white text-lg font-semibold">
-                    Selected
-                  </span>
-                </div>
-              )}
+      <Tabs defaultActiveKey="1" centered>
+        <TabPane tab="Select Media" key="1">
+          {/* Sorting and Search Controls */}
+          <div className="w-auto grid items-center grid-cols-5 gap-4 pb-6">
+            <div className="col-span-1 ml-4">
+              <Switch
+                checkedChildren="Added Last"
+                unCheckedChildren="Added First"
+                checked={sortOrder === "asc"}
+                onChange={(checked) =>
+                  handleSortChange(checked ? "asc" : "desc")
+                }
+              />
             </div>
-          </List.Item>
-        )}
-      />
+            <div className="col-span-3">
+              <Search
+                placeholder="Search media..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                allowClear
+              />
+            </div>
+            <div className="col-span-1 flex justify-end">
+              <Button
+                className="mavebutton"
+                onClick={fetchMedia}
+                icon={<SyncOutlined />}
+              >
+                Refresh
+              </Button>
+            </div>
+          </div>
 
-      {/* Pagination Controls */}
-      <div className="flex justify-center mt-4">
-        <Pagination
-          current={currentPage}
-          pageSize={pageSize}
-          total={sortedMedia.length}
-          onChange={handlePageChange}
-          showSizeChanger={false}
-          showQuickJumper
-        />
-      </div>
+          {/* Media List */}
+          <List
+            grid={{
+              gutter: 16,
+              xs: 1,
+              sm: 2,
+              md: 3,
+              lg: 4,
+              xl: 4,
+              xxl: 6,
+            }}
+            dataSource={paginatedMedia}
+            loading={loading}
+            renderItem={(item) => (
+              <List.Item>
+                <div
+                  className={`relative border-2 rounded-md cursor-pointer ${
+                    isItemSelected(item) ? "border-theme" : "border-transparent"
+                  }`}
+                  onClick={() => handleSelection(item)}
+                >
+                  {item.file_type.startsWith("image/") ? (
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${item.file_path}`}
+                      alt={item.title || "Media Unavailable"}
+                      width={250}
+                      height={200}
+                      objectFit="cover"
+                      layout="responsive"
+                      className="rounded-md"
+                    />
+                  ) : item.file_type.startsWith("video/") ? (
+                    <div className="relative">
+                      <video
+                        src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${item.file_path}`}
+                        className="rounded-md w-full h-28 object-cover"
+                        muted
+                        preload="metadata"
+                        height={200}
+                      />
+                      <div className="absolute inset-0 flex justify-center items-center">
+                        <EyeOutlined className="text-white text-3xl opacity-75" />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="document-preview flex flex-col items-center justify-center h-48 bg-gray-100 rounded-md">
+                      <InboxOutlined className="text-4xl text-gray-400" />
+                      <p className="mt-2 text-center text-sm font-medium truncate w-40">
+                        {item.title || item.file_name}
+                      </p>
+                    </div>
+                  )}
+                  <p className="mt-2 text-center text-sm font-medium truncate">
+                    {item.title || "Untitled"}
+                  </p>
+                  {isItemSelected(item) && (
+                    <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center rounded-md">
+                      <span className="text-white text-lg font-semibold">
+                        Selected
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </List.Item>
+            )}
+          />
+
+          {/* Pagination Controls */}
+          <div className="flex justify-center mt-4">
+            <Pagination
+              current={currentPage}
+              pageSize={pageSize}
+              total={sortedMedia.length}
+              onChange={handlePageChange}
+              showSizeChanger={false}
+              showQuickJumper
+            />
+          </div>
+        </TabPane>
+
+        <TabPane tab="Upload Media" key="2">
+          <UploadMedia
+            onUploadSuccess={handleUploadSuccess}
+            selectionMode={selectionMode}
+            onSelectMedia={handleUploadSuccess}
+          />
+        </TabPane>
+      </Tabs>
     </Modal>
   );
 };

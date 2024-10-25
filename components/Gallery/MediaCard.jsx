@@ -86,14 +86,20 @@ const MediaCard = ({
         );
       case "document":
         return (
-          <div className="document-preview flex flex-col items-center justify-center h-48 bg-gray-50">
-            <Image
+          <div className="document-preview flex flex-col items-center justify-center h-96 bg-gray-50">
+            {/* <Image
               src="/icons/document.svg"
               alt="Document"
               width={64}
               height={64}
+            /> */}
+            <iframe
+              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}
+              width="100%"
+              height="100%"
+              frameBorder="0"
             />
-            <p className="mt-2 text-sm text-gray-700">{media.file_name}</p>
+            {/* <p className="mt-2 text-sm text-gray-700">{media.file_name}</p> */}
           </div>
         );
       default:

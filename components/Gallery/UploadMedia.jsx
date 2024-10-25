@@ -12,7 +12,11 @@ import Image from "next/image";
 
 const { Dragger } = Upload;
 
-const UploadMedia = ({ onUploadSuccess }) => {
+const UploadMedia = ({
+  onUploadSuccess,
+  selectionMode = "single",
+  onSelectMedia,
+}) => {
   const [fileList, setFileList] = useState([]);
   const [uploading, setUploading] = useState(false);
 
@@ -25,6 +29,7 @@ const UploadMedia = ({ onUploadSuccess }) => {
       "image/webp",
       "video/mp4",
       "application/pdf",
+      "application/epub",
     ].includes(file.type);
     if (!isValidSize) {
       message.error("File must be smaller than 10MB.");
@@ -58,6 +63,7 @@ const UploadMedia = ({ onUploadSuccess }) => {
     formData.append("file[]", file);
 
     try {
+      setUploading(true);
       const response = await instance.post("/media/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -71,18 +77,32 @@ const UploadMedia = ({ onUploadSuccess }) => {
       });
       onSuccess(response.data, file);
       message.success(`${file.name} uploaded successfully.`);
+      setUploading(false);
       onUploadSuccess();
+
+      // Handle selection after upload
+      if (selectionMode === "single") {
+        // Assuming response.data is an array of uploaded media
+        if (Array.isArray(response.data) && response.data.length > 0) {
+          onSelectMedia([response.data[0]]);
+        }
+      } else {
+        if (Array.isArray(response.data) && response.data.length > 0) {
+          onSelectMedia(response.data);
+        }
+      }
     } catch (error) {
       console.error("Upload error:", error);
       onError(error);
       message.error(`${file.name} upload failed.`);
+      setUploading(false);
     }
   };
 
   return (
     <div className="p-4 bg-white rounded-md shadow-md">
       <Dragger
-        multiple
+        multiple={selectionMode === "multiple"}
         beforeUpload={handleBeforeUpload}
         customRequest={customUpload}
         onChange={handleChange}
@@ -99,7 +119,7 @@ const UploadMedia = ({ onUploadSuccess }) => {
         </p>
         <p className="ant-upload-hint text-sm text-gray-500">
           Support for a single or bulk upload. Strictly prohibit from uploading
-          company data or other band files
+          company data or other banned files
         </p>
       </Dragger>
       {fileList.length > 0 && (
