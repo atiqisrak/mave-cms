@@ -17,7 +17,7 @@ const CardsPage = () => {
   const [viewType, setViewType] = useState("grid");
   const [isCreateCardFormVisible, setIsCreateCardFormVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortType, setSortType] = useState("asc");
+  const [sortType, setSortType] = useState("desc");
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCard, setSelectedCard] = useState(null);
@@ -144,17 +144,13 @@ const CardsPage = () => {
         ? "page"
         : "independent";
 
-    // If link type is page, extract link_page_name
-    let linkPageName = null;
+    // If link type is page, extract link_page_id from link_url
+    let linkPageId = null;
     if (linkType === "page") {
-      // Extract page_id or pageName from link_url to find the linked page
       const urlParams = new URLSearchParams(
         selectedCard.link_url.split("?")[1]
       );
-      const pageNameParam = urlParams.get("pageName");
-      linkPageName = pages.find(
-        (page) => page.page_name_en === pageNameParam
-      )?.page_name;
+      linkPageId = urlParams.get("page_id");
     }
 
     form.setFieldsValue({
@@ -163,7 +159,7 @@ const CardsPage = () => {
       page_name: selectedCard.page_name || undefined, // Always present page field
       media_ids: selectedCard.media_ids,
       link_type: linkType,
-      link_page_name: linkPageName || undefined, // Conditional link page field
+      link_page_id: linkPageId ? Number(linkPageId) : undefined, // Conditional link page field
       link_url: linkType === "independent" ? selectedCard.link_url : undefined,
     });
   };
@@ -178,23 +174,26 @@ const CardsPage = () => {
       const values = await form.validateFields();
 
       let link_url = values.link_url;
-      let link_page_name = null;
+      let link_page_id = null;
 
-      if (values.link_type === "page" && values.link_page_name) {
+      if (values.link_type === "page" && values.link_page_id) {
         const selectedPage = pages.find(
-          (page) => page.page_name === values.link_page_name
+          (page) => page.id === values.link_page_id
         );
         if (selectedPage) {
           link_url = `/${selectedPage.slug}?page_id=${selectedPage.id}&pageName=${selectedPage.page_name_en}`;
-          link_page_name = values.link_page_name;
+          link_page_id = selectedPage.id;
         } else {
           message.error("Selected page not found.");
           return;
         }
       }
 
+      // Exclude 'link_page_id' from payload
+      const { link_page_id: _, ...restValues } = values;
+
       const payload = {
-        ...values,
+        ...restValues,
         media_ids: values.media_ids,
         status: values.status ? 1 : 0,
         link_url: link_url,

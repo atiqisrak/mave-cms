@@ -10,6 +10,7 @@ import {
   message,
   Radio,
   Switch,
+  Drawer,
 } from "antd";
 import MediaSelectionModal from "../PageBuilder/Modals/MediaSelectionModal";
 import RichTextEditor from "../RichTextEditor";
@@ -18,7 +19,7 @@ import Image from "next/image";
 
 const { Option } = Select;
 
-const CreateCardForm = ({ onSuccess, onCancel, pages }) => {
+const CreateCardForm = ({ onSuccess, onCancel, pages, media }) => {
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
   const [isMediaModalVisible, setIsMediaModalVisible] = useState(false);
@@ -33,9 +34,9 @@ const CreateCardForm = ({ onSuccess, onCancel, pages }) => {
     setSubmitting(true);
 
     let link_url = values.link_url;
-    if (values.link_type === "page" && values.page_name) {
+    if (values.link_type === "page" && values.link_page_id) {
       const selectedPage = pages.find(
-        (page) => page.page_name === values.page_name
+        (page) => page.id === values.link_page_id
       );
       if (selectedPage) {
         link_url = `/${selectedPage.slug}?page_id=${selectedPage.id}&pageName=${selectedPage.page_name_en}`;
@@ -47,13 +48,12 @@ const CreateCardForm = ({ onSuccess, onCancel, pages }) => {
     }
 
     try {
+      // Exclude 'link_page_id' from payload
+      const { link_page_id, ...restValues } = values;
+
       const payload = {
-        title_en: values.title_en,
-        title_bn: values.title_bn,
-        description_en: values.description_en,
-        description_bn: values.description_bn,
+        ...restValues,
         media_ids: selectedMedia.id,
-        page_name: values.link_type === "page" ? values.page_name : null,
         link_url: link_url,
         status: values.status ? 1 : 0,
       };
@@ -62,34 +62,49 @@ const CreateCardForm = ({ onSuccess, onCancel, pages }) => {
       message.success("Card created successfully.");
       form.resetFields();
       setSelectedMedia(null);
+      setLinkType("independent");
       onSuccess();
     } catch (error) {
+      console.error("Create Card Error:", error);
       message.error("Failed to create card.");
     }
     setSubmitting(false);
   };
 
-  const handleMediaSelect = (media) => {
-    setSelectedMedia(media);
+  const handleMediaSelect = (mediaItem) => {
+    setSelectedMedia(mediaItem);
+    form.setFieldsValue({ media_ids: mediaItem.id });
     setIsMediaModalVisible(false);
   };
 
   const handleLinkTypeChange = (e) => {
     setLinkType(e.target.value);
-    if (e.target.value === "page") {
-      form.setFieldsValue({ link_url: "" });
+    if (e.target.value === "independent") {
+      form.setFieldsValue({ link_page_id: undefined });
+    } else {
+      form.setFieldsValue({ link_url: undefined });
     }
   };
 
   return (
-    <Modal
+    <Drawer
       title="Create Card"
-      visible={true}
-      onCancel={onCancel}
-      footer={null}
-      width={600}
+      open={true}
+      onClose={onCancel}
+      //   onCancel={onCancel}
+      width={`50%`}
+      destroyOnClose
     >
-      <Form form={form} layout="vertical" onFinish={handleSubmit}>
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleSubmit}
+        initialValues={{
+          link_type: "independent",
+          status: true,
+        }}
+      >
+        {/* Title (English) */}
         <Form.Item
           label="Title (English)"
           name="title_en"
@@ -97,9 +112,10 @@ const CreateCardForm = ({ onSuccess, onCancel, pages }) => {
             { required: true, message: "Please enter the title in English" },
           ]}
         >
-          <Input />
+          <Input placeholder="Enter title in English" />
         </Form.Item>
 
+        {/* Title (Alternate) */}
         <Form.Item
           label="Title (Alternate)"
           name="title_bn"
@@ -107,9 +123,10 @@ const CreateCardForm = ({ onSuccess, onCancel, pages }) => {
             { required: true, message: "Please enter the title in Alternate" },
           ]}
         >
-          <Input />
+          <Input placeholder="Enter title in Alternate" />
         </Form.Item>
 
+        {/* Description (English) */}
         <Form.Item
           label="Description (English)"
           name="description_en"
@@ -120,9 +137,15 @@ const CreateCardForm = ({ onSuccess, onCancel, pages }) => {
             },
           ]}
         >
-          <RichTextEditor />
+          <RichTextEditor
+            placeholder="Enter description in English"
+            onChange={(value) => form.setFieldsValue({ description_en: value })}
+            value={form.getFieldValue("description_en")}
+            editMode={true}
+          />
         </Form.Item>
 
+        {/* Description (Alternate) */}
         <Form.Item
           label="Description (Alternate)"
           name="description_bn"
@@ -133,9 +156,15 @@ const CreateCardForm = ({ onSuccess, onCancel, pages }) => {
             },
           ]}
         >
-          <RichTextEditor />
+          <RichTextEditor
+            placeholder="Enter description in Alternate"
+            onChange={(value) => form.setFieldsValue({ description_bn: value })}
+            value={form.getFieldValue("description_bn")}
+            editMode={true}
+          />
         </Form.Item>
 
+        {/* Media Selection */}
         <Form.Item label="Media" required>
           <div className="flex flex-col">
             <Button onClick={() => setIsMediaModalVisible(true)}>
@@ -148,33 +177,58 @@ const CreateCardForm = ({ onSuccess, onCancel, pages }) => {
                   alt="Selected Media"
                   width={200}
                   height={150}
+                  objectFit="cover"
+                  className="rounded-lg"
                 />
               </div>
             )}
           </div>
         </Form.Item>
 
-        <Form.Item label="Link Type" name="link_type" initialValue={linkType}>
+        {/* Page Association */}
+        <Form.Item
+          label="Page Name"
+          name="page_name"
+          rules={[{ required: true, message: "Please select a page name" }]}
+        >
+          <Select placeholder="Select Page" allowClear>
+            {pages
+              ?.filter((page) => page.page_name_en)
+              .map((page) => (
+                <Option key={page.id} value={page.page_name_en}>
+                  {page.page_name_en}
+                </Option>
+              ))}
+          </Select>
+        </Form.Item>
+
+        {/* Link Type Selection */}
+        <Form.Item
+          label="Link Type"
+          name="link_type"
+          rules={[{ required: true, message: "Please select a link type" }]}
+        >
           <Radio.Group onChange={handleLinkTypeChange}>
             <Radio value="page">Page Link</Radio>
             <Radio value="independent">Independent Link</Radio>
           </Radio.Group>
         </Form.Item>
 
+        {/* Conditional Link Fields */}
         {linkType === "page" && (
           <Form.Item
-            label="Page Name"
-            name="page_name"
-            rules={[{ required: true, message: "Please select a page" }]}
+            label="Select the page to link"
+            name="link_page_id"
+            rules={[
+              { required: true, message: "Please select a page to link" },
+            ]}
           >
-            <Select placeholder="Select Page" allowClear>
-              {pages
-                ?.filter((page) => page.page_name_en)
-                .map((page) => (
-                  <Option key={page.page_name} value={page.page_name}>
-                    {page.page_name_en}
-                  </Option>
-                ))}
+            <Select placeholder="Select a Page to link" allowClear>
+              {pages?.map((page) => (
+                <Select.Option key={page.id} value={page.id}>
+                  {page.page_name_en}
+                </Select.Option>
+              ))}
             </Select>
           </Form.Item>
         )}
@@ -183,12 +237,16 @@ const CreateCardForm = ({ onSuccess, onCancel, pages }) => {
           <Form.Item
             label="Link URL"
             name="link_url"
-            rules={[{ required: true, message: "Please enter the link URL" }]}
+            rules={[
+              { required: true, message: "Please enter the link URL" },
+              { type: "url", message: "Please enter a valid URL" },
+            ]}
           >
-            <Input />
+            <Input placeholder="Enter independent link URL" />
           </Form.Item>
         )}
 
+        {/* Status Switch */}
         <Form.Item
           label="Status"
           name="status"
@@ -198,6 +256,7 @@ const CreateCardForm = ({ onSuccess, onCancel, pages }) => {
           <Switch checkedChildren="Active" unCheckedChildren="Inactive" />
         </Form.Item>
 
+        {/* Form Actions */}
         <Form.Item>
           <div className="flex justify-end gap-2">
             <Button onClick={onCancel} className="mavecancelbutton">
@@ -222,7 +281,7 @@ const CreateCardForm = ({ onSuccess, onCancel, pages }) => {
         onSelectMedia={handleMediaSelect}
         selectionMode="single"
       />
-    </Modal>
+    </Drawer>
   );
 };
 
