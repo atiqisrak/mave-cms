@@ -40,7 +40,7 @@ const PageCard = ({
     <Card
       title={`Page ID-${page.id} : ${page.page_name_en}`}
       extra={
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 transition-all duration-300">
           <Button
             icon={<EditOutlined />}
             onClick={() => router.push(`/page-builder/${page.id}`)}
@@ -81,7 +81,7 @@ const PageCard = ({
 
           {/* Action Buttons when not editing */}
           {!isEditing && (
-            <div className="flex space-x-4 mt-4">
+            <div className="flex space-x-4 mt-4 transition-all duration-300">
               <Button
                 icon={<EditOutlined />}
                 onClick={startEditing}

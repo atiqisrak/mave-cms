@@ -6,8 +6,8 @@ import Image from "next/image";
 
 const PageInfoDisplay = ({ page }) => {
   return (
-    <div className="grid grid-cols-2">
-      <div className="flex flex-col">
+    <div className="grid grid-cols-2 transition-all duration-300">
+      <div className="flex flex-col transition-all duration-300">
         {/* Page Name EN */}
         <h1>
           <span className="font-semibold text-theme">Page Name (EN): </span>
