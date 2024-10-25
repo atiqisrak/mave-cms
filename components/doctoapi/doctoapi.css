@@ -1,0 +1,55 @@
+/* components/doctoapi/doctoapi.css */
+
+/* Tailwind CSS is already installed, but you can add custom styles here if needed */
+
+.pre {
+  @apply bg-gray-100 p-4 rounded overflow-auto;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.mt-6 {
+  margin-top: 1.5rem;
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
+.p-4 {
+  padding: 1rem;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+}
+
+.bg-gray-100 {
+  background-color: #f7fafc;
+}
+
+.bg-gray-200 {
+  background-color: #edf2f7;
+}
+
+.rounded {
+  border-radius: 0.25rem;
+}
+
+.p-6 {
+  padding: 1.5rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.overflow-auto {
+  overflow: auto;
+}
