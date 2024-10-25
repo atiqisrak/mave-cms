@@ -12,7 +12,7 @@ import {
   Input,
   Switch,
 } from "antd";
-import { EyeOutlined, SyncOutlined } from "@ant-design/icons";
+import { EyeOutlined, InboxOutlined, SyncOutlined } from "@ant-design/icons";
 import instance from "../../../axios";
 import Image from "next/image";
 import UploadMedia from "../../UploadMedia";
@@ -263,7 +263,7 @@ const MediaSelectionModal = ({
           />
 
           {/* Pagination Controls */}
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-between mt-4">
             <Pagination
               current={currentPage}
               pageSize={pageSize}
@@ -272,6 +272,13 @@ const MediaSelectionModal = ({
               showSizeChanger={false}
               showQuickJumper
             />
+            <Button
+              className="mavebutton"
+              onClick={handleSubmit}
+              disabled={selectedMedia.length === 0}
+            >
+              Submit
+            </Button>
           </div>
         </TabPane>
 
