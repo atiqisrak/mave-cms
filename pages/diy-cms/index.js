@@ -6,9 +6,11 @@ import { useRouter } from "next/router";
 export default function DIYCMS() {
   const router = useRouter();
   return (
-    <div className="mavecontainer">
+    <div className="mavecontainer pt-10">
       <center>
-        <h1>Welcome to the Mave DIY CMS</h1>
+        <h1 className="text-3xl text-theme font-bold">
+          Welcome to the Mave DIY CMS
+        </h1>
       </center>
       <p style={{ textAlign: "center", fontSize: "1.2rem", padding: "2rem 0" }}>
         This is a DIY CMS (Content Management System) where you can create your
