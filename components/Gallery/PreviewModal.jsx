@@ -195,11 +195,17 @@ const PreviewModal = ({ visible, onClose, media, mediaType, handleEdit }) => {
       case "document":
         return (
           <div className="document-preview flex flex-col items-center justify-center h-96 bg-gray-50 rounded-md">
-            <img
+            {/* <img
               src="/icons/document-icon.svg"
               alt="Document"
               width={128}
               height={128}
+            /> */}
+            <iframe
+              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}
+              width="100%"
+              height="100%"
+              frameBorder="0"
             />
             <p className="mt-4 text-lg text-gray-700">{media.file_name}</p>
             <div className="mt-4 flex justify-between w-full px-4">
