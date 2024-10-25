@@ -11,6 +11,7 @@ import {
   message,
   Switch,
   Radio,
+  Drawer,
 } from "antd";
 import MediaSelectionModal from "../PageBuilder/Modals/MediaSelectionModal";
 import RichTextEditor from "../RichTextEditor";
@@ -140,12 +141,13 @@ const CardsPreviewModal = ({
   };
 
   return (
-    <Modal
+    <Drawer
       title={isEditing ? "Edit Card" : "Card Details"}
       open={visible}
-      onCancel={onCancel}
+      // onCancel={onCancel}
+      onClose={onCancel}
       footer={null}
-      width={800}
+      width={`50%`}
     >
       {selectedCard && (
         <>
@@ -289,15 +291,12 @@ const CardsPreviewModal = ({
               {linkType === "page" && (
                 <Form.Item
                   label="Select the page to link"
-                  name="link_page_name"
+                  name="link_page_id"
                   rules={[{ required: true, message: "Please select a page" }]}
                 >
                   <Select placeholder="Select a Page to link" allowClear>
                     {pages?.map((page) => (
-                      <Select.Option
-                        key={page.page_name_en}
-                        value={page.page_name_en}
-                      >
+                      <Select.Option key={page.id} value={page.id}>
                         {page.page_name_en}
                       </Select.Option>
                     ))}
@@ -373,7 +372,7 @@ const CardsPreviewModal = ({
           )}
         </>
       )}
-    </Modal>
+    </Drawer>
   );
 };
 
