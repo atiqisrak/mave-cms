@@ -13,6 +13,7 @@ const componentOptions = [
   { type: "slider", name: "Slider", icon: "/icons/mave/slider.svg" },
   { type: "card", name: "Card", icon: "/icons/mave/cards.svg" },
   { type: "footer", name: "Footer", icon: "/icons/mave/footer.svg" },
+  { type: "video", name: "Video", icon: "/icons/mave/video.svg" },
 ];
 
 const ComponentSelectorModal = ({ isVisible, onClose, onSelectComponent }) => {

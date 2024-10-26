@@ -9,6 +9,7 @@ import NavbarComponent from "./NavbarComponent";
 import SliderComponent from "./SliderComponent";
 import CardComponent from "./CardComponent";
 import FooterComponent from "./FooterComponent";
+import VideoComponent from "./VideoComponent";
 
 const ComponentRenderer = ({ component, index, components, setComponents }) => {
   const updateComponent = (updatedComponent) => {
@@ -83,6 +84,14 @@ const ComponentRenderer = ({ component, index, components, setComponents }) => {
     case "footer":
       return (
         <FooterComponent
+          component={component}
+          updateComponent={updateComponent}
+          deleteComponent={deleteComponent}
+        />
+      );
+    case "video":
+      return (
+        <VideoComponent
           component={component}
           updateComponent={updateComponent}
           deleteComponent={deleteComponent}
