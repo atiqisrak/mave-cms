@@ -4,7 +4,6 @@ import { Button, Input, message, Tabs } from "antd";
 import { Transformer } from "../../components/tools/doctoapi/Transformers";
 import { CopyOutlined, CopyTwoTone } from "@ant-design/icons";
 import TextToApi from "../../components/tools/doctoapi/TextToApi";
-import FileToApi from "../../components/tools/doctoapi/FileToApi";
 
 const DoctoAPI = () => {
   const [text, setText] = useState("");
@@ -80,16 +79,13 @@ const DoctoAPI = () => {
           type="card"
         >
           {/* Text to API, Doc to API, AI to API, Figma to API */}
-          <Tabs.TabPane tab="Text to API" key="1">
+          <Tabs.TabPane tab="Doc to API" key="1">
             <TextToApi
               text={text}
               setText={setText}
               sampleData={sampleData}
               handleTransform={handleTransform}
             />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Doc to API" key="2">
-            <FileToApi handleTransform={handleTransform} setText={setText} />
           </Tabs.TabPane>
           <Tabs.TabPane tab="AI to API" key="3">
             <h1>AI to API</h1>

@@ -13,13 +13,15 @@ const ConfirmButton = ({ onConfirm }) => {
   };
 
   return (
-    <Button
-      onClick={handleClick}
-      loading={loading}
-      className="mavebutton mt-10"
-    >
-      Confirm and Create Page
-    </Button>
+    <div className="flex justify-center">
+      <Button
+        onClick={handleClick}
+        loading={loading}
+        className="mt-10 px-20 py-12 bg-theme text-white font-bold rounded-lg border-2 border-themedark text-2xl"
+      >
+        Confirm and Create Page
+      </Button>
+    </div>
   );
 };
 
