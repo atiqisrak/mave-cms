@@ -14,6 +14,7 @@ const componentOptions = [
   { type: "card", name: "Card", icon: "/icons/mave/cards.svg" },
   { type: "footer", name: "Footer", icon: "/icons/mave/footer.svg" },
   { type: "video", name: "Video", icon: "/icons/mave/video.svg" },
+  { type: "table", name: "Table", icon: "/icons/mave/table.svg" },
 ];
 
 const ComponentSelectorModal = ({ isVisible, onClose, onSelectComponent }) => {
