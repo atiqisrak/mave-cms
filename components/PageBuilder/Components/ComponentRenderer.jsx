@@ -11,6 +11,7 @@ import CardComponent from "./CardComponent";
 import FooterComponent from "./FooterComponent";
 import VideoComponent from "./VideoComponent";
 import TableComponent from "./TableComponent";
+import AccordionComponent from "./AccordionComponent";
 
 const ComponentRenderer = ({ component, index, components, setComponents }) => {
   const updateComponent = (updatedComponent) => {
@@ -101,6 +102,14 @@ const ComponentRenderer = ({ component, index, components, setComponents }) => {
     case "table":
       return (
         <TableComponent
+          component={component}
+          updateComponent={updateComponent}
+          deleteComponent={deleteComponent}
+        />
+      );
+    case "accordion":
+      return (
+        <AccordionComponent
           component={component}
           updateComponent={updateComponent}
           deleteComponent={deleteComponent}
