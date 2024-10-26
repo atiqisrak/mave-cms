@@ -623,3 +623,22 @@ a:hover {
 .ant-card .ant-card-body {
   padding: 0 1rem 1rem;
 }
+
+/* Video Component */
+/* Example: styles/globals.css */
+
+.video-responsive {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  padding-top: 25px;
+  height: 0;
+}
+
+.video-responsive iframe,
+.video-responsive video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
