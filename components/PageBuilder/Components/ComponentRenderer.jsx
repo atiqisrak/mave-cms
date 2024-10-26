@@ -12,6 +12,7 @@ import FooterComponent from "./FooterComponent";
 import VideoComponent from "./VideoComponent";
 import TableComponent from "./TableComponent";
 import AccordionComponent from "./AccordionComponent";
+import ButtonComponent from "./ButtonComponent";
 
 const ComponentRenderer = ({ component, index, components, setComponents }) => {
   const updateComponent = (updatedComponent) => {
@@ -110,6 +111,14 @@ const ComponentRenderer = ({ component, index, components, setComponents }) => {
     case "accordion":
       return (
         <AccordionComponent
+          component={component}
+          updateComponent={updateComponent}
+          deleteComponent={deleteComponent}
+        />
+      );
+    case "button":
+      return (
+        <ButtonComponent
           component={component}
           updateComponent={updateComponent}
           deleteComponent={deleteComponent}
