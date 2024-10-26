@@ -14,6 +14,7 @@ import Image from "next/image";
 const PagesHeader = ({
   onSearch,
   onCreate,
+  onFooterCreate,
   createMode,
   onCancelCreate,
   sortType,
@@ -49,13 +50,22 @@ const PagesHeader = ({
               Cancel Create
             </Button>
           ) : (
-            <Button
-              icon={<PlusCircleOutlined />}
-              onClick={onCreate}
-              className="mavebutton"
-            >
-              Create Page
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                icon={<PlusCircleOutlined />}
+                className="mavebutton"
+                onClick={onCreate}
+              >
+                Create Page
+              </Button>
+              <Button
+                icon={<PlusCircleOutlined />}
+                className="mavecancelbutton"
+                onClick={onFooterCreate}
+              >
+                Create Footer
+              </Button>
+            </div>
           )}
         </div>
       </div>

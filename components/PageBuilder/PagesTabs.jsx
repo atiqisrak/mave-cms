@@ -9,6 +9,7 @@ const { TabPane } = Tabs;
 const PagesTabs = ({
   typePages,
   typeSubpages,
+  typeFooters,
   handleExpand,
   expandedPageId,
   handleDeletePage,
@@ -42,6 +43,24 @@ const PagesTabs = ({
             handleEditPageInfo={handleEditPageInfo}
           />
         ) : (
+          <Spin size="large" />
+        )}
+      </TabPane>
+      <TabPane tab="Footers" key="3">
+        {typeFooters?.length > 0 ? (
+          <RenderPages
+            webpages={typeFooters}
+            handleEditPage={handleEditPage}
+            handleExpand={handleExpand}
+            expandedPageId={expandedPageId}
+            handleDeletePage={handleDeletePage}
+            handleEditPageInfo={handleEditPageInfo}
+          />
+        ) : (
+          // : typeFooters?.length === 0 ? (
+          //   <div className="flex items-center justify-center h-96">
+          //     <h1 className="text-2xl text-gray-500">No footers found</h1>
+          //   </div>        )
           <Spin size="large" />
         )}
       </TabPane>

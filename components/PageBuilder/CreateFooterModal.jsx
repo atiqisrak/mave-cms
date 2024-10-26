@@ -1,11 +1,14 @@
-// components/PageBuilder/CreatePageModal.jsx
-
 import React, { useState, useEffect } from "react";
 import { Modal, Input, Button, Row, Col, message } from "antd";
 import { PlusCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import instance from "../../axios";
 
-const CreatePageModal = ({ visible, onCancel, onPageCreated, fetchPages }) => {
+const CreateFooterModal = ({
+  visible,
+  onCancel,
+  onFooterCreated,
+  fetchPages,
+}) => {
   const [newPageTitleEn, setNewPageTitleEn] = useState("");
   const [newPageTitleBn, setNewPageTitleBn] = useState("");
   const [newSlug, setNewSlug] = useState("");
@@ -20,36 +23,32 @@ const CreatePageModal = ({ visible, onCancel, onPageCreated, fetchPages }) => {
     }
   }, [newPageTitleEn, isAltTitleManuallyEdited]);
 
-  const handleCreatePage = async () => {
-    if (
-      newPageTitleEn.trim() === "" ||
-      newPageTitleBn.trim() === "" ||
-      newSlug.trim() === ""
-    ) {
+  const handleCreateFooter = async () => {
+    if (newPageTitleEn.trim() === "" || newPageTitleBn.trim() === "") {
       message.error("All fields are required.");
       return;
     }
 
     // Validate slug format
-    const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-    if (!slugRegex.test(newSlug)) {
-      message.error(
-        "Invalid slug format. Use only lowercase letters, numbers, and hyphens."
-      );
-      return;
-    }
+    // const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+    // if (!slugRegex.test(newSlug)) {
+    //   message.error(
+    //     "Invalid slug format. Use only lowercase letters, numbers, and hyphens."
+    //   );
+    //   return;
+    // }
 
     try {
       setLoading(true);
       const response = await instance.post("/pages", {
         page_name_en: newPageTitleEn,
         page_name_bn: newPageTitleBn,
-        type: "Page",
+        type: "Footer",
         favicon_id: 10, // Assuming default favicon_id; adjust as needed
-        slug: newSlug,
+        slug: null,
         additional: [
           {
-            pageType: "Page",
+            pageType: "Footer",
             metaTitle: newPageTitleEn,
             metaDescription: "",
             keywords: [],
@@ -60,8 +59,8 @@ const CreatePageModal = ({ visible, onCancel, onPageCreated, fetchPages }) => {
       });
 
       if (response.status === 201) {
-        message.success("Page created successfully.");
-        onPageCreated(response.data);
+        message.success("Footer created successfully.");
+        onFooterCreated(response.data);
         // Reset form fields
         setNewPageTitleEn("");
         setNewPageTitleBn("");
@@ -102,7 +101,7 @@ const CreatePageModal = ({ visible, onCancel, onPageCreated, fetchPages }) => {
   return (
     <Modal
       open={visible}
-      title="Create New Page"
+      title="Create New Footer"
       onCancel={handleCancel}
       footer={null}
       centered
@@ -110,7 +109,7 @@ const CreatePageModal = ({ visible, onCancel, onPageCreated, fetchPages }) => {
       <Row gutter={[16, 16]}>
         <Col span={24}>
           <Input
-            placeholder="Page Title"
+            placeholder="Footer Title"
             value={newPageTitleEn}
             onChange={(e) => setNewPageTitleEn(e.target.value)}
             className="text-lg"
@@ -118,7 +117,7 @@ const CreatePageModal = ({ visible, onCancel, onPageCreated, fetchPages }) => {
         </Col>
         <Col span={24}>
           <Input
-            placeholder="Page Alt Title"
+            placeholder="Footer Alt Title"
             value={newPageTitleBn}
             onChange={(e) => {
               setNewPageTitleBn(e.target.value);
@@ -127,10 +126,10 @@ const CreatePageModal = ({ visible, onCancel, onPageCreated, fetchPages }) => {
             className="text-lg"
           />
         </Col>
-        <Col span={24}>
+        {/* <Col span={24}>
           <div className="flex gap-2 items-center">
             <Input
-              placeholder="Page Slug (e.g., about-us)"
+              placeholder="Footer Slug (e.g., about-us)"
               className="text-lg"
               value={newSlug}
               onChange={(e) => setNewSlug(e.target.value)}
@@ -142,15 +141,15 @@ const CreatePageModal = ({ visible, onCancel, onPageCreated, fetchPages }) => {
           <span className="text-xs text-gray-500">
             *Use only lowercase letters, numbers, and hyphens.
           </span>
-        </Col>
+        </Col> */}
         <Col span={24} className="flex justify-end gap-2">
           <Button
-            onClick={handleCreatePage}
+            onClick={handleCreateFooter}
             icon={<PlusCircleOutlined />}
             loading={loading}
             className="mavebutton"
           >
-            Create Page
+            Create Footer
           </Button>
           <Button
             onClick={handleCancel}
@@ -165,4 +164,4 @@ const CreatePageModal = ({ visible, onCancel, onPageCreated, fetchPages }) => {
   );
 };
 
-export default CreatePageModal;
+export default CreateFooterModal;

@@ -7,12 +7,16 @@ import { useRouter } from "next/router";
 import PagesHeader from "../../components/PageBuilder/PagesHeader";
 import CreatePageModal from "../../components/PageBuilder/CreatePageModal";
 import PagesTabs from "../../components/PageBuilder/PagesTabs";
+import CreateFooterModal from "../../components/PageBuilder/CreateFooterModal";
 
 const Pages = () => {
   const [typePages, setTypePages] = useState([]);
   const [typeSubpages, setTypeSubpages] = useState([]);
+  const [typeFooters, setTypeFooters] = useState([]);
   const [loading, setLoading] = useState(false);
   const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [createFooterModalVisible, setCreateFooterModalVisible] =
+    useState(false);
   const [expandedPageId, setExpandedPageId] = useState(null);
   const [sortType, setSortType] = useState("asc");
   const [itemsPerPage, setItemsPerPage] = useState(10); // Default items per page
@@ -36,8 +40,14 @@ const Pages = () => {
             page.additional &&
             page.additional[0].pageType === "Subpage"
         );
+
+        const footers = response.data.filter(
+          (page) =>
+            page.type === "Footer" && page.additional[0].pageType === "Footer"
+        );
         setTypePages(mainPages);
         setTypeSubpages(subPages);
+        setTypeFooters(footers);
         setLoading(false);
       } else {
         message.error("Failed to fetch pages.");
@@ -74,11 +84,21 @@ const Pages = () => {
     setCreateModalVisible(true);
   };
 
+  const openFooterCreateModal = () => {
+    setCreateFooterModalVisible(true);
+  };
+
   const closeCreateModal = () => {
     setCreateModalVisible(false);
+    setCreateFooterModalVisible(false);
   };
 
   const handlePageCreated = (newPage) => {
+    // Optionally, add the new page to the state without refetching
+    setTypePages((prevPages) => [newPage, ...prevPages]);
+  };
+
+  const handleFooterCreated = (newPage) => {
     // Optionally, add the new page to the state without refetching
     setTypePages((prevPages) => [newPage, ...prevPages]);
   };
@@ -177,8 +197,13 @@ const Pages = () => {
       page.page_name_en.toLowerCase().includes(searchText.toLowerCase())
     );
 
+    const filteredFooters = typeFooters.filter((page) =>
+      page.page_name_en.toLowerCase().includes(searchText.toLowerCase())
+    );
+
     setTypePages(filteredMainPages);
     setTypeSubpages(filteredSubPages);
+    setTypeFooters(filteredFooters);
   };
 
   const handleShowChange = (value) => {
@@ -205,7 +230,8 @@ const Pages = () => {
       <PagesHeader
         onSearch={handlePageSearch}
         onCreate={openCreateModal}
-        createMode={createModalVisible}
+        onFooterCreate={openFooterCreateModal}
+        createMode={createModalVisible || createFooterModalVisible} // Updated
         onCancelCreate={closeCreateModal}
         sortType={sortType}
         setSortType={setSortType}
@@ -219,13 +245,21 @@ const Pages = () => {
         onCancel={closeCreateModal}
         onPageCreated={handlePageCreated}
         fetchPages={fetchPages}
-        setCreateModalVisible={setCreateModalVisible}
+      />
+
+      {/* Create Footer Modal */}
+      <CreateFooterModal
+        visible={createFooterModalVisible}
+        onCancel={closeCreateModal}
+        onFooterCreated={handleFooterCreated}
+        fetchPages={fetchPages}
       />
 
       {/* Tabs for Pages and Subpages */}
       <PagesTabs
         typePages={typePages.slice(0, itemsPerPage)}
         typeSubpages={typeSubpages.slice(0, itemsPerPage)}
+        typeFooters={typeFooters.slice(0, itemsPerPage)}
         handleExpand={handleExpand}
         expandedPageId={expandedPageId}
         handleDeletePage={handleDeletePage}
