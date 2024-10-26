@@ -1,7 +1,7 @@
 // components/PageBuilder/Components/TableComponent.jsx
 
 import React, { useState, useEffect } from "react";
-import { Button, Modal, Typography, message, Input, Select } from "antd";
+import { Button, Modal, Typography, message, Table as AntTable } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -9,38 +9,33 @@ import {
   MinusOutlined,
 } from "@ant-design/icons";
 import TableSelectionModal from "../Modals/TableSelectionModal";
-import { Table } from "antd";
 
 const { Paragraph } = Typography;
-const { Option } = Select;
 
 const TableComponent = ({ component, updateComponent, deleteComponent }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [tableData, setTableData] = useState(component._mave);
-  const [isEditing, setIsEditing] = useState(false);
   const [columns, setColumns] = useState([]);
   const [dataSource, setDataSource] = useState([]);
 
   useEffect(() => {
-    setTableData(component._mave);
-    if (component._mave) {
-      const cols = component._mave.headers.map((header, index) => ({
+    if (tableData) {
+      const cols = tableData.headers.map((header, index) => ({
         title: header,
         dataIndex: `col${index}`,
         key: `col${index}`,
-        editable: true,
       }));
       setColumns(cols);
-      const rows = component._mave.rows.map((row, rowIndex) => {
-        const rowData = { key: rowIndex };
-        row.forEach((cell, colIndex) => {
-          rowData[`col${colIndex}`] = cell;
-        });
-        return rowData;
-      });
+      const rows = tableData.rows.map((row, rowIndex) => ({
+        key: rowIndex,
+        ...row.reduce((acc, cell, colIndex) => {
+          acc[`col${colIndex}`] = cell;
+          return acc;
+        }, {}),
+      }));
       setDataSource(rows);
     }
-  }, [component._mave]);
+  }, [tableData]);
 
   const handleSelectTable = (selectedTable) => {
     updateComponent({
@@ -49,7 +44,7 @@ const TableComponent = ({ component, updateComponent, deleteComponent }) => {
       id: selectedTable.id,
     });
     setTableData(selectedTable);
-    setIsEditing(false);
+    setIsModalVisible(false);
     message.success("Table updated successfully.");
   };
 
@@ -64,19 +59,28 @@ const TableComponent = ({ component, updateComponent, deleteComponent }) => {
 
   const handleAddRow = () => {
     const newRow = {};
-    columns.forEach((col) => {
-      newRow[col.key] = "";
+    tableData.headers.forEach((_, index) => {
+      newRow[`col${index}`] = "";
     });
-    newRow.key = dataSource.length;
-    setDataSource([...dataSource, newRow]);
-    const updatedTable = { ...tableData, rows: [...tableData.rows, []] };
+    const newDataSource = [
+      ...dataSource,
+      { key: dataSource.length, ...newRow },
+    ];
+    setDataSource(newDataSource);
+
+    const updatedRows = [
+      ...tableData.rows,
+      Array(tableData.headers.length).fill(""),
+    ];
+    const updatedTable = { ...tableData, rows: updatedRows };
     setTableData(updatedTable);
     updateComponent({ ...component, _mave: updatedTable });
   };
 
   const handleRemoveRow = (key) => {
-    const newData = dataSource.filter((item) => item.key !== key);
-    setDataSource(newData);
+    const newDataSource = dataSource.filter((item) => item.key !== key);
+    setDataSource(newDataSource);
+
     const updatedRows = tableData.rows.filter((_, index) => index !== key);
     const updatedTable = { ...tableData, rows: updatedRows };
     setTableData(updatedTable);
@@ -84,39 +88,45 @@ const TableComponent = ({ component, updateComponent, deleteComponent }) => {
   };
 
   const handleAddColumn = () => {
-    const newColKey = `col${columns.length}`;
-    const newCol = {
-      title: `Header ${columns.length + 1}`,
-      dataIndex: newColKey,
-      key: newColKey,
-      editable: true,
-    };
-    setColumns([...columns, newCol]);
-    const updatedHeaders = [
-      ...tableData.headers,
-      `Header ${columns.length + 1}`,
+    const newHeader = `Header ${tableData.headers.length + 1}`;
+    const newColumns = [
+      ...columns,
+      {
+        title: newHeader,
+        dataIndex: `col${columns.length}`,
+        key: `col${columns.length}`,
+      },
     ];
+    setColumns(newColumns);
+
+    const updatedHeaders = [...tableData.headers, newHeader];
     const updatedRows = tableData.rows.map((row) => [...row, ""]);
     const updatedTable = { headers: updatedHeaders, rows: updatedRows };
     setTableData(updatedTable);
     updateComponent({ ...component, _mave: updatedTable });
-    const newDataSource = dataSource.map((row) => ({
+
+    const newDataSource = dataSource.map((row, index) => ({
       ...row,
-      [newColKey]: "",
+      [`col${columns.length}`]: "",
     }));
     setDataSource(newDataSource);
   };
 
-  const handleRemoveColumn = (colKey, index) => {
-    const newColumns = columns.filter((col) => col.key !== colKey);
+  const handleRemoveColumn = (colIndex) => {
+    const colKey = `col${colIndex}`;
+    const newColumns = columns.filter((_, index) => index !== colIndex);
     setColumns(newColumns);
-    const updatedHeaders = tableData.headers.filter((_, i) => i !== index);
+
+    const updatedHeaders = tableData.headers.filter(
+      (_, index) => index !== colIndex
+    );
     const updatedRows = tableData.rows.map((row) =>
-      row.filter((_, i) => i !== index)
+      row.filter((_, index) => index !== colIndex)
     );
     const updatedTable = { headers: updatedHeaders, rows: updatedRows };
     setTableData(updatedTable);
     updateComponent({ ...component, _mave: updatedTable });
+
     const newDataSource = dataSource.map((row) => {
       const { [colKey]: removed, ...rest } = row;
       return rest;
@@ -124,132 +134,74 @@ const TableComponent = ({ component, updateComponent, deleteComponent }) => {
     setDataSource(newDataSource);
   };
 
-  const handleCellChange = (value, record, column) => {
-    const newData = [...dataSource];
-    const index = newData.findIndex((item) => record.key === item.key);
-    const item = newData[index];
-    item[column.key] = value;
-    newData.splice(index, 1, { ...item });
-    setDataSource(newData);
-
-    // Update tableData.rows
-    const rowIndex = index;
-    const colIndex = columns.findIndex((col) => col.key === column.key);
-    const updatedRows = [...tableData.rows];
-    updatedRows[rowIndex][colIndex] = value;
-    const updatedTable = { ...tableData, rows: updatedRows };
-    setTableData(updatedTable);
-    updateComponent({ ...component, _mave: updatedTable });
-  };
-
-  const EditableCell = ({
-    editing,
-    dataIndex,
-    title,
-    record,
-    index,
-    children,
-    ...restProps
-  }) => {
-    return (
-      <td {...restProps}>
-        {editing ? (
-          <Input
-            value={record[dataIndex]}
-            onChange={(e) =>
-              handleCellChange(e.target.value, record, restProps.column)
-            }
-          />
-        ) : (
-          children
-        )}
-      </td>
-    );
-  };
-
-  const mergedColumns = columns.map((col) => ({
-    ...col,
-    onCell: (record) => ({
-      record,
-      editable: col.editable,
-      dataIndex: col.dataIndex,
-      title: col.title,
-    }),
-  }));
-
   return (
     <div className="border p-4 rounded-md bg-gray-50">
-      {/* Header with Component Title and Action Buttons */}
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-semibold">Table Component</h3>
         <div>
-          {!isEditing ? (
-            <>
-              <Button
-                icon={<EditOutlined />}
-                onClick={() => setIsModalVisible(true)}
-                className="mr-2"
-              />
-              <Button icon={<DeleteOutlined />} onClick={handleDelete} danger />
-            </>
-          ) : (
-            <>
-              <Button
-                icon={<PlusOutlined />}
-                onClick={handleAddRow}
-                className="mr-2"
-              >
-                Add Row
-              </Button>
-              <Button
-                icon={<PlusOutlined />}
-                onClick={handleAddColumn}
-                className="mr-2"
-              >
-                Add Column
-              </Button>
-            </>
-          )}
+          <Button
+            icon={<EditOutlined />}
+            onClick={() => setIsModalVisible(true)}
+            className="mr-2"
+          />
+          <Button icon={<DeleteOutlined />} onClick={handleDelete} danger />
         </div>
       </div>
 
-      {/* Table Display */}
       {tableData ? (
         <div className="overflow-x-auto">
-          <Table
-            components={{
-              body: {
-                cell: EditableCell,
-              },
-            }}
-            bordered
+          <AntTable
+            columns={columns.map((col, index) => ({
+              ...col,
+              title: (
+                <div className="flex items-center">
+                  {col.title}
+                  {/* <Button
+                    size="small"
+                    type="text"
+                    icon={<MinusOutlined />}
+                    onClick={() => handleRemoveColumn(index)}
+                    danger
+                    style={{ marginLeft: 8 }}
+                  /> */}
+                </div>
+              ),
+            }))}
             dataSource={dataSource}
-            columns={mergedColumns}
             pagination={false}
-            rowClassName={() => "editable-row"}
+            bordered={tableData?.styles?.borderStyle !== "none"}
+            style={{
+              border:
+                tableData?.styles?.borderStyle === "none"
+                  ? "none"
+                  : tableData?.styles?.borderStyle === "thin"
+                  ? "1px solid #ddd"
+                  : "2px solid #000",
+              backgroundColor: tableData?.styles?.cellColor,
+              textAlign: tableData?.styles?.textAlign,
+            }}
           />
+          {/* <div className="flex space-x-2 mt-4">
+            <Button
+              type="dashed"
+              onClick={handleAddRow}
+              icon={<PlusOutlined />}
+            >
+              Add Row
+            </Button>
+            <Button
+              type="dashed"
+              onClick={handleAddColumn}
+              icon={<PlusOutlined />}
+            >
+              Add Column
+            </Button>
+          </div> */}
         </div>
       ) : (
         <Paragraph>No table data available.</Paragraph>
       )}
 
-      {/* Add/Remove Column Buttons */}
-      {isEditing && (
-        <div className="mt-2 flex space-x-2">
-          {columns.map((col, index) => (
-            <Button
-              key={col.key}
-              icon={<MinusOutlined />}
-              onClick={() => handleRemoveColumn(col.key, index)}
-              danger
-            >
-              Remove Column
-            </Button>
-          ))}
-        </div>
-      )}
-
-      {/* Table Selection Modal */}
       <TableSelectionModal
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
