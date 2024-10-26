@@ -642,3 +642,12 @@ a:hover {
   width: 100%;
   height: 100%;
 }
+/* Example: styles/globals.css */
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.editable-row:hover {
+  background-color: #fafafa;
+}

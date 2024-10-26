@@ -10,6 +10,7 @@ import SliderComponent from "./SliderComponent";
 import CardComponent from "./CardComponent";
 import FooterComponent from "./FooterComponent";
 import VideoComponent from "./VideoComponent";
+import TableComponent from "./TableComponent";
 
 const ComponentRenderer = ({ component, index, components, setComponents }) => {
   const updateComponent = (updatedComponent) => {
@@ -92,6 +93,14 @@ const ComponentRenderer = ({ component, index, components, setComponents }) => {
     case "video":
       return (
         <VideoComponent
+          component={component}
+          updateComponent={updateComponent}
+          deleteComponent={deleteComponent}
+        />
+      );
+    case "table":
+      return (
+        <TableComponent
           component={component}
           updateComponent={updateComponent}
           deleteComponent={deleteComponent}
