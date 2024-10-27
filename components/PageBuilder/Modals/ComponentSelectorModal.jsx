@@ -17,6 +17,7 @@ const componentOptions = [
   { type: "table", name: "Table", icon: "/icons/mave/table.svg" },
   { type: "accordion", name: "Accordion", icon: "/icons/mave/accordion.svg" },
   { type: "button", name: "Button", icon: "/icons/mave/button.svg" },
+  { type: "gallery", name: "Gallery", icon: "/icons/mave/gallery.svg" },
 ];
 
 const ComponentSelectorModal = ({ isVisible, onClose, onSelectComponent }) => {

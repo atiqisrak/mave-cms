@@ -703,3 +703,43 @@ a:hover {
 .settings-tabs .ant-tabs > .ant-tabs-content-holder {
   margin-left: calc(100% - 62vw);
 }
+
+/* Grid Gallery Styles */
+.grid-gallery {
+  width: 100%;
+}
+
+.grid-item {
+  overflow: hidden;
+  border-radius: 8px;
+  transition: transform 0.3s;
+}
+
+.grid-item:hover {
+  transform: scale(1.05);
+}
+
+/* Masonry Gallery Styles */
+.masonry-gallery {
+  width: 100%;
+}
+
+.masonry-item {
+  break-inside: avoid;
+  overflow: hidden;
+  border-radius: 8px;
+  transition: transform 0.3s;
+}
+
+.masonry-item:hover {
+  transform: scale(1.05);
+}
+
+/* Lightbox Modal Styles */
+.ant-modal-content {
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+.ant-modal-close {
+  color: #fff;
+}

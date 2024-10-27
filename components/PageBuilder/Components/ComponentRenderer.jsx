@@ -13,6 +13,7 @@ import VideoComponent from "./VideoComponent";
 import TableComponent from "./TableComponent";
 import AccordionComponent from "./AccordionComponent";
 import ButtonComponent from "./ButtonComponent";
+import GalleryComponent from "./GalleryComponent";
 
 const ComponentRenderer = ({ component, index, components, setComponents }) => {
   const updateComponent = (updatedComponent) => {
@@ -119,6 +120,14 @@ const ComponentRenderer = ({ component, index, components, setComponents }) => {
     case "button":
       return (
         <ButtonComponent
+          component={component}
+          updateComponent={updateComponent}
+          deleteComponent={deleteComponent}
+        />
+      );
+    case "gallery":
+      return (
+        <GalleryComponent
           component={component}
           updateComponent={updateComponent}
           deleteComponent={deleteComponent}
