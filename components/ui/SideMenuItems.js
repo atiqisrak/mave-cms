@@ -28,7 +28,8 @@ const SideMenuItems = ({
       setSideMenuData(AuthorizedSideMenuData);
       if (
         user?.email === "atiqisrak@niloy.com" ||
-        user?.email === "Zeeshan.akhtar@webable.digital"
+        user?.email === "Zeeshan.akhtar@webable.digital" ||
+        user?.email === "su@mave.cms"
       ) {
         setGodfatherData(Godfather);
       } else {

@@ -10,10 +10,7 @@ import {
   Breadcrumb,
 } from "antd";
 import React, { useState, useEffect } from "react";
-import DealershipRequests from "../components/DealershipRequests";
-import AllOrders from "../components/AllOrders";
 import ContactUsResponses from "../components/ContactUsResponses";
-import SystemDemand from "../components/SystemDemand";
 import { CopyOutlined, HomeFilled } from "@ant-design/icons";
 import router from "next/router";
 
@@ -111,7 +108,7 @@ const FormResponses = () => {
                             <SystemDemand />
                         </Tabs.TabPane>
                     </Tabs> */}
-        <ContactUsResponses />
+        {/* <ContactUsResponses /> */}
       </div>
     </div>
   );

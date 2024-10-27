@@ -1,7 +1,7 @@
 // components/doctoapi/FormComponents/YamlInputForm.js
 
 import React, { useState } from "react";
-import { Form, Tooltip, Button, Upload, message, Tabs } from "antd";
+import { Form, Tooltip, Button, Upload, message } from "antd";
 import {
   UploadOutlined,
   QuestionCircleOutlined,
@@ -14,7 +14,6 @@ import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-yaml";
 import "ace-builds/src-noconflict/theme-github"; // Choose your preferred theme
 import "ace-builds/src-noconflict/ext-language_tools";
-import TabPane from "antd/es/tabs/TabPane";
 
 // Sample YAML as a string
 const sampleData = `
