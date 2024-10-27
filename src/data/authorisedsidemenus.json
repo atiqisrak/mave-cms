@@ -7,7 +7,7 @@
         "submenu": [
             {
                 "id": 3,
-                "icon": "/icons/mave/gallery.svg",
+                "icon": "/icons/mave/media.svg",
                 "link": "/gallery",
                 "title": "Media Library"
             },
