@@ -14,6 +14,7 @@ import TableComponent from "./TableComponent";
 import AccordionComponent from "./AccordionComponent";
 import ButtonComponent from "./ButtonComponent";
 import GalleryComponent from "./GalleryComponent";
+import GoogleMapComponent from "./GoogleMapComponent";
 
 const ComponentRenderer = ({ component, index, components, setComponents }) => {
   const updateComponent = (updatedComponent) => {
@@ -128,6 +129,14 @@ const ComponentRenderer = ({ component, index, components, setComponents }) => {
     case "gallery":
       return (
         <GalleryComponent
+          component={component}
+          updateComponent={updateComponent}
+          deleteComponent={deleteComponent}
+        />
+      );
+    case "google-map":
+      return (
+        <GoogleMapComponent
           component={component}
           updateComponent={updateComponent}
           deleteComponent={deleteComponent}

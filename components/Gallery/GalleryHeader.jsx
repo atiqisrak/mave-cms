@@ -28,7 +28,7 @@ const GalleryHeader = ({
         <div className="flex items-center gap-4">
           <div className=" border-2 border-gray-300 bg-white rounded-md py-2 px-3">
             <Image
-              src="/icons/mave/gallery.svg"
+              src="/icons/mave/media.svg"
               width={24}
               height={24}
               alt="Menu Items"

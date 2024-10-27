@@ -7,7 +7,7 @@ import Image from "next/image";
 const componentOptions = [
   { type: "title", name: "Title", icon: "/icons/mave/font.svg" },
   { type: "description", name: "Paragraph", icon: "/icons/mave/paragraph.svg" },
-  { type: "media", name: "Media", icon: "/icons/mave/gallery.svg" },
+  { type: "media", name: "Media", icon: "/icons/mave/media.svg" },
   { type: "menu", name: "Menu", icon: "/icons/mave/menus.svg" },
   { type: "navbar", name: "Navbar", icon: "/icons/mave/navbar.svg" },
   { type: "slider", name: "Slider", icon: "/icons/mave/slider.svg" },
@@ -18,6 +18,7 @@ const componentOptions = [
   { type: "accordion", name: "Accordion", icon: "/icons/mave/accordion.svg" },
   { type: "button", name: "Button", icon: "/icons/mave/button.svg" },
   { type: "gallery", name: "Gallery", icon: "/icons/mave/gallery.svg" },
+  { type: "google-map", name: "Google Map", icon: "/icons/mave/map.svg" },
 ];
 
 const ComponentSelectorModal = ({ isVisible, onClose, onSelectComponent }) => {
