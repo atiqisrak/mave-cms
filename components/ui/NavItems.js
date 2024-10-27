@@ -1,12 +1,13 @@
 // components/ui/NavItems.js
 
 import { SearchOutlined, LoginOutlined } from "@ant-design/icons";
-import { Image, Input, Space, Layout, Dropdown, Button, Menu } from "antd";
+import { Input, Space, Layout, Dropdown, Button, Menu } from "antd";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Changelog from "../../pages/usermanual/changelog.json";
 import TopNavData from "../../src/data/topnavdata.json";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function NavItems({
   user,
@@ -65,7 +66,6 @@ export default function NavItems({
           width={120}
           height={40}
           objectFit="contain"
-          preview={false}
         />
         {/* Version */}
         <Link href={"/usermanual/changelog"}>
@@ -143,19 +143,21 @@ export default function NavItems({
                 alt="Notifications"
                 width={20}
                 height={20}
+                objectFit="contain"
               />
             </div>
 
             {/* Settings */}
             <div
               className="relative w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer"
-              onClick={() => router.push("/settings")}
+              onClick={() => router.push("/settings/general-settings")}
             >
               <Image
                 src="/icons/mave_icons/wrench.svg"
                 alt="Settings"
                 width={20}
                 height={20}
+                objectFit="contain"
               />
             </div>
 
@@ -167,6 +169,7 @@ export default function NavItems({
                   alt="User"
                   width={20}
                   height={20}
+                  objectFit="contain"
                 />
               </div>
             </Dropdown>

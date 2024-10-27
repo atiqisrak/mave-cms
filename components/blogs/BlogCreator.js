@@ -5,7 +5,7 @@ import instance from "../../axios";
 import router from "next/router";
 import { FileImageTwoTone, RobotOutlined } from "@ant-design/icons";
 import Image from "next/image";
-import SingleMediaSelect from "../SingleMediaSelect";
+import SingleMediaSelect from "../PageBuilder/Modals/MediaSelectionModal";
 
 const BlogCreator = ({ creatorMode, setCreatorMode, fetchBlogs }) => {
   const blog_categories = [

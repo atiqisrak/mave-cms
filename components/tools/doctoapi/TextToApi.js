@@ -8,7 +8,7 @@ import { pageSchema } from "../../doctoapi/utils/validationSchema";
 import { mapYamlToJson } from "../../doctoapi/utils/jsonMapper";
 import instance from "../../../axios";
 
-const TextToApi = () => {
+export default function TextToApi() {
   const [parsedYaml, setParsedYaml] = useState(null);
   const [jsonPayload, setJsonPayload] = useState(null);
   const [validationErrors, setValidationErrors] = useState([]);
@@ -125,6 +125,4 @@ const TextToApi = () => {
       )}
     </div>
   );
-};
-
-export default TextToApi;
+}

@@ -221,6 +221,7 @@ const Sliders = () => {
         fetchSliders={fetchSliders}
         onCancelEdit={handleCancelForm}
         isFormVisible={isFormVisible}
+        setIsFormVisible={setIsFormVisible}
       />
 
       {/* Slider List Section */}

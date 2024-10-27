@@ -124,7 +124,6 @@ const SliderForm = ({
           message.success("Slider updated successfully.");
           fetchSliders();
           onCancelEdit();
-          setIsFormVisible(false);
         }
       } else {
         const response = await instance.post("/sliders", payload);
@@ -135,11 +134,13 @@ const SliderForm = ({
           setSelectedMedia([]);
           setSelectedCards([]);
           setType("image");
-          setIsFormVisible(false);
         }
       }
     } catch (error) {
-      message.error("Failed to submit slider.");
+      // message.error("Failed to submit slider.");
+      console.error(error);
+    } finally {
+      setIsFormVisible(false);
     }
   };
 
@@ -150,7 +151,7 @@ const SliderForm = ({
   return (
     <Modal
       title={editingItemId ? "Edit Slider" : "Add Slider"}
-      visible={isFormVisible}
+      open={isFormVisible}
       onCancel={onCancelEdit}
       footer={null}
       width={800}

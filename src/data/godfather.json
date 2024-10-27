@@ -10,6 +10,12 @@
                 "icon": "/icons/mave/cms.svg",
                 "link": "/diy-cms",
                 "title": "Build CMS"
+            },
+            {
+                "id": 26,
+                "icon": "/icons/mave/response.svg",
+                "link": "/doc-to-api",
+                "title": "Doc to API"
             }
         ]
     }

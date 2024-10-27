@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { Button, message } from "antd";
 import { CopyTwoTone } from "@ant-design/icons";
 import TextToApi from "../../components/tools/doctoapi/TextToApi";
-
-const Doctoapi = () => {
+export default function index() {
   const [parsedData, setParsedData] = useState(null);
 
   const handleCopy = () => {
@@ -19,7 +18,6 @@ const Doctoapi = () => {
         });
     }
   };
-
   return (
     <div className="mavecontainer">
       <TextToApi />
@@ -75,8 +73,7 @@ const Doctoapi = () => {
           </Button>
         </div>
       )}
+      <h1>Hi</h1>
     </div>
   );
-};
-
-export default Doctoapi;
+}

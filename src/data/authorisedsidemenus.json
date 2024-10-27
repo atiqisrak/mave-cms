@@ -117,14 +117,8 @@
             {
                 "id": 22,
                 "icon": "/icons/mave/settings.svg",
-                "link": "/settings/general-settings",
+                "link": "/cms-settings",
                 "title": "General"
-            },
-            {
-                "id": 23,
-                "icon": "/icons/mave/settings2.svg",
-                "link": "/settings/content-management",
-                "title": "Content"
             },
             {
                 "id": 24,
@@ -141,12 +135,6 @@
         "icon": "/icons/mave/tools.svg",
         "link": "tools",
         "submenu": [
-            {
-                "id": 26,
-                "icon": "/icons/mave/response.svg",
-                "link": "/tools/doctoapi",
-                "title": "Doc to API"
-            },
             {
                 "id": 27,
                 "icon": "/icons/mave/exam.svg",
