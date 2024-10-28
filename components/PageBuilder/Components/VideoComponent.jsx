@@ -1,12 +1,13 @@
 // components/PageBuilder/Components/VideoComponent.jsx
 
 import React, { useState, useEffect } from "react";
-import { Button, Modal, Typography, message } from "antd";
+import { Button, Modal, Popconfirm, Typography, message } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
   CheckOutlined,
   CloseOutlined,
+  ExportOutlined,
 } from "@ant-design/icons";
 import VideoSelectionModal from "../Modals/VideoSelectionModal";
 
@@ -69,17 +70,21 @@ const VideoComponent = ({ component, updateComponent, deleteComponent }) => {
   };
 
   const handleDelete = () => {
-    Modal.confirm({
-      title: "Are you sure you want to delete this component?",
-      onOk: deleteComponent,
-      okText: "Yes",
-      cancelText: "No",
-    });
+    deleteComponent();
   };
 
   const renderVideo = () => {
     if (!videoData || !videoData.url) {
-      return <Paragraph>No video selected.</Paragraph>;
+      return (
+        // <Paragraph>No video selected.</Paragraph>
+        <Button
+          icon={<EditOutlined />}
+          onClick={() => setIsModalVisible(true)}
+          className="mavebutton w-fit"
+        >
+          Select Video
+        </Button>
+      );
     }
 
     const embedUrl = getEmbedUrl(videoData.url);
@@ -130,12 +135,26 @@ const VideoComponent = ({ component, updateComponent, deleteComponent }) => {
         <div>
           {!isEditing ? (
             <>
-              <Button
-                icon={<EditOutlined />}
-                onClick={() => setIsModalVisible(true)}
-                className="mr-2"
-              />
-              <Button icon={<DeleteOutlined />} onClick={handleDelete} danger />
+              {videoData && (
+                <Button
+                  icon={<ExportOutlined />}
+                  onClick={() => setIsModalVisible(true)}
+                  className="mavebutton"
+                >
+                  Change
+                </Button>
+              )}
+              <Popconfirm
+                title="Are you sure you want to delete this component?"
+                onConfirm={handleDelete}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  icon={<DeleteOutlined />}
+                  className="mavecancelbutton"
+                />
+              </Popconfirm>
             </>
           ) : (
             <>
@@ -144,7 +163,7 @@ const VideoComponent = ({ component, updateComponent, deleteComponent }) => {
                 onClick={handleSubmit}
                 className="mavebutton"
               >
-                Submit
+                Done
               </Button>
               <Button
                 icon={<CloseOutlined />}
