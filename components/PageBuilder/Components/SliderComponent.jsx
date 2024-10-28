@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react"; // Import useEffect
-import { Button, Modal, Typography, message, Carousel } from "antd";
+import { Button, Modal, Typography, message, Carousel, Popconfirm } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
   CheckOutlined,
   CloseOutlined,
+  ExportOutlined,
 } from "@ant-design/icons";
 import SliderSelectionModal from "../Modals/SliderSelectionModal";
 import Image from "next/image";
@@ -16,7 +17,12 @@ const renderSliderImages = (medias) => {
   return medias?.map((media) => (
     <div key={media.id}>
       <Image
-        src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}
+        // src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}
+        src={
+          media.file_path
+            ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`
+            : "/images/Image_Placeholder.png"
+        }
         alt={media.title || "Slider Image"}
         width={400}
         height={200}
@@ -75,12 +81,7 @@ const SliderComponent = ({ component, updateComponent, deleteComponent }) => {
 
   // Handle Delete Component
   const handleDelete = () => {
-    Modal.confirm({
-      title: "Are you sure you want to delete this component?",
-      onOk: deleteComponent,
-      okText: "Yes",
-      cancelText: "No",
-    });
+    deleteComponent();
   };
 
   return (
@@ -91,12 +92,26 @@ const SliderComponent = ({ component, updateComponent, deleteComponent }) => {
         <div>
           {!isEditing ? (
             <>
-              <Button
-                icon={<EditOutlined />}
-                onClick={() => setIsModalVisible(true)}
-                className="mr-2"
-              />
-              <Button icon={<DeleteOutlined />} onClick={handleDelete} danger />
+              {sliderData && (
+                <Button
+                  icon={<ExportOutlined />}
+                  onClick={() => setIsModalVisible(true)}
+                  className="mavebutton"
+                >
+                  Change
+                </Button>
+              )}
+              <Popconfirm
+                title="Are you sure you want to delete this component?"
+                onConfirm={handleDelete}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  icon={<DeleteOutlined />}
+                  className="mavecancelbutton"
+                />
+              </Popconfirm>
             </>
           ) : (
             <>
@@ -105,7 +120,7 @@ const SliderComponent = ({ component, updateComponent, deleteComponent }) => {
                 onClick={handleSubmit}
                 className="mavebutton"
               >
-                Submit
+                Done
               </Button>
               <Button
                 icon={<CloseOutlined />}
@@ -123,7 +138,9 @@ const SliderComponent = ({ component, updateComponent, deleteComponent }) => {
       <div className="flex flex-col md:flex-row items-start gap-4">
         {/* Current Slider */}
         <div className="flex flex-col w-full md:w-1/2">
-          <h4 className="mb-2 text-md font-medium">Current Slider</h4>
+          {sliderData && (
+            <h4 className="mb-2 text-md font-semibold">Current Slider</h4>
+          )}
           {sliderData?.medias && sliderData.medias.length > 0 ? (
             <div className="w-full">
               <h2 className="text-xl font-bold text-theme pb-4">
@@ -134,7 +151,16 @@ const SliderComponent = ({ component, updateComponent, deleteComponent }) => {
               </Carousel>
             </div>
           ) : (
-            <Paragraph>No slider selected.</Paragraph>
+            <>
+              {/* <Paragraph>No slider selected.</Paragraph> */}
+              <Button
+                icon={<EditOutlined />}
+                onClick={() => setIsModalVisible(true)}
+                className="mavebutton w-fit"
+              >
+                Select Slider
+              </Button>
+            </>
           )}
         </div>
 

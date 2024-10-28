@@ -1,12 +1,15 @@
 // components/PageBuilder/Components/ParagraphComponent.jsx
 
 import React, { useState } from "react";
-import { Button, Modal } from "antd";
+import { Button, Modal, Popconfirm } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
   CheckOutlined,
   CloseOutlined,
+  CheckCircleOutlined,
+  PlusOutlined,
+  ExportOutlined,
 } from "@ant-design/icons";
 import RichTextEditor from "../../RichTextEditor"; // Adjust the path as necessary
 
@@ -36,12 +39,7 @@ const ParagraphComponent = ({
   };
 
   const handleDelete = () => {
-    Modal.confirm({
-      title: "Are you sure you want to delete this component?",
-      onOk: deleteComponent,
-      okText: "Yes",
-      cancelText: "No",
-    });
+    deleteComponent();
   };
 
   return (
@@ -56,7 +54,7 @@ const ParagraphComponent = ({
                 onClick={handleSubmit}
                 className="mavebutton"
               >
-                Submit
+                Done
               </Button>
               <Button
                 icon={<CloseOutlined />}
@@ -68,12 +66,26 @@ const ParagraphComponent = ({
             </>
           ) : (
             <>
-              <Button
-                icon={<EditOutlined />}
-                onClick={() => setIsEditing(true)}
-                className="mr-2"
-              />
-              <Button icon={<DeleteOutlined />} onClick={handleDelete} danger />
+              {component.value && (
+                <Button
+                  icon={<ExportOutlined />}
+                  onClick={() => setIsEditing(true)}
+                  className="mavebutton"
+                >
+                  Change
+                </Button>
+              )}
+              <Popconfirm
+                title="Are you sure you want to delete this component?"
+                onConfirm={deleteComponent}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  icon={<DeleteOutlined />}
+                  className="mavecancelbutton"
+                />
+              </Popconfirm>
             </>
           )}
         </div>
@@ -84,8 +96,17 @@ const ParagraphComponent = ({
           onChange={(html) => setTempValue(html)}
           editMode={true}
         />
-      ) : (
+      ) : component?.value ? (
         <div dangerouslySetInnerHTML={{ __html: component.value }} />
+      ) : (
+        <Button
+          icon={<PlusOutlined />}
+          type="dashed"
+          onClick={() => setIsEditing(true)}
+          className="w-full border-theme font-bold"
+        >
+          Add Paragraph
+        </Button>
       )}
     </div>
   );

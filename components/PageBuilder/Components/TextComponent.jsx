@@ -1,12 +1,15 @@
 // components/PageBuilder/Components/TextComponent.jsx
 
 import React, { useState } from "react";
-import { Input, Button, Modal } from "antd";
+import { Input, Button, Modal, Popconfirm } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
   CheckOutlined,
   CloseOutlined,
+  CheckCircleOutlined,
+  PlusOutlined,
+  ExportOutlined,
 } from "@ant-design/icons";
 
 const TextComponent = ({ component, updateComponent, deleteComponent }) => {
@@ -31,12 +34,7 @@ const TextComponent = ({ component, updateComponent, deleteComponent }) => {
   };
 
   const handleDelete = () => {
-    Modal.confirm({
-      title: "Are you sure you want to delete this component?",
-      onOk: deleteComponent,
-      okText: "Yes",
-      cancelText: "No",
-    });
+    deleteComponent();
   };
 
   return (
@@ -51,7 +49,7 @@ const TextComponent = ({ component, updateComponent, deleteComponent }) => {
                 onClick={handleSubmit}
                 className="mavebutton"
               >
-                Submit
+                Done
               </Button>
               <Button
                 icon={<CloseOutlined />}
@@ -63,12 +61,26 @@ const TextComponent = ({ component, updateComponent, deleteComponent }) => {
             </>
           ) : (
             <>
-              <Button
-                icon={<EditOutlined />}
-                onClick={() => setIsEditing(true)}
-                className="mr-2"
-              />
-              <Button icon={<DeleteOutlined />} onClick={handleDelete} danger />
+              {component.value && (
+                <Button
+                  icon={<ExportOutlined />}
+                  onClick={() => setIsEditing(true)}
+                  className="mavebutton"
+                >
+                  Change
+                </Button>
+              )}
+              <Popconfirm
+                title="Are you sure you want to delete this component?"
+                onConfirm={deleteComponent}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  icon={<DeleteOutlined />}
+                  className="mavecancelbutton"
+                />
+              </Popconfirm>
             </>
           )}
         </div>
@@ -79,8 +91,17 @@ const TextComponent = ({ component, updateComponent, deleteComponent }) => {
           onChange={(e) => setTempValue(e.target.value)}
           placeholder="Enter text..."
         />
-      ) : (
+      ) : component.value ? (
         <p>{component.value}</p>
+      ) : (
+        <Button
+          icon={<PlusOutlined />}
+          type="dashed"
+          onClick={() => setIsEditing(true)}
+          className="w-full border-theme font-bold"
+        >
+          Add Text
+        </Button>
       )}
     </div>
   );
