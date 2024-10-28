@@ -1,20 +1,20 @@
 // components/PageBuilder/Components/TableComponent.jsx
 
 import React, { useState, useEffect } from "react";
-import { Button, Modal, Typography, message, Table as AntTable } from "antd";
+import { Button, Typography, message, Popconfirm } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
   PlusOutlined,
   MinusOutlined,
 } from "@ant-design/icons";
-import TableSelectionModal from "../Modals/TableSelectionModal";
+import TableSelectionDrawer from "../Modals/TableSelectionModal/TableSelectionDrawer";
 
 const { Paragraph } = Typography;
 
 const TableComponent = ({ component, updateComponent, deleteComponent }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [tableData, setTableData] = useState(component._mave);
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+  const [tableData, setTableData] = useState(component._mave || {});
   const [columns, setColumns] = useState([]);
   const [dataSource, setDataSource] = useState([]);
 
@@ -41,97 +41,15 @@ const TableComponent = ({ component, updateComponent, deleteComponent }) => {
     updateComponent({
       ...component,
       _mave: selectedTable,
-      id: selectedTable.id,
+      id: component._id,
     });
     setTableData(selectedTable);
-    setIsModalVisible(false);
+    setIsDrawerVisible(false);
     message.success("Table updated successfully.");
   };
 
   const handleDelete = () => {
-    Modal.confirm({
-      title: "Are you sure you want to delete this component?",
-      onOk: deleteComponent,
-      okText: "Yes",
-      cancelText: "No",
-    });
-  };
-
-  const handleAddRow = () => {
-    const newRow = {};
-    tableData.headers.forEach((_, index) => {
-      newRow[`col${index}`] = "";
-    });
-    const newDataSource = [
-      ...dataSource,
-      { key: dataSource.length, ...newRow },
-    ];
-    setDataSource(newDataSource);
-
-    const updatedRows = [
-      ...tableData.rows,
-      Array(tableData.headers.length).fill(""),
-    ];
-    const updatedTable = { ...tableData, rows: updatedRows };
-    setTableData(updatedTable);
-    updateComponent({ ...component, _mave: updatedTable });
-  };
-
-  const handleRemoveRow = (key) => {
-    const newDataSource = dataSource.filter((item) => item.key !== key);
-    setDataSource(newDataSource);
-
-    const updatedRows = tableData.rows.filter((_, index) => index !== key);
-    const updatedTable = { ...tableData, rows: updatedRows };
-    setTableData(updatedTable);
-    updateComponent({ ...component, _mave: updatedTable });
-  };
-
-  const handleAddColumn = () => {
-    const newHeader = `Header ${tableData.headers.length + 1}`;
-    const newColumns = [
-      ...columns,
-      {
-        title: newHeader,
-        dataIndex: `col${columns.length}`,
-        key: `col${columns.length}`,
-      },
-    ];
-    setColumns(newColumns);
-
-    const updatedHeaders = [...tableData.headers, newHeader];
-    const updatedRows = tableData.rows?.map((row) => [...row, ""]);
-    const updatedTable = { headers: updatedHeaders, rows: updatedRows };
-    setTableData(updatedTable);
-    updateComponent({ ...component, _mave: updatedTable });
-
-    const newDataSource = dataSource?.map((row, index) => ({
-      ...row,
-      [`col${columns.length}`]: "",
-    }));
-    setDataSource(newDataSource);
-  };
-
-  const handleRemoveColumn = (colIndex) => {
-    const colKey = `col${colIndex}`;
-    const newColumns = columns.filter((_, index) => index !== colIndex);
-    setColumns(newColumns);
-
-    const updatedHeaders = tableData.headers.filter(
-      (_, index) => index !== colIndex
-    );
-    const updatedRows = tableData.rows?.map((row) =>
-      row.filter((_, index) => index !== colIndex)
-    );
-    const updatedTable = { headers: updatedHeaders, rows: updatedRows };
-    setTableData(updatedTable);
-    updateComponent({ ...component, _mave: updatedTable });
-
-    const newDataSource = dataSource?.map((row) => {
-      const { [colKey]: removed, ...rest } = row;
-      return rest;
-    });
-    setDataSource(newDataSource);
+    deleteComponent();
   };
 
   return (
@@ -139,37 +57,31 @@ const TableComponent = ({ component, updateComponent, deleteComponent }) => {
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-semibold">Table Component</h3>
         <div>
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => setIsModalVisible(true)}
-            className="mr-2"
-          />
-          <Button icon={<DeleteOutlined />} onClick={handleDelete} danger />
+          {tableData && (
+            <Button
+              icon={<EditOutlined />}
+              onClick={() => setIsDrawerVisible(true)}
+              className="mr-2"
+              size="small"
+            >
+              Edit
+            </Button>
+          )}
+          <Popconfirm
+            title="Are you sure you want to delete this component?"
+            onConfirm={handleDelete}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button icon={<DeleteOutlined />} danger size="small" />
+          </Popconfirm>
         </div>
       </div>
 
-      {tableData ? (
+      {tableData && tableData.headers && tableData.rows ? (
         <div className="overflow-x-auto">
-          <AntTable
-            columns={columns?.map((col, index) => ({
-              ...col,
-              title: (
-                <div className="flex items-center">
-                  {col.title}
-                  {/* <Button
-                    size="small"
-                    type="text"
-                    icon={<MinusOutlined />}
-                    onClick={() => handleRemoveColumn(index)}
-                    danger
-                    style={{ marginLeft: 8 }}
-                  /> */}
-                </div>
-              ),
-            }))}
-            dataSource={dataSource}
-            pagination={false}
-            bordered={tableData?.styles?.borderStyle !== "none"}
+          <table
+            className="min-w-full border-collapse"
             style={{
               border:
                 tableData?.styles?.borderStyle === "none"
@@ -177,34 +89,64 @@ const TableComponent = ({ component, updateComponent, deleteComponent }) => {
                   : tableData?.styles?.borderStyle === "thin"
                   ? "1px solid #ddd"
                   : "2px solid #000",
-              backgroundColor: tableData?.styles?.cellColor,
-              textAlign: tableData?.styles?.textAlign,
+              backgroundColor: tableData?.styles?.cellColor || "#fff",
+              textAlign: tableData?.styles?.textAlign || "left",
             }}
-          />
-          {/* <div className="flex space-x-2 mt-4">
-            <Button
-              type="dashed"
-              onClick={handleAddRow}
-              icon={<PlusOutlined />}
-            >
-              Add Row
-            </Button>
-            <Button
-              type="dashed"
-              onClick={handleAddColumn}
-              icon={<PlusOutlined />}
-            >
-              Add Column
-            </Button>
-          </div> */}
+          >
+            <thead>
+              <tr>
+                {columns?.map((col) => (
+                  <th
+                    key={col.key}
+                    className="px-4 py-2 border"
+                    style={{
+                      border:
+                        tableData?.styles?.borderStyle === "none"
+                          ? "none"
+                          : "1px solid #ddd",
+                    }}
+                  >
+                    {col.title}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {dataSource?.map((row) => (
+                <tr key={row.key}>
+                  {columns?.map((col, index) => (
+                    <td
+                      key={col.key}
+                      className="px-4 py-2 border"
+                      style={{
+                        border:
+                          tableData?.styles?.borderStyle === "none"
+                            ? "none"
+                            : "1px solid #ddd",
+                      }}
+                    >
+                      {row[`col${index}`]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       ) : (
-        <Paragraph>No table data available.</Paragraph>
+        <Button
+          type="dashed"
+          icon={<PlusOutlined />}
+          onClick={() => setIsDrawerVisible(true)}
+          className="mavebutton"
+        >
+          Add Table
+        </Button>
       )}
 
-      <TableSelectionModal
-        isVisible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
+      <TableSelectionDrawer
+        isVisible={isDrawerVisible}
+        onClose={() => setIsDrawerVisible(false)}
         onSelectTable={handleSelectTable}
         initialTable={tableData}
       />

@@ -34,9 +34,9 @@ const RowsSection = ({ headers, rows, setRows }) => {
       >
         Add Row
       </Button>
-      {rows?.map((row, rowIndex) => (
-        <div key={rowIndex} className="mb-2 flex items-center">
-          {headers?.map((_, colIndex) => (
+      {rows.map((row, rowIndex) => (
+        <div key={rowIndex} className="mb-4 flex items-center">
+          {headers.map((_, colIndex) => (
             <Form.Item
               key={`${rowIndex}_${colIndex}`}
               name={`row_${rowIndex}_col_${colIndex}`}
@@ -54,13 +54,15 @@ const RowsSection = ({ headers, rows, setRows }) => {
               />
             </Form.Item>
           ))}
-          <Button
-            icon={<MinusOutlined />}
-            onClick={() => removeRow(rowIndex)}
-            danger
-            type="text"
-            style={{ marginTop: 8 }}
-          />
+          {rows.length > 1 && (
+            <Button
+              icon={<MinusOutlined />}
+              onClick={() => removeRow(rowIndex)}
+              danger
+              type="text"
+              style={{ marginTop: 8 }}
+            />
+          )}
         </div>
       ))}
       <Button

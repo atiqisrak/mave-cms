@@ -1,23 +1,25 @@
-// components/PageBuilder/Modals/TableSelectionModal.jsx
+// components/PageBuilder/Modals/TableSelectionModal/TableSelectionDrawer.jsx
 
 import React, { useState, useEffect } from "react";
-import { Modal, Form, Button, Typography, message, Drawer } from "antd";
+import { Drawer, Form, Button, Typography, message } from "antd";
 import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
-import HeadersSection from "./TableSelectionModal/HeadersSection";
-import RowsSection from "./TableSelectionModal/RowsSection";
-import StylingSection from "./TableSelectionModal/StylingSection";
-import CSVImportSection from "./TableSelectionModal/CSVImportSection";
+import HeadersSection from "./HeadersSection";
+import RowsSection from "./RowsSection";
+import StylingSection from "./StylingSection";
+import CSVImportSection from "./CSVImportSection";
 
 const { Title } = Typography;
 
-const TableSelectionModal = ({
+const TableSelectionDrawer = ({
   isVisible,
   onClose,
   onSelectTable,
   initialTable,
 }) => {
   const [form] = Form.useForm();
-  const [headers, setHeaders] = useState(initialTable?.headers || ["Header 1"]);
+  const [headers, setHeaders] = useState(
+    initialTable?.headers || ["Column 1 Heading"]
+  );
   const [rows, setRows] = useState(
     initialTable?.rows || [Array(initialTable?.headers?.length || 1).fill("")]
   );
@@ -31,7 +33,7 @@ const TableSelectionModal = ({
 
   useEffect(() => {
     if (isVisible) {
-      setHeaders(initialTable?.headers || ["Header 1"]);
+      setHeaders(initialTable?.headers || ["Column 1 Heading"]);
       setRows(
         initialTable?.rows || [
           Array(initialTable?.headers?.length || 1).fill(""),
@@ -48,6 +50,23 @@ const TableSelectionModal = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible, initialTable]);
+
+  useEffect(() => {
+    // Ensure that each row has the same number of cells as headers
+    setRows((prevRows) => {
+      return prevRows.map((row) => {
+        const newRow = [...row];
+        if (newRow.length > headers.length) {
+          // Remove extra cells
+          return newRow.slice(0, headers.length);
+        } else if (newRow.length < headers.length) {
+          // Add empty cells
+          return [...newRow, ...Array(headers.length - newRow.length).fill("")];
+        }
+        return newRow;
+      });
+    });
+  }, [headers]);
 
   useEffect(() => {
     form.setFieldsValue({
@@ -82,7 +101,7 @@ const TableSelectionModal = ({
 
   const handleCancel = () => {
     form.resetFields();
-    setHeaders(initialTable?.headers || ["Header 1"]);
+    setHeaders(initialTable?.headers || ["Column 1 Heading"]);
     setRows(
       initialTable?.rows || [Array(initialTable?.headers?.length || 1).fill("")]
     );
@@ -97,49 +116,23 @@ const TableSelectionModal = ({
   };
 
   return (
-    // <Modal
-    //   title="Configure Table"
-    //   open={isVisible}
-    //   onOk={handleSave}
-    //   onCancel={handleCancel}
-    //   width={`calc(100% - 20vw)`}
-    //   footer={[
-    //     <Button key="back" onClick={handleCancel}>
-    //       Cancel
-    //     </Button>,
-    //     <Button key="submit" type="primary" onClick={handleSave}>
-    //       Save Table
-    //     </Button>,
-    //   ]}
-    // >
-    //   <Form form={form} layout="vertical">
-    //     <HeadersSection headers={headers} setHeaders={setHeaders} />
-    //     <CSVImportSection setHeaders={setHeaders} setRows={setRows} />
-    //     <RowsSection headers={headers} rows={rows} setRows={setRows} />
-    //     <StylingSection styles={styles} setStyles={setStyles} />
-    //   </Form>
-    // </Modal>
     <Drawer
       title="Configure Table"
       placement="right"
-      closable={false}
+      closable
       onClose={handleCancel}
       open={isVisible}
-      width={`calc(100% - 20vw)`}
+      width={`70vw`}
       footer={
-        <div
-          style={{
-            textAlign: "right",
-          }}
-        >
+        <div className="flex justify-end">
           <Button
             onClick={handleCancel}
-            style={{ marginRight: 8 }}
             className="mavecancelbutton"
+            style={{ marginRight: 8 }}
           >
             Cancel
           </Button>
-          <Button className="mavebutton" onClick={handleSave}>
+          <Button onClick={handleSave} type="primary" className="mavebutton">
             Save Table
           </Button>
         </div>
@@ -155,4 +148,4 @@ const TableSelectionModal = ({
   );
 };
 
-export default TableSelectionModal;
+export default TableSelectionDrawer;
