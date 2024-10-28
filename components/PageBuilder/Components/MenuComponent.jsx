@@ -7,6 +7,7 @@ import {
   DeleteOutlined,
   ArrowRightOutlined,
   CodepenCircleOutlined,
+  DragOutlined,
 } from "@ant-design/icons";
 import MenuSelectionModal from "../Modals/MenuSelectionModal";
 
@@ -43,7 +44,10 @@ const MenuComponent = ({ component, updateComponent, deleteComponent }) => {
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
-        <h3 className="text-xl font-semibold">Menu Component</h3>
+        <div className="flex gap-2 justify-center items-center">
+          <Button icon={<DragOutlined />} className="cursor-grab" />
+          <h3 className="text-xl font-semibold">Menu Component</h3>
+        </div>
         <div>
           <Button
             icon={<EditOutlined />}
