@@ -1,13 +1,15 @@
 // components/PageBuilder/Components/MenuComponent.jsx
 
 import React, { useState } from "react";
-import { Button, Menu, Modal } from "antd";
+import { Button, Menu, Modal, Popconfirm } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
   ArrowRightOutlined,
   CodepenCircleOutlined,
   DragOutlined,
+  CheckCircleOutlined,
+  ExportOutlined,
 } from "@ant-design/icons";
 import MenuSelectionModal from "../Modals/MenuSelectionModal";
 
@@ -22,10 +24,7 @@ const MenuComponent = ({ component, updateComponent, deleteComponent }) => {
   };
 
   const handleDelete = () => {
-    Modal.confirm({
-      title: "Are you sure you want to delete this component?",
-      onOk: deleteComponent,
-    });
+    deleteComponent();
   };
 
   const renderMenuItems = (menuItems) => {
@@ -44,17 +43,25 @@ const MenuComponent = ({ component, updateComponent, deleteComponent }) => {
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
-        <div className="flex gap-2 justify-center items-center">
-          <Button icon={<DragOutlined />} className="cursor-grab" />
-          <h3 className="text-xl font-semibold">Menu Component</h3>
-        </div>
+        <h3 className="text-xl font-semibold">Menu Component</h3>
         <div>
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => setIsModalVisible(true)}
-            className="mr-2"
-          />
-          <Button icon={<DeleteOutlined />} onClick={handleDelete} danger />
+          {menuData && (
+            <Button
+              icon={<ExportOutlined />}
+              onClick={() => setIsModalVisible(true)}
+              className="mavebutton"
+            >
+              Change
+            </Button>
+          )}
+          <Popconfirm
+            title="Are you sure you want to delete this component?"
+            onConfirm={handleDelete}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button icon={<DeleteOutlined />} className="mavecancelbutton" />
+          </Popconfirm>
         </div>
       </div>
       {menuData ? (
@@ -68,8 +75,15 @@ const MenuComponent = ({ component, updateComponent, deleteComponent }) => {
           </Menu>
         </div>
       ) : (
-        <p>No menu selected.</p>
+        <Button
+          icon={<CheckCircleOutlined />}
+          onClick={() => setIsModalVisible(true)}
+          className="mavebutton"
+        >
+          Choose
+        </Button>
       )}
+
       <MenuSelectionModal
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}

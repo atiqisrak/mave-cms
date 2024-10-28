@@ -1,12 +1,13 @@
 // components/PageBuilder/Components/CardComponent.jsx
 
 import React, { useState, useEffect } from "react";
-import { Button, Modal, Typography, message } from "antd";
+import { Button, Modal, Popconfirm, Typography, message } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
   CheckOutlined,
   CloseOutlined,
+  ExportOutlined,
 } from "@ant-design/icons";
 import CardSelectionModal from "../Modals/CardSelectionModal";
 import Image from "next/image";
@@ -90,12 +91,7 @@ const CardComponent = ({ component, updateComponent, deleteComponent }) => {
 
   // Handle Delete Component
   const handleDelete = () => {
-    Modal.confirm({
-      title: "Are you sure you want to delete this component?",
-      onOk: deleteComponent,
-      okText: "Yes",
-      cancelText: "No",
-    });
+    deleteComponent();
   };
 
   return (
@@ -106,12 +102,26 @@ const CardComponent = ({ component, updateComponent, deleteComponent }) => {
         <div>
           {!isEditing ? (
             <>
-              <Button
-                icon={<EditOutlined />}
-                onClick={() => setIsModalVisible(true)}
-                className="mr-2"
-              />
-              <Button icon={<DeleteOutlined />} onClick={handleDelete} danger />
+              {cardData && (
+                <Button
+                  icon={<ExportOutlined />}
+                  onClick={() => setIsModalVisible(true)}
+                  className="mavebutton"
+                >
+                  Change
+                </Button>
+              )}
+              <Popconfirm
+                title="Are you sure you want to delete this component?"
+                onConfirm={handleDelete}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  icon={<DeleteOutlined />}
+                  className="mavecancelbutton"
+                />
+              </Popconfirm>
             </>
           ) : (
             <>
@@ -120,7 +130,7 @@ const CardComponent = ({ component, updateComponent, deleteComponent }) => {
                 onClick={handleSubmit}
                 className="mavebutton"
               >
-                Submit
+                Done
               </Button>
               <Button
                 icon={<CloseOutlined />}
@@ -138,7 +148,9 @@ const CardComponent = ({ component, updateComponent, deleteComponent }) => {
       <div className="flex flex-col md:flex-row items-start gap-4">
         {/* Current Card */}
         <div className="flex flex-col w-full md:w-1/2">
-          <h4 className="mb-2 text-md font-medium">Current Card</h4>
+          {cardData && (
+            <h4 className="mb-2 text-md font-semibold">Current Card</h4>
+          )}
           {cardData ? (
             <div className="flex items-center border p-4 rounded-md bg-white">
               {/* Media on the Left */}
@@ -175,7 +187,13 @@ const CardComponent = ({ component, updateComponent, deleteComponent }) => {
               </div>
             </div>
           ) : (
-            <Paragraph>No card selected.</Paragraph>
+            <Button
+              icon={<EditOutlined />}
+              onClick={() => setIsModalVisible(true)}
+              className="mavebutton w-fit"
+            >
+              Select Card
+            </Button>
           )}
         </div>
 

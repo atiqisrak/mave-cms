@@ -15,8 +15,13 @@ const FooterSelectionModal = ({ isVisible, onClose, onSelectFooter }) => {
       const fetchFooters = async () => {
         setLoading(true);
         try {
-          const response = await instance.get("/footers"); // Replace with your actual API endpoint
-          setFooterList(response.data);
+          const response = await instance.get("/pages");
+          // setFooterList(response.data);
+          const footers = response.data.filter(
+            (page) =>
+              page.type === "Footer" && page.additional[0].pageType === "Footer"
+          );
+          setFooterList(footers);
         } catch (error) {
           message.error("Failed to fetch footers");
         }
@@ -38,18 +43,12 @@ const FooterSelectionModal = ({ isVisible, onClose, onSelectFooter }) => {
     >
       <List
         loading={loading}
-        grid={{ gutter: 16, column: 1 }}
         dataSource={footerList}
         renderItem={(item) => (
-          <List.Item>
-            <Button
-              type="link"
-              onClick={() => onSelectFooter(item)}
-              block
-              className="text-left"
-            >
-              <Paragraph ellipsis={{ rows: 2 }}>{item.title_en}</Paragraph>
-            </Button>
+          <List.Item onClick={() => onSelectFooter(item)}>
+            <div className="flex items-center justify-between bg-theme px-6 py-2 w-full text-center rounded-md cursor-pointer">
+              {item.page_name_en}
+            </div>
           </List.Item>
         )}
       />

@@ -1,13 +1,14 @@
 // components/PageBuilder/Components/MediaComponent.jsx
 
 import React, { useState } from "react";
-import { Button, Modal, Typography, message } from "antd";
+import { Button, Modal, Popconfirm, Typography, message } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
   CheckOutlined,
   CloseOutlined,
   ArrowRightOutlined,
+  ExportOutlined,
 } from "@ant-design/icons";
 import MediaSelectionModal from "../Modals/MediaSelectionModal";
 import Image from "next/image";
@@ -72,12 +73,7 @@ const MediaComponent = ({ component, updateComponent, deleteComponent }) => {
 
   // Handle Delete Component
   const handleDelete = () => {
-    Modal.confirm({
-      title: "Are you sure you want to delete this component?",
-      onOk: deleteComponent,
-      okText: "Yes",
-      cancelText: "No",
-    });
+    deleteComponent();
   };
 
   return (
@@ -88,12 +84,26 @@ const MediaComponent = ({ component, updateComponent, deleteComponent }) => {
         <div>
           {!isEditing ? (
             <>
-              <Button
-                icon={<EditOutlined />}
-                onClick={() => setIsModalVisible(true)}
-                className="mr-2"
-              />
-              <Button icon={<DeleteOutlined />} onClick={handleDelete} danger />
+              {mediaData && (
+                <Button
+                  icon={<ExportOutlined />}
+                  onClick={() => setIsModalVisible(true)}
+                  className="mavebutton"
+                >
+                  Change
+                </Button>
+              )}
+              <Popconfirm
+                title="Are you sure you want to delete this component?"
+                onConfirm={handleDelete}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  icon={<DeleteOutlined />}
+                  className="mavecancelbutton"
+                />
+              </Popconfirm>
             </>
           ) : (
             <>
@@ -102,7 +112,7 @@ const MediaComponent = ({ component, updateComponent, deleteComponent }) => {
                 onClick={handleSubmit}
                 className="mavebutton"
               >
-                Submit
+                Done
               </Button>
               <Button
                 icon={<CloseOutlined />}
@@ -120,7 +130,9 @@ const MediaComponent = ({ component, updateComponent, deleteComponent }) => {
       <div className="flex flex-col md:flex-row items-center gap-4">
         {/* Current Media */}
         <div className="flex flex-col items-center">
-          <h4 className="mb-2 text-md font-medium">Current Media</h4>
+          {mediaData && (
+            <h4 className="mb-2 text-md font-semibold">Current Media</h4>
+          )}
           {mediaData ? (
             <Image
               src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${mediaData.file_path}`}
@@ -132,7 +144,13 @@ const MediaComponent = ({ component, updateComponent, deleteComponent }) => {
               className="rounded-lg"
             />
           ) : (
-            <Paragraph>No media selected.</Paragraph>
+            <Button
+              icon={<ExportOutlined />}
+              onClick={() => setIsModalVisible(true)}
+              className="mavebutton"
+            >
+              Choose
+            </Button>
           )}
         </div>
 
