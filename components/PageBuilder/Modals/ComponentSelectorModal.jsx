@@ -1,7 +1,7 @@
 // components/PageBuilder/Modals/ComponentSelectorModal.jsx
 
 import React from "react";
-import { Modal, List, Button, Drawer } from "antd";
+import { Drawer } from "antd";
 import Image from "next/image";
 
 const componentOptions = [
@@ -83,6 +83,12 @@ const componentOptions = [
     type: "iconlist",
     name: "Icon List",
     icon: "/icons/mave/iconlist.svg",
+    premium: true,
+  },
+  {
+    type: "testimonial",
+    name: "Testimonial",
+    icon: "/icons/mave/testimonial.svg",
     premium: true,
   },
 ];
