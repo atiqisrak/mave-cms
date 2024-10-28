@@ -96,7 +96,7 @@ const ComponentSelectorModal = ({ isVisible, onClose, onSelectComponent }) => {
       placement="right"
     >
       <div className="grid grid-cols-2 gap-6">
-        {componentOptions.map((component) => (
+        {componentOptions?.map((component) => (
           <div
             key={component.type}
             className="relative flex flex-col items-center justify-center cursor-pointer border border-gray-200 rounded-lg p-4 shadow-md hover:shadow-xl transition-shadow duration-300 bg-white transform hover:-translate-y-1 hover:scale-105"

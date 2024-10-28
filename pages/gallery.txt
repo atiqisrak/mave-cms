@@ -117,7 +117,7 @@ const Gallery = () => {
 
   useEffect(() => {
     mediaAssets &&
-      mediaAssets.map((asset) => {
+      mediaAssets?.map((asset) => {
         if (asset.file_type.startsWith("image/")) {
           setImages((prevImages) => [...prevImages, asset]);
         } else if (asset.file_type.startsWith("video/")) {
@@ -657,7 +657,7 @@ const Gallery = () => {
                         flexWrap: "wrap",
                       }}
                     >
-                      {videos.map((video) => (
+                      {videos?.map((video) => (
                         <Col
                           key={video.id}
                           xs={24}

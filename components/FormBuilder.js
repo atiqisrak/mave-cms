@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Form, Input, Select, Button } from 'antd';
+import React, { useState } from "react";
+import { Form, Input, Select, Button } from "antd";
 
 const FormBuilder = () => {
   const [fields, setFields] = useState([]);
@@ -7,8 +7,8 @@ const FormBuilder = () => {
 
   const handleAddField = () => {
     const newField = {
-      name: '',
-      type: 'text',
+      name: "",
+      type: "text",
     };
     setFields([...fields, newField]);
   };
@@ -48,12 +48,19 @@ const FormBuilder = () => {
       {fields?.map((field, index) => (
         <div key={index}>
           <Input.Group compact>
-            <Form.Item label={`Field Name (${index + 1})`} name={['fields', index, 'name']} initialValue={field.name}>
+            <Form.Item
+              label={`Field Name (${index + 1})`}
+              name={["fields", index, "name"]}
+              initialValue={field.name}
+            >
               <Input placeholder="Field Name" />
             </Form.Item>
-            <Form.Item label={`Field Type (${index + 1})`} name={['fields', index, 'type']} initialValue={field.type}>
-              <Select style={{ width: 120 }}
-                showSearch>
+            <Form.Item
+              label={`Field Type (${index + 1})`}
+              name={["fields", index, "type"]}
+              initialValue={field.type}
+            >
+              <Select style={{ width: 120 }} showSearch>
                 <Select.Option value="text">Text</Select.Option>
                 <Select.Option value="textarea">Textarea</Select.Option>
                 <Select.Option value="email">Email</Select.Option>
@@ -62,22 +69,27 @@ const FormBuilder = () => {
               </Select>
             </Form.Item>
           </Input.Group>
-          <Button type="dashed" onClick={() => handleRemoveField(index)}>Remove Field</Button>
+          <Button type="dashed" onClick={() => handleRemoveField(index)}>
+            Remove Field
+          </Button>
         </div>
       ))}
-      <Button type="dashed" onClick={handleAddField}>Add Field</Button>
+      <Button type="dashed" onClick={handleAddField}>
+        Add Field
+      </Button>
       <Form.Item label="Submit Direction" name="submit_direction">
         <Input placeholder="https://example.com/submit-form" />
       </Form.Item>
       <Form.Item label="Status" name="status" valuePropName="checked">
-        <Select style={{ width: 120 }}
-          showSearch>
+        <Select style={{ width: 120 }} showSearch>
           <Select.Option value={true}>Active</Select.Option>
           <Select.Option value={false}>Inactive</Select.Option>
         </Select>
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit">Create Form</Button>
+        <Button type="primary" htmlType="submit">
+          Create Form
+        </Button>
       </Form.Item>
     </Form>
   );

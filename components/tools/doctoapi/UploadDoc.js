@@ -40,7 +40,7 @@ const UploadDoc = () => {
       _id: "generated_id", // Replace with actual ID generation logic
       _category: "root",
       sectionTitle: section.title,
-      data: section.content.map((contentItem) => {
+      data: section.content?.map((contentItem) => {
         switch (contentItem.type) {
           case "image":
             return ImageTransformer({ contentItem });

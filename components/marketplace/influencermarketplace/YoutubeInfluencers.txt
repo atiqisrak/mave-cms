@@ -17,7 +17,7 @@ export default function YoutubeInfluencers() {
       );
 
       const channelIds = searchResponse.data.items
-        .map((item) => item.id.channelId)
+        ?.map((item) => item.id.channelId)
         .join(",");
 
       const channelResponse = await axios.get(

@@ -33,7 +33,7 @@ export default function ModelCreator({
       try {
         const response = await instance.get("/generated-models");
         if (response.data) {
-          setAvailableModels(response.data.map((model) => model.model_name));
+          setAvailableModels(response.data?.map((model) => model.model_name));
         } else {
           setAvailableModels([]);
         }
@@ -69,7 +69,7 @@ export default function ModelCreator({
   };
 
   const handleFieldEdit = (updatedField, index) => {
-    const updatedFields = fields.map((field, i) =>
+    const updatedFields = fields?.map((field, i) =>
       i === index ? updatedField : field
     );
     setFields(updatedFields);
@@ -99,7 +99,7 @@ export default function ModelCreator({
     const jsonPayload = {
       modelSingular: modelSingularSnake,
       modelPlural: modelPluralSnake,
-      fields: fields.map((field) => {
+      fields: fields?.map((field) => {
         // Remove 'None' relationship types
         if (field.relationshipType === "None") {
           delete field.relationshipType;

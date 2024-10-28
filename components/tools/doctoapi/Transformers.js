@@ -11,7 +11,7 @@ const generateId = () => {
 const Transformer = (input) => {
   const lines = input
     .split("\n")
-    .map((line) => line.trim())
+    ?.map((line) => line.trim())
     .filter((line) => line);
 
   let sections = [];

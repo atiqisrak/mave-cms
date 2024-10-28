@@ -37,10 +37,10 @@ const PageBuilder = ({ parsedYaml }) => {
 
   return (
     <div className="p-4">
-      {parsedYaml.sections.map((section, sectionIndex) => (
+      {parsedYaml.sections?.map((section, sectionIndex) => (
         <div key={section._id} className="mb-6">
           <h2 className="text-xl font-bold mb-2">{section.sectionTitle}</h2>
-          {section.data.map((element) => {
+          {section.data?.map((element) => {
             switch (element.type) {
               case "title":
                 return (

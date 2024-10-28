@@ -23,7 +23,7 @@ export default function ModelsShowcase() {
       const response = await instance.get("/generated-models");
       if (response.data) {
         // Check if 'fields' is a string and parse it, else use it as is
-        const models = response.data.map((model) => ({
+        const models = response.data?.map((model) => ({
           ...model,
           fields:
             typeof model.fields === "string"
@@ -74,7 +74,7 @@ export default function ModelsShowcase() {
         </div>
       ) : dynamicModels.length > 0 ? (
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {dynamicModels.map((model) => (
+          {dynamicModels?.map((model) => (
             <div
               key={model.id}
               className="p-4 border border-gray-300 rounded-lg mb-4 flex flex-col justify-center items-center"

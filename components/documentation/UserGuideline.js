@@ -457,7 +457,7 @@ const UserGuideline = () => {
         <Title level={2}>User Guideline</Title>
       </center>
       <Tabs defaultActiveKey="1" centered type="card" tabPosition="left">
-        {steps.map((step, index) => (
+        {steps?.map((step, index) => (
           <TabPane tab={step.title} key={index + 1}>
             {step.content}
             <div className="steps-action" style={{ marginTop: "24px" }}>

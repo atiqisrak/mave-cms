@@ -73,7 +73,7 @@ const AddMenuItemForm = ({ pages, menuItems, onCancel, fetchMenuItems }) => {
             allowClear
           >
             <Select.Option value={null}>No Parent</Select.Option>
-            {menuItems.map((menuItem) => (
+            {menuItems?.map((menuItem) => (
               <Select.Option key={menuItem.id} value={menuItem.id}>
                 {menuItem.title}
               </Select.Option>
@@ -99,7 +99,7 @@ const AddMenuItemForm = ({ pages, menuItems, onCancel, fetchMenuItems }) => {
               onChange={(value) => setNewMenuItemLink(value)}
               className="w-full mt-2"
             >
-              {pages.map((page) => (
+              {pages?.map((page) => (
                 <Select.Option
                   key={page.id}
                   value={`${page.slug}?pageId=${

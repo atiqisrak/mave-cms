@@ -25,7 +25,7 @@ const DataPage = () => {
     <Row gutter={[16, 16]}>
       <Col span={24}>
         <Card title="Data Table" bordered={false}>
-          {data.map((item) => (
+          {data?.map((item) => (
             <div key={item.id}>
               <p>
                 <strong>ID:</strong> {item.id}

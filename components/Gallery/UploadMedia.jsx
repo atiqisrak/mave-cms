@@ -45,7 +45,7 @@ const UploadMedia = ({
   const handleChange = ({ file, fileList: newFileList }) => {
     // Update the fileList with progress and status
     setFileList(
-      newFileList.map((f) => {
+      newFileList?.map((f) => {
         if (f.response) {
           f.status = "done";
         }
@@ -124,7 +124,7 @@ const UploadMedia = ({
       </Dragger>
       {fileList.length > 0 && (
         <div className="mt-4">
-          {fileList.map((file) => (
+          {fileList?.map((file) => (
             <div
               key={file.uid}
               className="flex items-center justify-between p-2 mb-2 bg-gray-100 rounded-md"

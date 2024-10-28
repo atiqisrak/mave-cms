@@ -56,7 +56,7 @@ export default function WebsiteTemplatesMarketplace() {
     <div>
       <div className={styles.gridcontainer}>
         {currentTemplates &&
-          currentTemplates.map((product) => {
+          currentTemplates?.map((product) => {
             return (
               <div
                 key={product.id}

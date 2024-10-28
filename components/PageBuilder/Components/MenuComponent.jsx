@@ -28,7 +28,7 @@ const MenuComponent = ({ component, updateComponent, deleteComponent }) => {
   };
 
   const renderMenuItems = (menuItems) => {
-    return menuItems.map((item) => {
+    return menuItems?.map((item) => {
       if (item.all_children && item.all_children.length > 0) {
         return (
           <Menu.SubMenu key={item.id} title={item.title}>

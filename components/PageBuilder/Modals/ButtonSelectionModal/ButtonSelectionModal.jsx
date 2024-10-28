@@ -110,7 +110,7 @@ const ButtonSelectionModal = ({
 
         <Form.Item name="icon" label="Button Icon">
           <Select placeholder="Select an icon">
-            {iconOptions.map((icon) => (
+            {iconOptions?.map((icon) => (
               <Option key={icon.value} value={icon.value}>
                 {icon.label}
               </Option>

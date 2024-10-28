@@ -70,7 +70,7 @@ const Documents = () => {
         <div>
           {documents && documents.length > 0 ? (
             <Row gutter={[16, 16]}>
-              {documents.map((document, index) => (
+              {documents?.map((document, index) => (
                 <Col key={index}>
                   <div
                     className="media-card"

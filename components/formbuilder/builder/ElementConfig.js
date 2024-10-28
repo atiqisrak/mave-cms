@@ -91,7 +91,7 @@ const ElementConfig = ({ element, onUpdate }) => {
         )} */}
         {element.element_type === "input" && element.input_type === "radio" && (
           <Form.Item label="Radio Options">
-            {options.map((option, index) => (
+            {options?.map((option, index) => (
               <div
                 key={option._id}
                 style={{ display: "flex", marginBottom: "8px" }}
@@ -121,7 +121,7 @@ const ElementConfig = ({ element, onUpdate }) => {
         )}
         {element.element_type === "select" && (
           <Form.Item label="Options">
-            {options.map((option, index) => (
+            {options?.map((option, index) => (
               <div
                 key={option._id}
                 style={{ display: "flex", marginBottom: "8px" }}

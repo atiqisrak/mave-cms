@@ -84,7 +84,7 @@ const SideMenuItems = ({
       className="w-full h-full"
     >
       {allMenuData && allMenuData.length > 0 ? (
-        allMenuData.map((item) =>
+        allMenuData?.map((item) =>
           item?.submenu?.length > 0 ? (
             <Menu.SubMenu
               key={item.id.toString()}

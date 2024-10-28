@@ -13,8 +13,8 @@ const CSVImportSection = ({ setHeaders, setRows }) => {
       header: true,
       complete: (results) => {
         const csvHeaders = results.meta.fields;
-        const csvRows = results.data.map((row) =>
-          csvHeaders.map((header) => row[header])
+        const csvRows = results.data?.map((row) =>
+          csvHeaders?.map((header) => row[header])
         );
         setHeaders(csvHeaders);
         setRows(

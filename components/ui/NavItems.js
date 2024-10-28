@@ -82,7 +82,7 @@ export default function NavItems({
           {/* Menu Items */}
           {/* <div className="flex flex-1 justify-center items-center md:space-x-2 lg:space-x-1 col-span-5">
             {topNavData &&
-              topNavData.map((item) => (
+              topNavData?.map((item) => (
                 <div
                   key={item.id}
                   className={`text-base font-semibold rounded-md cursor-pointer ${
@@ -107,7 +107,7 @@ export default function NavItems({
             className="flex flex-1 justify-center items-center md:space-x-2 lg:space-x-0 col-span-5 bg-transparent"
           >
             {topNavData &&
-              topNavData.map((item) => (
+              topNavData?.map((item) => (
                 <Menu.Item
                   key={item.name}
                   onClick={() => {

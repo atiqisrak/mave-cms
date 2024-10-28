@@ -78,7 +78,7 @@ const Changelog = () => {
             pending="More to come..."
             reverse={reverse}
           >
-            {changeLogs.map((log, index) => (
+            {changeLogs?.map((log, index) => (
               <Timeline.Item
                 key={index}
                 label={moment(log.date).format("DD MMM YYYY")}
@@ -97,8 +97,8 @@ const Changelog = () => {
                   Version {log.version}
                 </h3>
                 <>
-                  {Object.entries(log.changes).map(([type, changeList]) =>
-                    changeList.map((change, i) => (
+                  {Object.entries(log.changes)?.map(([type, changeList]) =>
+                    changeList?.map((change, i) => (
                       <div
                         key={i}
                         style={{

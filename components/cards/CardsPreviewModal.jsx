@@ -269,7 +269,7 @@ const CardsPreviewModal = ({
                 <Select placeholder="Select Page" allowClear>
                   {pages
                     ?.filter((page) => page.page_name_en)
-                    .map((page) => (
+                    ?.map((page) => (
                       <Option key={page.page_name_en} value={page.page_name_en}>
                         {page.page_name_en}
                       </Option>

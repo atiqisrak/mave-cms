@@ -44,7 +44,7 @@ const MenuRow = ({
       if (response.status === 200) {
         message.success("Menu updated successfully");
         setMenus((prevMenus) =>
-          prevMenus.map((item) =>
+          prevMenus?.map((item) =>
             item.id === menu.id ? { ...item, ...updatedMenu } : item
           )
         );
@@ -117,7 +117,7 @@ const MenuRow = ({
             className="w-11/12"
             optionFilterProp="children"
           >
-            {menuItems.map((menuItem) => (
+            {menuItems?.map((menuItem) => (
               <Select.Option key={menuItem.id} value={menuItem.id}>
                 {menuItem.title}
               </Select.Option>

@@ -142,7 +142,7 @@ const Gallery = () => {
 
   // Handle Edit Media from PreviewModal
   const handleEdit = (updatedMedia) => {
-    const updatedMediaAssets = mediaAssets.map((media) =>
+    const updatedMediaAssets = mediaAssets?.map((media) =>
       media.id === updatedMedia.id ? updatedMedia : media
     );
     setMediaAssets(updatedMediaAssets);

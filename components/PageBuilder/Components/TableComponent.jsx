@@ -20,13 +20,13 @@ const TableComponent = ({ component, updateComponent, deleteComponent }) => {
 
   useEffect(() => {
     if (tableData) {
-      const cols = tableData.headers.map((header, index) => ({
+      const cols = tableData.headers?.map((header, index) => ({
         title: header,
         dataIndex: `col${index}`,
         key: `col${index}`,
       }));
       setColumns(cols);
-      const rows = tableData.rows.map((row, rowIndex) => ({
+      const rows = tableData.rows?.map((row, rowIndex) => ({
         key: rowIndex,
         ...row.reduce((acc, cell, colIndex) => {
           acc[`col${colIndex}`] = cell;
@@ -100,12 +100,12 @@ const TableComponent = ({ component, updateComponent, deleteComponent }) => {
     setColumns(newColumns);
 
     const updatedHeaders = [...tableData.headers, newHeader];
-    const updatedRows = tableData.rows.map((row) => [...row, ""]);
+    const updatedRows = tableData.rows?.map((row) => [...row, ""]);
     const updatedTable = { headers: updatedHeaders, rows: updatedRows };
     setTableData(updatedTable);
     updateComponent({ ...component, _mave: updatedTable });
 
-    const newDataSource = dataSource.map((row, index) => ({
+    const newDataSource = dataSource?.map((row, index) => ({
       ...row,
       [`col${columns.length}`]: "",
     }));
@@ -120,14 +120,14 @@ const TableComponent = ({ component, updateComponent, deleteComponent }) => {
     const updatedHeaders = tableData.headers.filter(
       (_, index) => index !== colIndex
     );
-    const updatedRows = tableData.rows.map((row) =>
+    const updatedRows = tableData.rows?.map((row) =>
       row.filter((_, index) => index !== colIndex)
     );
     const updatedTable = { headers: updatedHeaders, rows: updatedRows };
     setTableData(updatedTable);
     updateComponent({ ...component, _mave: updatedTable });
 
-    const newDataSource = dataSource.map((row) => {
+    const newDataSource = dataSource?.map((row) => {
       const { [colKey]: removed, ...rest } = row;
       return rest;
     });
@@ -151,7 +151,7 @@ const TableComponent = ({ component, updateComponent, deleteComponent }) => {
       {tableData ? (
         <div className="overflow-x-auto">
           <AntTable
-            columns={columns.map((col, index) => ({
+            columns={columns?.map((col, index) => ({
               ...col,
               title: (
                 <div className="flex items-center">

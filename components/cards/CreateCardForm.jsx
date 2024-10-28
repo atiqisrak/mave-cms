@@ -194,7 +194,7 @@ const CreateCardForm = ({ onSuccess, onCancel, pages, media }) => {
           <Select placeholder="Select Page" allowClear>
             {pages
               ?.filter((page) => page.page_name_en)
-              .map((page) => (
+              ?.map((page) => (
                 <Option key={page.id} value={page.page_name_en}>
                   {page.page_name_en}
                 </Option>

@@ -106,7 +106,7 @@ const AccordionSelectionModal = ({
     >
       <Form form={form} layout="vertical">
         <Title level={4}>Accordion Items</Title>
-        {accordionItems.map((item, index) => (
+        {accordionItems?.map((item, index) => (
           <div key={index} className="mb-4 border p-3 rounded-md">
             <Space align="baseline">
               <Form.Item label="Title" required style={{ flex: 1 }}>
@@ -218,7 +218,7 @@ const AccordionSelectionModalNested = ({ data, onChange }) => {
   return (
     <div className="ml-4">
       <Title level={5}>Nested Accordion Items</Title>
-      {nestedData.map((item, index) => (
+      {nestedData?.map((item, index) => (
         <div key={index} className="mb-3 border p-2 rounded-md">
           <Space align="baseline">
             <Input

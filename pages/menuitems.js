@@ -132,7 +132,7 @@ const MenuItems = () => {
     if (selectedItemIds.length === menuItems.length) {
       setSelectedItemIds([]);
     } else {
-      setSelectedItemIds(menuItems.map((item) => item.id));
+      setSelectedItemIds(menuItems?.map((item) => item.id));
     }
   };
 

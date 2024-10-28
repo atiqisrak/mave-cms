@@ -106,7 +106,7 @@ export default function FieldInput({
           }}
           allowClear
         >
-          {availableModels.map((model, index) => (
+          {availableModels?.map((model, index) => (
             <Option key={index} value={model}>
               {model}
             </Option>
@@ -120,7 +120,7 @@ export default function FieldInput({
             value={fieldData.relationshipType || "None"}
             onChange={(value) => handleChange("relationshipType", value)}
           >
-            {relationshipOptions.map((option) => (
+            {relationshipOptions?.map((option) => (
               <Option key={option.value} value={option.value}>
                 {option.label}
               </Option>

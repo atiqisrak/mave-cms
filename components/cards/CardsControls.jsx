@@ -42,7 +42,7 @@ const CardsControls = ({
           onChange={(value) => setSelectedPageFilter(value)}
           className="w-48 md:w-72"
         >
-          {pages.map((page) => (
+          {pages?.map((page) => (
             <Select.Option key={page.slug} value={page.page_name}>
               {page.page_name_en}
             </Select.Option>

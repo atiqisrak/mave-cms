@@ -392,7 +392,7 @@ const BlogCreator = ({ creatorMode, setCreatorMode, fetchBlogs }) => {
             setMeta({ ...meta, category: value });
           }}
         >
-          {blog_categories.map((category) => (
+          {blog_categories?.map((category) => (
             <Select.Option key={category.id} value={category.value}>
               {category.name}
             </Select.Option>
@@ -411,7 +411,7 @@ const BlogCreator = ({ creatorMode, setCreatorMode, fetchBlogs }) => {
             setMeta({ ...meta, tags: value });
           }}
         >
-          {blog_tags.map((tag) => (
+          {blog_tags?.map((tag) => (
             <Select.Option key={tag.id} value={tag.value}>
               {tag.name}
             </Select.Option>

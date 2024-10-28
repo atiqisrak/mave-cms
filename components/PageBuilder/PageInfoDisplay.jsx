@@ -33,7 +33,7 @@ const PageInfoDisplay = ({ page }) => {
           <span className="font-semibold text-theme">Page Type: </span>
           <span className="text-gray-600 font-semibold">
             {page.additional && page.additional.length > 0
-              ? page.additional.map((type) => type.pageType).join(", ")
+              ? page.additional?.map((type) => type.pageType).join(", ")
               : "Page"}
           </span>
         </h1>
