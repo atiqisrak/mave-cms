@@ -1,8 +1,8 @@
 // components/PageBuilder/Components/IconListComponent/IconListComponent.jsx
 
 import React, { useState, useEffect } from "react";
-import { Button, Select, Space, message } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Button, Popconfirm, Select, Space, message } from "antd";
+import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import IconListItem from "./IconListItem";
 import IconListSelectionModal from "../../Modals/IconListSelectionModal/IconListSelectionModal";
 
@@ -75,23 +75,27 @@ const IconListComponent = ({ component, updateComponent, deleteComponent }) => {
     setIconColor(e.target.value);
   };
 
+  const handleDelete = () => {
+    deleteComponent();
+  };
+
   return (
     <div className="border p-4 rounded-md bg-gray-50">
       <Space direction="vertical" style={{ width: "100%" }}>
-        {/* Header with Component Title and Action Buttons */}
         <div className="flex justify-between items-center">
           <h3 className="text-xl font-semibold">Icon List Component</h3>
-          <Button
-            type="dashed"
-            icon={<PlusOutlined />}
-            onClick={handleAddItem}
-            className="flex items-center"
-          >
-            Add Icon
-          </Button>
+          <div className="flex justify-end gap-2">
+            <Popconfirm
+              title="Are you sure you want to delete this component?"
+              onConfirm={handleDelete}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button className="mavecancelbutton" icon={<DeleteOutlined />} />
+            </Popconfirm>
+          </div>
         </div>
-
-        {/* Configuration Options */}
+        {/* Config */}
         <div className="flex flex-wrap gap-4">
           <Select
             value={orientation}
@@ -148,6 +152,14 @@ const IconListComponent = ({ component, updateComponent, deleteComponent }) => {
           ) : (
             <p>No icons added. Click "Add Icon" to get started.</p>
           )}
+          <Button
+            type="dashed"
+            icon={<PlusOutlined />}
+            onClick={handleAddItem}
+            className="mavebutton"
+          >
+            Add Icon
+          </Button>
         </div>
       </Space>
 

@@ -1,10 +1,10 @@
 // components/PageBuilder/Modals/IconListSelectionModal/IconListSelectionModal.jsx
 
 import React, { useState } from "react";
-import { Modal, Tabs, Input, List, Button } from "antd";
+import { Tabs, Input, List, Button, Drawer } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import prebuiltIcons from "./prebuiltIcons";
-// Removed react-icons import as we're using FontAwesome classes
+import mostusedicons from "./mostusedicons.json";
+import fontawesomeIcons from "./icons.json";
 
 const { TabPane } = Tabs;
 
@@ -15,31 +15,28 @@ const IconListSelectionModal = ({ isVisible, onClose, onSelectIcon }) => {
     setSearchTerm(e.target.value);
   };
 
-  // Since we're using FontAwesome class names, no need to import from react-icons
-  // Optionally, you can define a list of searchable class names manually
-  const filteredReactIcons = [
-    // Example list; ideally, have a comprehensive list or implement a better search
-    { name: "magnifying-glass", className: "fa-solid fa-magnifying-glass" },
-    { name: "user", className: "fa-solid fa-user" },
-    { name: "cog", className: "fa-solid fa-cog" },
-    // Add more as needed
-  ].filter((icon) =>
-    icon.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredReactIcons = fontawesomeIcons
+    .filter((icon) => icon.toLowerCase().includes(searchTerm.toLowerCase()))
+    .map((icon) => ({ className: icon }));
+
+  const filteredMostUsedIcons = mostusedicons
+    .filter((icon) => icon.toLowerCase().includes(searchTerm.toLowerCase()))
+    .map((icon) => ({ className: icon }));
 
   return (
-    <Modal
+    <Drawer
       title="Select Icon"
+      placement="right"
+      closable={true}
+      onClose={onClose}
       open={isVisible}
-      onCancel={onClose}
-      footer={null}
-      width={600}
+      width={`60vw`}
     >
       <Tabs defaultActiveKey="1">
         <TabPane tab="Prebuilt Icons" key="1">
           <List
             grid={{ gutter: 16, column: 6 }}
-            dataSource={prebuiltIcons}
+            dataSource={filteredMostUsedIcons}
             renderItem={(icon) => (
               <List.Item>
                 <Button
@@ -57,6 +54,7 @@ const IconListSelectionModal = ({ isVisible, onClose, onSelectIcon }) => {
         <TabPane tab="Search Icons" key="2">
           <Input
             placeholder="Search icons"
+            allowClear
             prefix={<SearchOutlined />}
             value={searchTerm}
             onChange={handleSearch}
@@ -80,7 +78,7 @@ const IconListSelectionModal = ({ isVisible, onClose, onSelectIcon }) => {
           />
         </TabPane>
       </Tabs>
-    </Modal>
+    </Drawer>
   );
 };
 
