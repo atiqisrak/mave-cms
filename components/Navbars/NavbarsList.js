@@ -19,7 +19,7 @@ const NavbarsList = ({
     selectedNavbarIds.length === navbars.length && navbars.length > 0;
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedNavbarIds(navbars.map((item) => item.id));
+      setSelectedNavbarIds(navbars?.map((item) => item.id));
     } else {
       setSelectedNavbarIds([]);
     }
@@ -44,7 +44,7 @@ const NavbarsList = ({
         </Col>
       </Row>
       {navbars.length > 0 ? (
-        navbars.map((navbar) => (
+        navbars?.map((navbar) => (
           <NavbarRow
             key={navbar.id}
             navbar={navbar}

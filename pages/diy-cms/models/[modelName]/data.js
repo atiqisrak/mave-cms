@@ -123,7 +123,7 @@ export default function ManageData() {
   };
 
   const columns = [
-    ...fields.map((field) => ({
+    ...fields?.map((field) => ({
       title: field.name,
       dataIndex: field.name,
       key: field.name,
@@ -204,7 +204,7 @@ export default function ManageData() {
         }}
       >
         <Form form={form} layout="vertical">
-          {fields.map((field) => {
+          {fields?.map((field) => {
             // Handle relationship fields
             if (field.relationshipType) {
               return (

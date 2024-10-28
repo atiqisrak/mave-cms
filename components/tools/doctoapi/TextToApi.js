@@ -34,7 +34,7 @@ export default function TextToApi() {
     } catch (validationError) {
       console.log("Validation Error", validationError);
       if (validationError.name === "ValidationError") {
-        const errors = validationError.inner.map(
+        const errors = validationError.inner?.map(
           (err) => `${err.path}: ${err.message}`
         );
         setValidationErrors(errors);
@@ -110,7 +110,7 @@ export default function TextToApi() {
           </Divider>
           <div className="bg-red-100 p-4 rounded mb-6">
             <ul className="list-disc list-inside text-red-700">
-              {validationErrors.map((err, index) => (
+              {validationErrors?.map((err, index) => (
                 <li key={index}>{err}</li>
               ))}
             </ul>

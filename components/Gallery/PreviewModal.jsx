@@ -21,7 +21,7 @@ const PreviewModal = ({ visible, onClose, media, mediaType, handleEdit }) => {
     // tags: media.tags ? media.tags.join(", ") : "None",
     tags: media.tags ? (
       <>
-        {media.tags.map((tag) => (
+        {media.tags?.map((tag) => (
           <Tag key={tag} color="orange">
             {tag}
           </Tag>
@@ -103,7 +103,7 @@ const PreviewModal = ({ visible, onClose, media, mediaType, handleEdit }) => {
                 <Form.Item label="Tags" name="tags">
                   <Select mode="tags" placeholder="Enter tags">
                     {media.tags &&
-                      media.tags.map((tag) => (
+                      media.tags?.map((tag) => (
                         <Option key={tag} value={tag}>
                           {tag}
                         </Option>
@@ -136,7 +136,7 @@ const PreviewModal = ({ visible, onClose, media, mediaType, handleEdit }) => {
             ) : (
               <>
                 <Table
-                  dataSource={Object.entries(info).map(([key, value]) => ({
+                  dataSource={Object.entries(info)?.map(([key, value]) => ({
                     key,
                     attribute: key.charAt(0).toUpperCase() + key.slice(1),
                     value,

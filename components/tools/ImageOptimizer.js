@@ -15,7 +15,7 @@ const ImageOptimizer = () => {
   const handleUpload = async (info) => {
     setLoading(true);
     try {
-      const files = info.fileList.map((file) => file.originFileObj);
+      const files = info.fileList?.map((file) => file.originFileObj);
       const optimizedFiles = await optimizeImages(files);
       setOptimizedImage(optimizedFiles);
     } catch (error) {
@@ -52,7 +52,7 @@ const ImageOptimizer = () => {
       {/* {optimizedImage && (
                 <div>
                     <h2>Optimized Images</h2>
-                    {optimizedImage.map((image, index) => (
+                    {optimizedImage?.map((image, index) => (
                         <img key={index} src={URL.createObjectURL(image)} alt={`Optimized ${index + 1}`} style={{ maxWidth: '100%', marginBottom: 16 }} />
                     ))}
                 </div>

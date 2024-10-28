@@ -45,7 +45,7 @@ const MediaComponent = ({ component, updateComponent, deleteComponent }) => {
       updateComponent({
         ...component,
         _mave: selectedMediaData,
-        id: selectedMediaData.map((media) => media.id),
+        id: selectedMediaData?.map((media) => media.id),
       });
     } else {
       if (!selectedMediaData) {
@@ -162,7 +162,7 @@ const MediaComponent = ({ component, updateComponent, deleteComponent }) => {
               <h4 className="mb-2 text-md font-medium">Selected Media</h4>
               {component.selectionMode === "multiple" ? (
                 <div className="grid grid-cols-2 gap-4">
-                  {selectedMediaData.map((media) => (
+                  {selectedMediaData?.map((media) => (
                     <Image
                       key={media.id}
                       src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}

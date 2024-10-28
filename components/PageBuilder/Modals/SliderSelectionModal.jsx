@@ -31,7 +31,7 @@ const SliderSelectionModal = ({ isVisible, onClose, onSelectSlider }) => {
 
   // Helper function to render slider images
   const renderSliderImages = (medias) => {
-    return medias.map((media) => (
+    return medias?.map((media) => (
       <div key={media.id}>
         <Image
           src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}

@@ -88,7 +88,7 @@ const ImageConverter = () => {
   };
 
   const handleUpload = (info) => {
-    const files = info.fileList.map((file) => {
+    const files = info.fileList?.map((file) => {
       return {
         key: file.uid,
         name: file.name,
@@ -105,7 +105,7 @@ const ImageConverter = () => {
     setLoading(true);
     // Simulating conversion process with setTimeout
     setTimeout(() => {
-      const updatedImages = images.map((img) =>
+      const updatedImages = images?.map((img) =>
         img.key === record.key
           ? { ...img, converted: true, format: conversionType }
           : img

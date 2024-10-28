@@ -50,7 +50,7 @@ const FormElement = ({ element, index, totalElements, onUpdate, onMove }) => {
           case "radio":
             return (
               <Radio.Group>
-                {element.options.map((option) => (
+                {element.options?.map((option) => (
                   <Radio key={option._id} value={option.value}>
                     {option.title}
                   </Radio>
@@ -89,7 +89,7 @@ const FormElement = ({ element, index, totalElements, onUpdate, onMove }) => {
               onUpdate({ ...element, selectedValue: value }, index)
             } // Update state individually
           >
-            {element.options.map((option) => (
+            {element.options?.map((option) => (
               <Option key={option._id} value={option.value}>
                 {option.title}
               </Option>

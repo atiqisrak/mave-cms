@@ -151,7 +151,7 @@ const Licensing = () => {
         in all copies or substantial portions of the Software.
       </Paragraph>
       <Title level={2}>Custom Clauses</Title>
-      {clauses.map((clause, index) => (
+      {clauses?.map((clause, index) => (
         <React.Fragment key={index}>
           <Title level={4}>{clause.title}</Title>
           {clause.content}

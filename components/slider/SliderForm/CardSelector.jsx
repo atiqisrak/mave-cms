@@ -26,7 +26,7 @@ const CardSelector = ({
       }
     >
       {cards.length > 0 ? (
-        cards.map((card) => (
+        cards?.map((card) => (
           <Option key={card.id} value={card.id}>
             {card.title_en || "Title Unavailable"}
           </Option>
@@ -37,7 +37,7 @@ const CardSelector = ({
     </Select>
     {selectedCards.length > 0 && (
       <div className="mt-4 grid grid-cols-3 gap-4">
-        {selectedCards.map((cardId) => {
+        {selectedCards?.map((cardId) => {
           const card = cards.find((c) => c.id === cardId);
           return (
             <div key={cardId} className="relative">

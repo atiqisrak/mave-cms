@@ -13,12 +13,12 @@ export default function ParseData() {
         const table = doc.querySelector(".table");
         const rows = table.querySelectorAll("tbody tr");
 
-        const tableData = Array.from(rows).map((row) => {
+        const tableData = Array.from(rows)?.map((row) => {
           const cells = row.querySelectorAll("td");
           const topics = cells[5].innerText
             .trim()
             .split("\n")
-            .map((topic) => topic.trim())
+            ?.map((topic) => topic.trim())
             .filter((topic) => topic !== "");
 
           return {

@@ -14,7 +14,7 @@ const MediaGrid = ({
   return (
     <Row gutter={[16, 16]}>
       {mediaItems.length > 0 ? (
-        mediaItems.map((media) => (
+        mediaItems?.map((media) => (
           <Col key={media.id} xs={24} sm={12} md={8} lg={6}>
             <MediaCard
               media={media}

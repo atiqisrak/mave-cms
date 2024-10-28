@@ -108,12 +108,12 @@ const Navbars = () => {
     if (selectedNavbarIds.length === navbars.length) {
       setSelectedNavbarIds([]);
     } else {
-      setSelectedNavbarIds(navbars.map((item) => item.id));
+      setSelectedNavbarIds(navbars?.map((item) => item.id));
     }
   };
 
   const onShowChange = (id) => {
-    const updatedNavbars = navbars.map((navbar) =>
+    const updatedNavbars = navbars?.map((navbar) =>
       navbar.id === id ? { ...navbar, show: !navbar.show } : navbar
     );
     setNavbars(updatedNavbars);

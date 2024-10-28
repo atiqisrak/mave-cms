@@ -16,7 +16,7 @@ const FormPreview = ({ formMeta, formAttributes, formElements }) => {
     >
       <h3>{formMeta.title}</h3>
       <p>{formMeta.description}</p>
-      {formElements.map((element, index) => (
+      {formElements?.map((element, index) => (
         <ElementsParser key={index} element={element} />
       ))}
     </Form>

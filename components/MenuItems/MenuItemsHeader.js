@@ -137,7 +137,7 @@ const MenuItemsHeader = ({
         >
           <Form.Item label="Parent Menu" name="parent_id">
             <Select placeholder="Select a Parent Menu" allowClear>
-              {filterOptions.parentMenus.map((menu) => (
+              {filterOptions.parentMenus?.map((menu) => (
                 <Option key={menu.id} value={menu.id}>
                   {menu.title}
                 </Option>

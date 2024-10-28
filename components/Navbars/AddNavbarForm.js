@@ -92,7 +92,7 @@ const AddNavbarForm = ({ menus, media, onCancel, fetchNavbars }) => {
             allowClear
             value={newMenuId}
           >
-            {menus.map((menu) => (
+            {menus?.map((menu) => (
               <Select.Option key={menu.id} value={menu.id}>
                 {menu.name}
               </Select.Option>

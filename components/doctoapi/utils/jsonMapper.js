@@ -1,10 +1,10 @@
 // components/doctoapi/utils/jsonMapper.js
 import { v4 as uuidv4 } from "uuid";
 export const mapYamlToJson = (yamlData) => {
-  const mappedSections = yamlData.sections.map((section) => {
+  const mappedSections = yamlData.sections?.map((section) => {
     const sectionId = uuidv4();
     const mappedData = section.data
-      .map((element) => {
+      ?.map((element) => {
         const elementId = uuidv4();
         switch (element.type) {
           case "title":

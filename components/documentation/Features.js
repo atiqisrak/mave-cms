@@ -59,7 +59,7 @@ const Features = () => (
     <Title level={2}>Features</Title>
     <Paragraph>Explore the core features of MAVE CMS:</Paragraph>
     <Row gutter={[16, 16]}>
-      {features.map((feature, index) => (
+      {features?.map((feature, index) => (
         <Col xs={24} sm={12} md={8} key={index}>
           <Card
             title={feature.title}

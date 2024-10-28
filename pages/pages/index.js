@@ -153,7 +153,7 @@ const Pages = () => {
         message.success("Page info updated successfully.");
         // Update the page in state
         setTypePages((prevPages) =>
-          prevPages.map((page) =>
+          prevPages?.map((page) =>
             page.id === id
               ? {
                   ...page,

@@ -25,7 +25,7 @@ const HeadersSection = ({ headers, setHeaders }) => {
     <>
       <Title level={4}>Headers</Title>
       <div className="flex items-center mb-4 flex-wrap">
-        {headers.map((header, index) => (
+        {headers?.map((header, index) => (
           <div key={index} className="flex items-center mr-2 mb-2">
             <Form.Item
               name={`header_${index}`}

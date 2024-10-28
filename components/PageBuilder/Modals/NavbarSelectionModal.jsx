@@ -29,7 +29,7 @@ const NavbarSelectionModal = ({ isVisible, onClose, onSelectNavbar }) => {
 
   // Helper function to recursively render menu items
   const renderMenuItems = (menuItems) => {
-    return menuItems.map((item) => {
+    return menuItems?.map((item) => {
       if (item.all_children && item.all_children.length > 0) {
         return (
           <Menu.SubMenu key={item.id} title={item.title}>

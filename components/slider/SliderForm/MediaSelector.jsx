@@ -21,7 +21,7 @@ const MediaSelector = ({
     </Button>
     {selectedMedia.length > 0 ? (
       <div className="mt-4 grid grid-cols-3 gap-4">
-        {selectedMedia.map((media) => (
+        {selectedMedia?.map((media) => (
           <div key={media?.id} className="relative">
             <Image
               src={

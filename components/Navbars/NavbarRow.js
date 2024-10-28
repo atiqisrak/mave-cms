@@ -60,7 +60,7 @@ const NavbarRow = ({
       if (response.status === 200) {
         message.success("Navbar updated successfully");
         setNavbars((prevNavbars) =>
-          prevNavbars.map((item) =>
+          prevNavbars?.map((item) =>
             item.id === navbar.id ? { ...item, ...updatedNavbar } : item
           )
         );
@@ -212,7 +212,7 @@ const NavbarRow = ({
             allowClear
             defaultValue={navbar.menu.id}
           >
-            {menus.map((menu) => (
+            {menus?.map((menu) => (
               <Select.Option key={menu.id} value={menu.id}>
                 {menu.name}
               </Select.Option>
@@ -226,7 +226,7 @@ const NavbarRow = ({
             expandIconPosition="right"
           >
             <Collapse.Panel header={navbar.menu.name} key="1" className="w-56">
-              {navbar.menu.menu_items.map((item) => (
+              {navbar.menu.menu_items?.map((item) => (
                 <p key={item.id}>{item.title}</p>
               ))}
             </Collapse.Panel>

@@ -62,7 +62,7 @@ const GalleryComponent = ({ component, updateComponent, deleteComponent }) => {
               gap: `${galleryData.settings.spacing || 16}px`,
             }}
           >
-            {galleryData.images.map((image) => (
+            {galleryData.images?.map((image) => (
               <div
                 key={image.id}
                 className="grid-item"
@@ -92,7 +92,7 @@ const GalleryComponent = ({ component, updateComponent, deleteComponent }) => {
               columnGap: `${galleryData.settings.spacing || 16}px`,
             }}
           >
-            {galleryData.images.map((image) => (
+            {galleryData.images?.map((image) => (
               <div
                 key={image.id}
                 className="masonry-item"
@@ -123,7 +123,7 @@ const GalleryComponent = ({ component, updateComponent, deleteComponent }) => {
             dotPosition="bottom"
             style={{ maxWidth: "800px", margin: "0 auto" }}
           >
-            {galleryData.images.map((image) => (
+            {galleryData.images?.map((image) => (
               <div key={image.id} onClick={() => openLightbox(image)}>
                 <Image
                   src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${image.file_path}`}

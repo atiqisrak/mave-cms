@@ -55,7 +55,7 @@ const ImageSlider = ({
             nextArrow={<CustomNextArrow />}
             className="mb-4"
           >
-            {slider.medias.map((media) => (
+            {slider.medias?.map((media) => (
               <div key={media.id}>
                 <Image
                   src={

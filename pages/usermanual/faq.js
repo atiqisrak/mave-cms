@@ -21,8 +21,8 @@ const faq = () => {
 
   const fetchFaqData = async () => {
     setFaqData(faqjson);
-    setQuestions(faqjson.map((item) => item?.content?.question));
-    setAnswers(faqjson.map((item) => item?.content?.answer));
+    setQuestions(faqjson?.map((item) => item?.content?.question));
+    setAnswers(faqjson?.map((item) => item?.content?.answer));
     setActiveFaq(faqjson && faqjson[0]?.id);
   };
 

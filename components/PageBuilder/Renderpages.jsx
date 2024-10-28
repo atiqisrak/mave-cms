@@ -16,7 +16,7 @@ const RenderPages = ({
     <div>
       {webpages.length > 0 ? (
         // <div className="grid grid-cols-1 gap-4 xl:grid-cols-2 2xl:grid-cols-3">
-        //   {webpages.map((page) => (
+        //   {webpages?.map((page) => (
         //     <PageCard
         //       key={page.id}
         //       page={page}
@@ -29,7 +29,7 @@ const RenderPages = ({
         //   ))}
         // </div>
         <div className="columns-1 gap-4 xl:columns-2 2xl:columns-3">
-          {webpages.map((page) => (
+          {webpages?.map((page) => (
             <div className="break-inside-avoid" key={page.id}>
               <PageCard
                 page={page}

@@ -17,7 +17,7 @@ const MenusList = ({
     selectedMenuIds.length === menus.length && menus.length > 0;
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedMenuIds(menus.map((item) => item.id));
+      setSelectedMenuIds(menus?.map((item) => item.id));
     } else {
       setSelectedMenuIds([]);
     }
@@ -42,7 +42,7 @@ const MenusList = ({
         </Col>
       </Row>
       {menus.length > 0 ? (
-        menus.map((menu) => (
+        menus?.map((menu) => (
           <MenuRow
             key={menu.id}
             menu={menu}

@@ -68,7 +68,7 @@ const MenuItemRow = ({
       if (response.status === 200) {
         message.success("Menu item updated successfully");
         setMenuItems((prevMenuItems) =>
-          prevMenuItems.map((item) =>
+          prevMenuItems?.map((item) =>
             item.id === menuItem.id ? response.data : item
           )
         );
@@ -154,7 +154,7 @@ const MenuItemRow = ({
             <Option value={null}>No Parent</Option>
             {menuItems
               .filter((item) => item.id !== menuItem.id)
-              .map((item) => (
+              ?.map((item) => (
                 <Option key={item.id} value={item.id}>
                   {item.title}
                 </Option>
@@ -191,7 +191,7 @@ const MenuItemRow = ({
                     : undefined
                 }
               >
-                {pages.map((page) => (
+                {pages?.map((page) => (
                   <Option
                     key={page.id}
                     value={`${page.slug}?pageId=${

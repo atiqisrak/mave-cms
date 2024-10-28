@@ -43,7 +43,7 @@ const AccordionComponent = ({
   };
 
   const renderPanels = (data) => {
-    return data.map((item, index) => (
+    return data?.map((item, index) => (
       <Panel header={item.title} key={index} forceRender>
         {item.contentType === "text" ? (
           <div

@@ -50,7 +50,7 @@ const AddMenuForm = ({ menuItems, onCancel, fetchMenus }) => {
             className="w-full"
             optionFilterProp="children"
           >
-            {menuItems.map((menuItem) => (
+            {menuItems?.map((menuItem) => (
               <Select.Option key={menuItem.id} value={menuItem.id}>
                 {menuItem.title}
               </Select.Option>

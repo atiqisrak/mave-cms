@@ -29,7 +29,7 @@ const SQLGenerator = {
     let model = `<?php\n\nnamespace App\\Models;\n\nuse Illuminate\\Database\\Eloquent\\Model;\n\nclass ${modelName} extends Model\n{\n`;
     model += `  protected $table = '${modelName.toLowerCase()}s';\n\n`;
     model += `  protected $fillable = [\n    ${fields
-      .map((f) => `'${f.name}'`)
+      ?.map((f) => `'${f.name}'`)
       .join(", ")}\n  ];\n\n`;
 
     // Relationships

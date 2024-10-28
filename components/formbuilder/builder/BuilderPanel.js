@@ -50,7 +50,7 @@ const BuilderPanel = ({ formElements, addElement, updateElement }) => {
           Form Builder
         </h3>
       </center>
-      {formElements.map((element, index) => (
+      {formElements?.map((element, index) => (
         <FormElement
           key={element._id}
           element={element}

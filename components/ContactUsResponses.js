@@ -101,7 +101,7 @@ const ContactUsResponses = () => {
       "data:text/csv;charset=utf-8," +
       "Name,Email,Phone,Message,Date,Status\n" +
       messages
-        .map(
+        ?.map(
           (message) =>
             `${message?.contact_person_mave?.full_name},${
               message?.contact_person_mave?.email

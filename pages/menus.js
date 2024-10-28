@@ -91,7 +91,7 @@ const Menus = () => {
     if (selectedMenuIds.length === menus.length) {
       setSelectedMenuIds([]);
     } else {
-      setSelectedMenuIds(menus.map((item) => item.id));
+      setSelectedMenuIds(menus?.map((item) => item.id));
     }
   };
 

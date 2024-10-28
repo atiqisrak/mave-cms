@@ -105,7 +105,7 @@ const SliderForm = ({
     };
 
     if (values.type === "image") {
-      payload.media_ids = selectedMedia.map((media) => media.id);
+      payload.media_ids = selectedMedia?.map((media) => media.id);
       // Ensure card_ids are cleared
       payload.card_ids = [];
     } else if (values.type === "card") {

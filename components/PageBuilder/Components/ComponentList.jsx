@@ -34,7 +34,7 @@ const ComponentList = ({ components, setComponents }) => {
         <Droppable droppableId="droppable-components" type="COMPONENT">
           {(provided) => (
             <div ref={provided.innerRef} {...provided.droppableProps}>
-              {components.map((component, index) => (
+              {components?.map((component, index) => (
                 <Draggable
                   key={component._id || component.id}
                   draggableId={component?._id || component?.id?.toString()}

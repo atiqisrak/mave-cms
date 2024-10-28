@@ -40,7 +40,7 @@ const UserTable = ({ users, fetchUsers, roles }) => {
       setSelectedRowKeys([]);
     } else {
       // Select all
-      setSelectedRowKeys(filteredUsers.map((user) => user.id));
+      setSelectedRowKeys(filteredUsers?.map((user) => user.id));
     }
   };
 
@@ -87,7 +87,7 @@ const UserTable = ({ users, fetchUsers, roles }) => {
   const handleBulkDelete = async () => {
     try {
       await Promise.all(
-        selectedRowKeys.map((id) => instance.delete(`/admin/user/${id}`))
+        selectedRowKeys?.map((id) => instance.delete(`/admin/user/${id}`))
       );
       message.success("Selected users deleted successfully");
       fetchUsers();

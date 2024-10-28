@@ -24,7 +24,7 @@ const MenuItemsList = ({
             }
             onChange={(e) => {
               if (e.target.checked) {
-                setSelectedItemIds(menuItems.map((item) => item.id));
+                setSelectedItemIds(menuItems?.map((item) => item.id));
               } else {
                 setSelectedItemIds([]);
               }
@@ -51,7 +51,7 @@ const MenuItemsList = ({
         </Col>
       </Row>
       {menuItems.length > 0 ? (
-        menuItems.map((menuItem) => (
+        menuItems?.map((menuItem) => (
           <MenuItemRow
             key={menuItem.id}
             menuItem={menuItem}

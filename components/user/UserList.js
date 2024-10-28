@@ -30,7 +30,7 @@ const UserList = ({ users, roles, handleUserEdit, handleDeleteUser }) => {
             <h3>Actions</h3>
           </Col>
         </Row>
-        {users.map((user) => (
+        {users?.map((user) => (
           <UserRow
             key={user.id}
             user={user}
