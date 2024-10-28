@@ -8,6 +8,7 @@ import AuthorizedSideMenuData from "../../src/data/authorisedsidemenus.json";
 import UnAuthorizedSideMenuData from "../../src/data/unauthorisedsidemenu.json";
 import Godfather from "../../src/data/godfather.json";
 import Image from "next/image";
+import instance from "../../axios";
 
 const SideMenuItems = ({
   token,
@@ -18,9 +19,11 @@ const SideMenuItems = ({
   theme,
   setTheme,
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [sideMenuData, setSideMenuData] = useState([]);
   const [selectedMenuItem, setSelectedMenuItem] = useState("");
   const [godfatherData, setGodfatherData] = useState([]);
+  const [customModels, setCustomModels] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -74,6 +77,28 @@ const SideMenuItems = ({
       router.push(selectedItem.link);
     }
   };
+
+  const fetchCustomModels = async () => {
+    setIsLoading(true);
+    try {
+      const response = await instance.get("/generated-models");
+      if (response.status === 200) {
+        setCustomModels(response.data);
+      } else {
+        console.error("Failed to fetch custom models");
+      }
+    } catch (error) {
+      console.error("Failed to fetch custom models", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (token) {
+      fetchCustomModels();
+    }
+  }, [token]);
 
   return (
     <Menu
@@ -138,6 +163,53 @@ const SideMenuItems = ({
         )
       ) : (
         <Menu.Item key="no-data">No data found</Menu.Item>
+      )}
+      {console.log("customModels", customModels)}
+      {customModels?.length > 0 && (
+        <Menu.SubMenu
+          key="custom-models"
+          title={
+            <div className="flex items-center gap-2 font-semibold">
+              <Image
+                src="/icons/mave/custom-models.svg"
+                alt="Custom Models icon"
+                width={collapsed ? 50 : 40}
+                height={collapsed ? 50 : 40}
+                className="main-menu-icon"
+              />
+              {!collapsed && <span>Custom Models</span>}
+            </div>
+          }
+          className="border-2 border-gray-200 mb-2"
+        >
+          {customModels?.map((model) => (
+            <Menu.Item key={model.id.toString()} className="">
+              {/* Active Sub Menu */}
+              <div
+                className="flex items-center gap-2"
+                onClick={() =>
+                  router.push({
+                    pathname: "/custom-models/[id]",
+                    query: { id: model.id },
+                  })
+                }
+              >
+                <Image
+                  src="/icons/mave/custom-models.svg"
+                  alt="Custom Models icon"
+                  width={30}
+                  height={30}
+                />
+                <span className="text-md font-semibold text-gray-500">
+                  {model.model_name
+                    .split(" ")
+                    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(" ")}
+                </span>
+              </div>
+            </Menu.Item>
+          ))}
+        </Menu.SubMenu>
       )}
 
       {/* Login Menu Item for Unauthorized Users */}
