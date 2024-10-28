@@ -24,13 +24,13 @@ const StylingSection = ({ styles, setStyles }) => {
           <Option value="thick">Thick</Option>
         </Select>
       </Form.Item>
-      <Form.Item label="Cell Background Color">
+      {/* <Form.Item label="Cell Background Color">
         <Input
           type="color"
           value={styles.cellColor}
           onChange={(e) => handleStyleChange("cellColor", e.target.value)}
         />
-      </Form.Item>
+      </Form.Item> */}
       <Form.Item label="Text Alignment">
         <Select
           value={styles.textAlign}

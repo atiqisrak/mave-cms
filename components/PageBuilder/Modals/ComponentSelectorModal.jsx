@@ -79,6 +79,12 @@ const componentOptions = [
     icon: "/icons/mave/map.svg",
     premium: true,
   },
+  {
+    type: "iconlist",
+    name: "Icon List",
+    icon: "/icons/mave/iconlist.svg",
+    premium: true,
+  },
 ];
 
 const ComponentSelectorModal = ({ isVisible, onClose, onSelectComponent }) => {
