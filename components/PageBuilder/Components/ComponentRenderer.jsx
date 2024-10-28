@@ -18,6 +18,7 @@ import ButtonComponent from "./ButtonComponent";
 import GalleryComponent from "./GalleryComponent";
 import GoogleMapComponent from "./GoogleMapComponent";
 import IconListComponent from "./IconListComponent/IconListComponent";
+import TestimonialComponent from "./TestimonialComponent/TestimonialComponent";
 
 const COMPONENT_MAP = {
   title: TextComponent,
@@ -35,6 +36,7 @@ const COMPONENT_MAP = {
   gallery: GalleryComponent,
   "google-map": GoogleMapComponent,
   iconlist: IconListComponent,
+  testimonial: TestimonialComponent,
 };
 
 const ComponentRenderer = ({ component, index, components, setComponents }) => {
