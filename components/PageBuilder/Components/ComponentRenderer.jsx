@@ -1,6 +1,8 @@
 // components/PageBuilder/Components/ComponentRenderer.jsx
 
-import React from "react";
+import React, { useState } from "react";
+import { Button, Modal, message } from "antd";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import TextComponent from "./TextComponent";
 import ParagraphComponent from "./ParagraphComponent";
 import MediaComponent from "./MediaComponent";
@@ -15,6 +17,25 @@ import AccordionComponent from "./AccordionComponent";
 import ButtonComponent from "./ButtonComponent";
 import GalleryComponent from "./GalleryComponent";
 import GoogleMapComponent from "./GoogleMapComponent";
+import IconListComponent from "./IconListComponent/IconListComponent";
+
+const COMPONENT_MAP = {
+  title: TextComponent,
+  description: ParagraphComponent,
+  media: MediaComponent,
+  menu: MenuComponent,
+  navbar: NavbarComponent,
+  slider: SliderComponent,
+  card: CardComponent,
+  footer: FooterComponent,
+  video: VideoComponent,
+  table: TableComponent,
+  accordion: AccordionComponent,
+  button: ButtonComponent,
+  gallery: GalleryComponent,
+  "google-map": GoogleMapComponent,
+  iconlist: IconListComponent,
+};
 
 const ComponentRenderer = ({ component, index, components, setComponents }) => {
   const updateComponent = (updatedComponent) => {
@@ -29,122 +50,21 @@ const ComponentRenderer = ({ component, index, components, setComponents }) => {
     setComponents(newComponents);
   };
 
-  switch (component.type) {
-    case "title":
-      return (
-        <TextComponent
-          component={component}
-          updateComponent={updateComponent}
-          deleteComponent={deleteComponent}
-        />
-      );
-    case "description":
-      return (
-        <ParagraphComponent
-          component={component}
-          updateComponent={updateComponent}
-          deleteComponent={deleteComponent}
-        />
-      );
-    case "media":
-      return (
-        <MediaComponent
-          component={component}
-          updateComponent={updateComponent}
-          deleteComponent={deleteComponent}
-        />
-      );
-    case "menu":
-      return (
-        <MenuComponent
-          component={component}
-          updateComponent={updateComponent}
-          deleteComponent={deleteComponent}
-        />
-      );
-    case "navbar":
-      return (
-        <NavbarComponent
-          component={component}
-          updateComponent={updateComponent}
-          deleteComponent={deleteComponent}
-        />
-      );
-    case "slider":
-      return (
-        <SliderComponent
-          component={component}
-          updateComponent={updateComponent}
-          deleteComponent={deleteComponent}
-        />
-      );
-    case "card":
-      return (
-        <CardComponent
-          component={component}
-          updateComponent={updateComponent}
-          deleteComponent={deleteComponent}
-        />
-      );
-    case "footer":
-      return (
-        <FooterComponent
-          component={component}
-          updateComponent={updateComponent}
-          deleteComponent={deleteComponent}
-        />
-      );
-    case "video":
-      return (
-        <VideoComponent
-          component={component}
-          updateComponent={updateComponent}
-          deleteComponent={deleteComponent}
-        />
-      );
-    case "table":
-      return (
-        <TableComponent
-          component={component}
-          updateComponent={updateComponent}
-          deleteComponent={deleteComponent}
-        />
-      );
-    case "accordion":
-      return (
-        <AccordionComponent
-          component={component}
-          updateComponent={updateComponent}
-          deleteComponent={deleteComponent}
-        />
-      );
-    case "button":
-      return (
-        <ButtonComponent
-          component={component}
-          updateComponent={updateComponent}
-          deleteComponent={deleteComponent}
-        />
-      );
-    case "gallery":
-      return (
-        <GalleryComponent
-          component={component}
-          updateComponent={updateComponent}
-          deleteComponent={deleteComponent}
-        />
-      );
-    case "google-map":
-      return (
-        <GoogleMapComponent
-          component={component}
-          updateComponent={updateComponent}
-          deleteComponent={deleteComponent}
-        />
-      );
-    default:
-      return <div>Unknown component type: {component.type}</div>;
+  const SpecificComponent = COMPONENT_MAP[component.type];
+
+  if (!SpecificComponent) {
+    return <div>Unknown component type: {component.type}</div>;
   }
+
+  return (
+    <div className="relative border border-gray-300 p-4 mb-4">
+      <SpecificComponent
+        component={component}
+        updateComponent={updateComponent}
+        deleteComponent={deleteComponent}
+      />
+    </div>
+  );
 };
 
 export default ComponentRenderer;

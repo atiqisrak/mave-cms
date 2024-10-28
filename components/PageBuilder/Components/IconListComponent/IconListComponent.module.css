@@ -1,0 +1,20 @@
+/* components/PageBuilder/Components/IconListComponent/IconListComponent.module.css */
+
+.iconListContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.iconListHorizontal {
+  flex-direction: row;
+}
+
+.iconListVertical {
+  flex-direction: column;
+}
+
+.addIconButton {
+  display: flex;
+  align-items: center;
+}

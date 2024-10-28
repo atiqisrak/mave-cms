@@ -61,10 +61,9 @@ const TableComponent = ({ component, updateComponent, deleteComponent }) => {
             <Button
               icon={<EditOutlined />}
               onClick={() => setIsDrawerVisible(true)}
-              className="mr-2"
-              size="small"
+              className="mavebutton"
             >
-              Edit
+              Update
             </Button>
           )}
           <Popconfirm
@@ -73,7 +72,7 @@ const TableComponent = ({ component, updateComponent, deleteComponent }) => {
             okText="Yes"
             cancelText="No"
           >
-            <Button icon={<DeleteOutlined />} danger size="small" />
+            <Button icon={<DeleteOutlined />} className="mavecancelbutton" />
           </Popconfirm>
         </div>
       </div>

@@ -25,9 +25,12 @@ const RowsSection = ({ headers, rows, setRows }) => {
 
   return (
     <>
-      <Title level={4}>Rows</Title>
+      <Title level={4} className="mt-5">
+        Rows
+      </Title>
       <Button
         type="dashed"
+        className="mavebutton"
         onClick={addRow}
         icon={<PlusOutlined />}
         style={{ marginBottom: 16 }}

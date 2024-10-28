@@ -7,6 +7,8 @@ import "../styles/globals.css";
 import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
 import "react-quill/dist/quill.core.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+
 import Head from "next/head";
 import { AuthProvider } from "../src/context/AuthContext";
 
