@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import {
-  Modal,
   Form,
   Input,
   Select,
@@ -26,6 +25,10 @@ const CreateCardForm = ({ onSuccess, onCancel, pages, media }) => {
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [linkType, setLinkType] = useState("independent");
 
+  // Placeholder image path
+  const PLACEHOLDER_IMAGE = "/images/Image_Placeholder.png";
+
+  // Handle form submission
   const handleSubmit = async (values) => {
     if (!selectedMedia) {
       message.error("Please select a media item.");
@@ -53,7 +56,7 @@ const CreateCardForm = ({ onSuccess, onCancel, pages, media }) => {
 
       const payload = {
         ...restValues,
-        media_ids: selectedMedia.id,
+        media_ids: selectedMedia.id, // Single media ID
         link_url: link_url,
         status: values.status ? 1 : 0,
       };
@@ -71,12 +74,17 @@ const CreateCardForm = ({ onSuccess, onCancel, pages, media }) => {
     setSubmitting(false);
   };
 
+  // Handle media selection
   const handleMediaSelect = (mediaItem) => {
+    if (Array.isArray(mediaItem)) {
+      mediaItem = mediaItem[0]; // Ensure single media selection
+    }
     setSelectedMedia(mediaItem);
     form.setFieldsValue({ media_ids: mediaItem.id });
     setIsMediaModalVisible(false);
   };
 
+  // Handle link type change
   const handleLinkTypeChange = (e) => {
     setLinkType(e.target.value);
     if (e.target.value === "independent") {
@@ -91,7 +99,6 @@ const CreateCardForm = ({ onSuccess, onCancel, pages, media }) => {
       title="Create Card"
       open={true}
       onClose={onCancel}
-      //   onCancel={onCancel}
       width={`50%`}
       destroyOnClose
     >
@@ -104,6 +111,11 @@ const CreateCardForm = ({ onSuccess, onCancel, pages, media }) => {
           status: true,
         }}
       >
+        {/* Hidden Field for media_ids */}
+        <Form.Item name="media_ids" hidden>
+          <Input type="hidden" />
+        </Form.Item>
+
         {/* Title (English) */}
         <Form.Item
           label="Title (English)"
@@ -170,18 +182,38 @@ const CreateCardForm = ({ onSuccess, onCancel, pages, media }) => {
             <Button onClick={() => setIsMediaModalVisible(true)}>
               Select Media
             </Button>
-            {selectedMedia && (
-              <div className="mt-2">
-                <Image
-                  src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedMedia.file_path}`}
-                  alt="Selected Media"
-                  width={200}
-                  height={150}
-                  objectFit="cover"
-                  className="rounded-lg"
-                />
-              </div>
-            )}
+            <div className="flex justify-between mt-4">
+              {/* Selected Media */}
+              {selectedMedia ? (
+                <div className="flex flex-col items-center">
+                  <h3 className="my-2 font-bold">Selected Media</h3>
+                  <Image
+                    src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedMedia.file_path}`}
+                    alt="Selected Media"
+                    width={200}
+                    height={150}
+                    objectFit="cover"
+                    className="rounded-lg"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = PLACEHOLDER_IMAGE;
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className="flex flex-col items-center">
+                  <h3 className="my-2 font-bold">No Media Selected</h3>
+                  <Image
+                    src={PLACEHOLDER_IMAGE}
+                    alt="Placeholder"
+                    width={200}
+                    height={150}
+                    objectFit="cover"
+                    className="rounded-lg"
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </Form.Item>
 
@@ -191,7 +223,7 @@ const CreateCardForm = ({ onSuccess, onCancel, pages, media }) => {
           name="page_name"
           rules={[{ required: true, message: "Please select a page name" }]}
         >
-          <Select placeholder="Select Page" allowClear>
+          <Select placeholder="Select Page" allowClear showSearch>
             {pages
               ?.filter((page) => page.page_name_en)
               ?.map((page) => (

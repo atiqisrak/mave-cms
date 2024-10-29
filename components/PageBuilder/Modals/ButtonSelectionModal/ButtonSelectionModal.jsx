@@ -140,7 +140,11 @@ const ButtonSelectionModal = ({
               { required: true, message: "Please select an internal link." },
             ]}
           >
-            <Select placeholder="Select a page or menu item">
+            <Select
+              placeholder="Select a page or menu item"
+              allowClear
+              showSearch
+            >
               {internalLinks?.map((link) => (
                 <Option key={link.id} value={link.link}>
                   {link.title}
