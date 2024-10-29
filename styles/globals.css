@@ -116,6 +116,13 @@ a:hover {
   margin-right: clamp(0.5rem, 1vw, 1rem);
 }
 
+.ant-btn-default:not(:disabled):not(.ant-btn-disabled):hover {
+  background-color: var(--gray-dark);
+  border-color: var(--gray-dark);
+  color: var(--white) !important;
+  box-shadow: none;
+}
+
 .ql-editor {
   min-height: 200px;
 }
