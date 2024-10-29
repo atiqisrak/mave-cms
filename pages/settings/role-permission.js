@@ -78,7 +78,7 @@ export default function RolePermissionPage() {
   }, []);
 
   return (
-    <div className="ViewContainer ViewContentContainer">
+    <div className="mavecontainer">
       <div
         className="top-nav"
         style={{

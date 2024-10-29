@@ -1,0 +1,267 @@
+// components/cards/CardsPreviewModal.jsx
+
+import React, { useState, useEffect } from "react";
+import {
+  Modal,
+  Form,
+  Input,
+  Select,
+  Button,
+  Table,
+  Switch,
+  Radio,
+  message,
+} from "antd";
+import MediaSelectionModal from "../PageBuilder/Modals/MediaSelectionModal";
+import RichTextEditor from "../RichTextEditor";
+import Image from "next/image";
+
+const { Option } = Select;
+
+const CardsPreviewModal = ({
+  visible,
+  onCancel,
+  selectedCard,
+  isEditing,
+  setIsEditing,
+  form,
+  handleSaveEdit,
+  handleEditCard,
+  handleCancelEdit,
+  pages,
+  media,
+}) => {
+  const [isMediaModalVisible, setIsMediaModalVisible] = useState(false);
+  const [selectedMedia, setSelectedMedia] = useState(null);
+  const [linkType, setLinkType] = useState("independent");
+
+  useEffect(() => {
+    if (selectedCard) {
+      // Determine link type based on link_url
+      const linkType =
+        selectedCard.link_url &&
+        (selectedCard.link_url.includes("page_id") ||
+          selectedCard.link_url.includes("pageName"))
+          ? "page"
+          : "independent";
+      setLinkType(linkType);
+    }
+  }, [selectedCard]);
+
+  const handleMediaSelect = (mediaItem) => {
+    setSelectedMedia(mediaItem);
+    form.setFieldsValue({ media_ids: mediaItem.id });
+    setIsMediaModalVisible(false);
+  };
+
+  const data = selectedCard
+    ? [
+        // ... (Your existing data mapping)
+      ]
+    : [];
+
+  const columns = [
+    // ... (Your existing columns)
+  ];
+
+  const handleLinkTypeChange = (e) => {
+    setLinkType(e.target.value);
+    if (e.target.value === "page") {
+      form.setFieldsValue({ link_url: undefined });
+    }
+  };
+
+  return (
+    <Modal
+      title={isEditing ? "Edit Card" : "Card Details"}
+      open={visible}
+      onCancel={onCancel}
+      footer={null}
+      width={800}
+    >
+      {selectedCard && (
+        <>
+          {isEditing ? (
+            <Form form={form} layout="vertical" onFinish={handleSaveEdit}>
+              {/* Other Form Items */}
+
+              {/* Always present Page field */}
+              <Form.Item
+                label="Page"
+                name="page_id"
+                rules={[{ required: true, message: "Please select a page" }]}
+              >
+                <Select placeholder="Select Page" allowClear>
+                  {pages
+                    ?.filter((page) => page.page_name_en)
+                    ?.map((page) => (
+                      <Option key={page.id} value={page.id}>
+                        {page.page_name_en}
+                      </Option>
+                    ))}
+                </Select>
+              </Form.Item>
+
+              <Form.Item
+                label="Link Type"
+                name="link_type"
+                initialValue={linkType}
+              >
+                <Radio.Group onChange={handleLinkTypeChange}>
+                  <Radio value="page">Page Link</Radio>
+                  <Radio value="independent">Independent Link</Radio>
+                </Radio.Group>
+              </Form.Item>
+
+              {linkType === "page" && (
+                <Form.Item
+                  label="Select the page to link"
+                  name="link_page_id"
+                  rules={[
+                    { required: true, message: "Please select a page to link" },
+                  ]}
+                >
+                  <Select placeholder="Select Page to Link" allowClear>
+                    {pages
+                      ?.filter((page) => page.page_name_en)
+                      ?.map((page) => (
+                        <Option key={page.id} value={page.id}>
+                          {page.page_name_en}
+                        </Option>
+                      ))}
+                  </Select>
+                </Form.Item>
+              )}
+
+              {linkType === "independent" && (
+                <Form.Item
+                  label="Link URL"
+                  name="link_url"
+                  rules={[
+                    { required: true, message: "Please enter the link URL" },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+              )}
+
+              {/* Rest of the Form Items */}
+
+              {/* Media Selection Modal */}
+              <MediaSelectionModal
+                isVisible={isMediaModalVisible}
+                onClose={() => setIsMediaModalVisible(false)}
+                onSelectMedia={handleMediaSelect}
+                selectionMode="single"
+              />
+            </Form>
+          ) : (
+            // Preview Mode
+            <>
+              <Table
+                columns={columns}
+                dataSource={data}
+                pagination={false}
+                showHeader={false}
+              />
+              <div className="flex justify-end mt-4">
+                <Button
+                  type="primary"
+                  onClick={handleEditCard}
+                  className="mavebutton"
+                >
+                  Edit
+                </Button>
+              </div>
+            </>
+          )}
+        </>
+      )}
+    </Modal>
+  );
+};
+
+export default CardsPreviewModal;
+
+
+// pages/cards.jsx
+
+// ... (Your existing imports)
+
+const CardsPage = () => {
+  // ... (Your existing state and functions)
+
+  const handleEditCard = () => {
+    setIsEditing(true);
+
+    // Determine link type based on link_url
+    const linkType =
+      selectedCard.link_url &&
+      (selectedCard.link_url.includes("page_id") ||
+        selectedCard.link_url.includes("pageName"))
+        ? "page"
+        : "independent";
+
+    // Extract page_id from link_url if link type is "page"
+    let linkPageId = null;
+    if (linkType === "page") {
+      // Extract page_id from link_url
+      const urlParams = new URLSearchParams(
+        selectedCard.link_url.split("?")[1]
+      );
+      const pageIdParam = urlParams.get("page_id");
+      linkPageId = pageIdParam ? parseInt(pageIdParam, 10) : null;
+    }
+
+    form.setFieldsValue({
+      ...selectedCard,
+      status: selectedCard.status === 1,
+      page_id: selectedCard.page_id || undefined, // Always present page field
+      media_ids: selectedCard.media_ids,
+      link_type: linkType,
+      link_page_id: linkPageId || undefined, // Conditional link page field
+      link_url:
+        linkType === "independent" ? selectedCard.link_url : undefined,
+    });
+  };
+
+  const handleSaveEdit = async () => {
+    try {
+      const values = await form.validateFields();
+
+      let link_url = values.link_url;
+
+      if (values.link_type === "page" && values.link_page_id) {
+        const selectedPage = pages.find(
+          (page) => page.id === values.link_page_id
+        );
+        if (selectedPage) {
+          link_url = `/${selectedPage.slug}?page_id=${selectedPage.id}&pageName=${selectedPage.page_name_en}`;
+        } else {
+          message.error("Selected page not found.");
+          return;
+        }
+      }
+
+      const payload = {
+        ...values,
+        media_ids: values.media_ids,
+        status: values.status ? 1 : 0,
+        link_url: link_url,
+        page_id: values.page_id, // Always present page field
+      };
+
+      await instance.put(`/cards/${selectedCard.id}`, payload);
+      message.success("Card updated successfully.");
+      setIsEditing(false);
+      setIsPreviewModalVisible(false);
+      fetchData();
+    } catch (error) {
+      message.error("Failed to update card.");
+    }
+  };
+
+  // ... (Your existing code)
+};
+
+export default CardsPage;

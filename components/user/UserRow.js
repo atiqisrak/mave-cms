@@ -20,7 +20,7 @@ const UserRow = ({ user, roles, handleUserEdit, handleDeleteUser }) => {
           defaultValue={roles.find((role) => role.id == user.role_id)?.id}
           disabled
         >
-          {roles.map((role) => (
+          {roles?.map((role) => (
             <Select.Option value={role.id} key={role.id}>
               {role.name}
             </Select.Option>

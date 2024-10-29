@@ -1,12 +1,5 @@
 [
     {
-        "id": 1,
-        "menu": "Dashboard",
-        "title": "Dashboard",
-        "icon": "/icons/mave/dashboard.svg",
-        "link": "/dashboard"
-    },
-    {
         "id": 2,
         "menu": "Components",
         "title": "Components",
@@ -14,7 +7,7 @@
         "submenu": [
             {
                 "id": 3,
-                "icon": "/icons/mave/gallery.svg",
+                "icon": "/icons/mave/media.svg",
                 "link": "/gallery",
                 "title": "Media Library"
             },
@@ -65,7 +58,7 @@
             {
                 "id": 12,
                 "icon": "/icons/mave/forms.svg",
-                "link": "/creator/pages",
+                "link": "/pages",
                 "title": "Pages"
             },
             {
@@ -73,12 +66,6 @@
                 "icon": "/icons/mave/blogs.svg",
                 "link": "/blogs",
                 "title": "Blogs"
-            },
-            {
-                "id": 14,
-                "icon": "/icons/mave/exam.svg",
-                "link": "/blogs/createblog",
-                "title": "Create Blog"
             }
         ]
     },
@@ -130,14 +117,8 @@
             {
                 "id": 22,
                 "icon": "/icons/mave/settings.svg",
-                "link": "/settings/general-settings",
+                "link": "/cms-settings",
                 "title": "General"
-            },
-            {
-                "id": 23,
-                "icon": "/icons/mave/settings2.svg",
-                "link": "/settings/content-management",
-                "title": "Content"
             },
             {
                 "id": 24,
@@ -154,12 +135,6 @@
         "icon": "/icons/mave/tools.svg",
         "link": "tools",
         "submenu": [
-            {
-                "id": 26,
-                "icon": "/icons/mave/response.svg",
-                "link": "/tools/doctoapi",
-                "title": "Doc to API"
-            },
             {
                 "id": 27,
                 "icon": "/icons/mave/exam.svg",

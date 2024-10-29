@@ -1,10 +1,5 @@
 [
     {
-        "id": 1,
-        "name": "Home",
-        "link": "/"
-    },
-    {
         "id": 2,
         "name": "Dashboard",
         "link": "/dashboard"
@@ -12,7 +7,7 @@
     {
         "id": 3,
         "name": "Pages",
-        "link": "/creator/pages"
+        "link": "/pages"
     },
     {
         "id": 4,

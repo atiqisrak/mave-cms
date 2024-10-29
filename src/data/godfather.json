@@ -1,55 +1,21 @@
 [
     {
-        "id": 49,
-        "menu": "Settings",
-        "title": "Settings",
-        "icon": "/icons/mave_icons/wrench.svg",
-        "link": "settings",
+        "id": 100,
+        "menu": "E-Labs",
+        "title": "E-Labs",
+        "icon": "/icons/mave/lab.svg",
         "submenu": [
             {
-                "id": 60,
-                "icon": "/icons/mave_icons/wrench.svg",
-                "link": "/settings/general-settings",
-                "title": "General"
+                "id": 101,
+                "icon": "/icons/mave/cms.svg",
+                "link": "/diy-cms",
+                "title": "Build CMS"
             },
             {
-                "id": 61,
-                "icon": "/icons/mave_icons/wrench.svg",
-                "link": "/settings/content-management",
-                "title": "Content Management"
-            },
-            {
-                "id": 62,
-                "icon": "/icons/mave_icons/wrench.svg",
-                "link": "/settings/users",
-                "title": "User Management"
-            }
-        ]
-    },
-    {
-        "id": 50,
-        "menu": "Tools",
-        "title": "Tools",
-        "icon": "/icons/mave_icons/wrench.svg",
-        "link": "tools",
-        "submenu": [
-            {
-                "id": 60,
-                "icon": "/icons/mave_icons/paper.svg",
-                "link": "/tools/doctoapi",
+                "id": 26,
+                "icon": "/icons/mave/response.svg",
+                "link": "/doc-to-api",
                 "title": "Doc to API"
-            },
-            {
-                "id": 61,
-                "icon": "/icons/mave_icons/documentation.svg",
-                "link": "/formbuilder",
-                "title": "Form Builder"
-            },
-            {
-                "id": 62,
-                "icon": "/icons/mave_icons/paper.svg",
-                "link": "/blackbox",
-                "title": "Data Visualizer"
             }
         ]
     }

@@ -31,7 +31,7 @@ export default function createblog() {
   }, []);
 
   return (
-    <div className="ViewContainer">
+    <div className="mavecontainer">
       <BlogCreator
         creatorMode={creatorMode}
         setCreatorMode={setCreatorMode}

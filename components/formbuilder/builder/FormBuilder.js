@@ -55,7 +55,7 @@ const FormBuilder = () => {
 
   // const updateElement = (updatedElement) => {
   //   setFormElements(
-  //     formElements.map((el) =>
+  //     formElements?.map((el) =>
   //       el.updated_on === updatedElement.updated_on ? updatedElement : el
   //     )
   //   );

@@ -1,25 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Button,
-  Col,
-  Image,
-  Modal,
-  Pagination,
-  Row,
-  Select,
-  Skeleton,
-  Spin,
-  message,
-} from "antd";
+import { Button, Col, Modal, Row, message } from "antd";
 import instance from "../axios";
 import { setPageTitle } from "../global/constants/pageTitle";
 import Loader from "../components/Loader";
-import {
-  FilterOutlined,
-  SyncOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
-const { Option } = Select;
 const DOC_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
 
 const Documents = () => {
@@ -83,11 +66,11 @@ const Documents = () => {
 
   return (
     <div className="login-page">
-      <div className="ViewContainer ViewContentContainer media-area login-page-section">
+      <div className="mavecontainer media-area login-page-section">
         <div>
           {documents && documents.length > 0 ? (
             <Row gutter={[16, 16]}>
-              {documents.map((document, index) => (
+              {documents?.map((document, index) => (
                 <Col key={index}>
                   <div
                     className="media-card"

@@ -1,16 +1,8 @@
 import { InboxOutlined } from "@ant-design/icons";
 import { message, Upload } from "antd";
-import axios from "axios";
-import { useState } from "react";
-
 function UploadMedia() {
-  const [file, setFile] = useState(null);
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   const { Dragger } = Upload;
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setFile(selectedFile);
-  };
 
   const beforeUpload = (file) => {
     const fileType = file.type;

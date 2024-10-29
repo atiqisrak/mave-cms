@@ -5,9 +5,11 @@ import MaveFormsShowcase from "./mave-forms-showcase";
 
 export default function FormBuilder() {
   return (
-    <div className="ViewContainer">
+    <div className="mavecontainer">
       <center>
-        <h1>Welcome to the Mave Form Builder</h1>
+        <h1 className="text-theme text-2xl font-bold">
+          Welcome to the Mave Form Builder
+        </h1>
       </center>
 
       <div

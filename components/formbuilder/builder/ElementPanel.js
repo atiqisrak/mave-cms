@@ -146,7 +146,7 @@ const ElementPanel = () => {
           Elements
         </h3>
       </center>
-      {elements.map((element, index) => (
+      {elements?.map((element, index) => (
         <DraggableElement key={index} element={element} />
       ))}
     </Card>

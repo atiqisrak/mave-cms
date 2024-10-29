@@ -16,7 +16,7 @@ import moment from "moment";
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 const processData = (data) => {
-  return data.map((item, index) => {
+  return data?.map((item, index) => {
     const floor = parseInt(item.form_data.split(",")[0]) || 1; // Extract floor, default to 1 if undefined
     const time = moment(item.created_at).valueOf(); // Convert time to a numeric value (e.g., timestamp)
 
@@ -81,7 +81,7 @@ const DataPage = () => {
     <Row gutter={[16, 16]}>
       {/* <Col span={24}>
         <Card title="Movement Data Table" bordered={false}>
-          {processedData.map((item) => (
+          {processedData?.map((item) => (
             <div key={item.id}>
               <p>
                 <strong>ID:</strong> {item.id}
@@ -112,7 +112,7 @@ const DataPage = () => {
 
 export default function Blackbox() {
   return (
-    <div className="ViewContainer">
+    <div className="mavecontainer">
       <DataPage />
     </div>
   );

@@ -3,7 +3,7 @@
   "version": "0.1.21",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3005",
     "build": "next build",
     "start": "NODE_ENV=production node server.js",
     "lint": "next lint",
@@ -11,10 +11,13 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
+    "@fortawesome/fontawesome-free": "^6.6.0",
     "@google/generative-ai": "^0.8.0",
+    "@react-google-maps/api": "^2.20.3",
     "@react-pdf-viewer/core": "^3.12.0",
     "@react-pdf-viewer/thumbnail": "^3.12.0",
     "@tinymce/tinymce-react": "^5.0.1",
+    "ace-builds": "^1.36.3",
     "antd": "^5.19.0",
     "apexcharts": "^3.53.0",
     "axios": "^1.6.7",
@@ -25,15 +28,18 @@
     "froala-editor": "^4.2.0",
     "http-proxy-middleware": "^3.0.0",
     "imagemin": "^8.0.1",
+    "lodash": "^4.17.21",
     "lottie-react": "^2.4.0",
     "lottie-web": "^5.12.2",
     "marked": "^12.0.2",
     "moment": "^2.29.4",
     "next": "^12.3.4",
     "papaparse": "^5.4.1",
+    "pluralize": "^8.0.0",
     "prismjs": "^1.29.0",
     "quill": "^1.3.7",
     "react": "18.2.0",
+    "react-ace": "^12.0.0",
     "react-apexcharts": "^1.4.1",
     "react-beautiful-dnd": "^13.1.1",
     "react-copy-to-clipboard": "^5.1.0",
@@ -48,16 +54,23 @@
     "react-markdown": "^9.0.1",
     "react-pdf": "^7.7.1",
     "react-quill": "^2.0.0",
-    "react-syntax-highlighter": "^15.5.0",
+    "react-slick": "^0.30.2",
+    "react-syntax-highlighter": "^15.6.1",
     "react-text-to-speech": "^0.14.5",
     "react-to-print": "^2.14.15",
     "react-virtualized": "^9.22.5",
     "recharts": "^2.12.7",
     "remark-gfm": "^4.0.0",
-    "swr": "^2.2.5"
+    "slick-carousel": "^1.8.1",
+    "swr": "^2.2.5",
+    "uuid": "^10.0.0",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.20",
     "eslint": "8.49.0",
-    "eslint-config-next": "13.4.19"
+    "eslint-config-next": "13.4.19",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14"
   }
 }

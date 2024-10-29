@@ -3,7 +3,7 @@ import MapBD from "../../components/formbuilder/MapBD";
 export default function MapView() {
   return (
     <div
-      className="ViewContainer"
+      className="mavecontainer"
       style={{
         padding: "2rem",
         display: "flex",

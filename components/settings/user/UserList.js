@@ -121,7 +121,7 @@ const UserList = ({
       const response = await instance.put(`/admin/user/${id}`, updatedUser);
       if (response.status === 200) {
         console.log("User Updated Successfully");
-        setUsers(users.map((user) => (user.id === id ? updatedUser : user)));
+        setUsers(users?.map((user) => (user.id === id ? updatedUser : user)));
         setUserEdit(false);
       }
     } catch (error) {
@@ -269,7 +269,7 @@ const UserList = ({
                         }
                         style={{ width: "100%" }}
                       >
-                        {roles2.map((role) => (
+                        {roles2?.map((role) => (
                           <Select.Option value={role.id} key={role.id}>
                             {role.name}
                           </Select.Option>

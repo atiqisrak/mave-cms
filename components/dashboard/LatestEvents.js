@@ -109,7 +109,7 @@ export default function LatestEvents() {
           height: "40rem",
         }}
       >
-        {activityLog.map((log, index) => (
+        {activityLog?.map((log, index) => (
           <div
             style={{
               display: "grid",
@@ -124,7 +124,7 @@ export default function LatestEvents() {
                 alignItems: "center",
               }}
             >
-              {activityIcons.map((icon) => {
+              {activityIcons?.map((icon) => {
                 if (icon.id === log.categoryType) {
                   return (
                     <div

@@ -100,7 +100,7 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
         }}
       >
         {forms &&
-          forms.map((form) => (
+          forms?.map((form) => (
             <div
               key={form.id}
               style={{

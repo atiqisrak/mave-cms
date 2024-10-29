@@ -1,14 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
-
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 :root {
   --max-width: 1100px;
   --border-radius: 12px;
   --white: #ffffff;
   --black: #343434;
   --gray: #f5f5f5;
-  --gray-dark: #c9c9c9;
+  --gray-dark: #797b7e;
   /* --theme: #9012ff; */
   --theme: #fcb813;
+  --theme-dark: #e3a611;
   --themelite: #fcb61364;
   --theme-transparent: #f3ecf8;
   /* --themes: #f1612a; */
@@ -20,6 +23,7 @@
   --lightorange: rgba(255, 108, 50, 0.2);
   --lightblue: #9012ff20;
   --transparentwhite: rgba(255, 255, 255, 0.7);
+  --notwhite: white;
 }
 
 * {
@@ -68,25 +72,16 @@ body::-webkit-scrollbar-track {
 }
 
 /* Viewcontiner */
-
-.ViewContainer {
-  width: 80%;
-  max-width: 1500px;
+.mavecontainer {
+  width: 100lvw;
+  max-width: 86%;
   margin: 0 auto;
-  margin-top: 5rem;
-}
-
-/* ViewContentConter */
-
-.ViewContentContainer {
-  width: 80%;
-  width: 80%;
-  max-width: 1200px;
-  margin: 0 auto;
-  margin-top: 5rem;
   padding-bottom: 6em;
 }
 
+.ant-menu-light.ant-menu-root.ant-menu-inline {
+  border-inline-end: 1px solid transparent;
+}
 a {
   color: inherit;
   text-decoration: none;
@@ -95,6 +90,64 @@ a {
 a:hover {
   color: var(--theme);
   text-decoration: none;
+}
+
+.mavebutton {
+  background-color: var(--theme);
+  color: var(--black);
+  border: 2px solid var(--theme-dark);
+  padding: 0.8rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-right: clamp(0.5rem, 1vw, 1rem);
+}
+
+.mavecancelbutton {
+  background-color: var(--gray-dark);
+  color: var(--white);
+  border: 2px solid var(--gray-dark);
+  padding: 0.8rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-right: clamp(0.5rem, 1vw, 1rem);
+}
+
+.ant-btn-default:not(:disabled):not(.ant-btn-disabled):hover {
+  background-color: var(--gray-dark);
+  border-color: var(--gray-dark);
+  color: var(--white) !important;
+  box-shadow: none;
+}
+
+.ql-editor {
+  min-height: 200px;
+}
+
+:where(.css-dev-only-do-not-override-f7vrd6).ant-layout
+  .ant-layout-sider-light
+  .ant-layout-sider-trigger {
+  display: none;
+}
+
+.ant-tabs .ant-tabs-tab-btn {
+  color: var(--black);
+  font-size: clamp(0.8rem, 1vw, 1.2rem);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+.ant-tabs .ant-tabs-tab-btn:hover {
+  color: var(--theme);
+  cursor: pointer;
+}
+.ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--theme);
+  font-size: clamp(0.8rem, 1vw, 1.2rem);
+  font-weight: 600;
+  letter-spacing: 1px;
 }
 
 .container {
@@ -410,7 +463,7 @@ a:hover {
   text-align: center;
   padding: 10px 0;
   /* box-shadow: 0px 0px 20px 0px #3a3a3a; */
-  z-index: 101;
+  z-index: 2;
 }
 
 .mave-footer a {
@@ -472,23 +525,19 @@ a:hover {
   .ant-menu-sub.ant-menu-inline {
   background-color: transparent;
 }
+.ant-layout .ant-layout-sider-children .ant-menu.ant-menu-inline-collapsed {
+  border: none;
+}
 
-.request-purchase-button {
-  margin-top: 2rem;
-  border-radius: 1.5rem;
-  padding: 0.5rem 1rem 2.2rem 1rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: white;
-  background-color: #2d68ff;
-  border: 2px solid #2d68ff;
+.ant-menu-light.ant-menu-horizontal > .ant-menu-item-selected {
+  color: var(--theme);
 }
-.request-purchase-button:hover {
-  color: #2d68ff;
-  background-color: #ffffff;
-  border: 2px solid #2d68ff;
-  transition: all 0.5s;
+
+.ant-menu-light.ant-menu-horizontal > .ant-menu-item:hover::after,
+.ant-menu-light.ant-menu-horizontal > .ant-menu-item-active::after {
+  border-bottom-color: var(--theme);
 }
+
 .ant-tabs-tab-btn {
   color: var(--mild-black);
 }
@@ -511,14 +560,18 @@ a:hover {
 }
 
 .ant-switch.ant-switch-checked {
-  background: #fee9b6;
+  background: #797b7e;
 }
 .ant-switch {
   border-radius: 5px;
+  height: 30px;
+  padding-top: 4px;
 }
 .ant-switch .ant-switch-handle::before {
-  border-radius: 4px;
+  border-radius: 5px;
   background-color: var(--theme);
+  height: 34px;
+  margin: -4px -4px 0 0;
 }
 
 .ant-checkbox-checked .ant-checkbox-inner {
@@ -528,6 +581,7 @@ a:hover {
 :where(.css-dev-only-do-not-override-f7vrd6).ant-layout-header {
   padding: 0;
 }
+/* Active Main Menu */
 :where(.css-dev-only-do-not-override-f7vrd6).ant-menu-light
   .ant-menu-submenu-selected
   > .ant-menu-submenu-title,
@@ -536,4 +590,163 @@ a:hover {
   .ant-menu-submenu-selected
   > .ant-menu-submenu-title {
   color: var(--theme);
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-radio-wrapper
+  .ant-radio-checked
+  .ant-radio-inner {
+  border-color: var(--theme);
+  background-color: var(--theme);
+}
+.ant-menu .ant-menu-submenu-selected {
+  background-color: var(--theme);
+}
+.ant-menu .ant-menu-submenu-selected > .ant-menu-submenu-title {
+  background-color: var(--white);
+}
+.ant-menu .ant-menu-submenu-selected > .ant-menu-submenu-title:hover {
+  background-color: var(--white);
+}
+.ant-menu-light .ant-menu-item-selected {
+  background-color: var(--theme-dark);
+}
+.collapse-button.ant-btn-default {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+/* Sidebar icons */
+:where(.css-dev-only-do-not-override-f7vrd6).ant-menu-inline-collapsed
+  > .ant-menu-submenu
+  > .ant-menu-submenu-title {
+  padding-inline: 10px;
+  height: fit-content;
+}
+:where(.css-dev-only-do-not-override-f7vrd6).ant-menu-vertical
+  .ant-menu-submenu-title {
+  height: fit-content;
+  line-height: auto;
+  padding-inline: 0;
+}
+.ant-card .ant-card-body {
+  padding: 0 1rem 1rem;
+}
+
+/* Video Component */
+/* Example: styles/globals.css */
+
+.video-responsive {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  padding-top: 25px;
+  height: 0;
+}
+
+.video-responsive iframe,
+.video-responsive video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.editable-row:hover {
+  background-color: #fafafa;
+}
+.accordion-content {
+  padding: 10px;
+}
+
+.accordion-collapse .ant-collapse-header {
+  font-weight: bold;
+}
+
+.border {
+  border: 1px solid #f0f0f0;
+}
+
+.rounded-md {
+  border-radius: 8px;
+}
+
+.bg-gray-50 {
+  background-color: #f9fafb;
+}
+
+.mb-4 {
+  margin-bottom: 16px;
+}
+
+.ml-4 {
+  margin-left: 16px;
+}
+/* styles/globals.css */
+
+/* Ensure responsive alignment for buttons */
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+/* Style for accessible focus */
+.ant-btn:focus {
+  box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.3);
+}
+
+.settings-tabs .ant-tabs > .ant-tabs-nav {
+  position: fixed;
+}
+.settings-tabs .ant-tabs > .ant-tabs-content-holder {
+  margin-left: calc(100% - 62vw);
+}
+
+/* Grid Gallery Styles */
+.grid-gallery {
+  width: 100%;
+}
+
+.grid-item {
+  overflow: hidden;
+  border-radius: 8px;
+  transition: transform 0.3s;
+}
+
+.grid-item:hover {
+  transform: scale(1.05);
+}
+
+/* Masonry Gallery Styles */
+.masonry-gallery {
+  width: 100%;
+}
+
+.masonry-item {
+  break-inside: avoid;
+  overflow: hidden;
+  border-radius: 8px;
+  transition: transform 0.3s;
+}
+
+.masonry-item:hover {
+  transform: scale(1.05);
+}
+
+/* Lightbox Modal Styles */
+.ant-modal-content {
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+.ant-modal-close {
+  color: #fff;
 }

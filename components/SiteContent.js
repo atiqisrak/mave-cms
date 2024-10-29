@@ -1,21 +1,23 @@
+// components/SiteContent.jsx
+
 import React, { useEffect, useState } from "react";
-import { Image, Layout, message } from "antd";
+import { Image, Layout, Button, Modal } from "antd";
 import { useRouter } from "next/router";
-import { useAuth } from "../src/context/AuthContext";
 import NavItems from "./ui/NavItems";
 import SideMenuItems from "./ui/SideMenuItems";
 import Loader from "./Loader";
+import { useAuth } from "../src/context/AuthContext";
 
 const { Sider, Content, Header } = Layout;
 
 const SiteContent = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [theme, setTheme] = useState("light");
-  const [changeLogs, setChangeLogs] = useState([]);
-  const { user, token, logout, loading, isAuthenticated } = useAuth();
+  const { user, token, logout, loading } = useAuth();
   const router = useRouter();
   const currentRoute = router.pathname;
+
+  const authPages = ["/login", "/signup", "/forgot-password"];
 
   useEffect(() => {
     try {
@@ -43,146 +45,103 @@ const SiteContent = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (
-      !loading &&
-      !token &&
-      !isAuthenticated &&
-      currentRoute !== "/login" &&
-      currentRoute !== "/signup" &&
-      currentRoute !== "/forgot-password"
-    ) {
-      router.push("/login");
-    } else if (
-      !loading &&
-      token &&
-      isAuthenticated &&
-      currentRoute === "/login" &&
-      currentRoute === "/signup" &&
-      currentRoute === "/forgot-password"
-    ) {
-      router.push("/home");
+    if (loading) {
+      // Do nothing while loading
+      return;
     }
-  }, [isAuthenticated, loading, currentRoute, router]);
+    if (!loading) {
+      if (!token && !authPages.includes(currentRoute)) {
+        router.push("/login");
+      } else if (token && authPages.includes(currentRoute)) {
+        router.push("/");
+      }
+    }
+  }, [token, loading, currentRoute, router]);
 
   const handleCollapse = () => {
     setCollapsed(!collapsed);
   };
 
   if (loading) return <Loader />;
-  if (
-    currentRoute === "/login" ||
-    currentRoute === "/signup" ||
-    currentRoute === "/forgot-password"
-  ) {
-    return <Content style={{ minHeight: "100vh" }}>{children}</Content>;
+  if (authPages.includes(currentRoute)) {
+    return <Content className="min-h-screen">{children}</Content>;
   }
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Header
-        style={{
-          position: "fixed",
-          width: "100%",
-          zIndex: 1000,
-          padding: 0,
-          backgroundColor: theme === "dark" ? "#001529" : "#ffffff",
-          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-        }}
-      >
+    <Layout className="min-h-screen">
+      {/* Fixed Header */}
+      <Header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md flex items-center px-4 md:px-8">
         <NavItems
           user={user}
           token={token}
           handleLogout={logout}
-          isModalOpen={isModalOpen}
-          setIsModalOpen={setIsModalOpen}
           theme={theme}
           setTheme={setTheme}
         />
       </Header>
-      <Layout style={{ marginTop: "64px", padding: 0 }}>
-        {" "}
-        <div
-          className="collapse-button"
-          style={{
-            position: "fixed",
-            top: 90,
-            left: collapsed ? 30 : 226,
-            cursor: "pointer",
-            color: "#fff",
-            zIndex: 1200,
-            transition: "left 0.5s",
-          }}
-          onClick={() => handleCollapse(!collapsed)}
-        >
-          {collapsed ? (
-            <Image
-              src="/icons/mave_icons/expand.svg"
-              alt="Mave Logo"
-              preview={false}
-              style={{
-                height: "4vh",
-                marginLeft: "10px",
-                objectFit: "contain",
-              }}
-              onClick={() => handleCollapse(!collapsed)}
-            />
-          ) : (
-            <Image
-              src="/icons/mave_icons/collapse.svg"
-              alt="Mave Logo"
-              preview={false}
-              style={{
-                height: "4vh",
-                marginLeft: "10px",
-                objectFit: "contain",
-                zIndex: 1201,
-              }}
-              onClick={() => handleCollapse(!collapsed)}
-            />
-          )}
-        </div>
-        <Sider
-          collapsible
-          collapsed={collapsed}
-          onCollapse={handleCollapse}
-          theme={theme}
-          width={260}
-          style={{
-            height: "100vh",
-            position: "fixed",
-            left: 0,
-            top: 64,
-            bottom: 0,
-            padding: "4rem 1.4rem 0 1.4rem",
-            borderRight: "1px solid #f0f0f0",
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.6)",
-            transition: "all 0.5s",
-          }}
-        >
-          <SideMenuItems
-            token={token}
-            user={user}
-            handleLogout={logout}
-            setIsModalOpen={setIsModalOpen}
+
+      <Layout className="pt-16">
+        {/* Side Navigation */}
+        <div className="fixed">
+          <Sider
+            collapsible
             collapsed={collapsed}
+            onCollapse={handleCollapse}
             theme={theme}
-            setTheme={setTheme}
-          />
-        </Sider>
-        <Layout
-          className="site-layout"
-          style={{
-            transition: "margin-left 0.5s, padding-left 0.5s",
-          }}
-        >
-          <Content
-            style={{
-              padding: "24px",
-              marginTop: 0,
-              transition: "all 0.3s",
-            }}
+            width={260}
+            style={{ height: "80vh" }}
+            className="top-0 left-0 px-2 z-40 rounded-r-2xl mt-5
+          bg-white shadow-lg transition-all duration-300 overflow-y-auto"
+            breakpoint="lg"
+            collapsedWidth={80}
+            trigger={null}
           >
-            {children}
+            <div className="flex pt-10">
+              <SideMenuItems
+                token={token}
+                user={user}
+                handleLogout={logout}
+                collapsed={collapsed}
+                theme={theme}
+                setTheme={setTheme}
+              />
+            </div>
+          </Sider>
+        </div>
+        {/* Main Content Area */}
+        <Layout
+          className={`transition-all duration-300 ${
+            collapsed ? "lg:ml-[0px]" : "lg:ml-[200px]"
+          }`}
+        >
+          {/* Collapse Button */}
+          <div
+            className={`hidden lg:flex fixed lg:top-32 z-40
+              ${
+                collapsed
+                  ? "left-[50px] lg:left-[52px]"
+                  : "left-[160px] lg:left-[235px]"
+              } transition-all duration-300
+              `}
+          >
+            <Image
+              src={
+                collapsed
+                  ? "/icons/mave_icons/expand.svg"
+                  : "/icons/mave_icons/collapse.svg"
+              }
+              alt={collapsed ? "Expand" : "Collapse"}
+              width={40}
+              height={40}
+              preview={false}
+              className="cursor-pointer collapse-button border-0 transition-all duration-300"
+              onClick={handleCollapse}
+            />
+          </div>
+
+          <Content className="flex-1 py-4 md:py-8 bg-gray-100">
+            {/* Responsive Container */}
+            <div className="mx-auto">{children}</div>
           </Content>
         </Layout>
       </Layout>

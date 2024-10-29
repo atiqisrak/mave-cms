@@ -7,7 +7,7 @@ import ContentManagement from "../../components/settings/contentManagement";
 const ContentManagementPage = () => {
   const { Content } = Layout;
   return (
-    <div className="ViewContainer ViewContentContainer">
+    <div className="mavecontainer">
       <Layout
         style={{
           padding: "0 24px 24px",
