@@ -89,14 +89,14 @@ const SiteContent = ({ children }) => {
             onCollapse={handleCollapse}
             theme={theme}
             width={260}
-            style={{ height: "70vh" }}
-            className="top-0 left-0 px-2 z-40 rounded-r-2xl mt-20
-          bg-white shadow-lg transition-all duration-300"
+            style={{ height: "80vh" }}
+            className="top-0 left-0 px-2 z-40 rounded-r-2xl mt-5
+          bg-white shadow-lg transition-all duration-300 overflow-y-auto"
             breakpoint="lg"
             collapsedWidth={80}
             trigger={null}
           >
-            <div className="flex pt-20">
+            <div className="flex pt-10">
               <SideMenuItems
                 token={token}
                 user={user}
