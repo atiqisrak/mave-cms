@@ -1,7 +1,6 @@
 // components/CustomModels/CustomModelTable.jsx
 import React, { useEffect, useState } from "react";
 import { Table, Button, Popconfirm, message, Collapse, Divider } from "antd";
-import EditForm from "./EditForm";
 import instance from "../../axios";
 import {
   CheckCircleFilled,
@@ -9,6 +8,7 @@ import {
   DeleteOutlined,
   EditFilled,
 } from "@ant-design/icons";
+import CustomModelData from "./CustomModelData";
 
 const CustomModelTable = ({ model }) => {
   const [data, setData] = useState([]);
@@ -18,8 +18,6 @@ const CustomModelTable = ({ model }) => {
   useEffect(() => {
     model && setData(model);
   }, [model]);
-
-  console.log("Model", model);
 
   return (
     <div>
@@ -32,21 +30,27 @@ const CustomModelTable = ({ model }) => {
           <h2 className="text-center mb-6 w-full text-theme text-2xl">
             {model.model_name}
           </h2>
-          <div>
-            <div className="border-b-2 border-gray-500 grid grid-cols-2 justify-between items-center w-full text-xl font-semibold gap-6">
-              <span>Field Name</span>
-              <span className="text-theme">Type</span>
-            </div>
-            {model?.fields?.map((field) => (
-              <div
-                key={field.name}
-                className="grid grid-cols-2 justify-between items-center w-full text-xl font-semibold gap-6"
-              >
-                <span>{field.name}</span>
-                <span className="text-theme">{field.type}</span>
-              </div>
-            ))}
-          </div>
+          <Collapse ghost>
+            <Collapse.Panel header={`${model.model_name} fields`} key="1">
+              <Table
+                dataSource={model.fields}
+                columns={[
+                  {
+                    title: "Field Name",
+                    dataIndex: "name",
+                    key: "name",
+                  },
+                  {
+                    title: "Type",
+                    dataIndex: "type",
+                    key: "type",
+                  },
+                ]}
+                pagination={false}
+                rowKey="name"
+              />
+            </Collapse.Panel>
+          </Collapse>
         </div>
         <div className="flex items-center gap-4 mt-4">
           <code className="bg-gray-100 p-2 rounded-lg">{model.api_route}</code>
@@ -61,6 +65,7 @@ const CustomModelTable = ({ model }) => {
         </div>
       </div>
       {/* model data */}
+      <CustomModelData model={model} />
     </div>
   );
 };

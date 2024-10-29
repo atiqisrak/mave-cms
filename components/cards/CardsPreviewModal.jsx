@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import {
-  Modal,
   Form,
   Input,
   Select,
@@ -37,25 +36,84 @@ const CardsPreviewModal = ({
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [linkType, setLinkType] = useState("independent");
 
+  // Placeholder image path
+  const PLACEHOLDER_IMAGE = "/images/Image_Placeholder.png";
+
+  // Initialize selectedMedia and linkType when selectedCard changes
   useEffect(() => {
     if (selectedCard) {
-      // Determine link type based on link_url
-      const linkType =
+      // Set link type based on link_url
+      const computedLinkType =
         selectedCard.link_url &&
         (selectedCard.link_url.includes("page_id") ||
           selectedCard.link_url.includes("pageName"))
           ? "page"
           : "independent";
-      setLinkType(linkType);
-    }
-  }, [selectedCard]);
+      setLinkType(computedLinkType);
 
+      // Set selectedMedia based on media_ids
+      const mediaItem = media.find((m) => m.id === selectedCard.media_ids);
+      setSelectedMedia(mediaItem || null);
+
+      // Set initial form values
+      form.setFieldsValue({
+        title_en: selectedCard.title_en,
+        title_bn: selectedCard.title_bn,
+        description_en: selectedCard.description_en,
+        description_bn: selectedCard.description_bn,
+        media_ids: selectedCard.media_ids || null, // Handle missing media_ids
+        page_name: selectedCard.page_name,
+        link_type: computedLinkType,
+        link_page_id:
+          computedLinkType === "page"
+            ? extractPageId(selectedCard.link_url)
+            : undefined,
+        link_url:
+          computedLinkType === "independent"
+            ? selectedCard.link_url
+            : undefined,
+        status: selectedCard.status === 1,
+      });
+    } else {
+      // Reset form when no card is selected
+      form.resetFields();
+      setSelectedMedia(null);
+      setLinkType("independent");
+    }
+  }, [selectedCard, media, form]);
+
+  // Utility function to extract page_id from link_url
+  const extractPageId = (url) => {
+    try {
+      const urlParams = new URLSearchParams(url.split("?")[1]);
+      return urlParams.get("page_id");
+    } catch (error) {
+      console.error("Error extracting page_id:", error);
+      return undefined;
+    }
+  };
+
+  // Handle media selection
   const handleMediaSelect = (mediaItem) => {
+    if (Array.isArray(mediaItem)) {
+      mediaItem = mediaItem[0]; // Ensure single media selection
+    }
     setSelectedMedia(mediaItem);
     form.setFieldsValue({ media_ids: mediaItem.id });
     setIsMediaModalVisible(false);
   };
 
+  // Handle link type change
+  const handleLinkTypeChange = (e) => {
+    setLinkType(e.target.value);
+    if (e.target.value === "page") {
+      form.setFieldsValue({ link_url: undefined });
+    } else {
+      form.setFieldsValue({ link_page_id: undefined });
+    }
+  };
+
+  // Prepare data for display
   const data = selectedCard
     ? [
         {
@@ -89,12 +147,34 @@ const CardsPreviewModal = ({
         {
           key: "5",
           infoType: "Media",
-          details: (
+          details: selectedMedia ? (
             <Image
-              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${
-                media.find((m) => m.id === selectedCard.media_ids)?.file_path
-              }`}
+              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedMedia.file_path}`}
               alt="Card Media"
+              width={200}
+              height={150}
+              objectFit="cover"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = PLACEHOLDER_IMAGE;
+              }}
+            />
+          ) : selectedCard.media_files ? (
+            <Image
+              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedCard.media_files.file_path}`}
+              alt="Card Media"
+              width={200}
+              height={150}
+              objectFit="cover"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = PLACEHOLDER_IMAGE;
+              }}
+            />
+          ) : (
+            <Image
+              src={PLACEHOLDER_IMAGE}
+              alt="Placeholder"
               width={200}
               height={150}
               objectFit="cover"
@@ -109,7 +189,7 @@ const CardsPreviewModal = ({
         {
           key: "7",
           infoType: "Link URL",
-          details: selectedCard.link_url,
+          details: selectedCard.link_url || "N/A",
         },
         {
           key: "8",
@@ -133,18 +213,10 @@ const CardsPreviewModal = ({
     },
   ];
 
-  const handleLinkTypeChange = (e) => {
-    setLinkType(e.target.value);
-    if (e.target.value === "page") {
-      form.setFieldsValue({ link_url: undefined });
-    }
-  };
-
   return (
     <Drawer
       title={isEditing ? "Edit Card" : "Card Details"}
       open={visible}
-      // onCancel={onCancel}
       onClose={onCancel}
       footer={null}
       width={`50%`}
@@ -153,6 +225,12 @@ const CardsPreviewModal = ({
         <>
           {isEditing ? (
             <Form form={form} layout="vertical" onFinish={handleSaveEdit}>
+              {/* Hidden Field for media_ids */}
+              <Form.Item name="media_ids" hidden>
+                <Input type="hidden" />
+              </Form.Item>
+
+              {/* Title (English) */}
               <Form.Item
                 label="Title (English)"
                 name="title_en"
@@ -166,6 +244,7 @@ const CardsPreviewModal = ({
                 <Input />
               </Form.Item>
 
+              {/* Title (Alternate) */}
               <Form.Item
                 label="Title (Alternate)"
                 name="title_bn"
@@ -179,6 +258,7 @@ const CardsPreviewModal = ({
                 <Input />
               </Form.Item>
 
+              {/* Description (English) */}
               <Form.Item
                 label="Description (English)"
                 name="description_en"
@@ -199,6 +279,7 @@ const CardsPreviewModal = ({
                 />
               </Form.Item>
 
+              {/* Description (Alternate) */}
               <Form.Item
                 label="Description (Alternate)"
                 name="description_bn"
@@ -219,33 +300,37 @@ const CardsPreviewModal = ({
                 />
               </Form.Item>
 
-              <Form.Item name="media_ids" hidden>
-                <Input type="hidden" />
-              </Form.Item>
-
+              {/* Media Selection */}
               <Form.Item label="Media" required>
                 <div className="flex flex-col">
                   <Button onClick={() => setIsMediaModalVisible(true)}>
                     Change Media
                   </Button>
-                  <div className="flex justify-between">
-                    <div className="mt-2">
-                      <h3 className="my-5 font-bold">Current Media</h3>
+                  <div className="flex justify-between mt-4">
+                    {/* Current Media */}
+                    <div className="flex flex-col items-center">
+                      <h3 className="my-2 font-bold">Current Media</h3>
                       <Image
-                        src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${
-                          media.find((m) => m.id === selectedCard.media_ids)
-                            ?.file_path
-                        }`}
+                        src={
+                          selectedCard.media_files
+                            ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedCard.media_files.file_path}`
+                            : PLACEHOLDER_IMAGE
+                        }
                         alt="Current Media"
                         width={200}
                         height={150}
                         objectFit="cover"
                         className="rounded-lg"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = PLACEHOLDER_IMAGE;
+                        }}
                       />
                     </div>
+                    {/* Changed Media */}
                     {selectedMedia && (
-                      <div className="mt-2">
-                        <h3 className="my-5 font-bold">Changed Media</h3>
+                      <div className="flex flex-col items-center">
+                        <h3 className="my-2 font-bold">Changed Media</h3>
                         <Image
                           src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedMedia.file_path}`}
                           alt="Selected Media"
@@ -253,6 +338,10 @@ const CardsPreviewModal = ({
                           height={150}
                           objectFit="cover"
                           className="rounded-lg"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = PLACEHOLDER_IMAGE;
+                          }}
                         />
                       </div>
                     )}
@@ -260,7 +349,7 @@ const CardsPreviewModal = ({
                 </div>
               </Form.Item>
 
-              {/* Always present Page field */}
+              {/* Page Association */}
               <Form.Item
                 label="Page"
                 name="page_name"
@@ -270,13 +359,14 @@ const CardsPreviewModal = ({
                   {pages
                     ?.filter((page) => page.page_name_en)
                     ?.map((page) => (
-                      <Option key={page.page_name_en} value={page.page_name_en}>
+                      <Option key={page.id} value={page.page_name_en}>
                         {page.page_name_en}
                       </Option>
                     ))}
                 </Select>
               </Form.Item>
 
+              {/* Link Type Selection */}
               <Form.Item
                 label="Link Type"
                 name="link_type"
@@ -288,6 +378,7 @@ const CardsPreviewModal = ({
                 </Radio.Group>
               </Form.Item>
 
+              {/* Conditional Link Fields */}
               {linkType === "page" && (
                 <Form.Item
                   label="Select the page to link"
@@ -310,12 +401,14 @@ const CardsPreviewModal = ({
                   name="link_url"
                   rules={[
                     { required: true, message: "Please enter the link URL" },
+                    { type: "url", message: "Please enter a valid URL" },
                   ]}
                 >
                   <Input />
                 </Form.Item>
               )}
 
+              {/* Status Switch */}
               <Form.Item
                 label="Status"
                 name="status"
@@ -325,6 +418,7 @@ const CardsPreviewModal = ({
                 <Switch checkedChildren="Active" unCheckedChildren="Inactive" />
               </Form.Item>
 
+              {/* Form Actions */}
               <Form.Item>
                 <div className="flex justify-end gap-2">
                   <Button
@@ -371,6 +465,15 @@ const CardsPreviewModal = ({
             </>
           )}
         </>
+      )}
+      {/* Media Selection Modal */}
+      {isEditing && (
+        <MediaSelectionModal
+          isVisible={isMediaModalVisible}
+          onClose={() => setIsMediaModalVisible(false)}
+          onSelectMedia={handleMediaSelect}
+          selectionMode="single"
+        />
       )}
     </Drawer>
   );
