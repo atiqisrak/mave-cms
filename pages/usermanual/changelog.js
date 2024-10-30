@@ -3,6 +3,7 @@ import { Layout, Timeline, Tag, Button, Breadcrumb } from "antd";
 import moment from "moment";
 import changelog from "./changelog.json";
 import { HomeOutlined, SwapOutlined } from "@ant-design/icons";
+import NavItems from "../../components/ui/NavItems";
 
 const Changelog = () => {
   const { Content } = Layout;
@@ -19,14 +20,16 @@ const Changelog = () => {
 
   return (
     <div className="mavecontainer">
+      <NavItems />
       <Layout
-        style={{
-          padding: "0 24px 24px",
-          marginBottom: "2rem",
-          backgroundColor: "transparent",
-        }}
+        className="site-layout-background pt-20 pr-10 pb-10 bg-transparent"
+        // style={{
+        //   padding: "0 24px 24px",
+        //   marginBottom: "2rem",
+        //   backgroundColor: "transparent",
+        // }}
       >
-        <Breadcrumb
+        {/* <Breadcrumb
           style={{
             margin: "16px 0",
             fontSize: "1rem",
@@ -38,33 +41,36 @@ const Changelog = () => {
           </Breadcrumb.Item>
           <Breadcrumb.Item>Settings</Breadcrumb.Item>
           <Breadcrumb.Item>Changelog</Breadcrumb.Item>
-        </Breadcrumb>
+        </Breadcrumb> */}
 
         <Content
-          style={{
-            padding: "24px",
-            margin: 0,
-            minHeight: 280,
-            backgroundColor: "#fff",
-            borderRadius: "8px",
-          }}
+          className="p-10 bg-white rounded-lg min-h-10"
+          // style={{
+          //   padding: "24px",
+          //   margin: 0,
+          //   minHeight: 280,
+          //   backgroundColor: "#fff",
+          //   borderRadius: "8px",
+          // }}
         >
           <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
+            className="flex justify-between items-center"
+            // style={{
+            //   display: "flex",
+            //   justifyContent: "space-between",
+            //   alignItems: "center",
+            // }}
           >
             <h1
-              style={{
-                fontSize: "1.8rem",
-                fontWeight: 600,
-                marginBottom: "1.5rem",
-                margin: "0 auto",
-              }}
+              className="text-4xl font-semibold text-theme text-center w-full mb-10"
+              // style={{
+              //   fontSize: "1.8rem",
+              //   fontWeight: 600,
+              //   marginBottom: "1.5rem",
+              //   margin: "0 auto",
+              // }}
             >
-              Changelogs
+              Mave Changelogs
             </h1>
             <Button
               icon={<SwapOutlined />}
@@ -88,11 +94,12 @@ const Changelog = () => {
                 }}
               >
                 <h3
-                  style={{
-                    fontSize: "1.25em",
-                    marginBottom: "10px",
-                    color: "var(--theme)",
-                  }}
+                  className="text-2xl font-semibold text-theme mb-10"
+                  // style={{
+                  //   fontSize: "1.25em",
+                  //   marginBottom: "10px",
+                  //   color: "var(--theme)",
+                  // }}
                 >
                   Version {log.version}
                 </h3>
@@ -101,13 +108,14 @@ const Changelog = () => {
                     changeList?.map((change, i) => (
                       <div
                         key={i}
-                        style={{
-                          marginBottom: "10px",
-                          padding: "1rem 2rem",
-                          borderRadius: "10px",
-                          backgroundColor: "white",
-                          boxShadow: "0 0 5px rgba(0, 0, 0, 0.1)",
-                        }}
+                        className="mb-2 p-4 rounded-lg bg-white shadow-sm border-2 border-gray-200 hover:border-theme hover:shadow-md hover:scale-105 transition-all duration-300"
+                        // style={{
+                        //   marginBottom: "10px",
+                        //   padding: "1rem 2rem",
+                        //   borderRadius: "10px",
+                        //   backgroundColor: "white",
+                        //   boxShadow: "0 0 5px rgba(0, 0, 0, 0.1)",
+                        // }}
                       >
                         <Tag color={type === "BugFix" ? "red" : "green"}>
                           {type}
