@@ -92,7 +92,9 @@ const PagesHeader = ({
           >
             <Select.Option value="10">10</Select.Option>
             <Select.Option value="20">20</Select.Option>
-            <Select.Option value="30">30</Select.Option>
+            <Select.Option value="50">50</Select.Option>
+            <Select.Option value="100">100</Select.Option>
+            <Select.Option value="200">200</Select.Option>
           </Select>
           <Button
             icon={<FilterOutlined />}
