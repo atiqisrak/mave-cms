@@ -123,6 +123,10 @@ a:hover {
   box-shadow: none;
 }
 
+.ant-btn-default:not(:disabled):not(.ant-btn-disabled):hover .google {
+  color: var(--white);
+}
+
 .ql-editor {
   min-height: 200px;
 }

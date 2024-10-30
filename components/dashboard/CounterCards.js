@@ -1,23 +1,22 @@
-import { Row, Col, Statistic, Button } from "antd";
+// components/CounterCards.js
+import { Button } from "antd";
 import Image from "next/image";
 import { useState } from "react";
 import CountUp from "react-countup";
-const formatter = (value) => <CountUp end={value} separator="," />;
 
 export default function CounterCards() {
-  const [cardData, setCardData] = useState([
+  const [cardData] = useState([
     {
       title: "Media",
       value: 12600,
       button: "View All",
-      link: "/media",
+      link: "/gallery",
     },
-    // Components, Pages, Blogs, Users, Pending Approval
     {
       title: "Components",
       value: 287,
       button: "View All",
-      link: "/components",
+      link: "#",
     },
     {
       title: "Pages",
@@ -35,82 +34,43 @@ export default function CounterCards() {
       title: "Users",
       value: 60,
       button: "View All",
-      link: "/users",
+      link: "/settings/users",
     },
     {
       title: "Pending Approval",
       value: 14,
       button: "View All",
-      link: "/pending-approval",
+      link: "#",
     },
   ]);
+
   return (
-    <div
-      className="counter-cards"
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(3, 1fr)",
-        gap: "3rem",
-      }}
-    >
-      {cardData?.map((card, index) => (
+    <div className="counter-cards grid grid-cols-1 sm:grid-cols-2 xxl:grid-cols-3 gap-8">
+      {cardData.map((card, index) => (
         <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "1rem",
-            border: "3px solid #FDCA4E",
-            padding: "2rem 1.2rem",
-            borderRadius: "1rem",
-            backgroundColor: "white",
-          }}
+          key={index}
+          className="flex flex-col justify-center items-center gap-4 border-4 border-[#FDCA4E] p-6 rounded-xl bg-white shadow-md transition-transform transform hover:scale-105"
         >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              width: "100%",
-            }}
-          >
-            <h3
-              style={{
-                color: "var(--black)",
-                fontSize: "1.1rem",
-                fontWeight: "bold",
-              }}
-            >
+          <div className="flex justify-between items-center w-full">
+            <h3 className="text-black text-base sm:text-lg xxl:text-xl font-bold">
               {card.title}
             </h3>
             <Image
               src="/icons/mave_icons/threedots.svg"
               alt="Three Dots"
-              width={40}
-              height={40}
+              width={30}
+              height={30}
+              className="sm:w-10 sm:h-10 xxl:w-12 xxl:h-12"
             />
           </div>
           <CountUp
             end={card.value}
             separator=","
-            style={{
-              color: "var(--black)",
-              fontSize: "2rem",
-              fontWeight: "bold",
-            }}
+            className="text-black text-xl sm:text-2xl xxl:text-3xl font-bold"
           />
           <Button
-            type="primary"
             href={card.link}
-            style={{
-              backgroundColor: "var(--theme)",
-              borderColor: "var(--theme)",
-              color: "var(--black)",
-              fontWeight: "bold",
-              borderRadius: "10px",
-              padding: "7px 20px",
-            }}
+            className="bg-theme border border-theme text-black hover:bg-slate-500 hover:text-white font-bold rounded-md px-4 py-2 sm:px-5 sm:py-3 xxl:px-6 xxl:py-4 hover:bg-theme-dark transition-colors"
           >
             {card.button}
           </Button>

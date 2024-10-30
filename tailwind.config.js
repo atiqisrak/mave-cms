@@ -8,6 +8,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        xxl: "1700px",
+      },
       colors: {
         theme: "#fcb813",
         white: "#ffffff",
@@ -20,6 +23,12 @@ module.exports = {
       spacing: {
         80: "20rem",
         260: "65rem",
+      },
+      borderRadius: {
+        xl: "1rem",
+      },
+      spacing: {
+        "5%": "5%",
       },
     },
   },
