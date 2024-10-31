@@ -4,7 +4,6 @@ import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { Tabs } from "antd";
 
-// Dynamically import ReactApexChart to handle Next.js SSR
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
@@ -19,25 +18,35 @@ const generateRandomData = (type) => {
     // Generate data for each hour of a day
     for (let i = 0; i < 24; i++) {
       const date = new Date(now.getTime() + i * 60 * 60 * 1000);
-      categories.push(date.getHours() + ":00");
+      categories.push(`${i}:00`);
       data.push(Math.floor(Math.random() * 50) + 10); // Random hits between 10 to 60
     }
   } else if (type === "week") {
     // Generate data for each day of a week
+    const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     for (let i = 0; i < 7; i++) {
       const date = new Date(now.getTime() + i * 24 * 60 * 60 * 1000);
-      // categories.push(date.toLocaleDateString("default", { weekday: "short" }));
-      categories.push(date.toLocaleDateString("en-US", { weekday: "short" }));
-
+      categories.push(weekdays[date.getDay()]);
       data.push(Math.floor(Math.random() * 300) + 100); // Random hits between 100 to 400
     }
   } else {
     // Generate data for each month
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
     for (let i = 0; i < 12; i++) {
-      const date = new Date(now.getFullYear(), i);
-      // categories.push(date.toLocaleDateString("default", { month: "short" }));
-      categories.push(date.toLocaleDateString("en-US", { month: "short" }));
-
+      categories.push(months[i]);
       data.push(Math.floor(Math.random() * 1000) + 500); // Random hits between 500 to 1500
     }
   }
@@ -51,23 +60,22 @@ export default function AverageRequests() {
   const [activeTab, setActiveTab] = useState("month");
 
   useEffect(() => {
-    // Generate random data based on active tab
     const seriesData = generateRandomData(activeTab);
 
     setChartOptions({
       chart: {
-        height: 350,
-        type: "bar", // Column chart
+        type: "bar",
+        toolbar: { show: false },
       },
       dataLabels: {
         enabled: false,
       },
       stroke: {
         width: 2,
-        colors: ["#FCB813"], // Yellow color for bars
+        colors: ["#FCB813"],
       },
       fill: {
-        colors: ["#FCB813"], // Fill color for bars
+        colors: ["#FCB813"],
         opacity: 1,
       },
       xaxis: {
@@ -78,16 +86,31 @@ export default function AverageRequests() {
           text: "API Hits",
         },
       },
-      // tooltip: {
-      //   x: {
-      //     format: "dd/MM/yy HH:mm",
-      //   },
-      // },
       tooltip: {
         x: {
-          format: activeTab === "day" ? "HH:mm" : "dd/MM/yy",
+          format:
+            activeTab === "day"
+              ? "HH:mm"
+              : activeTab === "week"
+              ? "dd/MM/yy"
+              : "MMM",
         },
       },
+      responsive: [
+        {
+          breakpoint: 768,
+          options: {
+            chart: {
+              height: 300,
+            },
+            xaxis: {
+              labels: {
+                rotate: -45,
+              },
+            },
+          },
+        },
+      ],
     });
 
     setChartSeries([
@@ -99,56 +122,32 @@ export default function AverageRequests() {
   }, [activeTab]);
 
   return (
-    <div
-      id="chart"
-      style={{
-        border: "2.22px solid #C9C9C9",
-        borderRadius: "1rem",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        backgroundColor: "white",
-      }}
-    >
-      <div
-        className="top-bar"
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          borderBottom: "2.22px solid #C9C9C9",
-          padding: "0.7rem 1rem",
-          marginBottom: "1rem",
-        }}
-      >
-        <h3>Average Requests</h3>
+    <div className="border-2 border-gray-300 rounded-xl flex flex-col justify-between bg-white">
+      <div className="flex justify-between items-center border-b-2 border-gray-300 p-3 mb-4">
+        <h3 className="text-lg font-semibold">Average Requests</h3>
         <Image
           src="/icons/mave_icons/threedots.svg"
           alt="Three Dots"
           width={40}
           height={40}
-          style={{
-            transform: "rotate(90deg)",
-          }}
+          className="transform rotate-90"
         />
       </div>
 
       {/* Tabs for Day, Week, and Month */}
-      <Tabs
-        type="card"
-        centered
-        defaultActiveKey="month"
-        onChange={(key) => setActiveTab(key)}
-        style={{
-          marginBottom: "1rem",
-          padding: "0 1rem",
-          color: "var(--theme)",
-        }}
-      >
-        <Tabs.TabPane tab="Day" key="day" />
-        <Tabs.TabPane tab="Week" key="week" />
-        <Tabs.TabPane tab="Month" key="month" />
-      </Tabs>
+      <div className="px-4 mb-4">
+        <Tabs
+          type="card"
+          centered
+          activeKey={activeTab}
+          onChange={(key) => setActiveTab(key)}
+          className="ant-tabs-card ant-tabs-card-bordered"
+        >
+          <Tabs.TabPane tab="Day" key="day" />
+          <Tabs.TabPane tab="Week" key="week" />
+          <Tabs.TabPane tab="Month" key="month" />
+        </Tabs>
+      </div>
 
       {chartOptions && chartSeries.length > 0 && (
         <ReactApexChart
@@ -156,6 +155,7 @@ export default function AverageRequests() {
           series={chartSeries}
           type="bar"
           height={350}
+          className="w-full"
         />
       )}
       {/* {console.log("Chart Options: ", chartOptions)} */}

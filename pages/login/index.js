@@ -1,19 +1,21 @@
 // pages/login.js
 
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, message } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import {
   EyeInvisibleOutlined,
   LockOutlined,
   MailOutlined,
+  RadarChartOutlined,
 } from "@ant-design/icons";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import { useAuth } from "../../src/context/AuthContext";
 import Loader from "../../components/Loader";
 
 export default function Login() {
   const { login, loading } = useAuth();
+  const router = useRouter();
 
   const handleLogin = (values) => {
     const { email, password } = values;
@@ -54,18 +56,18 @@ export default function Login() {
           </div>
           <div className="flex flex-col gap-4">
             <Button
-              // type="primary"
               block
               className="flex justify-center items-center gap-4 py-8 border-2 border-[#C9C9C9] bg-white"
+              onClick={() => message.info("Coming soon")}
             >
               <Image
-                src="/images/ui/Google.png"
+                src="/images/ui/google.png"
                 alt="Google Logo"
                 width={30}
                 height={30}
                 objectFit="contain"
               />
-              <h3 className="text-[#797B7E] text-[1.2rem] font-medium capitalize">
+              <h3 className="google text-[#797B7E] text-[1.2rem] font-medium capitalize">
                 Continue with Google
               </h3>
             </Button>
@@ -188,6 +190,13 @@ export default function Login() {
               distribution of letters, as opposed to using
             </p>
           </div>
+
+          {/* Changelogs */}
+          <Button
+            icon={<RadarChartOutlined />}
+            className="fixed bottom-0 right-0 m-4 bg-white text-theme z-20"
+            onClick={() => router.push("/usermanual/changelog")}
+          />
         </div>
       </div>
     </div>

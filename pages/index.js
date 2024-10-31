@@ -66,15 +66,15 @@ const index = () => {
     <>
       {userData ? (
         <div className="mavecontainer">
-          <div
-            style={{
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24 ml-[5%]">
+            {/* style={{
               display: "grid",
               gridTemplateColumns: "repeat(2, 1fr)",
               marginBottom: "6rem",
               gap: "2rem",
               marginLeft: "5%",
             }}
-          >
+          > */}
             <CounterCards />
             <Storage />
             <SiteSpeed />

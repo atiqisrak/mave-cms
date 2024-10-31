@@ -17,7 +17,13 @@ const SiteContent = ({ children }) => {
   const router = useRouter();
   const currentRoute = router.pathname;
 
-  const authPages = ["/login", "/signup", "/forgot-password"];
+  const authPages = [
+    "/login",
+    "/signup",
+    "/forgot-password",
+    "/reset-password",
+    "/usermanual/changelog",
+  ];
 
   useEffect(() => {
     try {
@@ -116,7 +122,7 @@ const SiteContent = ({ children }) => {
         >
           {/* Collapse Button */}
           <div
-            className={`hidden lg:flex fixed lg:top-32 z-40
+            className={`hidden lg:flex fixed lg:top-20 z-40
               ${
                 collapsed
                   ? "left-[50px] lg:left-[52px]"

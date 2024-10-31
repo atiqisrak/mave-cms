@@ -1,20 +1,19 @@
+// components/Storage.js
 import dynamic from "next/dynamic";
-import React, { useState } from "react";
-import { Table } from "antd";
 import Image from "next/image";
+import React, { useState } from "react";
 
-// Dynamically import ReactApexChart to handle Next.js SSR
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
 export default function Storage() {
-  const [chartOptions, setChartOptions] = useState({
+  const [chartOptions] = useState({
     chart: {
       type: "donut",
     },
     labels: ["Image", "Video", "Documents", "Others", "Empty"],
-    colors: ["#FCB813", "#E3A611", "#FEE9B6", "#FFF4DC", "#FFFFFF"], // Custom colors
+    colors: ["#FCB813", "#E3A611", "#FEE9B6", "#FFF4DC", "#FFFFFF"],
     responsive: [
       {
         breakpoint: 480,
@@ -29,44 +28,22 @@ export default function Storage() {
       },
     ],
     legend: {
-      position: "right", // Ensure legend positioning for desktop view
+      position: "right",
     },
   });
 
-  const [chartSeries, setChartSeries] = useState([44, 55, 41, 17, 15]);
-  const total = chartSeries.reduce((a, b) => a + b, 0);
+  const [chartSeries] = useState([44, 55, 41, 17, 15]);
 
   return (
-    <div
-      style={{
-        border: "2.22px solid #C9C9C9",
-        borderRadius: "1rem",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        backgroundColor: "white",
-      }}
-    >
-      <div
-        className="top-bar"
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          borderBottom: "2.22px solid #C9C9C9",
-          padding: "0.7rem 1rem",
-          marginBottom: "1rem",
-        }}
-      >
-        <h3>Storage</h3>
+    <div className="border-2 border-gray-300 rounded-xl flex flex-col justify-between bg-white">
+      <div className="flex justify-between items-center border-b-2 border-gray-300 p-3 mb-4">
+        <h3 className="text-lg font-semibold">Storage</h3>
         <Image
           src="/icons/mave_icons/threedots.svg"
           alt="Three Dots"
           width={40}
           height={40}
-          style={{
-            transform: "rotate(90deg)",
-          }}
+          className="transform rotate-90"
         />
       </div>
       {chartOptions && chartSeries.length > 0 && (
