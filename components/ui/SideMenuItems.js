@@ -164,7 +164,6 @@ const SideMenuItems = ({
       ) : (
         <Menu.Item key="no-data">No data found</Menu.Item>
       )}
-      {console.log("customModels", customModels)}
       {customModels?.length > 0 && (
         <Menu.SubMenu
           key="custom-models"
