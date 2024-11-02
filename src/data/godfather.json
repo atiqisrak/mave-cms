@@ -12,10 +12,16 @@
                 "title": "Build CMS"
             },
             {
-                "id": 26,
+                "id": 102,
                 "icon": "/icons/mave/response.svg",
                 "link": "/doc-to-api",
                 "title": "Doc to API"
+            },
+            {
+                "id": 103,
+                "icon": "/icons/mave/maveai.png",
+                "link": "/build-with-ai",
+                "title": "Build with AI"
             }
         ]
     }

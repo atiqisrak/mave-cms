@@ -7,6 +7,7 @@ import NavItems from "./ui/NavItems";
 import SideMenuItems from "./ui/SideMenuItems";
 import Loader from "./Loader";
 import { useAuth } from "../src/context/AuthContext";
+import { useMenuRefresh } from "../src/context/MenuRefreshContext";
 
 const { Sider, Content, Header } = Layout;
 
@@ -16,6 +17,7 @@ const SiteContent = ({ children }) => {
   const { user, token, logout, loading } = useAuth();
   const router = useRouter();
   const currentRoute = router.pathname;
+  const { refreshMenu } = useMenuRefresh();
 
   const authPages = [
     "/login",
