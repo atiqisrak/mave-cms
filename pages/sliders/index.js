@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { message, Spin, Form } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import instance from "../axios";
-import SliderList from "../components/slider/SliderList";
-import SliderForm from "../components/slider/SliderForm";
-import SlidersHeader from "../components/slider/SlidersHeader";
+import instance from "../../axios";
+import SliderList from "../../components/slider/SliderList";
+import SliderForm from "../../components/slider/SliderForm";
+import SlidersHeader from "../../components/slider/SlidersHeader";
 
 const Sliders = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
