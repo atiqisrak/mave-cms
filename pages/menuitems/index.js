@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import { message, Modal, Pagination } from "antd";
-import instance from "../axios";
-import { setPageTitle } from "../global/constants/pageTitle";
-import Loader from "../components/Loader";
-import MenuItemsHeader from "../components/MenuItems/MenuItemsHeader";
-import AddMenuItemForm from "../components/MenuItems/AddMenuItemForm";
-import MenuItemsList from "../components/MenuItems/MenuItemsList";
+import instance from "../../axios";
+import { setPageTitle } from "../../global/constants/pageTitle";
+import Loader from "../../components/Loader";
+import MenuItemsHeader from "../../components/MenuItems/MenuItemsHeader";
+import AddMenuItemForm from "../../components/MenuItems/AddMenuItemForm";
+import MenuItemsList from "../../components/MenuItems/MenuItemsList";
 
 const MenuItems = () => {
   useEffect(() => {

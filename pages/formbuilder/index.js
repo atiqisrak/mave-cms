@@ -12,22 +12,9 @@ export default function FormBuilder() {
         </h1>
       </center>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: "2rem",
-          marginTop: "2rem",
-        }}
-      >
+      <div className="flex justify-center gap-8 mt-8">
         <Button
-          style={{
-            backgroundColor: "var(--theme)",
-            color: "white",
-            fontSize: "1.2rem",
-            fontWeight: "bold",
-            padding: "1.5rem 2rem",
-          }}
+          className="bg-theme text-white text-xl font-bold py-6 px-8"
           onClick={() => {
             router.push("/formbuilder/create-form");
           }}

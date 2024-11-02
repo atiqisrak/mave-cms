@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import { message, Modal } from "antd";
-import instance from "../axios";
-import { setPageTitle } from "../global/constants/pageTitle";
-import Loader from "../components/Loader";
-import MenusHeader from "../components/Menus/MenusHeader";
-import AddMenuForm from "../components/Menus/AddMenuForm";
-import MenusList from "../components/Menus/MenusList";
+import instance from "../../axios";
+import { setPageTitle } from "../../global/constants/pageTitle";
+import Loader from "../../components/Loader";
+import MenusHeader from "../../components/Menus/MenusHeader";
+import AddMenuForm from "../../components/Menus/AddMenuForm";
+import MenusList from "../../components/Menus/MenusList";
 
 const Menus = () => {
   useEffect(() => {

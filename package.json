@@ -71,6 +71,7 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
+    "@tailwindcss/line-clamp": "^0.4.4",
     "autoprefixer": "^10.4.20",
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",

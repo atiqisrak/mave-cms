@@ -1,10 +1,12 @@
+// components/formbuilder/MaveFormsList.jsx
+
 import React, { useEffect, useState } from "react";
 import instance from "../../axios";
 import {
   Breadcrumb,
   Button,
   Input,
-  Modal,
+  Drawer,
   Popconfirm,
   Spin,
   Switch,
@@ -14,18 +16,18 @@ import {
   CloudSyncOutlined,
   DeleteOutlined,
   DockerOutlined,
-  EditOutlined,
   EyeOutlined,
   HomeOutlined,
   SearchOutlined,
-  UnorderedListOutlined,
 } from "@ant-design/icons";
 import MaveFormElements from "./MaveFormElements";
-import router from "next/router";
+import { useRouter } from "next/router";
 
 const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
   const [forms, setForms] = useState([]);
   const [changeFormsView, setChangeFormsView] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchForms = async () => {
@@ -40,20 +42,34 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
     fetchForms();
   }, []);
 
+  useEffect(() => {
+    if (selectedFormId) {
+      setDrawerVisible(true);
+    } else {
+      setDrawerVisible(false);
+    }
+  }, [selectedFormId]);
+
   const handleDeleteForm = async (formId) => {
     try {
       await instance.delete(`/form_builder/${formId}`);
       setForms(forms.filter((form) => form.id !== formId));
+      if (selectedFormId === formId) {
+        onSelectForm(null);
+      }
     } catch (error) {
       console.error("Error deleting form:", error);
     }
   };
 
-  // spinner
+  // Spinner
   if (!forms.length) {
     return (
-      <div style={{ textAlign: "center", marginTop: "2rem" }}>
-        <Spin indicator={<CloudSyncOutlined spin />} />
+      <div className="flex justify-center items-center mt-10">
+        <Spin
+          indicator={<CloudSyncOutlined spin style={{ fontSize: 48 }} />}
+          size="large"
+        />
       </div>
     );
   }
@@ -61,7 +77,7 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
   return (
     <div>
       <Breadcrumb
-        style={{ margin: "16px 0" }}
+        className="mb-4"
         items={[
           { title: <HomeOutlined />, href: "/" },
           { title: "Form Builder", href: "/formbuilder" },
@@ -69,224 +85,156 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
         ]}
       />
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "2fr 3fr",
-          alignItems: "center",
-          marginBottom: "1rem",
-        }}
-      >
+      {/* Search and View Switch */}
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
         <Input
           placeholder="Search for forms"
           suffix={<SearchOutlined />}
-          style={{ width: "100%", marginRight: "1rem" }}
+          className="w-full sm:w-1/2 mb-4 sm:mb-0"
         />
-        <Switch
-          style={{ justifySelf: "end" }}
-          checkedChildren="List"
-          unCheckedChildren="Groups"
-          defaultChecked
-          onChange={() => {
-            setChangeFormsView(!changeFormsView);
-          }}
-        />
+        <div className="flex items-center space-x-2">
+          <span className="mr-2">View:</span>
+          <Switch
+            checkedChildren="List"
+            unCheckedChildren="Groups"
+            checked={changeFormsView}
+            onChange={() => {
+              setChangeFormsView(!changeFormsView);
+            }}
+          />
+        </div>
       </div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: "1rem",
-        }}
-      >
-        {forms &&
-          forms?.map((form) => (
+
+      {/* Forms Display */}
+      {changeFormsView ? (
+        // List View
+        <div className="flex flex-col space-y-4">
+          {forms.map((form) => (
             <div
               key={form.id}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr",
-                borderRadius: "10px",
-                border: "2px solid var(--gray-dark)",
-                padding: "1rem 1rem 2rem 1rem",
-                gap: "2rem",
-                boxShadow: "5px 10px 10px #00000020",
-                cursor: "pointer",
-                backgroundColor: "var(--white)",
-              }}
+              className="border-2 border-gray-300 rounded-lg shadow-lg p-4 bg-white hover:shadow-xl transition-shadow duration-300 cursor-pointer flex flex-col"
             >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "column",
-                  gap: "1rem",
-                  height: "30vh",
-                  backgroundColor: "var(--themes)",
-                  borderRadius: "10px 10px 0 0",
-                  backgroundRepeat: "no-repeat",
-                  backgroundSize: "contain",
-                  backgroundPosition: "center",
-                }}
-              >
-                <h3
-                  style={{
-                    textAlign: "center",
-                    color: "white",
-                    fontSize: "1.5rem",
-                    fontWeight: "bold",
-                    padding: "0 2rem",
-                  }}
-                >
-                  Form ID: {form.id}
-                </h3>
-                <h3
-                  style={{
-                    textAlign: "center",
-                    color: "white",
-                    fontSize: "1.5rem",
-                    fontWeight: "bold",
-                    padding: "0 2rem",
-                  }}
-                >
-                  {form.title}
-                </h3>
+              {/* Form Header */}
+              <div className="flex flex-col items-center justify-center bg-theme text-white p-4 rounded-t-lg mb-4">
+                <h3 className="text-lg font-bold">Form ID: {form.id}</h3>
+                <h3 className="text-lg font-bold">{form.title}</h3>
               </div>
+
+              {/* Form Description */}
               <p
-                style={{
-                  fontSize: "1.2em",
-                  padding: "0 1em",
+                className="text-gray-600 mb-4"
+                dangerouslySetInnerHTML={{
+                  __html:
+                    form.description.length > 100
+                      ? `${form.description.substring(0, 100)}...`
+                      : form.description,
                 }}
-              >
-                <Tooltip
-                  placement="right"
-                  overlayInnerStyle={{
-                    backgroundColor: "var(--theme)",
-                    width: "30vw",
-                    padding: "1.8rem",
-                    border: "2px solid var(--black)",
-                    borderRadius: "20px",
-                  }}
-                  title={
-                    <p
-                      style={{
-                        fontSize: "1.1rem",
-                      }}
-                      dangerouslySetInnerHTML={{
-                        __html: form.description,
-                      }}
-                    />
-                  }
-                >
-                  <p
-                    dangerouslySetInnerHTML={{
-                      __html: form.description.substring(0, 120) + "...",
-                    }}
-                  />
-                </Tooltip>
-              </p>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(3, 1fr)",
-                  gap: "1rem",
-                }}
-              >
+              />
+
+              {/* Action Buttons */}
+              <div className="flex justify-end space-x-2">
                 <Button
-                  icon={
-                    <EyeOutlined
-                      style={{
-                        fontSize: "1.5rem",
-                        color: "var(--theme)",
-                      }}
-                    />
-                  }
-                  onClick={() => {
-                    console.log("Form ID:", form.id);
-                    console.log("Form Title:", form.title);
-                    onSelectForm
-                      ? onSelectForm(form.id)
-                      : console.log("No onSelectForm prop passed");
-                  }}
-                  style={{
-                    fontSize: "1.1rem",
-                    fontWeight: 600,
-                  }}
-                >
-                  Preview
-                </Button>
+                  icon={<EyeOutlined className="text-theme" />}
+                  onClick={() => onSelectForm(form.id)}
+                  className="flex items-center"
+                />
                 <Button
-                  icon={
-                    <DockerOutlined
-                      style={{
-                        fontSize: "1.5rem",
-                        color: "var(--theme)",
-                      }}
-                    />
-                  }
-                  style={{
-                    fontSize: "1.1rem",
-                    fontWeight: 600,
-                  }}
-                >
-                  Responses
-                </Button>
+                  icon={<DockerOutlined className="text-theme" />}
+                  className="flex items-center"
+                />
                 <Popconfirm
                   title="Are you sure you want to delete this form?"
-                  onConfirm={() => {
-                    handleDeleteForm(form.id);
-                  }}
+                  onConfirm={() => handleDeleteForm(form.id)}
                   okText="Yes"
                   cancelText="No"
                 >
                   <Button
                     danger
-                    icon={
-                      <DeleteOutlined
-                        style={{
-                          fontSize: "1.5rem",
-                          color: "red",
-                        }}
-                      />
-                    }
-                    style={{
-                      fontSize: "1.1rem",
-                      fontWeight: 600,
-                      color: "var(--black)",
-                    }}
-                  >
-                    Delete
-                  </Button>
+                    icon={<DeleteOutlined className="text-red-500" />}
+                    className="flex items-center"
+                  />
                 </Popconfirm>
               </div>
             </div>
           ))}
-      </div>
+        </div>
+      ) : (
+        // Groups View (Grid)
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {forms.map((form) => (
+            <div
+              key={form.id}
+              className=" flex flex-col justify-between border-2 border-gray-300 rounded-lg shadow-lg p-4 bg-white hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+            >
+              <div>
+                {/* Form Header */}
+                <div className="flex flex-col items-center justify-center bg-theme text-white p-4 rounded-t-lg mb-4">
+                  <h3 className="text-lg font-bold">Form ID: {form.id}</h3>
+                  <h3 className="text-lg font-bold">{form.title}</h3>
+                </div>
 
-      <Modal
+                {/* Form Description */}
+                <p
+                  className="text-gray-600 mb-4"
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      form.description.length > 100
+                        ? `${form.description.substring(0, 100)}...`
+                        : form.description,
+                  }}
+                />
+              </div>
+              {/* Action Buttons */}
+              <div className="flex justify-between">
+                <Button
+                  icon={<EyeOutlined className="text-theme" />}
+                  onClick={() => onSelectForm(form.id)}
+                  className="flex items-center"
+                />
+                <Button
+                  icon={<DockerOutlined className="text-theme" />}
+                  className="flex items-center"
+                />
+                <Popconfirm
+                  title="Are you sure you want to delete this form?"
+                  onConfirm={() => handleDeleteForm(form.id)}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button
+                    danger
+                    icon={<DeleteOutlined className="text-red-500" />}
+                    className="flex items-center"
+                  />
+                </Popconfirm>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Drawer for Form Elements */}
+      <Drawer
         title={`Form ${selectedFormId} Elements`}
-        open={selectedFormId}
-        onCancel={() => onSelectForm(null)}
-        width={800}
-        footer={[
+        placement="right"
+        onClose={() => onSelectForm(null)}
+        open={drawerVisible}
+        width={`60vw`}
+      >
+        <div className="mt-4 flex justify-end">
           <Button
-            key="edit"
-            style={{
-              backgroundColor: "var(--theme)",
-              color: "white",
-              border: "none",
-            }}
+            type="primary"
+            className="bg-theme text-white"
             onClick={() => {
               router.push(`/formbuilder/edit-form?id=${selectedFormId}`);
+              onSelectForm(null);
             }}
           >
             Edit Form
-          </Button>,
-        ]}
-      >
-        <MaveFormElements formId={selectedFormId} />
-      </Modal>
+          </Button>
+        </div>
+        {selectedFormId && <MaveFormElements formId={selectedFormId} />}
+      </Drawer>
     </div>
   );
 };
