@@ -17,7 +17,7 @@ const SideMenuItems = ({
   token,
   user,
   handleLogout,
-  setIsModalOpen,
+  setIsModalOpen, // Received prop
   collapsed,
   theme,
   setTheme,
@@ -82,7 +82,6 @@ const SideMenuItems = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, refreshMenu]); // Add refreshMenu as a dependency
-  // eslint-disable-next-line react-hooks/exhaustive-deps
 
   // Compute final menu data with custom models appended to Creator Studio
   const finalMenuData = useMemo(() => {
@@ -254,7 +253,7 @@ const SideMenuItems = ({
         <Item
           key="login"
           icon={<LoginOutlined />}
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => setIsModalOpen(true)} // Use the setter to open the modal
           className="border-2 border-gray-400 mt-4"
         >
           {!collapsed && <span>Login</span>}
