@@ -1,4 +1,5 @@
-// ModelCreator.js
+// components/diycms/ModelCreator.js
+
 import {
   Form,
   Input,
@@ -20,6 +21,7 @@ const { Panel } = Collapse;
 export default function ModelCreator({
   editMode = false,
   existingModel = null,
+  onModelCreated, // New prop
 }) {
   const [loading, setLoading] = useState(false);
   const [fields, setFields] = useState([]);
@@ -135,6 +137,7 @@ export default function ModelCreator({
         );
         if (response.status === 200) {
           message.success("Model updated successfully!");
+          if (onModelCreated) onModelCreated(); // Trigger callback
           // Optionally, redirect or reset the form
         } else {
           message.error("Failed to update model. Please try again.");
@@ -144,6 +147,7 @@ export default function ModelCreator({
         const response = await instance.post("/diy-cms", jsonPayload);
         if (response.status === 201) {
           message.success("Model created successfully!");
+          if (onModelCreated) onModelCreated(); // Trigger callback
           // Optionally, reset the form
           setModelSingular("");
           setModelPlural("");
@@ -201,7 +205,6 @@ export default function ModelCreator({
 
         {/* Fields */}
         <Collapse accordion>
-          {console.log("Fields:", fields)}
           {fields?.map((field, index) => (
             <Panel
               header={`${field.name} (${field.type})`}

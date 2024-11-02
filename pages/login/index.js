@@ -43,10 +43,10 @@ export default function Login() {
             height={100}
             objectFit="contain"
           />
-          <h1 className="text-3xl md:text-[2.4rem] font-bold text-theme text-center">
+          <h1 className="text-xl md:text-2xl font-bold text-theme text-center">
             Log in to your account
           </h1>
-          <div className="flex justify-center items-center gap-4 text-[1.2rem]">
+          <div className="flex justify-center items-center gap-2 text-[1.2rem]">
             <h3 className="font-normal">Don't have an account?</h3>
             <Link href="/signup">
               <h3 className="font-semibold text-theme cursor-pointer">
@@ -87,7 +87,7 @@ export default function Login() {
               </h3>
             </Button> */}
           </div>
-          <div className="flex justify-center items-center gap-4">
+          <div className="flex justify-center items-center gap-2">
             <Image
               src="/images/ui/line.svg"
               alt="Line"
@@ -95,7 +95,7 @@ export default function Login() {
               height={10}
               objectFit="contain"
             />
-            <p className="text-base font-normal text-[#797B7E]">
+            <p className="text-sm font-normal text-gray-500 text-center">
               Or with email and password
             </p>
             <Image
@@ -157,7 +157,6 @@ export default function Login() {
               </Form.Item>
               <Form.Item>
                 <Button
-                  type="primary"
                   block
                   className="bg-theme text-white text-[1.2rem] font-medium py-6"
                   htmlType="submit"
@@ -171,19 +170,19 @@ export default function Login() {
         {/* Right Panel */}
         <div
           className="h-screen bg-theme text-black flex flex-col justify-between gap-8 col-span-2
-          bg-right-bottom bg-no-repeat bg-80%"
+          bg-right-bottom bg-no-repeat"
           style={{
             backgroundImage: "url('/images/ui/lrightbg.svg')",
-            // backgroundSize: "80%",
+            backgroundSize: "80%",
           }}
         >
-          <div className="flex flex-col gap-8 pt-20 pl-8 md:pl-20">
+          <div className="flex flex-col gap-8 pt-10 pl-8 md:pl-20">
             <h1 className="text-3xl md:text-4xl font-bold">
               Mave CMS is
               <br />
               launching in Bangladesh soon !!!
             </h1>
-            <p className="text-lg md:text-xl font-normal md:w-[50%] leading-8 md:leading-[2.5rem]">
+            <p className="text-lg md:text-xl font-normal md:w-lg leading-8 md:leading-[2.5rem]">
               It is a long established fact that a reader will be distracted by
               the readable content of a page when looking at its layout. The
               point of using Lorem Ipsum is that it has a more-or-less normal

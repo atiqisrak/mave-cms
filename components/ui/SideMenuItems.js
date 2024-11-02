@@ -1,7 +1,7 @@
 // components/ui/SideMenuItems.js
 
 import { LoginOutlined } from "@ant-design/icons";
-import { Menu } from "antd";
+import { Menu, Spin } from "antd";
 import React, { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import AuthorizedSideMenuData from "../../src/data/authorisedsidemenus.json";
@@ -9,6 +9,9 @@ import UnAuthorizedSideMenuData from "../../src/data/unauthorisedsidemenu.json";
 import Godfather from "../../src/data/godfather.json";
 import Image from "next/image";
 import instance from "../../axios";
+import { useMenuRefresh } from "../../src/context/MenuRefreshContext";
+
+const { SubMenu, Item } = Menu;
 
 const SideMenuItems = ({
   token,
@@ -19,16 +22,23 @@ const SideMenuItems = ({
   theme,
   setTheme,
 }) => {
+  const { refreshMenu } = useMenuRefresh(); // Consume context
   const [isLoading, setIsLoading] = useState(false);
   const [sideMenuData, setSideMenuData] = useState([]);
-  const [selectedMenuItem, setSelectedMenuItem] = useState("");
   const [godfatherData, setGodfatherData] = useState([]);
   const [customModels, setCustomModels] = useState([]);
+  const [selectedMenuItem, setSelectedMenuItem] = useState("");
+  const [openKeys, setOpenKeys] = useState([]);
   const router = useRouter();
 
+  // Initialize sideMenuData based on authentication
   useEffect(() => {
     if (token && user) {
-      setSideMenuData(AuthorizedSideMenuData);
+      // Deep clone to prevent mutating the original JSON
+      const authorizedMenu = JSON.parse(JSON.stringify(AuthorizedSideMenuData));
+      setSideMenuData(authorizedMenu);
+
+      // Check for Godfather users
       if (
         user?.email === "atiqisrak@niloy.com" ||
         user?.email === "Zeeshan.akhtar@webable.digital" ||
@@ -44,40 +54,12 @@ const SideMenuItems = ({
     }
   }, [token, user]);
 
+  // Combine authorized menus with godfather data
   const allMenuData = useMemo(() => {
     return [...sideMenuData, ...godfatherData];
   }, [sideMenuData, godfatherData]);
 
-  useEffect(() => {
-    if (router.isReady && allMenuData.length > 0) {
-      const currentPath = router.pathname;
-      const selectedItem =
-        allMenuData.find((item) => item.link === currentPath) ||
-        allMenuData
-          .flatMap((item) => item.submenu || [])
-          .find((subItem) => subItem.link === currentPath) ||
-        {};
-      if (selectedItem.id !== undefined) {
-        setSelectedMenuItem(selectedItem.id.toString());
-      } else {
-        setSelectedMenuItem("");
-      }
-    }
-  }, [router.pathname, allMenuData]);
-
-  const handleMenuClick = ({ key }) => {
-    setSelectedMenuItem(key);
-    const selectedItem =
-      allMenuData.find((menuItem) => menuItem.id.toString() === key) ||
-      allMenuData
-        .flatMap((menuItem) => menuItem.submenu || [])
-        .find((subItem) => subItem.id.toString() === key);
-
-    if (selectedItem) {
-      router.push(selectedItem.link);
-    }
-  };
-
+  // Fetch custom models
   const fetchCustomModels = async () => {
     setIsLoading(true);
     try {
@@ -98,20 +80,121 @@ const SideMenuItems = ({
     if (token) {
       fetchCustomModels();
     }
-  }, [token]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token, refreshMenu]); // Add refreshMenu as a dependency
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+  // Compute final menu data with custom models appended to Creator Studio
+  const finalMenuData = useMemo(() => {
+    // Deep clone to prevent state mutation
+    const menuData = JSON.parse(JSON.stringify(allMenuData));
+
+    if (token && user && customModels.length > 0) {
+      // Find the Creator Studio menu
+      const creatorStudioMenu = menuData.find(
+        (menu) => menu.title === "Creator Studio"
+      );
+
+      if (creatorStudioMenu) {
+        // Map custom models to submenu items
+        const customModelItems = customModels.map((model) => ({
+          id: `custom-${model.id}`, // Ensure unique id
+          icon: "/icons/mave/custom-models.svg",
+          link: `/custom-models/${model.id}`,
+          title: model.model_name
+            .split(" ")
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" "),
+        }));
+
+        // Append custom models to Creator Studio's submenu
+        creatorStudioMenu.submenu = [
+          ...creatorStudioMenu.submenu,
+          ...customModelItems,
+        ];
+      }
+    }
+
+    return menuData;
+  }, [allMenuData, customModels, token, user]);
+
+  // Manage selected menu item based on current path
+  useEffect(() => {
+    if (router.isReady && finalMenuData.length > 0) {
+      const currentPath = router.pathname;
+      const selectedItem =
+        finalMenuData.find((item) => item.link === currentPath) ||
+        finalMenuData
+          .flatMap((item) => item.submenu || [])
+          .find((subItem) => subItem.link === currentPath) ||
+        {};
+      if (selectedItem.id !== undefined) {
+        setSelectedMenuItem(selectedItem.id.toString());
+
+        // Set openKeys based on selected item
+        const parentItem = finalMenuData.find((item) =>
+          item.submenu?.some(
+            (sub) => sub.id.toString() === selectedItem.id.toString()
+          )
+        );
+        if (parentItem) {
+          setOpenKeys([parentItem.id.toString()]);
+        } else {
+          setOpenKeys([]);
+        }
+      } else {
+        setSelectedMenuItem("");
+        setOpenKeys([]);
+      }
+    }
+  }, [router.pathname, finalMenuData]);
+
+  // Handle menu click
+  const handleMenuClick = ({ key }) => {
+    setSelectedMenuItem(key);
+    const selectedItem =
+      finalMenuData.find((menuItem) => menuItem.id.toString() === key) ||
+      finalMenuData
+        .flatMap((menuItem) => menuItem.submenu || [])
+        .find((subItem) => subItem.id.toString() === key);
+
+    if (selectedItem && selectedItem.link) {
+      router.push(selectedItem.link);
+    }
+  };
+
+  // Handle submenu open changes to allow only one open submenu
+  const onOpenChange = (keys) => {
+    if (keys.length > 1) {
+      // Only keep the latest opened key
+      setOpenKeys([keys[keys.length - 1]]);
+    } else {
+      setOpenKeys(keys);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Spin tip="Loading custom models..." />
+      </div>
+    );
+  }
 
   return (
     <Menu
       theme={theme === "dark" ? "dark" : "light"}
       mode="inline"
       selectedKeys={[selectedMenuItem]}
+      openKeys={openKeys}
+      onOpenChange={onOpenChange}
       onClick={handleMenuClick}
       className="w-full h-full"
     >
-      {allMenuData && allMenuData.length > 0 ? (
-        allMenuData?.map((item) =>
+      {finalMenuData && finalMenuData.length > 0 ? (
+        finalMenuData.map((item) =>
           item?.submenu?.length > 0 ? (
-            <Menu.SubMenu
+            <SubMenu
               key={item.id.toString()}
               title={
                 <div className="flex items-center gap-2 font-semibold">
@@ -127,9 +210,8 @@ const SideMenuItems = ({
               }
               className="border-2 border-gray-200 mb-2"
             >
-              {item.submenu?.map((subItem) => (
-                <Menu.Item key={subItem.id.toString()} className="">
-                  {/* Active Sub Menu */}
+              {item.submenu.map((subItem) => (
+                <Item key={subItem.id.toString()} className="">
                   <div className="flex items-center gap-2">
                     <Image
                       src={subItem.icon}
@@ -141,13 +223,15 @@ const SideMenuItems = ({
                       {subItem.title}
                     </span>
                   </div>
-                </Menu.Item>
+                </Item>
               ))}
-            </Menu.SubMenu>
+            </SubMenu>
           ) : (
-            <Menu.Item
+            <Item
               key={item.id.toString()}
-              className="border-2 border-yellow-400"
+              className={`border-2 ${
+                token ? "border-yellow-400" : "border-gray-400"
+              }`}
             >
               <div className="flex items-center gap-2">
                 <Image
@@ -158,69 +242,23 @@ const SideMenuItems = ({
                 />
                 {!collapsed && <span>{item.title}</span>}
               </div>
-            </Menu.Item>
+            </Item>
           )
         )
       ) : (
-        <Menu.Item key="no-data">No data found</Menu.Item>
-      )}
-      {customModels?.length > 0 && (
-        <Menu.SubMenu
-          key="custom-models"
-          title={
-            <div className="flex items-center gap-2 font-semibold">
-              <Image
-                src="/icons/mave/custom-models.svg"
-                alt="Custom Models icon"
-                width={collapsed ? 50 : 40}
-                height={collapsed ? 50 : 40}
-                className="main-menu-icon"
-              />
-              {!collapsed && <span>Custom Models</span>}
-            </div>
-          }
-          className="border-2 border-gray-200 mb-2"
-        >
-          {customModels?.map((model) => (
-            <Menu.Item key={model.id.toString()} className="">
-              {/* Active Sub Menu */}
-              <div
-                className="flex items-center gap-2"
-                onClick={() =>
-                  router.push({
-                    pathname: "/custom-models/[id]",
-                    query: { id: model.id },
-                  })
-                }
-              >
-                <Image
-                  src="/icons/mave/custom-models.svg"
-                  alt="Custom Models icon"
-                  width={30}
-                  height={30}
-                />
-                <span className="text-md font-semibold text-gray-500">
-                  {model.model_name
-                    .split(" ")
-                    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                    .join(" ")}
-                </span>
-              </div>
-            </Menu.Item>
-          ))}
-        </Menu.SubMenu>
+        <Item key="no-data">No data found</Item>
       )}
 
       {/* Login Menu Item for Unauthorized Users */}
       {!token && (
-        <Menu.Item
+        <Item
           key="login"
           icon={<LoginOutlined />}
           onClick={() => setIsModalOpen(true)}
           className="border-2 border-gray-400 mt-4"
         >
           {!collapsed && <span>Login</span>}
-        </Menu.Item>
+        </Item>
       )}
     </Menu>
   );
