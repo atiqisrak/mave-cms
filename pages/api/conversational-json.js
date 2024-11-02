@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 
   try {
     const requestPayload = {
-      model: "gpt-4",
+      model: "gpt-4o-mini",
       messages: [
         {
           role: "system",

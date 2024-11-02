@@ -37,6 +37,7 @@
     "moment": "^2.29.4",
     "next": "^12.3.4",
     "next-transpile-modules": "^10.0.1",
+    "openai": "^4.70.2",
     "papaparse": "^5.4.1",
     "pluralize": "^8.0.0",
     "prismjs": "^1.29.0",
