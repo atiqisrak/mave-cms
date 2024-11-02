@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
-import { Button, Input, message, Spin } from "antd";
+import { Avatar, Button, Input, message, Spin } from "antd";
 import { SendOutlined, CopyOutlined } from "@ant-design/icons";
 import axios from "axios";
 import instance from "../../axios"; // Ensure this points to your Axios instance
 import { oneDark } from "react-syntax-highlighter/dist/cjs/styles/prism"; // Use CJS version to avoid SSR issues
+import Image from "next/image";
 
 const SyntaxHighlighter = dynamic(
   () => import("react-syntax-highlighter").then((mod) => mod.Prism),
@@ -213,7 +214,7 @@ export default function BuildWithAI() {
   return (
     <div className="mavecontainer">
       <div className="bg-white shadow-lg rounded-lg p-6">
-        <h1 className="text-3xl font-bold mb-4 text-center">
+        <h1 className="text-3xl font-bold mb-4 text-center text-theme">
           Build Page with AI
         </h1>
         <p className="mb-6 text-center text-gray-600">
@@ -226,14 +227,33 @@ export default function BuildWithAI() {
           {conversation?.map((msg, index) => (
             <div
               key={index}
-              className={`chat-message flex ${
-                msg.role === "user" ? "justify-end" : "justify-start"
+              className={`chat-message flex gap-2 ${
+                msg.role === "user"
+                  ? "flex-row-reverse items-center"
+                  : "flex-row items-end"
               }`}
             >
-              <div
-                className={`rounded-lg p-4 max-w-md ${
+              <Image
+                // src={`/icons/mave/maveai.png`}
+                src={`${
                   msg.role === "user"
-                    ? "bg-theme text-white"
+                    ? "/icons/mave_icons/user.svg"
+                    : "/icons/mave/maveai.png"
+                }`}
+                alt={msg.role}
+                width={30}
+                height={30}
+                objectFit="contain"
+                className={`${
+                  msg.role === "user"
+                    ? "rounded-full border-2 border-theme"
+                    : ""
+                }`}
+              />
+              <div
+                className={`rounded-lg p-4 max-w-2xl ${
+                  msg.role === "user"
+                    ? "bg-theme text-gray-600 font-semibold"
                     : "bg-gray-200 text-gray-800"
                 }`}
               >
@@ -277,7 +297,12 @@ export default function BuildWithAI() {
           {isModifying ? (
             <>
               <TextArea
-                rows={3}
+                autoSize={{
+                  minRows: 3,
+                  maxRows: 9,
+                }}
+                allowClear
+                ref={modifyInput ? (ref) => ref?.focus() : (ref) => ref?.blur()}
                 placeholder="Modify the JSON..."
                 value={modifyInput}
                 onChange={(e) => setModifyInput(e.target.value)}
@@ -294,7 +319,7 @@ export default function BuildWithAI() {
                   type="primary"
                   onClick={handleSendModification}
                   loading={loading}
-                  className="bg-blue-500 hover:bg-blue-600 text-white"
+                  className="bg-theme hover:bg-yellow-600 text-white"
                 >
                   Send
                 </Button>
@@ -303,19 +328,23 @@ export default function BuildWithAI() {
           ) : (
             <>
               <TextArea
-                rows={3}
-                placeholder="Describe your page..."
+                autoSize={{
+                  minRows: 3,
+                  maxRows: 9,
+                }}
+                allowClear
+                ref={userInput ? (ref) => ref?.focus() : (ref) => ref?.blur()}
+                placeholder="Make a homepage for my restaurant website..."
                 value={userInput}
                 onChange={(e) => setUserInput(e.target.value)}
                 className="resize-none border rounded-md p-2"
               />
               <div className="flex justify-end">
                 <Button
-                  type="primary"
                   icon={<SendOutlined />}
                   onClick={handleSendMessage}
                   loading={loading}
-                  className="bg-blue-500 hover:bg-blue-600 text-white"
+                  className="bg-theme hover:bg-yellow-600 text-white"
                 >
                   Send
                 </Button>
