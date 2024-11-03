@@ -59,8 +59,8 @@ const FormElement = ({ element, index, totalElements, onUpdate, onMove }) => {
             );
           case "submit":
             return (
-              <Button type="primary">
-                {element.default_value || "Submit"}
+              <Button className="mavebutton">
+                {element.placeholder || "Submit"}
               </Button>
             );
           default:
@@ -83,11 +83,14 @@ const FormElement = ({ element, index, totalElements, onUpdate, onMove }) => {
       case "select":
         return (
           <Select
+            showSearch
+            allowClear
+            mode="multiple"
             placeholder={element.placeholder}
             value={element.selectedValue || undefined} // Ensure individual select state
             onChange={(value) =>
               onUpdate({ ...element, selectedValue: value }, index)
-            } // Update state individually
+            }
           >
             {element.options?.map((option) => (
               <Option key={option._id} value={option.value}>
@@ -131,7 +134,7 @@ const FormElement = ({ element, index, totalElements, onUpdate, onMove }) => {
           paddingBottom: "1rem",
         }}
       >
-        <h4>
+        <h4 className="text-lg font-semibold">
           {element.label}
           {element.help_text && (
             <span style={{ marginLeft: "10px" }} title={element.help_text}>

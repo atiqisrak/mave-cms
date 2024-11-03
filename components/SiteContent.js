@@ -7,6 +7,7 @@ import NavItems from "./ui/NavItems";
 import SideMenuItems from "./ui/SideMenuItems";
 import Loader from "./Loader";
 import { useAuth } from "../src/context/AuthContext";
+import { useMenuRefresh } from "../src/context/MenuRefreshContext";
 
 const { Sider, Content, Header } = Layout;
 
@@ -16,6 +17,9 @@ const SiteContent = ({ children }) => {
   const { user, token, logout, loading } = useAuth();
   const router = useRouter();
   const currentRoute = router.pathname;
+  const { refreshMenu } = useMenuRefresh();
+
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for login modal
 
   const authPages = [
     "/login",
@@ -57,7 +61,7 @@ const SiteContent = ({ children }) => {
     }
     if (!loading) {
       if (!token && !authPages.includes(currentRoute)) {
-        router.push("/login");
+        setIsModalOpen(true); // Open login modal instead of redirecting
       } else if (token && authPages.includes(currentRoute)) {
         router.push("/");
       }
@@ -107,6 +111,7 @@ const SiteContent = ({ children }) => {
                 token={token}
                 user={user}
                 handleLogout={logout}
+                setIsModalOpen={setIsModalOpen} // Pass the setter
                 collapsed={collapsed}
                 theme={theme}
                 setTheme={setTheme}
@@ -151,6 +156,20 @@ const SiteContent = ({ children }) => {
           </Content>
         </Layout>
       </Layout>
+
+      {/* Login Modal */}
+      <Modal
+        title="Login"
+        visible={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        footer={null}
+      >
+        {/* Replace this with your actual login component or form */}
+        <p>Please login to continue.</p>
+        <Button type="primary" onClick={() => router.push("/login")}>
+          Go to Login
+        </Button>
+      </Modal>
     </Layout>
   );
 };

@@ -152,6 +152,7 @@ const UserTable = ({ users, fetchUsers, roles }) => {
               color: "var(--theme)",
               border: "2px solid var(--theme)",
             }}
+            disabled={record.role_id === "2"}
           />
           <Popconfirm
             title="Are you sure to delete this user?"
@@ -160,7 +161,11 @@ const UserTable = ({ users, fetchUsers, roles }) => {
             okText="Yes"
             cancelText="No"
           >
-            <Button icon={<DeleteOutlined />} danger />
+            <Button
+              icon={<DeleteOutlined />}
+              danger
+              disabled={record.role_id === "2"}
+            />
           </Popconfirm>
         </div>
       ),

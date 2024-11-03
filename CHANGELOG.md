@@ -1,7 +1,5 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
-
 ## [0.3.49] - 2024-10-30
 
 ### Added

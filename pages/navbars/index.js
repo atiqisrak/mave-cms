@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import { message, Modal } from "antd";
-import instance from "../axios";
-import { setPageTitle } from "../global/constants/pageTitle";
-import Loader from "../components/Loader";
-import NavbarHeader from "../components/Navbars/NavbarHeader";
-import AddNavbarForm from "../components/Navbars/AddNavbarForm";
-import NavbarsList from "../components/Navbars/NavbarsList";
+import instance from "../../axios";
+import { setPageTitle } from "../../global/constants/pageTitle";
+import Loader from "../../components/Loader";
+import NavbarHeader from "../../components/Navbars/NavbarHeader";
+import AddNavbarForm from "../../components/Navbars/AddNavbarForm";
+import NavbarsList from "../../components/Navbars/NavbarsList";
 import { set } from "lodash";
 
 const Navbars = () => {
