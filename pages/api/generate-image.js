@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { prompt, size = "1024x1024", n = 1 } = req.body;
+  const { prompt, model = "dall-e-2", size, quality, style } = req.body;
 
   if (!prompt) {
     return res.status(400).json({ message: "Prompt is required" });
@@ -16,11 +16,36 @@ export default async function handler(req, res) {
     apiKey: process.env.OPENAI_API_KEY,
   });
 
+  // Validate parameters based on the selected model
+  const validSizes = {
+    "dall-e-2": ["256x256", "512x512", "1024x1024"],
+    "dall-e-3": ["1024x1024", "1792x1024", "1024x1792"],
+  };
+
+  const validQualities = ["standard", "hd"];
+  const validStyles = ["vivid", "natural"];
+
+  if (!validSizes[model]?.includes(size)) {
+    return res
+      .status(400)
+      .json({ message: "Invalid size for the selected model." });
+  }
+
+  if (model === "dall-e-3" && quality && !validQualities.includes(quality)) {
+    return res.status(400).json({ message: "Invalid quality option." });
+  }
+
+  if (model === "dall-e-3" && style && !validStyles.includes(style)) {
+    return res.status(400).json({ message: "Invalid style option." });
+  }
+
   try {
     const response = await openai.images.generate({
-      prompt: prompt,
-      n: n,
-      size: size,
+      prompt,
+      model,
+      size,
+      ...(model === "dall-e-3" && quality ? { quality } : {}),
+      ...(model === "dall-e-3" && style ? { style } : {}),
     });
 
     const imageUrls = response.data.map((img) => img.url);
