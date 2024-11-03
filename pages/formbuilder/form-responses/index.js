@@ -13,7 +13,7 @@ import {
 import React, { useState, useEffect } from "react";
 import { CopyOutlined, HomeFilled } from "@ant-design/icons";
 import router from "next/router";
-import instance from "../../axios";
+import instance from "../../../axios";
 
 const FormResponses = () => {
   const [responses, setResponses] = useState([]);
