@@ -1,4 +1,5 @@
 // pages/diy-cms/models/[modelName]/index.js
+
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Breadcrumb, Spin, message } from "antd";
@@ -12,6 +13,7 @@ export default function EditModel() {
   const { modelName } = router.query;
   const [loading, setLoading] = useState(true);
   const [modelData, setModelData] = useState(null);
+  const [refreshMenu, setRefreshMenu] = useState(false);
 
   useEffect(() => {
     if (modelName) {
@@ -41,6 +43,11 @@ export default function EditModel() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleModelUpdated = () => {
+    // Toggle refreshMenu to trigger refetch in SideMenuItems
+    setRefreshMenu((prev) => !prev);
   };
 
   return (
@@ -73,7 +80,11 @@ export default function EditModel() {
           <Spin size="large" />
         </div>
       ) : modelData ? (
-        <ModelCreator editMode={true} existingModel={modelData} />
+        <ModelCreator
+          editMode={true}
+          existingModel={modelData}
+          onModelCreated={handleModelUpdated}
+        />
       ) : (
         <p>Model not found.</p>
       )}

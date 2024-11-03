@@ -40,14 +40,8 @@ const BuilderPanel = ({ formElements, addElement, updateElement }) => {
       }}
     >
       <center>
-        <h3
-          style={{
-            color: "var(--themes)",
-            fontSize: "1.5rem",
-            marginBottom: "20px",
-          }}
-        >
-          Form Builder
+        <h3 className="text-3xl font-bold text-black mb-10">
+          Form Builder Canvas
         </h3>
       </center>
       {formElements?.map((element, index) => (

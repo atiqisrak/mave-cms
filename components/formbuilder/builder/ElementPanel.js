@@ -91,7 +91,7 @@ const elements = [
   {
     type: "location",
     label: "Location",
-    icon: <EnvironmentOutlined />, // Import this icon from `@ant-design/icons`
+    icon: <EnvironmentOutlined />,
     element_type: "location",
   },
   {
@@ -123,28 +123,12 @@ const elements = [
 const ElementPanel = () => {
   return (
     <Card
-      className="element-panel"
-      style={{
-        backgroundColor: "var(--theme-transparent)",
-        padding: "0 10px",
-        borderRadius: "5px",
-        height: "70vh",
-        borderLeft: "2px solid var(--theme)",
-        borderTop: "2px solid var(--theme)",
-        borderBottom: "2px solid var(--theme)",
-        overflowY: "auto",
-      }}
+      className="element-panel bg-themetransparent py-4 
+      rounded-md h-5/6 border-2 border-theme border-l-2 
+      border-t-2 border-b-2 overflow-y-auto"
     >
       <center>
-        <h3
-          style={{
-            color: "var(--theme)",
-            fontSize: "1.5rem",
-            marginBottom: "20px",
-          }}
-        >
-          Elements
-        </h3>
+        <h3 className="text-black text-2xl font-bold mb-5">Elements</h3>
       </center>
       {elements?.map((element, index) => (
         <DraggableElement key={index} element={element} />
