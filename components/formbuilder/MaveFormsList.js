@@ -138,6 +138,9 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
                 <Button
                   icon={<DockerOutlined className="text-theme" />}
                   className="flex items-center"
+                  onClick={() =>
+                    router.push(`/formbuilder/form-responses/${form.id}`)
+                  }
                 />
                 <Popconfirm
                   title="Are you sure you want to delete this form?"
@@ -191,6 +194,9 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
                 <Button
                   icon={<DockerOutlined className="text-theme" />}
                   className="flex items-center"
+                  onClick={() =>
+                    router.push(`/formbuilder/form-responses/${form.id}`)
+                  }
                 />
                 <Popconfirm
                   title="Are you sure you want to delete this form?"
