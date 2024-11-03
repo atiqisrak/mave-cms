@@ -1,19 +1,33 @@
 import React, { useState } from "react";
-import { Input, Button, Spin, Alert, Select } from "antd";
+import { Input, Button, Spin, Alert, Image, Select } from "antd";
 import { SendOutlined } from "@ant-design/icons";
 import axios from "axios";
-import Image from "next/image";
 
 const { TextArea } = Input;
 const { Option } = Select;
 
 const GenerateImagePage = () => {
   const [prompt, setPrompt] = useState("");
+  const [model, setModel] = useState("dall-e-2");
   const [size, setSize] = useState("1024x1024");
   const [quality, setQuality] = useState("standard");
+  const [style, setStyle] = useState("vivid");
   const [imageUrls, setImageUrls] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const modelOptions = [
+    { label: "DALL·E 2", value: "dall-e-2" },
+    { label: "DALL·E 3", value: "dall-e-3" },
+  ];
+
+  const sizeOptions = {
+    "dall-e-2": ["256x256", "512x512", "1024x1024"],
+    "dall-e-3": ["1024x1024", "1792x1024", "1024x1792"],
+  };
+
+  const qualityOptions = ["standard", "hd"];
+  const styleOptions = ["vivid", "natural"];
 
   const handleGenerate = async () => {
     if (!prompt) {
@@ -26,8 +40,9 @@ const GenerateImagePage = () => {
     try {
       const response = await axios.post("/api/generate-image", {
         prompt,
+        model,
         size,
-        n: 1, // Number of images to generate
+        ...(model === "dall-e-3" ? { quality, style } : {}),
       });
       if (response.status === 200) {
         setImageUrls(response.data.imageUrls);
@@ -57,29 +72,66 @@ const GenerateImagePage = () => {
         />
         <div className="flex flex-col sm:flex-row items-center sm:space-x-4 w-full sm:w-2/3 lg:w-1/2 mb-4">
           <Select
-            value={size}
-            onChange={(value) => setSize(value)}
+            value={model}
+            onChange={(value) => {
+              setModel(value);
+              setSize(sizeOptions[value][0]);
+              if (value === "dall-e-2") {
+                setQuality("standard");
+                setStyle("vivid");
+              }
+            }}
             className="w-full sm:w-1/2 mb-4 sm:mb-0"
           >
-            <Option value="1024x1024">1024x1024</Option>
-            <Option value="1024x1792">1024x1792</Option>
-            <Option value="1792x1024">1792x1024</Option>
+            {modelOptions.map((option) => (
+              <Option key={option.value} value={option.value}>
+                {option.label}
+              </Option>
+            ))}
           </Select>
           <Select
-            value={quality}
-            onChange={(value) => setQuality(value)}
+            value={size}
+            onChange={(value) => setSize(value)}
             className="w-full sm:w-1/2"
           >
-            <Option value="standard">Standard Quality</Option>
-            <Option value="hd">HD Quality</Option>
+            {sizeOptions[model].map((size) => (
+              <Option key={size} value={size}>
+                {size}
+              </Option>
+            ))}
           </Select>
         </div>
+        {model === "dall-e-3" && (
+          <div className="flex flex-col sm:flex-row items-center sm:space-x-4 w-full sm:w-2/3 lg:w-1/2 mb-4">
+            <Select
+              value={quality}
+              onChange={(value) => setQuality(value)}
+              className="w-full sm:w-1/2 mb-4 sm:mb-0"
+            >
+              {qualityOptions.map((quality) => (
+                <Option key={quality} value={quality}>
+                  {quality.charAt(0).toUpperCase() + quality.slice(1)} Quality
+                </Option>
+              ))}
+            </Select>
+            <Select
+              value={style}
+              onChange={(value) => setStyle(value)}
+              className="w-full sm:w-1/2"
+            >
+              {styleOptions.map((style) => (
+                <Option key={style} value={style}>
+                  {style.charAt(0).toUpperCase() + style.slice(1)} Style
+                </Option>
+              ))}
+            </Select>
+          </div>
+        )}
         <Button
-          type="primary"
           icon={<SendOutlined />}
           onClick={handleGenerate}
           loading={loading}
-          className="mb-6"
+          className="mavebutton mb-6"
           size="large"
         >
           Generate
@@ -94,14 +146,14 @@ const GenerateImagePage = () => {
         )}
         {loading && <Spin size="large" />}
         {imageUrls.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="flex justify-center items-center">
             {imageUrls.map((url, index) => (
               <Image
                 key={index}
                 src={url}
                 alt={`Generated Image ${index + 1}`}
-                width={512}
-                height={512}
+                width={`70vw`}
+                height={`auto`}
                 className="rounded-lg shadow-md"
               />
             ))}
