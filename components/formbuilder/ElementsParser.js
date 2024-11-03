@@ -17,7 +17,7 @@ const { Option } = Select;
 export default function ElementsParser({ form, setDrawerVisible }) {
   console.log("Form data:", form); // Debugging: Log form data
   const [loading, setLoading] = useState(false);
-  const formId = form.id;
+  const formId = form?.id;
 
   const handleSubmit = async (values) => {
     console.log("Collected form values:", values); // Debugging: Log form values
