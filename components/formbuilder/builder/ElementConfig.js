@@ -57,40 +57,26 @@ const ElementConfig = ({ element, onUpdate }) => {
   return (
     <div className="element-config">
       {/* Title, Paragraph */}
-      <Form layout="vertical">
-        <Form.Item label="Label">
+      <Form
+        layout="vertical"
+        className="element-config-form p-4 border-2 border-gray-400 rounded-lg mt-5"
+      >
+        <Form.Item label="Label" className="text-2xl font-semibold">
           <Input
             value={label}
             onChange={(e) => setLabel(e.target.value)}
             onBlur={handleUpdate}
           />
         </Form.Item>
-        <Form.Item label="Placeholder">
+        <Form.Item label="Placeholder" className="text-2xl font-semibold">
           <Input
             value={placeholder}
             onChange={(e) => setPlaceholder(e.target.value)}
             onBlur={handleUpdate}
           />
         </Form.Item>
-        {/* {element.element_type === "input" && (
-          <Form.Item label="Input Type">
-            <Select
-              value={inputType}
-              onChange={(value) => setInputType(value)}
-              onBlur={handleUpdate}
-            >
-              <Option value="text">Text</Option>
-              <Option value="email">Email</Option>
-              <Option value="number">Number</Option>
-              <Option value="password">Password</Option>
-              <Option value="phone">Phone</Option>
-              <Option value="date">Date</Option>
-              <Option value="submit">Submit</Option>
-            </Select>
-          </Form.Item>
-        )} */}
         {element.element_type === "input" && element.input_type === "radio" && (
-          <Form.Item label="Radio Options">
+          <Form.Item label="Radio Options" className="text-2xl font-semibold">
             {options?.map((option, index) => (
               <div
                 key={option._id}
@@ -120,7 +106,7 @@ const ElementConfig = ({ element, onUpdate }) => {
           </Form.Item>
         )}
         {element.element_type === "select" && (
-          <Form.Item label="Options">
+          <Form.Item label="Options" className="text-2xl font-semibold">
             {options?.map((option, index) => (
               <div
                 key={option._id}
@@ -151,13 +137,19 @@ const ElementConfig = ({ element, onUpdate }) => {
         )}
         {element.element_type === "location" && (
           <>
-            <Form.Item label="Division Label">
+            <Form.Item
+              label="Division Label"
+              className="text-2xl font-semibold"
+            >
               <Input
                 value={divisionLabel}
                 onChange={(e) => setDivisionLabel(e.target.value)}
               />
             </Form.Item>
-            <Form.Item label="District Label">
+            <Form.Item
+              label="District Label"
+              className="text-2xl font-semibold"
+            >
               <Input
                 value={districtLabel}
                 onChange={(e) => setDistrictLabel(e.target.value)}
