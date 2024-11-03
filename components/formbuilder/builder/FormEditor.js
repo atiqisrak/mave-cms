@@ -47,7 +47,7 @@ const FormEditor = ({ formId }) => {
         setFormMeta({
           title: "Demo Form",
           description: "This is a demo form.",
-          status: 0,
+          status: 1,
         });
       }
     };
@@ -111,7 +111,7 @@ const FormEditor = ({ formId }) => {
                 margin: "1rem 0 5rem",
               }}
             >
-              <Button type="primary" onClick={saveForm}>
+              <Button className="mavebutton" onClick={saveForm}>
                 Save Form
               </Button>
               <Popconfirm
@@ -120,7 +120,7 @@ const FormEditor = ({ formId }) => {
                 okText="Yes"
                 cancelText="No"
               >
-                <Button danger>Clear Form</Button>
+                <Button className="mavecancelbutton">Clear Form</Button>
               </Popconfirm>
             </div>
           </Tabs.TabPane>

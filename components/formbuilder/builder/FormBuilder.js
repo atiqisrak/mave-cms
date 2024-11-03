@@ -5,19 +5,19 @@ import instance from "../../../axios";
 import {
   Button,
   Card,
+  Drawer,
   Form,
   Input,
   message,
-  Modal,
   Popconfirm,
   Select,
   Switch,
+  Table,
   Tabs,
-  Tag,
 } from "antd";
 import RichTextEditor from "../../RichTextEditor";
-import Router from "next/router";
 import FormPreview from "./FormPreview";
+import { useRouter } from "next/router";
 
 const FormBuilder = () => {
   const [formElements, setFormElements] = useState([]);
@@ -25,7 +25,8 @@ const FormBuilder = () => {
   const [modifyAttributes, setModifyAttributes] = useState(false);
   const [formMeta, setFormMeta] = useState({});
   const [preview, setPreview] = useState(false);
-  const router = Router;
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const loadForm = async () => {
@@ -39,7 +40,7 @@ const FormBuilder = () => {
       setFormMeta({
         title: "Demo Form",
         description: "This is a demo form.",
-        status: 0,
+        status: 1,
       });
     };
 
@@ -53,20 +54,14 @@ const FormBuilder = () => {
     ]);
   };
 
-  // const updateElement = (updatedElement) => {
-  //   setFormElements(
-  //     formElements?.map((el) =>
-  //       el.updated_on === updatedElement.updated_on ? updatedElement : el
-  //     )
-  //   );
-  // };
   const updateElement = (newElements) => {
     setFormElements(newElements);
   };
 
   const saveForm = async () => {
     try {
-      await instance.post("/form_builder", {
+      setLoading(true);
+      const response = await instance.post("/form_builder", {
         title: formMeta.title,
         description: formMeta.description,
         attributes: formAttributes,
@@ -74,33 +69,29 @@ const FormBuilder = () => {
       });
       if (response.status === 201) {
         message.success("Form saved successfully!");
-        router.push("/formbuilder");
+        setPreview(false);
+        await router.push("/formbuilder"); // Ensure navigation before clearing state
       } else {
         message.error("Failed to save form.");
       }
     } catch (error) {
       console.error("Error saving form:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const PreviewModal = ({ visible, onCancel, onSave }) => (
-    <Modal
+  const PreviewDrawer = ({ visible, onCancel, onSave }) => (
+    <Drawer
       title="Draft Form Preview"
       open={visible}
+      onClose={onCancel}
+      width="60%"
       footer={[
-        <Button key="back" onClick={onCancel} danger>
+        <Button key="back" onClick={onCancel} className="mavecancelbutton">
           Discard
         </Button>,
-        <Button
-          key="submit"
-          type="primary"
-          onClick={onSave}
-          style={{
-            backgroundColor: "var(--theme)",
-            color: "white",
-            border: "none",
-          }}
-        >
+        <Button key="submit" onClick={onSave} className="mavebutton">
           Publish Form
         </Button>,
       ]}
@@ -114,46 +105,52 @@ const FormBuilder = () => {
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="Attributes" key="2">
-          <Card
-            title="Form Attributes"
-            style={{
-              marginBottom: "1rem",
-              borderRadius: "5px",
-              height: "30vh",
-              overflowY: "auto",
-            }}
-          >
-            <h3>
-              <Tag color="blue">Component ID:</Tag>{" "}
-              {formAttributes.component_id}
-            </h3>
-            <h3>
-              <Tag color="blue">Component Class:</Tag>{" "}
-              {formAttributes.component_class}
-            </h3>
-            <h3>
-              <Tag color="blue">Method:</Tag>
-              <span
-                style={{
-                  color:
-                    formAttributes.method === "POST"
-                      ? "var(--themes)"
-                      : "var(--theme)",
-                }}
-              >
-                {formAttributes.method}
-              </span>
-            </h3>
-            <h3>
-              <Tag color="blue">Action URL:</Tag> {formAttributes.action_url}
-            </h3>
-            <h3>
-              <Tag color="blue">Enctype:</Tag> {formAttributes.enctype}
-            </h3>
-          </Card>
+          <Table
+            className="mavetable font-semibold"
+            dataSource={[
+              {
+                key: "1",
+                attribute: "Component ID",
+                value: formAttributes.component_id,
+              },
+              {
+                key: "2",
+                attribute: "Component Class",
+                value: formAttributes.component_class,
+              },
+              {
+                key: "3",
+                attribute: "Method",
+                value: formAttributes.method,
+              },
+              {
+                key: "4",
+                attribute: "Action URL",
+                value: formAttributes.action_url,
+              },
+              {
+                key: "5",
+                attribute: "Enctype",
+                value: formAttributes.enctype,
+              },
+            ]}
+            columns={[
+              {
+                title: "Attribute",
+                dataIndex: "attribute",
+                key: "attribute",
+              },
+              {
+                title: "Value",
+                dataIndex: "value",
+                key: "value",
+              },
+            ]}
+            pagination={false}
+          />
         </Tabs.TabPane>
       </Tabs>
-    </Modal>
+    </Drawer>
   );
 
   return (
@@ -204,20 +201,6 @@ const FormBuilder = () => {
                     editMode={true}
                   />
                 </Form.Item>
-                {/* <Form.Item label="Component Classes">
-                  <Select
-                    mode="tags"
-                    placeholder="Component Classes"
-                    value={formAttributes.component_class.split(",")}
-                    onChange={(value) =>
-                      setFormAttributes({
-                        ...formAttributes,
-                        component_class: value.join(","),
-                      })
-                    }
-                    style={{ width: "100%" }}
-                  />
-                </Form.Item> */}
                 <Form.Item label="Method">
                   <Switch
                     checkedChildren="POST"
@@ -280,24 +263,10 @@ const FormBuilder = () => {
               }}
             >
               <Button
-                type="primary"
-                // onClick={() => {
-                //   console.log("Form data:", {
-                //     title: formMeta.title,
-                //     descriprion: formMeta.description,
-                //     attributes: formAttributes,
-                //     elements: formElements,
-                //   });
-                //   saveForm();
-                // }}
-                style={{
-                  backgroundColor: "var(--themes)",
-                  color: "white",
-                  border: "none",
-                }}
                 onClick={() => {
                   setPreview(true);
                 }}
+                className="mavebutton"
               >
                 Preview
               </Button>
@@ -316,12 +285,11 @@ const FormBuilder = () => {
       <div className="panel">
         <ElementPanel />
       </div>
-      <PreviewModal
+      <PreviewDrawer
         visible={preview}
         onCancel={() => setPreview(false)}
         onSave={saveForm}
       />
-      {/* show the current form preview and ask if save or discard */}
     </div>
   );
 };

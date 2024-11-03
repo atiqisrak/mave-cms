@@ -14,8 +14,12 @@ const FormPreview = ({ formMeta, formAttributes, formElements }) => {
       encType={formAttributes.enctype}
       layout="vertical"
     >
-      <h3>{formMeta.title}</h3>
-      <p>{formMeta.description}</p>
+      <h3 className="text-2xl font-bold">{formMeta.title}</h3>
+      <div
+        dangerouslySetInnerHTML={{
+          __html: formMeta.description,
+        }}
+      ></div>
       {formElements?.map((element, index) => (
         <ElementsParser key={index} element={element} />
       ))}

@@ -1,34 +1,41 @@
-// src/components/MaveFormElements.js
-
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import instance from "../../axios";
 import ElementsParser from "./ElementsParser";
+import { Spin } from "antd";
 
-const MaveFormElements = ({ formId }) => {
-  const [elements, setElements] = useState([]);
+const MaveFormElements = ({ formId, setDrawerVisible }) => {
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState(null);
+
+  const fetchFormData = async () => {
+    setLoading(true);
+    try {
+      const response = await instance.get(`/form_builder/${formId}`);
+      if (response.status === 200) {
+        setFormData(response.data); // Store full form data
+      } else {
+        console.error("Error fetching elements:", response);
+      }
+    } catch (error) {
+      console.error("Error fetching elements:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchElements = async () => {
-      try {
-        const response = await instance.get(`/form_builder/${formId}`);
-        response?.data && setElements(response?.data?.elements);
-      } catch (error) {
-        console.error("Error fetching elements:", error);
-      }
-    };
-
     if (formId) {
-      fetchElements();
+      fetchFormData();
     }
   }, [formId]);
 
+  if (loading) return <Spin size="large" />;
+  if (!formData) return <p>No form data available</p>;
+
   return (
     <div>
-      {console.log("MaveFormElements -> elements", elements)}
-      {elements?.map((element) => (
-        <ElementsParser key={element._id} element={element} />
-      ))}
+      <ElementsParser form={formData} setDrawerVisible={setDrawerVisible} />{" "}
+      {/* Pass full form data */}
     </div>
   );
 };

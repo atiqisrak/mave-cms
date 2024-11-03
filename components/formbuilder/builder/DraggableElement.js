@@ -1,6 +1,5 @@
 import React from "react";
 import { useDrag } from "react-dnd";
-import { Card } from "antd";
 
 const DraggableElement = ({ element }) => {
   const [{ isDragging }, drag] = useDrag({
@@ -12,39 +11,17 @@ const DraggableElement = ({ element }) => {
   });
 
   return (
-    <Card
-      className="draggable-element"
+    <div
       ref={drag}
-      style={{
-        opacity: isDragging ? 0.5 : 1,
-        cursor: "move",
-        backgroundColor: "var(--theme)",
-        color: "white",
-        borderRadius: "5px",
-        marginBottom: "10px",
-        textAlign: "center",
-        fontSize: "1.3rem",
-        fontWeight: "bold",
-        transition: "opacity 0.2s",
-        display: "flex",
-        justifyContent: "flex-start",
-        alignItems: "center",
-        gap: "10px",
-        height: "50px",
-      }}
+      className={`p-4 mb-2 text-black font-bold text-lg flex items-center gap-4 rounded transition-opacity duration-200 ${
+        isDragging ? "opacity-50" : "opacity-100"
+      } bg-theme cursor-grab`}
     >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-start",
-          alignItems: "center",
-          gap: "15px",
-        }}
-      >
+      <div className="flex items-center gap-4 pl-10">
         {element.icon}
         {element.label}
       </div>
-    </Card>
+    </div>
   );
 };
 

@@ -19,6 +19,7 @@ module.exports = {
         themelight: "#fef08a",
         themedark: "#ffa17c",
         darkgray: "#797B7E",
+        themetransparent: "#f3ecf8",
       },
       spacing: {
         80: "20rem",

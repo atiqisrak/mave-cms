@@ -66,10 +66,7 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
   if (!forms.length) {
     return (
       <div className="flex justify-center items-center mt-10">
-        <Spin
-          indicator={<CloudSyncOutlined spin style={{ fontSize: 48 }} />}
-          size="large"
-        />
+        <Spin size="large" />
       </div>
     );
   }
@@ -178,7 +175,7 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
                   className="text-gray-600 mb-4"
                   dangerouslySetInnerHTML={{
                     __html:
-                      form.description.length > 100
+                      form.description?.length > 100
                         ? `${form.description.substring(0, 100)}...`
                         : form.description,
                   }}
@@ -223,8 +220,7 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
       >
         <div className="mt-4 flex justify-end">
           <Button
-            type="primary"
-            className="bg-theme text-white"
+            className="mavebutton"
             onClick={() => {
               router.push(`/formbuilder/edit-form?id=${selectedFormId}`);
               onSelectForm(null);
@@ -233,7 +229,12 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
             Edit Form
           </Button>
         </div>
-        {selectedFormId && <MaveFormElements formId={selectedFormId} />}
+        {selectedFormId && (
+          <MaveFormElements
+            formId={selectedFormId}
+            setDrawerVisible={setDrawerVisible}
+          />
+        )}
       </Drawer>
     </div>
   );
