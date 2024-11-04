@@ -7,7 +7,8 @@ import {
   InboxOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
-import instance from "../../axios";
+import axios from "axios"; // Use axios directly for Cloudinary
+import instance from "../../axios"; // Existing axios instance for your backend
 import Image from "next/image";
 
 const { Dragger } = Upload;
@@ -16,6 +17,7 @@ const UploadMedia = ({
   onUploadSuccess,
   selectionMode = "single",
   onSelectMedia,
+  uploadDestination = "backend", // New prop with default value
 }) => {
   const [fileList, setFileList] = useState([]);
   const [uploading, setUploading] = useState(false);
@@ -36,7 +38,7 @@ const UploadMedia = ({
     }
     if (!isValidType) {
       message.error(
-        "Unsupported file type. Only JPG, PNG, MP4, and PDF are allowed."
+        "Unsupported file type. Only JPG, PNG, MP4, PDF, and EPUB are allowed."
       );
     }
     return isValidSize && isValidType;
@@ -60,37 +62,73 @@ const UploadMedia = ({
 
   const customUpload = async ({ onSuccess, onError, file, onProgress }) => {
     const formData = new FormData();
-    formData.append("file[]", file);
+
+    let response;
 
     try {
       setUploading(true);
-      const response = await instance.post("/media/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        onUploadProgress: (progressEvent) => {
-          const percent = Math.round(
-            (progressEvent.loaded / progressEvent.total) * 100
-          );
-          onProgress({ percent });
-        },
-      });
-      onSuccess(response.data, file);
-      message.success(`${file.name} uploaded successfully.`);
-      setUploading(false);
-      onUploadSuccess();
+      if (uploadDestination === "cloudinary") {
+        // Cloudinary Upload
+        formData.append("file", file);
+        formData.append("upload_preset", "mave_cms_preset"); // Ensure this preset exists in your Cloudinary account
 
-      // Handle selection after upload
-      if (selectionMode === "single") {
-        // Assuming response.data is an array of uploaded media
-        if (Array.isArray(response.data) && response.data.length > 0) {
-          onSelectMedia([response.data[0]]);
-        }
-      } else {
-        if (Array.isArray(response.data) && response.data.length > 0) {
+        response = await axios.post(
+          `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`,
+          formData,
+          {
+            onUploadProgress: (progressEvent) => {
+              const percent = Math.round(
+                (progressEvent.loaded / progressEvent.total) * 100
+              );
+              onProgress({ percent });
+            },
+          }
+        );
+
+        onSuccess(response.data, file);
+        message.success(`${file.name} uploaded successfully to Cloudinary.`);
+        onUploadSuccess();
+
+        // Handle selection after upload
+        if (selectionMode === "single") {
+          onSelectMedia([response.data]);
+        } else {
           onSelectMedia(response.data);
         }
+      } else {
+        // Backend Upload
+        formData.append("file[]", file);
+
+        response = await instance.post("/media/upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          onUploadProgress: (progressEvent) => {
+            const percent = Math.round(
+              (progressEvent.loaded / progressEvent.total) * 100
+            );
+            onProgress({ percent });
+          },
+        });
+
+        onSuccess(response.data, file);
+        message.success(`${file.name} uploaded successfully.`);
+        onUploadSuccess();
+
+        // Handle selection after upload
+        if (selectionMode === "single") {
+          // Assuming response.data is an array of uploaded media
+          if (Array.isArray(response.data) && response.data.length > 0) {
+            onSelectMedia([response.data[0]]);
+          }
+        } else {
+          if (Array.isArray(response.data) && response.data.length > 0) {
+            onSelectMedia(response.data);
+          }
+        }
       }
+
+      setUploading(false);
     } catch (error) {
       console.error("Upload error:", error);
       onError(error);
@@ -179,7 +217,7 @@ const UploadMedia = ({
             return;
           }
           // Trigger upload for all files
-          // Handled by customRequest
+          // Since customRequest handles upload, we might not need to do anything here
         }}
         disabled={fileList.length === 0 || uploading}
         loading={uploading}

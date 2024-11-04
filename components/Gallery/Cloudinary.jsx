@@ -81,10 +81,7 @@ const Cloudinary = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Cloudinary Media</h1>
-
-      {/* Resource Type Selector */}
-      <Select
+      {/* <Select
         value={resourceType}
         style={{ width: 150, marginBottom: "20px", marginRight: "20px" }}
         onChange={(value) => {
@@ -97,14 +94,13 @@ const Cloudinary = () => {
         <Option value="raw">Raw</Option>
       </Select>
 
-      {/* Folder Prefix Search */}
       <Search
         placeholder="Enter folder name"
         enterButton="Filter"
         onSearch={onSearch}
         style={{ width: 300, marginBottom: "20px" }}
         allowClear
-      />
+      /> */}
 
       {/* Loading Spinner */}
       {loading && <Spin tip="Loading media items..." />}

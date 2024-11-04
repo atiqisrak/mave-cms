@@ -49,7 +49,7 @@ const Gallery = () => {
         }
       );
 
-      if (response.data && Array.isArray(response.data.data)) {
+      if (response?.data && Array.isArray(response.data.data)) {
         setMediaAssets(response.data.data);
         setTotalMediaAssets(response.data.total || 0);
       } else {
@@ -81,7 +81,7 @@ const Gallery = () => {
 
   // Handle Search
   const handleSearch = async (searchText) => {
-    if (searchText.trim() === "") {
+    if (searchText?.trim() === "") {
       // Reset filters if search text is empty
       setFilterSettings({});
       fetchMediaAssets(currentPage, itemsPerPage);
@@ -94,9 +94,9 @@ const Gallery = () => {
         params: { query: searchText, page: currentPage, count: itemsPerPage },
       });
 
-      if (response.data && Array.isArray(response.data.data)) {
-        setMediaAssets(response.data.data);
-        setTotalMediaAssets(response.data.total || 0);
+      if (response?.data && Array.isArray(response?.data?.data)) {
+        setMediaAssets(response?.data?.data);
+        setTotalMediaAssets(response?.data?.total || 0);
       } else {
         message.error("No media found for the search query.");
         setMediaAssets([]);
@@ -119,7 +119,7 @@ const Gallery = () => {
 
   // Handle Copy API Endpoint
   const copyApiEndpoint = () => {
-    navigator.clipboard.writeText(`${API_BASE_URL}/media`);
+    navigator?.clipboard?.writeText(`${API_BASE_URL}/media`);
     message.success("API Endpoint Copied to Clipboard");
   };
 
@@ -144,7 +144,7 @@ const Gallery = () => {
   // Handle Edit Media from PreviewModal
   const handleEdit = (updatedMedia) => {
     const updatedMediaAssets = mediaAssets?.map((media) =>
-      media.id === updatedMedia.id ? updatedMedia : media
+      media?.id === updatedMedia?.id ? updatedMedia : media
     );
     setMediaAssets(updatedMediaAssets);
     message.success("Media updated successfully.");
@@ -199,9 +199,9 @@ const Gallery = () => {
           onClose={() => setIsPreviewModalVisible(false)}
           media={selectedMedia}
           mediaType={
-            selectedMedia.file_type.startsWith("image/")
+            selectedMedia?.file_type?.startsWith("image/")
               ? "image"
-              : selectedMedia.file_type.startsWith("video/")
+              : selectedMedia?.file_type?.startsWith("video/")
               ? "video"
               : "document"
           }
@@ -226,14 +226,14 @@ const Gallery = () => {
         </div>
       ) : (
         <MediaTabs
-          images={mediaAssets.filter((asset) =>
-            asset.file_type.startsWith("image/")
+          images={mediaAssets?.filter((asset) =>
+            asset?.file_type?.startsWith("image/")
           )}
-          videos={mediaAssets.filter((asset) =>
-            asset.file_type.startsWith("video/")
+          videos={mediaAssets?.filter((asset) =>
+            asset?.file_type?.startsWith("video/")
           )}
-          docs={mediaAssets.filter(
-            (asset) => asset.file_type === "application/pdf"
+          docs={mediaAssets?.filter(
+            (asset) => asset?.file_type === "application/pdf"
           )}
           handleEdit={handleEdit}
           handleDelete={handleDelete}
