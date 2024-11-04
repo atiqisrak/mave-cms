@@ -15,7 +15,6 @@ import {
 import { EyeOutlined, InboxOutlined, SyncOutlined } from "@ant-design/icons";
 import instance from "../../../axios";
 import Image from "next/image";
-import UploadMedia from "../../UploadMedia";
 import UploadMediaTabs from "../../Gallery/UploadMediaTabs";
 
 const { Option } = Select;
