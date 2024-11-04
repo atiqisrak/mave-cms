@@ -29,7 +29,10 @@ const PagesHeader = ({
       {/* Top Header with Logo and Create/Cancel Button */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-4 border-b-4 border-gray-300 px-6 pt-8 pb-4">
         <div className="flex items-center gap-4">
-          <div className="border-2 border-gray-300 bg-white rounded-md py-2 px-3">
+          <div
+            className="border-2 border-gray-300 bg-white rounded-md py-2 px-3 hover:bg-theme cursor-pointer"
+            onClick={() => router.push("/build-with-ai")}
+          >
             <Image
               src="/icons/mave/forms.svg"
               width={24}

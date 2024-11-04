@@ -19,17 +19,26 @@ const SiteContent = ({ children }) => {
   const currentRoute = router.pathname;
   const { refreshMenu } = useMenuRefresh();
 
-  const [isModalOpen, setIsModalOpen] = useState(false); // State for login modal
-
-  const authPages = [
+  // Define page categories
+  const publicPages = [
     "/login",
     "/signup",
     "/forgot-password",
     "/reset-password",
-    "/usermanual/changelog",
   ];
 
+  const publicWithLayoutPages = ["/usermanual/changelog"];
+
+  // State for login modal (optional, can be removed if not needed)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Determine if the current page is public, public with layout, or protected
+  const isPublicPage = publicPages.includes(currentRoute);
+  const isPublicWithLayoutPage = publicWithLayoutPages.includes(currentRoute);
+  const isProtectedPage = !isPublicPage && !isPublicWithLayoutPage;
+
   useEffect(() => {
+    // Theme initialization
     try {
       const storedTheme = localStorage.getItem("darkmode");
       if (storedTheme) {
@@ -59,23 +68,41 @@ const SiteContent = ({ children }) => {
       // Do nothing while loading
       return;
     }
-    if (!loading) {
-      if (!token && !authPages.includes(currentRoute)) {
-        setIsModalOpen(true); // Open login modal instead of redirecting
-      } else if (token && authPages.includes(currentRoute)) {
-        router.push("/");
+
+    if (isProtectedPage) {
+      if (!token) {
+        // If user is not authenticated and trying to access a protected page, redirect to login
+        router.push("/login");
       }
+    } else if (isPublicPage && token) {
+      // If authenticated user tries to access a public page, redirect to home
+      router.push("/");
     }
-  }, [token, loading, currentRoute, router]);
+    // No action needed for publicWithLayoutPages
+  }, [
+    token,
+    loading,
+    currentRoute,
+    router,
+    isProtectedPage,
+    isPublicPage,
+    isPublicWithLayoutPage,
+  ]);
 
   const handleCollapse = () => {
     setCollapsed(!collapsed);
   };
 
   if (loading) return <Loader />;
-  if (authPages.includes(currentRoute)) {
+
+  if (isPublicPage) {
+    // Render public pages without layout
     return <Content className="min-h-screen">{children}</Content>;
   }
+
+  // Determine if the sidebar should be displayed
+  const shouldShowSidebar =
+    token && (isProtectedPage || isPublicWithLayoutPage);
 
   return (
     <Layout className="min-h-screen">
@@ -91,64 +118,73 @@ const SiteContent = ({ children }) => {
       </Header>
 
       <Layout className="pt-16">
-        {/* Side Navigation */}
-        <div className="fixed">
-          <Sider
-            collapsible
-            collapsed={collapsed}
-            onCollapse={handleCollapse}
-            theme={theme}
-            width={260}
-            style={{ height: "80vh" }}
-            className="top-0 left-0 px-2 z-40 rounded-r-2xl mt-5
-          bg-white shadow-lg transition-all duration-300 overflow-y-auto"
-            breakpoint="lg"
-            collapsedWidth={80}
-            trigger={null}
-          >
-            <div className="flex pt-10">
-              <SideMenuItems
-                token={token}
-                user={user}
-                handleLogout={logout}
-                setIsModalOpen={setIsModalOpen} // Pass the setter
-                collapsed={collapsed}
-                theme={theme}
-                setTheme={setTheme}
-              />
-            </div>
-          </Sider>
-        </div>
+        {/* Conditionally render the Side Navigation */}
+        {shouldShowSidebar && (
+          <div className="fixed">
+            <Sider
+              collapsible
+              collapsed={collapsed}
+              onCollapse={handleCollapse}
+              theme={theme}
+              width={260}
+              style={{ height: "80vh" }}
+              className="top-0 left-0 px-2 z-40 rounded-r-2xl mt-5
+                bg-white shadow-lg transition-all duration-300 overflow-y-auto"
+              breakpoint="lg"
+              collapsedWidth={80}
+              trigger={null}
+            >
+              <div className="flex pt-10">
+                <SideMenuItems
+                  token={token}
+                  user={user}
+                  handleLogout={logout}
+                  setIsModalOpen={setIsModalOpen} // Pass the setter
+                  collapsed={collapsed}
+                  theme={theme}
+                  setTheme={setTheme}
+                />
+              </div>
+            </Sider>
+          </div>
+        )}
+
         {/* Main Content Area */}
         <Layout
           className={`transition-all duration-300 ${
-            collapsed ? "lg:ml-[0px]" : "lg:ml-[200px]"
+            shouldShowSidebar
+              ? collapsed
+                ? "lg:ml-[80px]" // Adjusted to match collapsedWidth
+                : "lg:ml-[260px]" // Match the width of Sider
+              : ""
           }`}
         >
-          {/* Collapse Button */}
-          <div
-            className={`hidden lg:flex fixed lg:top-20 z-40
-              ${
-                collapsed
-                  ? "left-[50px] lg:left-[52px]"
-                  : "left-[160px] lg:left-[235px]"
-              } transition-all duration-300
-              `}
-          >
-            <Image
-              src={
-                collapsed
-                  ? "/icons/mave_icons/expand.svg"
-                  : "/icons/mave_icons/collapse.svg"
-              }
-              alt={collapsed ? "Expand" : "Collapse"}
-              width={40}
-              height={40}
-              preview={false}
-              className="cursor-pointer collapse-button border-0 transition-all duration-300"
-              onClick={handleCollapse}
-            />
-          </div>
+          {/* Conditionally render the Collapse Button only for protected pages and public with layout pages when authenticated */}
+          {shouldShowSidebar && (
+            <div
+              className={`hidden lg:flex fixed lg:top-20 z-40
+                ${
+                  collapsed
+                    ? "left-[50px] lg:left-[52px]"
+                    : "left-[260px] lg:left-[235px]"
+                } transition-all duration-300
+                `}
+            >
+              <Image
+                src={
+                  collapsed
+                    ? "/icons/mave_icons/expand.svg"
+                    : "/icons/mave_icons/collapse.svg"
+                }
+                alt={collapsed ? "Expand" : "Collapse"}
+                width={40}
+                height={40}
+                preview={false}
+                className="cursor-pointer collapse-button border-0 transition-all duration-300"
+                onClick={handleCollapse}
+              />
+            </div>
+          )}
 
           <Content className="flex-1 py-4 md:py-8 bg-gray-100">
             {/* Responsive Container */}
@@ -156,20 +192,6 @@ const SiteContent = ({ children }) => {
           </Content>
         </Layout>
       </Layout>
-
-      {/* Login Modal */}
-      <Modal
-        title="Login"
-        visible={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-        footer={null}
-      >
-        {/* Replace this with your actual login component or form */}
-        <p>Please login to continue.</p>
-        <Button type="primary" onClick={() => router.push("/login")}>
-          Go to Login
-        </Button>
-      </Modal>
     </Layout>
   );
 };
