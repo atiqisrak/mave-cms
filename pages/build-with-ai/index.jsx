@@ -223,7 +223,7 @@ export default function BuildWithAI() {
         </p>
 
         {/* Chat Container */}
-        <div className="chat-container flex flex-col gap-4 mb-6 max-h-96 overflow-y-auto">
+        <div className="chat-container flex flex-col gap-4 mb-6 overflow-y-auto">
           {conversation?.map((msg, index) => (
             <div
               key={index}
@@ -251,7 +251,7 @@ export default function BuildWithAI() {
                 }`}
               />
               <div
-                className={`rounded-lg p-4 max-w-2xl ${
+                className={`rounded-lg p-4 max-w-6xl ${
                   msg.role === "user"
                     ? "bg-theme text-gray-600 font-semibold"
                     : "bg-gray-200 text-gray-800"
