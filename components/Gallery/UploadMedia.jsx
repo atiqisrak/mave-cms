@@ -7,8 +7,8 @@ import {
   InboxOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
+import instance from "../../axios";
 import Image from "next/image";
-import axios from "axios";
 
 const { Dragger } = Upload;
 
@@ -16,7 +16,6 @@ const UploadMedia = ({
   onUploadSuccess,
   selectionMode = "single",
   onSelectMedia,
-  uploadDestination,
 }) => {
   const [fileList, setFileList] = useState([]);
   const [uploading, setUploading] = useState(false);
@@ -44,8 +43,9 @@ const UploadMedia = ({
   };
 
   const handleChange = ({ file, fileList: newFileList }) => {
+    // Update the fileList with progress and status
     setFileList(
-      newFileList.map((f) => {
+      newFileList?.map((f) => {
         if (f.response) {
           f.status = "done";
         }
@@ -60,44 +60,29 @@ const UploadMedia = ({
 
   const customUpload = async ({ onSuccess, onError, file, onProgress }) => {
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("file[]", file);
 
     try {
       setUploading(true);
-      let response;
-
-      if (uploadDestination === "cloudinary") {
-        formData.append("upload_preset", "mave_cms_preset");
-        response = await axios.post(
-          `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`,
-          formData,
-          {
-            onUploadProgress: (progressEvent) => {
-              const percent = Math.round(
-                (progressEvent.loaded / progressEvent.total) * 100
-              );
-              onProgress({ percent });
-            },
-          }
-        );
-      } else {
-        // Handle native storage upload
-        response = await axios.post("/api/upload", formData, {
-          onUploadProgress: (progressEvent) => {
-            const percent = Math.round(
-              (progressEvent.loaded / progressEvent.total) * 100
-            );
-            onProgress({ percent });
-          },
-        });
-      }
-
+      const response = await instance.post("/media/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        onUploadProgress: (progressEvent) => {
+          const percent = Math.round(
+            (progressEvent.loaded / progressEvent.total) * 100
+          );
+          onProgress({ percent });
+        },
+      });
       onSuccess(response.data, file);
       message.success(`${file.name} uploaded successfully.`);
       setUploading(false);
       onUploadSuccess();
 
+      // Handle selection after upload
       if (selectionMode === "single") {
+        // Assuming response.data is an array of uploaded media
         if (Array.isArray(response.data) && response.data.length > 0) {
           onSelectMedia([response.data[0]]);
         }
@@ -139,7 +124,7 @@ const UploadMedia = ({
       </Dragger>
       {fileList.length > 0 && (
         <div className="mt-4">
-          {fileList.map((file) => (
+          {fileList?.map((file) => (
             <div
               key={file.uid}
               className="flex items-center justify-between p-2 mb-2 bg-gray-100 rounded-md"
@@ -193,6 +178,8 @@ const UploadMedia = ({
             message.warning("Please select at least one file to upload.");
             return;
           }
+          // Trigger upload for all files
+          // Handled by customRequest
         }}
         disabled={fileList.length === 0 || uploading}
         loading={uploading}
