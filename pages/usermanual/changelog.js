@@ -20,56 +20,11 @@ const Changelog = () => {
 
   return (
     <div className="mavecontainer">
-      <NavItems />
-      <Layout
-        className="site-layout-background pt-20 pr-10 pb-10 bg-transparent"
-        // style={{
-        //   padding: "0 24px 24px",
-        //   marginBottom: "2rem",
-        //   backgroundColor: "transparent",
-        // }}
-      >
-        {/* <Breadcrumb
-          style={{
-            margin: "16px 0",
-            fontSize: "1rem",
-            fontWeight: 600,
-          }}
-        >
-          <Breadcrumb.Item>
-            <Button icon={<HomeOutlined />} type="link" href="/" />
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>Settings</Breadcrumb.Item>
-          <Breadcrumb.Item>Changelog</Breadcrumb.Item>
-        </Breadcrumb> */}
-
-        <Content
-          className="p-10 bg-white rounded-lg min-h-10"
-          // style={{
-          //   padding: "24px",
-          //   margin: 0,
-          //   minHeight: 280,
-          //   backgroundColor: "#fff",
-          //   borderRadius: "8px",
-          // }}
-        >
-          <div
-            className="flex justify-between items-center"
-            // style={{
-            //   display: "flex",
-            //   justifyContent: "space-between",
-            //   alignItems: "center",
-            // }}
-          >
-            <h1
-              className="text-4xl font-semibold text-theme text-center w-full mb-10"
-              // style={{
-              //   fontSize: "1.8rem",
-              //   fontWeight: 600,
-              //   marginBottom: "1.5rem",
-              //   margin: "0 auto",
-              // }}
-            >
+      {/* <NavItems /> */}
+      <Layout className="site-layout-background pt-20 pr-10 pb-10 bg-transparent">
+        <Content className="p-10 bg-white rounded-lg min-h-10">
+          <div className="flex justify-between items-center">
+            <h1 className="text-4xl font-semibold text-theme text-center w-full mb-10">
               Mave Changelogs
             </h1>
             <Button
@@ -93,14 +48,7 @@ const Changelog = () => {
                   fontSize: "1.1em",
                 }}
               >
-                <h3
-                  className="text-2xl font-semibold text-theme mb-10"
-                  // style={{
-                  //   fontSize: "1.25em",
-                  //   marginBottom: "10px",
-                  //   color: "var(--theme)",
-                  // }}
-                >
+                <h3 className="text-2xl font-semibold text-theme mb-10">
                   Version {log.version}
                 </h3>
                 <>
@@ -109,13 +57,6 @@ const Changelog = () => {
                       <div
                         key={i}
                         className="mb-2 p-4 rounded-lg bg-white shadow-sm border-2 border-gray-200 hover:border-theme hover:shadow-md hover:scale-105 transition-all duration-300"
-                        // style={{
-                        //   marginBottom: "10px",
-                        //   padding: "1rem 2rem",
-                        //   borderRadius: "10px",
-                        //   backgroundColor: "white",
-                        //   boxShadow: "0 0 5px rgba(0, 0, 0, 0.1)",
-                        // }}
                       >
                         <Tag color={type === "BugFix" ? "red" : "green"}>
                           {type}

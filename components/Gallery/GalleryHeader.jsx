@@ -9,6 +9,7 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 const { Option } = Select;
 
@@ -22,11 +23,15 @@ const GalleryHeader = ({
   sortType,
   setSortType,
 }) => {
+  const router = useRouter();
   return (
     <>
       <div className="flex flex-col md:flex-row justify-between items-center mb-4 border-b-4 border-gray-300 px-6 pt-8 pb-4">
         <div className="flex items-center gap-4">
-          <div className=" border-2 border-gray-300 bg-white rounded-md py-2 px-3">
+          <div
+            className=" border-2 border-gray-300 bg-white rounded-md py-2 px-3 hover:bg-theme cursor-pointer"
+            onClick={() => router.push("/generate-image")}
+          >
             <Image
               src="/icons/mave/media.svg"
               width={24}
