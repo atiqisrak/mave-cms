@@ -3,6 +3,7 @@
 import React from "react";
 import { Tabs } from "antd";
 import MediaGrid from "./MediaGrid";
+import Cloudinary from "./Cloudinary";
 
 const { TabPane } = Tabs;
 
@@ -42,6 +43,10 @@ const MediaTabs = ({
           handleDelete={handleDelete}
           handlePreview={handlePreview}
         />
+      </TabPane>
+
+      <TabPane tab="Cloudinary" key="4">
+        <Cloudinary />
       </TabPane>
     </Tabs>
   );
