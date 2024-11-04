@@ -9,6 +9,7 @@ import MediaTabs from "./MediaTabs";
 import PaginationComponent from "./PaginationComponent";
 import UploadMedia from "./UploadMedia";
 import PreviewModal from "./PreviewModal";
+import UploadMediaTabs from "./UploadMediaTabs";
 
 const Gallery = () => {
   useEffect(() => {
@@ -184,7 +185,11 @@ const Gallery = () => {
         footer={null}
         width={800}
       >
-        <UploadMedia onUploadSuccess={handleUploadModalClose} />
+        {/* <UploadMedia onUploadSuccess={handleUploadModalClose} /> */}
+        <UploadMediaTabs
+          onUploadSuccess={handleUploadModalClose}
+          onSelectMedia={setSelectedMedia}
+        />
       </Modal>
 
       {/* Preview/Edit Media Modal */}

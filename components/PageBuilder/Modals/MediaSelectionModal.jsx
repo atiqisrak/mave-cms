@@ -16,6 +16,7 @@ import { EyeOutlined, InboxOutlined, SyncOutlined } from "@ant-design/icons";
 import instance from "../../../axios";
 import Image from "next/image";
 import UploadMedia from "../../UploadMedia";
+import UploadMediaTabs from "../../Gallery/UploadMediaTabs";
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -283,10 +284,15 @@ const MediaSelectionModal = ({
         </TabPane>
 
         <TabPane tab="Upload Media" key="2">
-          <UploadMedia
+          {/* <UploadMedia
             onUploadSuccess={handleUploadSuccess}
             selectionMode={selectionMode}
             onSelectMedia={handleUploadSuccess}
+          /> */}
+          <UploadMediaTabs
+            onUploadSuccess={handleUploadSuccess}
+            onSelectMedia={handleUploadSuccess}
+            selectionMode={selectionMode}
           />
         </TabPane>
       </Tabs>

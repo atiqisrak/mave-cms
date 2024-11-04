@@ -67,7 +67,7 @@ const UploadMedia = ({
       let response;
 
       if (uploadDestination === "cloudinary") {
-        formData.append("upload_preset", "mave_cms_preset");
+        formData.append("upload_preset", "your_upload_preset"); // Replace with your upload preset
         response = await axios.post(
           `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`,
           formData,

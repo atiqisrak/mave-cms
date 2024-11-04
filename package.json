@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
+    "@cloudinary/url-gen": "^1.21.0",
     "@fortawesome/fontawesome-free": "^6.6.0",
     "@google/generative-ai": "^0.8.0",
     "@react-google-maps/api": "^2.20.3",
@@ -22,6 +23,7 @@
     "antd": "^5.19.0",
     "apexcharts": "^3.53.0",
     "axios": "^1.6.7",
+    "cloudinary": "^2.5.1",
     "croppie": "^2.6.5",
     "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
