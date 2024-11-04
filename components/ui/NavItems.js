@@ -71,13 +71,14 @@ export default function NavItems({
           objectFit="contain"
         />
         {/* Version */}
-        <Link href={"/usermanual/changelog"}>
-          <h3 className="px-2 py-1 rounded-md text-white lg:text-xs md:text-xs font-bold bg-theme border-2 border-themedark">
-            {changeLogs && changeLogs.length > 0
-              ? changeLogs[0].version
-              : "v 1.0.0"}
-          </h3>
-        </Link>
+        <Button
+          className="px-2 py-1 rounded-md text-white lg:text-xs md:text-xs font-bold bg-theme border-2 border-themedark"
+          onClick={() => router.push("/usermanual/changelog")}
+        >
+          {changeLogs && changeLogs.length > 0
+            ? changeLogs[0].version
+            : "v 1.0.0"}
+        </Button>
       </div>
 
       {user && token ? (
