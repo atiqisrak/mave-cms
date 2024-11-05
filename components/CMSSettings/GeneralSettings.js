@@ -1,14 +1,30 @@
 // components/CMSSettings/GeneralSettings.js
 
 import React, { useEffect, useState } from "react";
-import { Form, Input, Select, Switch, Button, message } from "antd";
+import {
+  Form,
+  Input,
+  Select,
+  Switch,
+  Button,
+  message,
+  ColorPicker,
+  Tooltip,
+} from "antd";
 import instance from "../../axios";
+import { setThemeColors } from "../../utils/themeUtils";
 
 const { Option } = Select;
 
 const GeneralSettings = ({ config, id }) => {
   const [form] = Form.useForm();
   const [saving, setSaving] = useState(false);
+  const [currentThemeColor, setCurrentThemeColor] = useState(
+    config.themecolor || "#fcb813"
+  );
+  const [currentThemeAccent, setCurrentThemeAccent] = useState(
+    config.themeaccent || "#e3a611"
+  );
 
   useEffect(() => {
     form.setFieldsValue(config);
@@ -17,7 +33,10 @@ const GeneralSettings = ({ config, id }) => {
   const onFinish = async (values) => {
     setSaving(true);
     try {
-      await instance.put(`/settings/${id}`, { config: values });
+      await instance.put(`/settings/${id}`, {
+        type: "general-settings",
+        config: values,
+      });
       message.success("General Settings updated successfully!");
     } catch (error) {
       console.error("Error updating General Settings:", error);
@@ -25,6 +44,46 @@ const GeneralSettings = ({ config, id }) => {
     } finally {
       setSaving(false);
     }
+  };
+
+  const theme_colors = [
+    //
+    {
+      name: "Default",
+      theme: "#fcb813",
+      accent: "#e3a611",
+    },
+    {
+      name: "Orange",
+      theme: "#fb5607",
+      accent: "#f27059",
+    },
+    {
+      name: "Red",
+      theme: "#ff006e",
+      accent: "#9d0208",
+    },
+    {
+      name: "Violet",
+      theme: "#8338ec",
+      accent: "#7209b7",
+    },
+    {
+      name: "Blue",
+      theme: "#3a86ff",
+      accent: "#0096c7",
+    },
+    {
+      name: "Green",
+      theme: "#7ae582",
+      accent: "#25a18e",
+    },
+  ];
+
+  const handleThemeChange = (theme, accent) => {
+    setCurrentThemeColor(theme);
+    setCurrentThemeAccent(accent);
+    setThemeColors(theme, accent);
   };
 
   return (
@@ -192,11 +251,75 @@ const GeneralSettings = ({ config, id }) => {
         <Switch />
       </Form.Item>
 
+      {/* themecolor and themeaccent */}
+      <Form.Item label="Theme Color" name="themecolor" required>
+        <Select
+          placeholder="Select Theme Color"
+          onChange={(value) => {
+            const selectedTheme = theme_colors.find(
+              (theme) => theme.theme === value
+            );
+            if (selectedTheme) {
+              handleThemeChange(selectedTheme.theme, selectedTheme.accent);
+              form.setFieldsValue({ themeaccent: selectedTheme.accent });
+            }
+          }}
+        >
+          {theme_colors?.map((color) => (
+            <Option key={color.name} value={color.theme}>
+              <div
+                style={{
+                  display: "inline-block",
+                  width: "16px",
+                  height: "16px",
+                  backgroundColor: color.theme,
+                  marginRight: "8px",
+                  borderRadius: "50%",
+                }}
+              ></div>
+              {color.name}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      <Form.Item label="Theme Accent" name="themeaccent" required>
+        <Select
+          placeholder="Select Theme Accent"
+          onChange={(value) => {
+            const selectedAccent = theme_colors.find(
+              (theme) => theme.accent === value
+            );
+            if (selectedAccent) {
+              handleThemeChange(selectedAccent.theme, selectedAccent.accent);
+            }
+          }}
+        >
+          {theme_colors?.map((color) => (
+            <Option key={color.accent} value={color.accent}>
+              <div
+                style={{
+                  display: "inline-block",
+                  width: "16px",
+                  height: "16px",
+                  backgroundColor: color.accent,
+                  marginRight: "8px",
+                  borderRadius: "50%",
+                }}
+              ></div>
+              {color.name}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
       {/* Save Button */}
       <Form.Item>
-        <Button className="mavebutton" htmlType="submit" loading={saving}>
-          Save Changes
-        </Button>
+        <Tooltip title="Click to save changes and apply the theme">
+          <Button className="mavebutton" htmlType="submit" loading={saving}>
+            Save Changes
+          </Button>
+        </Tooltip>
       </Form.Item>
     </Form>
   );

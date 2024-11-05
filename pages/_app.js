@@ -14,6 +14,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Head from "next/head";
 import { AuthProvider } from "../src/context/AuthContext";
 import { MenuRefreshProvider } from "../src/context/MenuRefreshContext";
+import { ThemeProvider } from "../src/context/ThemeContext";
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -23,9 +24,13 @@ function MyApp({ Component, pageProps }) {
       </Head>
       <AuthProvider>
         <MenuRefreshProvider>
-          <Site>
-            <Component {...pageProps} />
-          </Site>
+          <ThemeProvider>
+            {" "}
+            {/* Wrap with ThemeProvider */}
+            <Site>
+              <Component {...pageProps} />
+            </Site>
+          </ThemeProvider>
         </MenuRefreshProvider>
       </AuthProvider>
       <footer className="mave-footer">
