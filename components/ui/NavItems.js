@@ -132,7 +132,7 @@ export default function NavItems({
             {/* Settings */}
             <div
               className="relative w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 cursor-pointer"
-              onClick={() => router.push("/settings/general-settings")}
+              onClick={() => router.push("/settings/cms-settings")}
             >
               <Image
                 src="/icons/mave_icons/wrench.svg"

@@ -12,7 +12,10 @@ module.exports = {
         xxl: "1700px",
       },
       colors: {
-        theme: "#fcb813",
+        theme: "var(--theme)",
+        "theme-dark": "var(--theme-dark)",
+        themelite: "var(--themelite)",
+        themes: "var(--themes)",
         white: "#ffffff",
         black: "#343434",
         bggray: "#E8E8E9",
