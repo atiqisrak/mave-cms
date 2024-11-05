@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react"; // Import useEffect
+// components/PageBuilder/Components/SliderComponent.jsx
+
+import React, { useState, useEffect } from "react";
 import { Button, Modal, Typography, message, Carousel, Popconfirm } from "antd";
 import {
   EditOutlined,
@@ -17,7 +19,6 @@ const renderSliderImages = (medias) => {
   return medias?.map((media) => (
     <div key={media.id}>
       <Image
-        // src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}
         src={
           media.file_path
             ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`
@@ -34,7 +35,12 @@ const renderSliderImages = (medias) => {
   ));
 };
 
-const SliderComponent = ({ component, updateComponent, deleteComponent }) => {
+const SliderComponent = ({
+  component,
+  updateComponent,
+  deleteComponent,
+  preview = false, // New prop with default value
+}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [sliderData, setSliderData] = useState(component._mave);
   const [selectedSliderData, setSelectedSliderData] = useState(null);
@@ -83,6 +89,26 @@ const SliderComponent = ({ component, updateComponent, deleteComponent }) => {
   const handleDelete = () => {
     deleteComponent();
   };
+
+  // If in preview mode, render the slider content only
+  if (preview) {
+    return (
+      <div className="preview-slider-component p-4 bg-gray-100 rounded-md">
+        {sliderData?.medias && sliderData.medias.length > 0 ? (
+          <div className="w-full">
+            <h2 className="text-xl font-bold text-theme pb-4">
+              {sliderData.title_en || "Slider Title"}
+            </h2>
+            <Carousel autoplay>
+              {renderSliderImages(sliderData.medias)}
+            </Carousel>
+          </div>
+        ) : (
+          <p className="text-gray-500">No slider selected.</p>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="border p-4 rounded-md bg-gray-50">
@@ -152,7 +178,6 @@ const SliderComponent = ({ component, updateComponent, deleteComponent }) => {
             </div>
           ) : (
             <>
-              {/* <Paragraph>No slider selected.</Paragraph> */}
               <Button
                 icon={<EditOutlined />}
                 onClick={() => setIsModalVisible(true)}

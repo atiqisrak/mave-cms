@@ -1,17 +1,22 @@
 // components/PageBuilder/Components/FooterComponent.jsx
 
 import React, { useState } from "react";
-import { Button, Modal, Typography, List, Image, Popconfirm } from "antd";
+import { Button, Typography, Image, Popconfirm } from "antd";
 import {
-  EditOutlined,
   DeleteOutlined,
+  PlusOutlined,
   ExportOutlined,
 } from "@ant-design/icons";
 import FooterSelectionModal from "../Modals/FooterSelectionModal";
 
 const { Paragraph } = Typography;
 
-const FooterComponent = ({ component, updateComponent, deleteComponent }) => {
+const FooterComponent = ({
+  component,
+  updateComponent,
+  deleteComponent,
+  preview = false, // New prop with default value
+}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [footerData, setFooterData] = useState(component._mave);
 
@@ -30,6 +35,29 @@ const FooterComponent = ({ component, updateComponent, deleteComponent }) => {
   };
 
   console.log("Footer Component", footerData);
+
+  if (preview) {
+    return (
+      <div className="preview-footer-component p-4 bg-gray-100 rounded-md">
+        {footerData ? (
+          <div className="p-4 border rounded-md bg-white">
+            <Paragraph strong>{footerData.page_name_en}</Paragraph>
+            {footerData.logo && (
+              <Image
+                src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${footerData.logo.file_path}`}
+                alt="Footer Logo"
+                width={100}
+                preview={false}
+              />
+            )}
+            {/* You can display more footer details if available */}
+          </div>
+        ) : (
+          <p className="text-gray-500">No footer selected.</p>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -71,9 +99,9 @@ const FooterComponent = ({ component, updateComponent, deleteComponent }) => {
           {/* You can display more footer details if available */}
         </div>
       ) : (
-        // <Paragraph>No footer selected.</Paragraph>
         <Button
-          icon={<EditOutlined />}
+          icon={<PlusOutlined />}
+          type="dashed"
           onClick={() => setIsModalVisible(true)}
           className="mavebutton w-fit"
         >

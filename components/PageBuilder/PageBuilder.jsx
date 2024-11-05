@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import SectionList from "./Sections/SectionList";
-import { Button, message, Spin, Tooltip } from "antd"; // Added Tooltip
-import { SaveOutlined } from "@ant-design/icons"; // Importing an icon for better visuals
+import { Button, message, Spin } from "antd"; // Removed Tooltip for simplicity
+import { SaveOutlined, EyeOutlined } from "@ant-design/icons"; // Changed to EyeOutlined for Preview
 import instance from "../../axios";
 import PagePreview from "./PagePreview";
 
@@ -83,34 +83,19 @@ const PageBuilder = ({ pageId }) => {
 
       {/* Floating Save Button */}
       <Button
-        icon={
-          <SaveOutlined
-            style={{
-              fontSize: "2.5rem",
-            }}
-          />
-        }
+        icon={<SaveOutlined style={{ fontSize: "1.5rem" }} />}
         onClick={savePageData}
-        className="text-xl font-bold fixed bottom-11 right-10 bg-theme hover:bg-theme text-black p-4 rounded-full shadow-lg z-50 h-16 flex justify-center items-center border-2 border-themedark
-        animate-bounce"
-      >
-        Save
-      </Button>
-      <Button
-        icon={
-          <SaveOutlined
-            style={{
-              fontSize: "2.5rem",
-            }}
-          />
-        }
-        onClick={() => setPreview(!preview)}
-        className="text-xl font-bold fixed bottom-11 right-44 bg-theme hover:bg-theme text-black p-4 rounded-full shadow-lg z-50 h-16 flex justify-center items-center border-2 border-themedark
-        animate-none"
-      >
-        Preview
-      </Button>
+        className="text-lg font-bold fixed bottom-20 right-10 bg-theme hover:bg-theme text-black p-4 rounded-full shadow-lg z-50 h-16 w-16 flex justify-center items-center border-2 border-themedark"
+      ></Button>
 
+      {/* Floating Preview Button */}
+      <Button
+        icon={<EyeOutlined style={{ fontSize: "1.5rem" }} />}
+        onClick={() => setPreview(true)}
+        className="text-lg font-bold fixed bottom-20 right-24 bg-theme hover:bg-theme text-black p-4 rounded-full shadow-lg z-50 h-16 w-16 flex justify-center items-center border-2 border-themedark"
+      ></Button>
+
+      {/* Page Preview Modal */}
       <PagePreview pageData={pageData} open={preview} setOpen={setPreview} />
     </div>
   );

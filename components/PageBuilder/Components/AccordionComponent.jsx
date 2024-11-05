@@ -1,10 +1,9 @@
 // components/PageBuilder/Components/AccordionComponent.jsx
 
 import React, { useState, useEffect } from "react";
-import { Button, Modal, Typography, message } from "antd";
+import { Button, Modal, Typography, message, Collapse } from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import AccordionSelectionModal from "../Modals/AccordionSelectionModal/AccordionSelectionModal";
-import { Collapse } from "antd";
 
 const { Panel } = Collapse;
 const { Title } = Typography;
@@ -13,6 +12,7 @@ const AccordionComponent = ({
   component,
   updateComponent,
   deleteComponent,
+  preview = false, // New prop with default value
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [accordionData, setAccordionData] = useState(component._mave || []);
@@ -63,11 +63,27 @@ const AccordionComponent = ({
               newData.splice(index, 1);
               updateComponent({ ...component, _mave: newData });
             }}
+            preview={preview} // Pass preview prop to nested AccordionComponent
           />
         ) : null}
       </Panel>
     ));
   };
+
+  if (preview) {
+    return (
+      <div className="preview-accordion-component p-4 bg-gray-100 rounded-md">
+        <Collapse
+          accordion
+          activeKey={activeKeys}
+          onChange={(key) => setActiveKeys([key])}
+          className="accordion-collapse"
+        >
+          {renderPanels(accordionData)}
+        </Collapse>
+      </div>
+    );
+  }
 
   return (
     <div className="border p-4 rounded-md bg-gray-50">
@@ -79,8 +95,14 @@ const AccordionComponent = ({
             icon={<EditOutlined />}
             onClick={() => setIsModalVisible(true)}
             className="mr-2"
+            disabled={preview}
           />
-          <Button icon={<DeleteOutlined />} onClick={handleDelete} danger />
+          <Button
+            icon={<DeleteOutlined />}
+            onClick={handleDelete}
+            danger
+            disabled={preview}
+          />
         </div>
       </div>
 
@@ -95,12 +117,14 @@ const AccordionComponent = ({
       </Collapse>
 
       {/* Accordion Selection Modal */}
-      <AccordionSelectionModal
-        isVisible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
-        onSelectAccordion={handleSelectAccordion}
-        initialData={accordionData}
-      />
+      {!preview && (
+        <AccordionSelectionModal
+          isVisible={isModalVisible}
+          onClose={() => setIsModalVisible(false)}
+          onSelectAccordion={handleSelectAccordion}
+          initialData={accordionData}
+        />
+      )}
     </div>
   );
 };

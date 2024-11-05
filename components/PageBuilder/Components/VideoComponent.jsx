@@ -1,7 +1,7 @@
 // components/PageBuilder/Components/VideoComponent.jsx
 
 import React, { useState, useEffect } from "react";
-import { Button, Modal, Popconfirm, Typography, message } from "antd";
+import { Button, Modal, Popconfirm, Typography, message, Carousel } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -35,7 +35,12 @@ const getEmbedUrl = (url) => {
   return null;
 };
 
-const VideoComponent = ({ component, updateComponent, deleteComponent }) => {
+const VideoComponent = ({
+  component,
+  updateComponent,
+  deleteComponent,
+  preview = false, // New prop with default value
+}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [videoData, setVideoData] = useState(component._mave);
   const [isEditing, setIsEditing] = useState(false);
@@ -57,7 +62,10 @@ const VideoComponent = ({ component, updateComponent, deleteComponent }) => {
 
   const handleSubmit = () => {
     if (!videoData || !videoData.url) {
-      message.error("No video selected.");
+      Modal.error({
+        title: "Validation Error",
+        content: "No video selected.",
+      });
       return;
     }
     setIsEditing(false);
@@ -76,7 +84,6 @@ const VideoComponent = ({ component, updateComponent, deleteComponent }) => {
   const renderVideo = () => {
     if (!videoData || !videoData.url) {
       return (
-        // <Paragraph>No video selected.</Paragraph>
         <Button
           icon={<EditOutlined />}
           onClick={() => setIsModalVisible(true)}
@@ -126,6 +133,18 @@ const VideoComponent = ({ component, updateComponent, deleteComponent }) => {
       />
     );
   };
+
+  if (preview) {
+    return (
+      <div className="preview-video-component p-4 bg-gray-100 rounded-md">
+        {videoData && videoData.url ? (
+          renderVideo()
+        ) : (
+          <Paragraph className="text-gray-500">No video selected.</Paragraph>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="border p-4 rounded-md bg-gray-50">
@@ -181,12 +200,14 @@ const VideoComponent = ({ component, updateComponent, deleteComponent }) => {
       {renderVideo()}
 
       {/* Video Selection Modal */}
-      <VideoSelectionModal
-        isVisible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
-        onSelectVideo={handleSelectVideo}
-        initialVideo={videoData}
-      />
+      {!preview && (
+        <VideoSelectionModal
+          isVisible={isModalVisible}
+          onClose={() => setIsModalVisible(false)}
+          onSelectVideo={handleSelectVideo}
+          initialVideo={videoData}
+        />
+      )}
     </div>
   );
 };

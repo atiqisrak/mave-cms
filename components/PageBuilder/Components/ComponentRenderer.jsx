@@ -39,7 +39,13 @@ const COMPONENT_MAP = {
   testimonial: TestimonialComponent,
 };
 
-const ComponentRenderer = ({ component, index, components, setComponents }) => {
+const ComponentRenderer = ({
+  component,
+  index,
+  components,
+  setComponents,
+  preview = false,
+}) => {
   const updateComponent = (updatedComponent) => {
     const newComponents = [...components];
     newComponents[index] = updatedComponent;
@@ -64,6 +70,7 @@ const ComponentRenderer = ({ component, index, components, setComponents }) => {
         component={component}
         updateComponent={updateComponent}
         deleteComponent={deleteComponent}
+        preview={preview}
       />
     </div>
   );

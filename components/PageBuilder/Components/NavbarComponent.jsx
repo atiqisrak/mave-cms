@@ -1,11 +1,9 @@
 // components/PageBuilder/Components/NavbarComponent.jsx
 
 import React, { useState } from "react";
-import { Button, Menu, Modal, Popconfirm, Typography } from "antd";
+import { Button, Menu, Popconfirm, Typography } from "antd";
 import {
-  EditOutlined,
   DeleteOutlined,
-  CheckCircleOutlined,
   PlusOutlined,
   ExportOutlined,
 } from "@ant-design/icons";
@@ -14,7 +12,12 @@ import Image from "next/image";
 
 const { Paragraph } = Typography;
 
-const NavbarComponent = ({ component, updateComponent, deleteComponent }) => {
+const NavbarComponent = ({
+  component,
+  updateComponent,
+  deleteComponent,
+  preview = false, // New prop with default value
+}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [navbarData, setNavbarData] = useState(component._mave);
 
@@ -45,6 +48,39 @@ const NavbarComponent = ({ component, updateComponent, deleteComponent }) => {
       }
     });
   };
+
+  if (preview) {
+    return (
+      <div className="preview-navbar-component p-4 bg-gray-100 rounded-md">
+        {navbarData ? (
+          <div className="p-4 border rounded-md">
+            <Paragraph strong className="text-theme">
+              Name: {navbarData.menu?.name}
+            </Paragraph>
+            <div className="navbar-preview flex items-center">
+              <Image
+                src={
+                  navbarData?.logo?.file_path
+                    ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${navbarData.logo.file_path}`
+                    : "/images/Image_Placeholder.png"
+                }
+                width={60}
+                height={50}
+                alt="Navbar Logo"
+                objectFit="cover"
+                className="rounded-lg"
+              />
+              <Menu mode="horizontal" className="flex-grow">
+                {renderMenuItems(navbarData?.menu?.menu_items)}
+              </Menu>
+            </div>
+          </div>
+        ) : (
+          <p className="text-gray-500">No navbar selected.</p>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -79,9 +115,7 @@ const NavbarComponent = ({ component, updateComponent, deleteComponent }) => {
             <Image
               src={
                 navbarData?.logo?.file_path
-                  ? process.env.NEXT_PUBLIC_MEDIA_URL +
-                    "/" +
-                    navbarData?.logo?.file_path
+                  ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${navbarData.logo.file_path}`
                   : "/images/Image_Placeholder.png"
               }
               width={60}

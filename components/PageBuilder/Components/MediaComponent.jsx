@@ -15,7 +15,12 @@ import Image from "next/image";
 
 const { Paragraph } = Typography;
 
-const MediaComponent = ({ component, updateComponent, deleteComponent }) => {
+const MediaComponent = ({
+  component,
+  updateComponent,
+  deleteComponent,
+  preview = false, // New prop with default value
+}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [mediaData, setMediaData] = useState(component._mave);
   const [selectedMediaData, setSelectedMediaData] = useState(null);
@@ -75,6 +80,44 @@ const MediaComponent = ({ component, updateComponent, deleteComponent }) => {
   const handleDelete = () => {
     deleteComponent();
   };
+
+  // If in preview mode, render the media content only
+  if (preview) {
+    return (
+      <div className="preview-media-component p-4 bg-gray-100 rounded-md">
+        {mediaData ? (
+          component.selectionMode === "multiple" ? (
+            <div className="grid grid-cols-2 gap-4">
+              {mediaData.map((media) => (
+                <Image
+                  key={media.id}
+                  src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}
+                  alt={media.title}
+                  width={250}
+                  height={200}
+                  objectFit="cover"
+                  preview={false}
+                  className="rounded-lg"
+                />
+              ))}
+            </div>
+          ) : (
+            <Image
+              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${mediaData.file_path}`}
+              alt={mediaData.title}
+              width={250}
+              height={200}
+              objectFit="cover"
+              preview={false}
+              className="rounded-lg"
+            />
+          )
+        ) : (
+          <p className="text-gray-500">No media selected.</p>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="border p-4 rounded-md bg-gray-50">

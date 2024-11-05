@@ -7,12 +7,16 @@ import {
   DeleteOutlined,
   CheckOutlined,
   CloseOutlined,
-  CheckCircleOutlined,
   PlusOutlined,
   ExportOutlined,
 } from "@ant-design/icons";
 
-const TextComponent = ({ component, updateComponent, deleteComponent }) => {
+const TextComponent = ({
+  component,
+  updateComponent,
+  deleteComponent,
+  preview = false, // New prop with default value
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempValue, setTempValue] = useState(component.value || "");
 
@@ -36,6 +40,15 @@ const TextComponent = ({ component, updateComponent, deleteComponent }) => {
   const handleDelete = () => {
     deleteComponent();
   };
+
+  // If in preview mode, render the text content only
+  if (preview) {
+    return (
+      <div className="preview-text-component p-4 bg-gray-100 rounded-md">
+        <p className="text-lg">{component.value}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="border p-4 rounded-md bg-gray-50">
