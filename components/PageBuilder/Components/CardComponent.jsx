@@ -20,10 +20,10 @@ const renderCardMedia = (media) => {
     return (
       <div className="w-40 h-40 bg-gray-300 flex items-center justify-center rounded-md">
         <Image
-          src="/public/images/Image_Placholder.png"
+          src="/images/Image_Placeholder.png"
           alt="No Image"
-          width={160}
-          height={160}
+          width={360}
+          height={360}
           objectFit="cover"
           className="rounded-md"
           priority
@@ -35,8 +35,8 @@ const renderCardMedia = (media) => {
     <Image
       src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}
       alt={media.title_en || "Card Image"}
-      width={160}
-      height={160}
+      width={360}
+      height={360}
       objectFit="cover"
       className="rounded-md"
       priority
@@ -104,19 +104,19 @@ const CardComponent = ({
     return (
       <div className="preview-card-component p-4 bg-gray-100 rounded-md">
         {cardData ? (
-          <div className="flex items-center border p-4 rounded-md bg-white">
+          <div className="flex items-center gap-44 border p-4 rounded-md bg-white">
             {/* Media on the Left */}
             <div className="mr-4">{renderCardMedia(cardData.media_files)}</div>
             {/* Content on the Right */}
             <div className="flex flex-col">
-              <h2 className="text-xl font-bold">
+              <h2 className="text-xl font-bold text-theme">
                 {cardData.title_en || "Card Title"}
               </h2>
               <Paragraph>
                 {cardData.description_en ? (
                   <div
                     dangerouslySetInnerHTML={{
-                      __html: cardData.description_en,
+                      __html: cardData.description_en.slice(0, 300) + "...",
                     }}
                   />
                 ) : (
@@ -202,10 +202,10 @@ const CardComponent = ({
                 </h2>
                 <Paragraph>
                   {cardData.description_en ? (
-                    cardData.description_en.length > 100 ? (
+                    cardData.description_en.length > 200 ? (
                       <div
                         dangerouslySetInnerHTML={{
-                          __html: cardData.description_en.slice(0, 100) + "...",
+                          __html: cardData.description_en.slice(0, 200) + "...",
                         }}
                       />
                     ) : (

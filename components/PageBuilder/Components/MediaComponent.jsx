@@ -102,15 +102,17 @@ const MediaComponent = ({
               ))}
             </div>
           ) : (
-            <Image
-              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${mediaData.file_path}`}
-              alt={mediaData.title}
-              width={250}
-              height={200}
-              objectFit="cover"
-              preview={false}
-              className="rounded-lg"
-            />
+            <div className="flex justify-center">
+              <Image
+                src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${mediaData.file_path}`}
+                alt={mediaData.title}
+                width={650}
+                height={400}
+                objectFit="cover"
+                preview={false}
+                className="rounded-lg"
+              />
+            </div>
           )
         ) : (
           <p className="text-gray-500">No media selected.</p>

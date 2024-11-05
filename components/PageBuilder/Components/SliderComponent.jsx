@@ -25,8 +25,8 @@ const renderSliderImages = (medias) => {
             : "/images/Image_Placeholder.png"
         }
         alt={media.title || "Slider Image"}
-        width={400}
-        height={200}
+        width={1000}
+        height={400}
         objectFit="cover"
         className="rounded-lg"
         priority
@@ -93,13 +93,13 @@ const SliderComponent = ({
   // If in preview mode, render the slider content only
   if (preview) {
     return (
-      <div className="preview-slider-component p-4 bg-gray-100 rounded-md">
+      <div className="preview-slider-component p-4 bg-gray-100 rounded-md flex justify-center">
         {sliderData?.medias && sliderData.medias.length > 0 ? (
           <div className="w-full">
-            <h2 className="text-xl font-bold text-theme pb-4">
+            {/* <h2 className="text-xl font-bold text-theme pb-4">
               {sliderData.title_en || "Slider Title"}
-            </h2>
-            <Carousel autoplay>
+            </h2> */}
+            <Carousel autoplay dots={false}>
               {renderSliderImages(sliderData.medias)}
             </Carousel>
           </div>

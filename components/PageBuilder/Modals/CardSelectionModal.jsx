@@ -111,7 +111,15 @@ const CardSelectionModal = ({ isVisible, onClose, onSelectCard }) => {
     if (!media || !media.file_path) {
       return (
         <div className="w-24 h-24 bg-gray-300 flex items-center justify-center rounded-md">
-          <span className="text-gray-500">No Image</span>
+          <Image
+            src="/images/Image_Placeholder.png"
+            alt="No Image"
+            width={360}
+            height={360}
+            objectFit="cover"
+            className="rounded-md"
+            priority
+          />
         </div>
       );
     }
@@ -119,8 +127,8 @@ const CardSelectionModal = ({ isVisible, onClose, onSelectCard }) => {
       <Image
         src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}
         alt={media.title_en || "Card Image"}
-        width={96}
-        height={96}
+        width={260}
+        height={260}
         objectFit="cover"
         className="rounded-md"
         priority
@@ -173,7 +181,7 @@ const CardSelectionModal = ({ isVisible, onClose, onSelectCard }) => {
         renderItem={(item) => (
           <List.Item>
             <div
-              className="relative w-full cursor-pointer border rounded-md overflow-hidden flex items-center p-4 bg-white"
+              className="relative w-full cursor-pointer border rounded-md overflow-hidden flex items-center p-4 bg-white gap-10"
               onClick={() => handleCardSelect(item)}
             >
               {/* Media on the Left */}
@@ -187,7 +195,9 @@ const CardSelectionModal = ({ isVisible, onClose, onSelectCard }) => {
                 <Paragraph className="text-sm text-gray-600">
                   {item.description_en ? (
                     <div
-                      dangerouslySetInnerHTML={{ __html: item.description_en }}
+                      dangerouslySetInnerHTML={{
+                        __html: item.description_en.slice(0, 200) + "...",
+                      }}
                     />
                   ) : (
                     "No description."

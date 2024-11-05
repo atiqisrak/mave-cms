@@ -50,15 +50,9 @@ const MenuComponent = ({
     return (
       <div className="preview-menu-component p-4 bg-gray-100 rounded-md">
         {menuData ? (
-          <div className="flex gap-6 items-center">
-            <h2 className="text-xl font-semibold text-theme">
-              {menuData.name}
-            </h2>
-            <ArrowRightOutlined />
-            <Menu mode="horizontal" className="flex-grow">
-              {renderMenuItems(menuData?.menu_items)}
-            </Menu>
-          </div>
+          <Menu mode="horizontal" className="flex-grow">
+            {renderMenuItems(menuData?.menu_items)}
+          </Menu>
         ) : (
           <p className="text-gray-500">No menu selected.</p>
         )}

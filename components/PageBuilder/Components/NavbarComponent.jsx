@@ -53,27 +53,22 @@ const NavbarComponent = ({
     return (
       <div className="preview-navbar-component p-4 bg-gray-100 rounded-md">
         {navbarData ? (
-          <div className="p-4 border rounded-md">
-            <Paragraph strong className="text-theme">
-              Name: {navbarData.menu?.name}
-            </Paragraph>
-            <div className="navbar-preview flex items-center">
-              <Image
-                src={
-                  navbarData?.logo?.file_path
-                    ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${navbarData.logo.file_path}`
-                    : "/images/Image_Placeholder.png"
-                }
-                width={60}
-                height={50}
-                alt="Navbar Logo"
-                objectFit="cover"
-                className="rounded-lg"
-              />
-              <Menu mode="horizontal" className="flex-grow">
-                {renderMenuItems(navbarData?.menu?.menu_items)}
-              </Menu>
-            </div>
+          <div className="p-4 border rounded-md flex bg-white justify-between">
+            <Image
+              src={
+                navbarData?.logo?.file_path
+                  ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${navbarData.logo.file_path}`
+                  : "/images/Image_Placeholder.png"
+              }
+              width={60}
+              height={50}
+              alt="Navbar Logo"
+              objectFit="cover"
+              className="rounded-md"
+            />
+            <Menu mode="horizontal" className="flex-grow ml-5%">
+              {renderMenuItems(navbarData?.menu?.menu_items)}
+            </Menu>
           </div>
         ) : (
           <p className="text-gray-500">No navbar selected.</p>

@@ -1,8 +1,6 @@
 // components/PageBuilder/Components/ComponentRenderer.jsx
 
 import React, { useState } from "react";
-import { Button, Modal, message } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import TextComponent from "./TextComponent";
 import ParagraphComponent from "./ParagraphComponent";
 import MediaComponent from "./MediaComponent";
