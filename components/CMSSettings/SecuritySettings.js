@@ -71,7 +71,7 @@ const SecuritySettings = ({ config, id }) => {
   return (
     <Form form={form} layout="vertical" onFinish={onFinish}>
       {/* Name and Description */}
-      <Form.Item
+      {/* <Form.Item
         name="name"
         label="Name"
         rules={[{ required: true, message: "Name is required." }]}
@@ -85,7 +85,7 @@ const SecuritySettings = ({ config, id }) => {
         rules={[{ required: true, message: "Description is required." }]}
       >
         <Input.TextArea rows={4} disabled />
-      </Form.Item>
+      </Form.Item> */}
 
       {/* Enable Registration */}
       <Form.Item

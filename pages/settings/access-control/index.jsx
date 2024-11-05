@@ -1,10 +1,10 @@
 import { message } from "antd";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import instance from "../../axios";
-import UsersTopbar from "../../components/settings/user/UsersTopbar";
-import RegistrationSettings from "../../components/settings/user/RegistrationSettings";
-import AccessControl from "../../components/settings/userv2/AccessControl";
+import instance from "../../../axios";
+import UsersTopbar from "../../../components/settings/user/UsersTopbar";
+import RegistrationSettings from "../../../components/settings/user/RegistrationSettings";
+import AccessControl from "../../../components/settings/userv2/AccessControl";
 
 export default function AccessControlPage() {
   const router = useRouter();
@@ -13,7 +13,7 @@ export default function AccessControlPage() {
     {
       key: "1",
       title: "Users",
-      link: "/settings/users",
+      link: "/settings/users-settings",
     },
     {
       key: "2",

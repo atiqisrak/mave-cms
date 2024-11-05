@@ -76,7 +76,7 @@ const GoogleMapSelectionModal = ({
   return (
     <Modal
       title="Configure Google Map"
-      visible={isVisible}
+      open={isVisible}
       onOk={handleOk}
       onCancel={onClose}
       width={600}

@@ -123,7 +123,7 @@ const MenuItemsHeader = ({
       {/* Filter Modal */}
       <Modal
         title="Filter Menu Items"
-        visible={isFilterModalVisible}
+        open={isFilterModalVisible}
         onCancel={closeFilterModal}
         footer={null}
       >
@@ -135,15 +135,17 @@ const MenuItemsHeader = ({
             parent_id: undefined,
           }}
         >
-          <Form.Item label="Parent Menu" name="parent_id">
-            <Select placeholder="Select a Parent Menu" allowClear>
-              {filterOptions.parentMenus?.map((menu) => (
-                <Option key={menu.id} value={menu.id}>
-                  {menu.title}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
+          {filterOptions && (
+            <Form.Item label="Parent Menu" name="parent_id">
+              <Select placeholder="Select a Parent Menu" allowClear>
+                {filterOptions?.parentMenus?.map((menu) => (
+                  <Option key={menu.id} value={menu.id}>
+                    {menu.title}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          )}
           {/* Add more filter fields here if needed */}
           <Form.Item>
             <div className="flex justify-end gap-2">

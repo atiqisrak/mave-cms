@@ -1,9 +1,9 @@
 import { message } from "antd";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import instance from "../../axios";
-import UsersTopbar from "../../components/settings/user/UsersTopbar";
-import UserTable from "../../components/settings/userv2/UserTable";
+import instance from "../../../axios";
+import UsersTopbar from "../../../components/settings/user/UsersTopbar";
+import UserTable from "../../../components/settings/userv2/UserTable";
 
 const initialLogs = [
   {
@@ -38,7 +38,7 @@ export default function usersSettingsPage() {
     {
       key: "1",
       title: "Users",
-      link: "/settings/users",
+      link: "/settings/users-settings",
     },
     {
       key: "2",
@@ -58,7 +58,7 @@ export default function usersSettingsPage() {
   ];
 
   useEffect(() => {
-    if (router.pathname === "/settings/users") {
+    if (router.pathname === "/settings/users-settings") {
       setActive("1");
     }
   }, [router.pathname]);

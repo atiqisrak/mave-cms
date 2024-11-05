@@ -15,11 +15,7 @@ const RegistrationSettings = () => {
   };
 
   return (
-    <div
-      style={{
-        padding: "2rem",
-      }}
-    >
+    <div className="p-6 mt-3 bg-white rounded-lg border-2 border-gray-200 h-full">
       <Form
         form={form}
         name="registration-settings"

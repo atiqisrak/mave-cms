@@ -67,6 +67,7 @@ export default function UsersTopbar({
                 color: active === item.key ? "var(--maveyellow)" : "black",
                 textDecoration: active === item.key ? "underline" : "none",
                 textUnderlineOffset: 20,
+                fontWeight: 500,
               }}
             >
               <Link href={item.link} key={item.key}>

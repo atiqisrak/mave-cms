@@ -58,7 +58,9 @@ const Cloudinary = () => {
         "Error fetching media items: ",
         error.response?.data || error.message
       );
-      setError("Failed to load media items.");
+      setError(
+        "Failed to load media items. Check if you have set up the Cloudinary environment variables correctly"
+      );
     } finally {
       setLoading(false);
     }

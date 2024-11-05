@@ -6,7 +6,7 @@ const { TabPane } = Tabs;
 
 const UploadMediaTabs = ({ onUploadSuccess, onSelectMedia, selectionMode }) => {
   return (
-    <Tabs defaultActiveKey="1">
+    <Tabs defaultActiveKey="1" type="card" centered>
       <TabPane tab="Native Storage" key="1">
         <UploadMedia
           onUploadSuccess={onUploadSuccess}

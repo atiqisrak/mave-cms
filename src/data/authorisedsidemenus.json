@@ -117,14 +117,14 @@
             {
                 "id": 22,
                 "icon": "/icons/mave/settings.svg",
-                "link": "/cms-settings",
-                "title": "General"
+                "link": "/settings/cms-settings",
+                "title": "CMS Settings"
             },
             {
                 "id": 24,
                 "icon": "/icons/mave/user-settings.svg",
-                "link": "/settings/users",
-                "title": "User"
+                "link": "/settings/users-settings",
+                "title": "User Settings"
             }
         ]
     },

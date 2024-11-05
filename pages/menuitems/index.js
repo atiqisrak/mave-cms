@@ -157,6 +157,11 @@ const MenuItems = () => {
     startIndex + itemsPerPage
   );
 
+  // return loading if menuItems length is less than or equal to 0
+  if (menuItems.length <= 0) {
+    return <Loader />;
+  }
+
   return (
     <div className="mavecontainer bg-gray-50 rounded-xl">
       <MenuItemsHeader

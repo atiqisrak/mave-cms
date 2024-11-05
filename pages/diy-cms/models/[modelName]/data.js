@@ -190,7 +190,7 @@ export default function ManageData() {
 
       <Modal
         title={`${editingRecord ? "Edit" : "Add"} ${modelName}`}
-        visible={visible}
+        open={visible}
         onCancel={() => setVisible(false)}
         onOk={() => {
           form

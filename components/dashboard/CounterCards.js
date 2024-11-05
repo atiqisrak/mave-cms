@@ -34,7 +34,7 @@ export default function CounterCards() {
       title: "Users",
       value: 60,
       button: "View All",
-      link: "/settings/users",
+      link: "/settings/users-settings",
     },
     {
       title: "Pending Approval",

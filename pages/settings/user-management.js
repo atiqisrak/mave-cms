@@ -51,10 +51,11 @@ const UserManagementPage = () => {
               <Menu
                 mode="horizontal"
                 defaultSelectedKeys={["1"]}
-                style={{ marginBottom: 16 }}
+                style={{ marginBottom: 16, fontWeight: "bold" }}
+                // className="font-bold"
               >
                 <Menu.Item key="1">
-                  <Link href="/settings/users">Users</Link>
+                  <Link href="/settings/users-settings">Users</Link>
                 </Menu.Item>
                 <Menu.Item key="2">
                   <Link href="/settings/user-registration">Registration</Link>
