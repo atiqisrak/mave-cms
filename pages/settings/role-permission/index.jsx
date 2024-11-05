@@ -1,12 +1,12 @@
 import { PlusCircleOutlined, UserSwitchOutlined } from "@ant-design/icons";
-import RolePermission from "../../components/rolepermission/RolePermission";
+import RolePermission from "../../../components/rolepermission/RolePermission";
 import { Button, Menu, Modal } from "antd";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import CreatePermission from "../../components/rolepermission/permission/CreatePermission";
-import CreateRole from "../../components/rolepermission/role/CreateRole";
-import instance from "../../axios";
+import CreatePermission from "../../../components/rolepermission/permission/CreatePermission";
+import CreateRole from "../../../components/rolepermission/role/CreateRole";
+import instance from "../../../axios";
 
 export default function RolePermissionPage() {
   const [active, setActive] = useState("1");
@@ -21,7 +21,7 @@ export default function RolePermissionPage() {
     {
       key: "1",
       title: "Users",
-      link: "/settings/users",
+      link: "/settings/users-settings",
     },
     {
       key: "2",

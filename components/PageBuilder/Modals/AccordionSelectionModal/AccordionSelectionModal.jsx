@@ -91,7 +91,7 @@ const AccordionSelectionModal = ({
   return (
     <Modal
       title="Configure Accordion"
-      visible={isVisible}
+      open={isVisible}
       onOk={handleSave}
       onCancel={onClose}
       width={800}

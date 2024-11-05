@@ -147,7 +147,7 @@ const UploadMedia = ({
         onRemove={handleRemove}
         fileList={fileList}
         listType="picture"
-        className="border-2 border-dashed border-gray-300 rounded-md"
+        className="rounded-md"
       >
         <p className="ant-upload-drag-icon">
           <InboxOutlined className="text-4xl text-gray-400" />
@@ -221,7 +221,7 @@ const UploadMedia = ({
         }}
         disabled={fileList.length === 0 || uploading}
         loading={uploading}
-        className="mt-4 w-full"
+        className="mavebutton mt-4 w-full hidden"
         icon={<UploadOutlined />}
       >
         Start Upload

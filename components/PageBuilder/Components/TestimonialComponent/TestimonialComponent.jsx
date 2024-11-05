@@ -294,7 +294,7 @@ const TestimonialComponent = ({
       {/* Add Testimonial Modal */}
       <Modal
         title="Add Testimonial"
-        visible={isAddModalVisible}
+        open={isAddModalVisible}
         onCancel={() => setIsAddModalVisible(false)}
         footer={null}
         destroyOnClose
@@ -348,7 +348,7 @@ const TestimonialComponent = ({
       {/* Edit Testimonial Modal */}
       <Modal
         title="Edit Testimonial"
-        visible={isEditModalVisible}
+        open={isEditModalVisible}
         onCancel={() => {
           setIsEditModalVisible(false);
           setCurrentEdit(null);

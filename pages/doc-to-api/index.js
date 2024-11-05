@@ -73,7 +73,6 @@ export default function index() {
           </Button>
         </div>
       )}
-      <h1>Hi</h1>
     </div>
   );
 }

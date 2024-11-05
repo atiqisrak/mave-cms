@@ -28,7 +28,7 @@ const AnalyticsSettings = ({ config, id }) => {
   return (
     <Form form={form} layout="vertical" onFinish={onFinish}>
       {/* Name and Description */}
-      <Form.Item
+      {/* <Form.Item
         name="name"
         label="Name"
         rules={[{ required: true, message: "Name is required." }]}
@@ -42,7 +42,7 @@ const AnalyticsSettings = ({ config, id }) => {
         rules={[{ required: true, message: "Description is required." }]}
       >
         <Input.TextArea rows={4} disabled />
-      </Form.Item>
+      </Form.Item> */}
 
       {/* Enable Google Analytics */}
       <Form.Item

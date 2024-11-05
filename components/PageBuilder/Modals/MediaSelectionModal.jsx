@@ -16,6 +16,7 @@ import { EyeOutlined, InboxOutlined, SyncOutlined } from "@ant-design/icons";
 import instance from "../../../axios";
 import Image from "next/image";
 import UploadMediaTabs from "../../Gallery/UploadMediaTabs";
+import Cloudinary from "../../Gallery/Cloudinary";
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -162,124 +163,133 @@ const MediaSelectionModal = ({
       width={900}
       centered
     >
-      <Tabs defaultActiveKey="1" centered>
+      <Tabs defaultActiveKey="1" centered type="card">
         <TabPane tab="Select Media" key="1">
-          {/* Sorting and Search Controls */}
-          <div className="w-auto grid items-center grid-cols-5 gap-4 pb-6">
-            <div className="col-span-1 ml-4">
-              <Switch
-                checkedChildren="Added Last"
-                unCheckedChildren="Added First"
-                checked={sortOrder === "asc"}
-                onChange={(checked) =>
-                  handleSortChange(checked ? "asc" : "desc")
-                }
-              />
-            </div>
-            <div className="col-span-3">
-              <Search
-                placeholder="Search media..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                allowClear
-              />
-            </div>
-            <div className="col-span-1 flex justify-end">
-              <Button
-                className="mavebutton"
-                onClick={fetchMedia}
-                icon={<SyncOutlined />}
-              >
-                Refresh
-              </Button>
-            </div>
-          </div>
-
-          {/* Media List */}
-          <List
-            grid={{
-              gutter: 16,
-              xs: 1,
-              sm: 2,
-              md: 3,
-              lg: 4,
-              xl: 4,
-              xxl: 6,
-            }}
-            dataSource={paginatedMedia}
-            loading={loading}
-            renderItem={(item) => (
-              <List.Item>
-                <div
-                  className={`relative border-2 rounded-md cursor-pointer ${
-                    isItemSelected(item) ? "border-theme" : "border-transparent"
-                  }`}
-                  onClick={() => handleSelection(item)}
-                >
-                  {item.file_type.startsWith("image/") ? (
-                    <Image
-                      src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${item.file_path}`}
-                      alt={item.title || "Media Unavailable"}
-                      width={250}
-                      height={200}
-                      objectFit="cover"
-                      layout="responsive"
-                      className="rounded-md"
-                    />
-                  ) : item.file_type.startsWith("video/") ? (
-                    <div className="relative">
-                      <video
-                        src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${item.file_path}`}
-                        className="rounded-md w-full h-28 object-cover"
-                        muted
-                        preload="metadata"
-                        height={200}
-                      />
-                      <div className="absolute inset-0 flex justify-center items-center">
-                        <EyeOutlined className="text-white text-3xl opacity-75" />
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="document-preview flex flex-col items-center justify-center h-48 bg-gray-100 rounded-md">
-                      <InboxOutlined className="text-4xl text-gray-400" />
-                      <p className="mt-2 text-center text-sm font-medium truncate w-40">
-                        {item.title || item.file_name}
-                      </p>
-                    </div>
-                  )}
-                  <p className="mt-2 text-center text-sm font-medium truncate">
-                    {item.title || "Untitled"}
-                  </p>
-                  {isItemSelected(item) && (
-                    <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center rounded-md">
-                      <span className="text-white text-lg font-semibold">
-                        Selected
-                      </span>
-                    </div>
-                  )}
+          <Tabs defaultActiveKey="1" centered>
+            <TabPane tab="Native Storage" key="1">
+              {/* Sorting and Search Controls */}
+              <div className="w-auto grid items-center grid-cols-5 gap-4 pb-6">
+                <div className="col-span-1 ml-4">
+                  <Switch
+                    checkedChildren="Added Last"
+                    unCheckedChildren="Added First"
+                    checked={sortOrder === "asc"}
+                    onChange={(checked) =>
+                      handleSortChange(checked ? "asc" : "desc")
+                    }
+                  />
                 </div>
-              </List.Item>
-            )}
-          />
+                <div className="col-span-3">
+                  <Search
+                    placeholder="Search media..."
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    allowClear
+                  />
+                </div>
+                <div className="col-span-1 flex justify-end">
+                  <Button
+                    className="mavebutton"
+                    onClick={fetchMedia}
+                    icon={<SyncOutlined />}
+                  >
+                    Refresh
+                  </Button>
+                </div>
+              </div>
 
-          {/* Pagination Controls */}
-          <div className="flex justify-between mt-4">
-            <Pagination
-              current={currentPage}
-              pageSize={pageSize}
-              total={sortedMedia.length}
-              onChange={handlePageChange}
-              showSizeChanger={false}
-              showQuickJumper
-            />
-            <Button
-              className="mavebutton"
-              onClick={handleSubmit}
-              disabled={selectedMedia.length === 0}
-            >
-              Submit
-            </Button>
-          </div>
+              {/* Media List */}
+              <List
+                grid={{
+                  gutter: 16,
+                  xs: 1,
+                  sm: 2,
+                  md: 3,
+                  lg: 4,
+                  xl: 4,
+                  xxl: 6,
+                }}
+                dataSource={paginatedMedia}
+                loading={loading}
+                renderItem={(item) => (
+                  <List.Item>
+                    <div
+                      className={`relative border-2 rounded-md cursor-pointer ${
+                        isItemSelected(item)
+                          ? "border-theme"
+                          : "border-transparent"
+                      }`}
+                      onClick={() => handleSelection(item)}
+                    >
+                      {item.file_type.startsWith("image/") ? (
+                        <Image
+                          src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${item.file_path}`}
+                          alt={item.title || "Media Unavailable"}
+                          width={250}
+                          height={200}
+                          objectFit="cover"
+                          layout="responsive"
+                          className="rounded-md"
+                        />
+                      ) : item.file_type.startsWith("video/") ? (
+                        <div className="relative">
+                          <video
+                            src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${item.file_path}`}
+                            className="rounded-md w-full h-28 object-cover"
+                            muted
+                            preload="metadata"
+                            height={200}
+                          />
+                          <div className="absolute inset-0 flex justify-center items-center">
+                            <EyeOutlined className="text-white text-3xl opacity-75" />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="document-preview flex flex-col items-center justify-center h-48 bg-gray-100 rounded-md">
+                          <InboxOutlined className="text-4xl text-gray-400" />
+                          <p className="mt-2 text-center text-sm font-medium truncate w-40">
+                            {item.title || item.file_name}
+                          </p>
+                        </div>
+                      )}
+                      <p className="mt-2 text-center text-sm font-medium truncate">
+                        {item.title || "Untitled"}
+                      </p>
+                      {isItemSelected(item) && (
+                        <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center rounded-md">
+                          <span className="text-white text-lg font-semibold">
+                            Selected
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </List.Item>
+                )}
+              />
+
+              {/* Pagination Controls */}
+              <div className="flex justify-between mt-4">
+                <Pagination
+                  current={currentPage}
+                  pageSize={pageSize}
+                  total={sortedMedia.length}
+                  onChange={handlePageChange}
+                  showSizeChanger={false}
+                  showQuickJumper
+                />
+                <Button
+                  className="mavebutton"
+                  onClick={handleSubmit}
+                  disabled={selectedMedia.length === 0}
+                >
+                  Submit
+                </Button>
+              </div>
+            </TabPane>
+            <TabPane tab="Cloudinary" key="2">
+              <Cloudinary />
+            </TabPane>
+          </Tabs>
         </TabPane>
 
         <TabPane tab="Upload Media" key="2">

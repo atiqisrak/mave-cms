@@ -63,7 +63,7 @@ const VideoSelectionModal = ({
   return (
     <Modal
       title="Select Video"
-      visible={isVisible}
+      open={isVisible}
       onOk={handleOk}
       onCancel={() => {
         form.resetFields();

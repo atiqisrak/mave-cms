@@ -2,7 +2,7 @@
     {
         "id": 2,
         "name": "Dashboard",
-        "link": "/dashboard"
+        "link": "/"
     },
     {
         "id": 3,
@@ -16,7 +16,7 @@
     },
     {
         "id": 5,
-        "name": "Chat with AI",
-        "link": "/write-ai"
+        "name": "MAVE AI",
+        "link": "/build-with-ai"
     }
 ]
