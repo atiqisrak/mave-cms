@@ -16,7 +16,7 @@ const PagePreview = ({ pageData, open, setOpen }) => {
 
   return (
     <Drawer
-      title={<Title level={3}>Page Preview</Title>}
+      title="Page Preview"
       open={open}
       onClose={handleClose}
       footer={null}

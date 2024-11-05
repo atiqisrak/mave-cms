@@ -41,7 +41,10 @@ const FooterComponent = ({
       <div className="preview-footer-component p-4 bg-gray-100 rounded-md">
         {footerData ? (
           <div className="p-4 border rounded-md bg-white">
-            <Paragraph strong>{footerData.page_name_en}</Paragraph>
+            {/* <Paragraph strong>{footerData.page_name_en}</Paragraph> */}
+            <h2 className="text-xl font-semibold text-theme">
+              {footerData.page_name_en}
+            </h2>
             {footerData.logo && (
               <Image
                 src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${footerData.logo.file_path}`}

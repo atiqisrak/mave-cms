@@ -46,7 +46,10 @@ const ParagraphComponent = ({
   if (preview) {
     return (
       <div className="preview-paragraph-component p-4 bg-gray-100 rounded-md">
-        <div dangerouslySetInnerHTML={{ __html: component.value }} />
+        <div
+          className="text-lg"
+          dangerouslySetInnerHTML={{ __html: component.value }}
+        />
       </div>
     );
   }

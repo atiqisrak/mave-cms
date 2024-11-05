@@ -44,8 +44,8 @@ const TextComponent = ({
   // If in preview mode, render the text content only
   if (preview) {
     return (
-      <div className="preview-text-component p-4 bg-gray-100 rounded-md">
-        <p className="text-lg">{component.value}</p>
+      <div className="preview-text-component p-4 bg-gray-100 rounded-md text-center">
+        <h1 className="text-3xl font-bold">{component.value}</h1>
       </div>
     );
   }
