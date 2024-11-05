@@ -44,7 +44,12 @@ const renderCardMedia = (media) => {
   );
 };
 
-const CardComponent = ({ component, updateComponent, deleteComponent }) => {
+const CardComponent = ({
+  component,
+  updateComponent,
+  deleteComponent,
+  preview = false, // New prop with default value
+}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [cardData, setCardData] = useState(component._mave);
   const [selectedCardData, setSelectedCardData] = useState(null);
@@ -93,6 +98,39 @@ const CardComponent = ({ component, updateComponent, deleteComponent }) => {
   const handleDelete = () => {
     deleteComponent();
   };
+
+  // If in preview mode, render the card content only
+  if (preview) {
+    return (
+      <div className="preview-card-component p-4 bg-gray-100 rounded-md">
+        {cardData ? (
+          <div className="flex items-center border p-4 rounded-md bg-white">
+            {/* Media on the Left */}
+            <div className="mr-4">{renderCardMedia(cardData.media_files)}</div>
+            {/* Content on the Right */}
+            <div className="flex flex-col">
+              <h2 className="text-xl font-bold">
+                {cardData.title_en || "Card Title"}
+              </h2>
+              <Paragraph>
+                {cardData.description_en ? (
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: cardData.description_en,
+                    }}
+                  />
+                ) : (
+                  "No description."
+                )}
+              </Paragraph>
+            </div>
+          </div>
+        ) : (
+          <p className="text-gray-500">No card selected.</p>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="border p-4 rounded-md bg-gray-50">
@@ -181,9 +219,6 @@ const CardComponent = ({ component, updateComponent, deleteComponent }) => {
                     "No description."
                   )}
                 </Paragraph>
-                {/* <a href={cardData.link_url} className="text-blue-500">
-                  {cardData.link_url}
-                </a> */}
               </div>
             </div>
           ) : (
@@ -222,9 +257,6 @@ const CardComponent = ({ component, updateComponent, deleteComponent }) => {
                     "No description."
                   )}
                 </Paragraph>
-                {/* <a href={selectedCardData.link_url} className="text-blue-500">
-                  {selectedCardData.link_url}
-                </a> */}
               </div>
             </div>
           </div>

@@ -1,22 +1,62 @@
-import { Modal } from "antd";
+// components/PageBuilder/PagePreview.jsx
+
 import React from "react";
+import { Drawer, Modal, Typography } from "antd";
+import SectionList from "./Sections/SectionList";
+import ComponentRenderer from "./Components/ComponentRenderer";
+
+const { Title } = Typography;
 
 const PagePreview = ({ pageData, open, setOpen }) => {
+  if (!pageData) return null;
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
-    <div>
-      <Modal
-        title="Page Preview"
-        open={open}
-        onCancel={() => setOpen(false)}
-        footer={null}
-        width={1000}
-      >
-        <div>
-          {/* Display the page data here */}
-          <pre>{JSON.stringify(pageData?.body, null, 2)}</pre>
-        </div>
-      </Modal>
-    </div>
+    <Drawer
+      title={<Title level={3}>Page Preview</Title>}
+      open={open}
+      onClose={handleClose}
+      footer={null}
+      width="70%"
+      style={{ top: 20 }}
+    >
+      <div className="preview-container">
+        {/* Render each section with preview mode */}
+        {pageData.body && pageData.body.length > 0 ? (
+          pageData.body.map((section, index) => (
+            <div key={section._id || index} className="mb-8">
+              <Title level={4} style={{ fontFamily: section.font || "Arial" }}>
+                {section.sectionTitle}
+              </Title>
+              {/* Render components within the section */}
+              {section.data && section.data.length > 0 ? (
+                section.data.map((component, compIndex) => (
+                  <ComponentRenderer
+                    key={component._id || compIndex}
+                    component={component}
+                    index={compIndex}
+                    components={section.data}
+                    setComponents={() => {}} // No-op since it's read-only
+                    preview={true} // Set preview mode
+                  />
+                ))
+              ) : (
+                <Typography.Paragraph>
+                  No components in this section.
+                </Typography.Paragraph>
+              )}
+            </div>
+          ))
+        ) : (
+          <Typography.Paragraph>
+            No sections available for preview.
+          </Typography.Paragraph>
+        )}
+      </div>
+    </Drawer>
   );
 };
 

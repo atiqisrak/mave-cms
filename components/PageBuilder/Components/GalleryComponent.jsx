@@ -1,15 +1,23 @@
 // components/PageBuilder/Components/GalleryComponent.jsx
 
 import React, { useState, useEffect } from "react";
-import { Button, Modal, Typography, message } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Button, Modal, Typography, message, Carousel, Popconfirm } from "antd";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  ExportOutlined,
+} from "@ant-design/icons";
 import GallerySelectionModal from "../Modals/GallerySelectionModal/GallerySelectionModal";
 import Image from "next/image";
-import { Carousel } from "antd";
 
 const { Paragraph } = Typography;
 
-const GalleryComponent = ({ component, updateComponent, deleteComponent }) => {
+const GalleryComponent = ({
+  component,
+  updateComponent,
+  deleteComponent,
+  preview = false, // New prop with default value
+}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [galleryData, setGalleryData] = useState(component._mave || {});
   const [lightboxVisible, setLightboxVisible] = useState(false);
@@ -144,6 +152,38 @@ const GalleryComponent = ({ component, updateComponent, deleteComponent }) => {
     }
   };
 
+  if (preview) {
+    return (
+      <div className="preview-gallery-component p-4 bg-gray-100 rounded-md">
+        {renderGallery()}
+        {/* Lightbox Modal */}
+        {currentImage && (
+          <Modal
+            open={lightboxVisible}
+            footer={null}
+            onCancel={() => setLightboxVisible(false)}
+            centered
+            width="60%"
+          >
+            <Image
+              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${currentImage.file_path}`}
+              alt={currentImage.alt || "Gallery Image"}
+              width={1200}
+              height={800}
+              objectFit="contain"
+              layout="responsive"
+            />
+            {currentImage.title && (
+              <Typography.Title level={4}>
+                {currentImage.title}
+              </Typography.Title>
+            )}
+          </Modal>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="border p-4 rounded-md bg-gray-50">
       {/* Header with Component Title and Action Buttons */}
@@ -155,7 +195,14 @@ const GalleryComponent = ({ component, updateComponent, deleteComponent }) => {
             onClick={() => setIsModalVisible(true)}
             className="mr-2"
           />
-          <Button icon={<DeleteOutlined />} onClick={handleDelete} danger />
+          <Popconfirm
+            title="Are you sure you want to delete this gallery?"
+            onConfirm={handleDelete}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button icon={<DeleteOutlined />} className="mavecancelbutton" />
+          </Popconfirm>
         </div>
       </div>
 
@@ -169,13 +216,13 @@ const GalleryComponent = ({ component, updateComponent, deleteComponent }) => {
           footer={null}
           onCancel={() => setLightboxVisible(false)}
           centered
-          width="40%"
+          width="60%"
         >
           <Image
             src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${currentImage.file_path}`}
             alt={currentImage.alt || "Gallery Image"}
-            width={800}
-            height={600}
+            width={1200}
+            height={800}
             objectFit="contain"
             layout="responsive"
           />
@@ -186,12 +233,14 @@ const GalleryComponent = ({ component, updateComponent, deleteComponent }) => {
       )}
 
       {/* Gallery Selection Modal */}
-      <GallerySelectionModal
-        isVisible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
-        onSelectGallery={handleSelectGallery}
-        initialGallery={galleryData}
-      />
+      {!preview && (
+        <GallerySelectionModal
+          isVisible={isModalVisible}
+          onClose={() => setIsModalVisible(false)}
+          onSelectGallery={handleSelectGallery}
+          initialGallery={galleryData}
+        />
+      )}
     </div>
   );
 };

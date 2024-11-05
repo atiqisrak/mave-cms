@@ -8,7 +8,12 @@ import IconListSelectionModal from "../../Modals/IconListSelectionModal/IconList
 
 const { Option } = Select;
 
-const IconListComponent = ({ component, updateComponent, deleteComponent }) => {
+const IconListComponent = ({
+  component,
+  updateComponent,
+  deleteComponent,
+  preview = false, // New prop with default value
+}) => {
   const [items, setItems] = useState(component._mave?.items || []);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [orientation, setOrientation] = useState(
@@ -33,7 +38,9 @@ const IconListComponent = ({ component, updateComponent, deleteComponent }) => {
   }, [items, orientation, iconSize, iconColor]);
 
   const handleAddItem = () => {
-    setIsModalVisible(true);
+    if (!preview) {
+      setIsModalVisible(true);
+    }
   };
 
   const handleSelectIcon = (className) => {
@@ -52,55 +59,77 @@ const IconListComponent = ({ component, updateComponent, deleteComponent }) => {
   };
 
   const handleUpdateItem = (id, updatedItem) => {
-    const newItems = items.map((item) => (item.id === id ? updatedItem : item));
-    setItems(newItems);
-    // message.success("Item updated successfully.");
+    if (!preview) {
+      const newItems = items.map((item) =>
+        item.id === id ? updatedItem : item
+      );
+      setItems(newItems);
+      // message.success("Item updated successfully.");
+    }
   };
 
   const handleDeleteItem = (id) => {
-    const newItems = items.filter((item) => item.id !== id);
-    setItems(newItems);
-    message.success("Item deleted successfully.");
+    if (!preview) {
+      const newItems = items.filter((item) => item.id !== id);
+      setItems(newItems);
+      message.success("Item deleted successfully.");
+    }
   };
 
   const handleOrientationChange = (value) => {
-    setOrientation(value);
+    if (!preview) {
+      setOrientation(value);
+    }
   };
 
   const handleIconSizeChange = (value) => {
-    setIconSize(value);
+    if (!preview) {
+      setIconSize(value);
+    }
   };
 
   const handleIconColorChange = (e) => {
-    setIconColor(e.target.value);
+    if (!preview) {
+      setIconColor(e.target.value);
+    }
   };
 
-  const handleDelete = () => {
-    deleteComponent();
+  const handleDeleteComponent = () => {
+    if (!preview) {
+      deleteComponent();
+    }
   };
 
   return (
     <div className="border p-4 rounded-md bg-gray-50">
-      <Space direction="vertical" style={{ width: "100%" }}>
-        <div className="flex justify-between items-center">
+      {!preview && (
+        <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-semibold">Icon List Component</h3>
-          <div className="flex justify-end gap-2">
+          <div>
             <Popconfirm
               title="Are you sure you want to delete this component?"
-              onConfirm={handleDelete}
+              onConfirm={handleDeleteComponent}
               okText="Yes"
               cancelText="No"
             >
-              <Button className="mavecancelbutton" icon={<DeleteOutlined />} />
+              <Button
+                className="mavecancelbutton"
+                icon={<DeleteOutlined />}
+                danger
+              />
             </Popconfirm>
           </div>
         </div>
-        {/* Config */}
-        <div className="flex flex-wrap gap-4">
+      )}
+
+      {/* Configurations (Only in Edit Mode) */}
+      {!preview && (
+        <div className="flex flex-wrap gap-4 mb-4">
           <Select
             value={orientation}
             onChange={handleOrientationChange}
             style={{ width: 150 }}
+            disabled={preview}
           >
             <Option value="vertical">Vertical</Option>
             <Option value="horizontal">Horizontal</Option>
@@ -109,6 +138,7 @@ const IconListComponent = ({ component, updateComponent, deleteComponent }) => {
             value={iconSize}
             onChange={handleIconSizeChange}
             style={{ width: 150 }}
+            disabled={preview}
           >
             <Option value={16}>16px</Option>
             <Option value={24}>24px</Option>
@@ -126,18 +156,20 @@ const IconListComponent = ({ component, updateComponent, deleteComponent }) => {
               onChange={handleIconColorChange}
               title="Select Icon Color"
               className="w-10 h-10 border rounded-md"
+              disabled={preview}
             />
           </div>
         </div>
+      )}
 
-        {/* Icon List Display */}
-        <div
-          className={`flex ${
-            orientation === "vertical" ? "flex-col" : "flex-row"
-          } gap-4`}
-        >
-          {items.length > 0 ? (
-            items.map((item) => (
+      {/* Icon List Display */}
+      <div
+        className={`flex ${
+          orientation === "vertical" ? "flex-col" : "flex-row"
+        } gap-4`}
+      >
+        {items.length > 0
+          ? items.map((item) => (
               <IconListItem
                 key={item.id}
                 item={item}
@@ -147,11 +179,15 @@ const IconListComponent = ({ component, updateComponent, deleteComponent }) => {
                   handleUpdateItem(item.id, updatedItem)
                 }
                 onDelete={() => handleDeleteItem(item.id)}
+                preview={preview}
               />
             ))
-          ) : (
-            <p>No icons added. Click "Add Icon" to get started.</p>
-          )}
+          : !preview && (
+              <Paragraph>
+                No icons added. Click "Add Icon" to get started.
+              </Paragraph>
+            )}
+        {!preview && (
           <Button
             type="dashed"
             icon={<PlusOutlined />}
@@ -160,15 +196,17 @@ const IconListComponent = ({ component, updateComponent, deleteComponent }) => {
           >
             Add Icon
           </Button>
-        </div>
-      </Space>
+        )}
+      </div>
 
       {/* Icon Selection Modal */}
-      <IconListSelectionModal
-        isVisible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
-        onSelectIcon={(className) => handleSelectIcon(className)}
-      />
+      {!preview && (
+        <IconListSelectionModal
+          isVisible={isModalVisible}
+          onClose={() => setIsModalVisible(false)}
+          onSelectIcon={(className) => handleSelectIcon(className)}
+        />
+      )}
     </div>
   );
 };

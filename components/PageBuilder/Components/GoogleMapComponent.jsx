@@ -1,8 +1,12 @@
 // components/PageBuilder/Components/GoogleMapComponent.jsx
 
 import React, { useState, useEffect } from "react";
-import { Button, Modal, Typography, message } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Button, Modal, Typography, message, Popconfirm } from "antd";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  ExportOutlined,
+} from "@ant-design/icons";
 import GoogleMapSelectionModal from "../Modals/GoogleMapSelectionModal/GoogleMapSelectionModal";
 
 const { Paragraph } = Typography;
@@ -11,6 +15,7 @@ const GoogleMapComponent = ({
   component,
   updateComponent,
   deleteComponent,
+  preview = false, // New prop with default value
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [mapData, setMapData] = useState(component._mave || {});
@@ -59,6 +64,39 @@ const GoogleMapComponent = ({
     return "";
   };
 
+  if (preview) {
+    return (
+      <div className="preview-google-map-component p-4 bg-gray-100 rounded-md">
+        {mapData.mapUrl ? (
+          getEmbedUrl() ? (
+            <div
+              className="map-container"
+              style={{ width: "100%", height: "400px" }}
+            >
+              <iframe
+                src={getEmbedUrl()}
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Google Map"
+              ></iframe>
+            </div>
+          ) : (
+            <Paragraph>
+              Unable to load map. Please check your API key and map
+              configuration.
+            </Paragraph>
+          )
+        ) : (
+          <Paragraph className="text-gray-500">No map configured.</Paragraph>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="border p-4 rounded-md bg-gray-50">
       {/* Header with Component Title and Action Buttons */}
@@ -69,18 +107,31 @@ const GoogleMapComponent = ({
             icon={<EditOutlined />}
             onClick={() => setIsModalVisible(true)}
             className="mr-2"
+            disabled={preview}
           />
-          <Button icon={<DeleteOutlined />} onClick={handleDelete} danger />
+          <Popconfirm
+            title="Are you sure you want to delete this map?"
+            onConfirm={handleDelete}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button
+              icon={<DeleteOutlined />}
+              className="mavecancelbutton"
+              danger
+              disabled={preview}
+            />
+          </Popconfirm>
         </div>
       </div>
 
       {/* Map Display */}
       {mapData.mapUrl ? (
-        <div
-          className="map-container"
-          style={{ width: "100%", height: "400px" }}
-        >
-          {getEmbedUrl() ? (
+        getEmbedUrl() ? (
+          <div
+            className="map-container"
+            style={{ width: "100%", height: "400px" }}
+          >
             <iframe
               src={getEmbedUrl()}
               width="100%"
@@ -91,24 +142,25 @@ const GoogleMapComponent = ({
               referrerPolicy="no-referrer-when-downgrade"
               title="Google Map"
             ></iframe>
-          ) : (
-            <Paragraph>
-              Unable to load map. Please check your API key and map
-              configuration.
-            </Paragraph>
-          )}
-        </div>
+          </div>
+        ) : (
+          <Paragraph>
+            Unable to load map. Please check your API key and map configuration.
+          </Paragraph>
+        )
       ) : (
         <Paragraph>No map configured.</Paragraph>
       )}
 
       {/* Google Map Selection Modal */}
-      <GoogleMapSelectionModal
-        isVisible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
-        onSelectMap={handleSelectMap}
-        initialMap={mapData}
-      />
+      {!preview && (
+        <GoogleMapSelectionModal
+          isVisible={isModalVisible}
+          onClose={() => setIsModalVisible(false)}
+          onSelectMap={handleSelectMap}
+          initialMap={mapData}
+        />
+      )}
     </div>
   );
 };

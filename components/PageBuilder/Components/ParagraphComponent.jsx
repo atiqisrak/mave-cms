@@ -7,7 +7,6 @@ import {
   DeleteOutlined,
   CheckOutlined,
   CloseOutlined,
-  CheckCircleOutlined,
   PlusOutlined,
   ExportOutlined,
 } from "@ant-design/icons";
@@ -17,6 +16,7 @@ const ParagraphComponent = ({
   component,
   updateComponent,
   deleteComponent,
+  preview = false, // New prop with default value
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempValue, setTempValue] = useState(component.value || "");
@@ -41,6 +41,15 @@ const ParagraphComponent = ({
   const handleDelete = () => {
     deleteComponent();
   };
+
+  // If in preview mode, render the paragraph content only
+  if (preview) {
+    return (
+      <div className="preview-paragraph-component p-4 bg-gray-100 rounded-md">
+        <div dangerouslySetInnerHTML={{ __html: component.value }} />
+      </div>
+    );
+  }
 
   return (
     <div className="border p-4 rounded-md bg-gray-50">

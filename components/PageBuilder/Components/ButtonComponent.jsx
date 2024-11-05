@@ -1,14 +1,19 @@
 // components/PageBuilder/Components/ButtonComponent.jsx
 
 import React, { useState, useEffect } from "react";
-import { Button, Modal, Typography, message } from "antd";
+import { Button, Modal, Typography, message, Popconfirm } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import ButtonSelectionModal from "../Modals/ButtonSelectionModal/ButtonSelectionModal";
 import { useRouter } from "next/router";
 
 const { Paragraph } = Typography;
 
-const ButtonComponent = ({ component, updateComponent, deleteComponent }) => {
+const ButtonComponent = ({
+  component,
+  updateComponent,
+  deleteComponent,
+  preview = false, // New prop with default value
+}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [buttonData, setButtonData] = useState(component._mave || {});
   const router = useRouter();
@@ -29,12 +34,7 @@ const ButtonComponent = ({ component, updateComponent, deleteComponent }) => {
   };
 
   const handleDelete = () => {
-    Modal.confirm({
-      title: "Are you sure you want to delete this button?",
-      onOk: deleteComponent,
-      okText: "Yes",
-      cancelText: "No",
-    });
+    deleteComponent();
   };
 
   const handleButtonClick = () => {
@@ -66,6 +66,27 @@ const ButtonComponent = ({ component, updateComponent, deleteComponent }) => {
     return null;
   };
 
+  if (preview) {
+    return (
+      <div className="preview-button-component p-4 bg-gray-100 rounded-md">
+        {buttonData.text ? (
+          <div style={{ textAlign: "left" }}>
+            <Button
+              className="mavebutton"
+              icon={getButtonIcon()}
+              onClick={handleButtonClick}
+              aria-label={buttonData.text}
+            >
+              {buttonData.text}
+            </Button>
+          </div>
+        ) : (
+          <Paragraph className="text-gray-500">No button configured.</Paragraph>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="border p-4 rounded-md bg-gray-50">
       {/* Header with Component Title and Action Buttons */}
@@ -77,7 +98,14 @@ const ButtonComponent = ({ component, updateComponent, deleteComponent }) => {
             onClick={() => setIsModalVisible(true)}
             className="mr-2"
           />
-          <Button icon={<DeleteOutlined />} onClick={handleDelete} danger />
+          <Popconfirm
+            title="Are you sure you want to delete this button?"
+            onConfirm={handleDelete}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button icon={<DeleteOutlined />} className="mavecancelbutton" />
+          </Popconfirm>
         </div>
       </div>
 
