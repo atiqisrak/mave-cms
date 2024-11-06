@@ -15,7 +15,10 @@ const SEOSettings = ({ config, id }) => {
   const onFinish = async (values) => {
     setSaving(true);
     try {
-      await instance.put(`/settings/${id}`, { config: values });
+      await instance.put(`/settings/${id}`, {
+        type: "seo-settings",
+        config: values,
+      });
       message.success("SEO Settings updated successfully!");
     } catch (error) {
       console.error("Error updating SEO Settings:", error);

@@ -25,7 +25,10 @@ const BackupSettings = ({ config, id }) => {
   const onFinish = async (values) => {
     setSaving(true);
     try {
-      await instance.put(`/settings/${id}`, { config: values });
+      await instance.put(`/settings/${id}`, {
+        type: "backup-settings",
+        config: values,
+      });
       message.success("Backup Settings updated successfully!");
     } catch (error) {
       console.error("Error updating Backup Settings:", error);

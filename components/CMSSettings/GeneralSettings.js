@@ -1,16 +1,7 @@
 // components/CMSSettings/GeneralSettings.js
 
 import React, { useEffect, useState } from "react";
-import {
-  Form,
-  Input,
-  Select,
-  Switch,
-  Button,
-  message,
-  ColorPicker,
-  Tooltip,
-} from "antd";
+import { Form, Input, Select, Switch, Button, message, Tooltip } from "antd";
 import instance from "../../axios";
 import { setThemeColors } from "../../utils/themeUtils";
 
@@ -19,35 +10,11 @@ const { Option } = Select;
 const GeneralSettings = ({ config, id }) => {
   const [form] = Form.useForm();
   const [saving, setSaving] = useState(false);
-  const [currentThemeColor, setCurrentThemeColor] = useState(
-    config.themecolor || "#fcb813"
-  );
-  const [currentThemeAccent, setCurrentThemeAccent] = useState(
-    config.themeaccent || "#e3a611"
-  );
 
-  useEffect(() => {
-    form.setFieldsValue(config);
-  }, [config, form]);
+  console.log("Config:", config);
 
-  const onFinish = async (values) => {
-    setSaving(true);
-    try {
-      await instance.put(`/settings/${id}`, {
-        type: "general-settings",
-        config: values,
-      });
-      message.success("General Settings updated successfully!");
-    } catch (error) {
-      console.error("Error updating General Settings:", error);
-      message.error("Failed to update General Settings.");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const theme_colors = [
-    //
+  // Define theme options with theme and accent colors
+  const theme_options = [
     {
       name: "Default",
       theme: "#fcb813",
@@ -80,21 +47,63 @@ const GeneralSettings = ({ config, id }) => {
     },
   ];
 
-  const handleThemeChange = (theme, accent) => {
-    setCurrentThemeColor(theme);
-    setCurrentThemeAccent(accent);
-    setThemeColors(theme, accent);
+  useEffect(() => {
+    // Assuming config prop has 'type', 'config', 'media_list', 'created_by'
+    form.setFieldsValue(config); // Set form fields with config
+    // Apply the initial theme
+    if (config.themecolor && config.themeaccent) {
+      setThemeColors(config.themecolor, config.themeaccent);
+    }
+  }, [config, form]);
+
+  const onFinish = async (values) => {
+    setSaving(true);
+    try {
+      // Construct the payload
+      const payload = {
+        type: "general-settings",
+        config: values,
+        media_list: config.media_list || null,
+        created_by: config.created_by || null,
+      };
+
+      await instance.put(`/settings/${id}`, payload);
+      message.success("General Settings updated successfully!");
+
+      // Apply the updated theme
+      if (values.themecolor && values.themeaccent) {
+        setThemeColors(values.themecolor, values.themeaccent);
+      }
+    } catch (error) {
+      console.error("Error updating General Settings:", error);
+      message.error("Failed to update General Settings.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleThemeSelection = (value) => {
+    const selectedTheme = theme_options.find((theme) => theme.name === value);
+    if (selectedTheme) {
+      // Update both themecolor and themeaccent in the form
+      form.setFieldsValue({
+        themecolor: selectedTheme.theme,
+        themeaccent: selectedTheme.accent,
+      });
+      // Apply the theme colors immediately
+      setThemeColors(selectedTheme.theme, selectedTheme.accent);
+    }
   };
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinish}>
       {/* Name and Description */}
-      {/* <Form.Item
+      <Form.Item
         name="name"
         label="Name"
         rules={[{ required: true, message: "Name is required." }]}
       >
-        <Input disabled />
+        <Input />
       </Form.Item>
 
       <Form.Item
@@ -102,8 +111,8 @@ const GeneralSettings = ({ config, id }) => {
         label="Description"
         rules={[{ required: true, message: "Description is required." }]}
       >
-        <Input.TextArea rows={4} disabled />
-      </Form.Item> */}
+        <Input.TextArea rows={4} />
+      </Form.Item>
 
       {/* Site Title */}
       <Form.Item
@@ -251,63 +260,36 @@ const GeneralSettings = ({ config, id }) => {
         <Switch />
       </Form.Item>
 
-      {/* themecolor and themeaccent */}
-      <Form.Item label="Theme Color" name="themecolor" required>
+      {/* Single Theme Selection */}
+      <Form.Item
+        label="Theme"
+        name="theme"
+        rules={[{ required: true, message: "Theme selection is required." }]}
+      >
         <Select
-          placeholder="Select Theme Color"
+          placeholder="Select Theme"
           onChange={(value) => {
-            const selectedTheme = theme_colors.find(
-              (theme) => theme.theme === value
+            const selectedTheme = theme_options.find(
+              (theme) => theme.name === value
             );
             if (selectedTheme) {
-              handleThemeChange(selectedTheme.theme, selectedTheme.accent);
-              form.setFieldsValue({ themeaccent: selectedTheme.accent });
+              handleThemeSelection(selectedTheme.theme, selectedTheme.accent);
             }
           }}
         >
-          {theme_colors?.map((color) => (
-            <Option key={color.name} value={color.theme}>
+          {theme_options.map((theme) => (
+            <Option key={theme.name} value={theme.name}>
               <div
                 style={{
                   display: "inline-block",
                   width: "16px",
                   height: "16px",
-                  backgroundColor: color.theme,
+                  backgroundColor: theme.theme,
                   marginRight: "8px",
                   borderRadius: "50%",
                 }}
               ></div>
-              {color.name}
-            </Option>
-          ))}
-        </Select>
-      </Form.Item>
-
-      <Form.Item label="Theme Accent" name="themeaccent" required>
-        <Select
-          placeholder="Select Theme Accent"
-          onChange={(value) => {
-            const selectedAccent = theme_colors.find(
-              (theme) => theme.accent === value
-            );
-            if (selectedAccent) {
-              handleThemeChange(selectedAccent.theme, selectedAccent.accent);
-            }
-          }}
-        >
-          {theme_colors?.map((color) => (
-            <Option key={color.accent} value={color.accent}>
-              <div
-                style={{
-                  display: "inline-block",
-                  width: "16px",
-                  height: "16px",
-                  backgroundColor: color.accent,
-                  marginRight: "8px",
-                  borderRadius: "50%",
-                }}
-              ></div>
-              {color.name}
+              {theme.name}
             </Option>
           ))}
         </Select>
