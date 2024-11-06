@@ -1,0 +1,20 @@
+/* components/Plugins/MaveEvents/Calendar/CalendarView.module.css */
+
+.events {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.events li {
+  margin-bottom: 5px;
+}
+
+.events li a {
+  color: #1890ff;
+  text-decoration: none;
+}
+
+.events li a:hover {
+  text-decoration: underline;
+}

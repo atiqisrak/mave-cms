@@ -15,9 +15,9 @@ import Head from "next/head";
 import { AuthProvider } from "../src/context/AuthContext";
 import { MenuRefreshProvider } from "../src/context/MenuRefreshContext";
 import { ThemeProvider } from "../src/context/ThemeContext";
-import { Footer } from "antd/es/layout/layout";
 import Link from "next/link";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import MaveEventsPlugin from "../plugins/MaveEvents";
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -27,16 +27,18 @@ function MyApp({ Component, pageProps }) {
       </Head>
       <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
         <AuthProvider>
-          <MenuRefreshProvider>
-            <ThemeProvider>
-              <Site>
-                <Component {...pageProps} />
-              </Site>
-            </ThemeProvider>
-          </MenuRefreshProvider>
+          <MaveEventsPlugin>
+            <MenuRefreshProvider>
+              <ThemeProvider>
+                <Site>
+                  <Component {...pageProps} />
+                </Site>
+              </ThemeProvider>
+            </MenuRefreshProvider>
+          </MaveEventsPlugin>
         </AuthProvider>
       </GoogleOAuthProvider>
-      <Footer className="mave-footer">
+      <footer className="mave-footer">
         © 2024{" "}
         <Link
           href="https://www.linkedin.com/in/atiq-israk/"
@@ -53,7 +55,7 @@ function MyApp({ Component, pageProps }) {
         >
           Ether Technologies
         </Link>
-      </Footer>
+      </footer>
     </>
   );
 }
