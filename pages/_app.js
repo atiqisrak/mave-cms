@@ -15,6 +15,9 @@ import Head from "next/head";
 import { AuthProvider } from "../src/context/AuthContext";
 import { MenuRefreshProvider } from "../src/context/MenuRefreshContext";
 import { ThemeProvider } from "../src/context/ThemeContext";
+import { Footer } from "antd/es/layout/layout";
+import Link from "next/link";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -22,37 +25,35 @@ function MyApp({ Component, pageProps }) {
       <Head>
         <title>Mave CMS</title>
       </Head>
-      <AuthProvider>
-        <MenuRefreshProvider>
-          <ThemeProvider>
-            {" "}
-            {/* Wrap with ThemeProvider */}
-            <Site>
-              <Component {...pageProps} />
-            </Site>
-          </ThemeProvider>
-        </MenuRefreshProvider>
-      </AuthProvider>
-      <footer className="mave-footer">
-        <p>
-          © 2024{" "}
-          <a
-            href="https://www.linkedin.com/in/atiq-israk/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            MAVE CMS
-          </a>{" "}
-          | All rights reserved | Powered by{" "}
-          <a
-            href="https://www.ethertech.ltd"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Ether Technologies
-          </a>
-        </p>
-      </footer>
+      <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
+        <AuthProvider>
+          <MenuRefreshProvider>
+            <ThemeProvider>
+              <Site>
+                <Component {...pageProps} />
+              </Site>
+            </ThemeProvider>
+          </MenuRefreshProvider>
+        </AuthProvider>
+      </GoogleOAuthProvider>
+      <Footer className="mave-footer">
+        © 2024{" "}
+        <Link
+          href="https://www.linkedin.com/in/atiq-israk/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          MAVE CMS
+        </Link>{" "}
+        | All rights reserved | Powered by{" "}
+        <Link
+          href="https://www.ethertech.ltd"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Ether Technologies
+        </Link>
+      </Footer>
     </>
   );
 }
