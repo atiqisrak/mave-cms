@@ -15,7 +15,10 @@ const PerformanceSettings = ({ config, id }) => {
   const onFinish = async (values) => {
     setSaving(true);
     try {
-      await instance.put(`/settings/${id}`, { config: values });
+      await instance.put(`/settings/${id}`, {
+        type: "performance-settings",
+        config: values,
+      });
       message.success("Performance Settings updated successfully!");
     } catch (error) {
       console.error("Error updating Performance Settings:", error);

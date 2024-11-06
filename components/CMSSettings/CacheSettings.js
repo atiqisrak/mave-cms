@@ -17,7 +17,10 @@ const CacheSettings = ({ config, id }) => {
   const onFinish = async (values) => {
     setSaving(true);
     try {
-      await instance.put(`/settings/${id}`, { config: values });
+      await instance.put(`/settings/${id}`, {
+        type: "cache-settings",
+        config: values,
+      });
       message.success("Cache Settings updated successfully!");
     } catch (error) {
       console.error("Error updating Cache Settings:", error);

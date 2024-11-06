@@ -12,7 +12,6 @@ export const ThemeProvider = ({ children }) => {
     themeaccent: "#e3a611", // Default theme accent
   });
 
-  // Fetch theme settings on initial load
   useEffect(() => {
     const fetchTheme = async () => {
       try {
@@ -33,7 +32,6 @@ export const ThemeProvider = ({ children }) => {
     fetchTheme();
   }, []);
 
-  // Function to update theme both in state and CSS variables
   const updateTheme = (themecolor, themeaccent) => {
     setTheme({ themecolor, themeaccent });
     setThemeColors(themecolor, themeaccent);

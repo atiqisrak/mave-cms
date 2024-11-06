@@ -17,7 +17,10 @@ const ContentSettings = ({ config, id }) => {
   const onFinish = async (values) => {
     setSaving(true);
     try {
-      await instance.put(`/settings/${id}`, { config: values });
+      await instance.put(`/settings/${id}`, {
+        type: "content-settings",
+        config: values,
+      });
       message.success("Content Settings updated successfully!");
     } catch (error) {
       console.error("Error updating Content Settings:", error);
