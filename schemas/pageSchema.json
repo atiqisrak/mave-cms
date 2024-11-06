@@ -1,0 +1,235 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Page Configuration",
+    "type": "object",
+    "required": [
+        "page_name_en",
+        "page_name_bn",
+        "type",
+        "head",
+        "slug",
+        "meta_title",
+        "meta_description",
+        "keywords",
+        "body",
+        "additional",
+        "status"
+    ],
+    "properties": {
+        "page_name_en": {
+            "type": "string",
+            "description": "Page title in English"
+        },
+        "page_name_bn": {
+            "type": "string",
+            "description": "Page title in Bengali"
+        },
+        "type": {
+            "type": "string",
+            "enum": [
+                "Page"
+            ],
+            "description": "Type of the content"
+        },
+        "head": {
+            "type": "array",
+            "description": "Head metadata",
+            "items": {
+                "type": "object",
+                "required": [
+                    "pageType",
+                    "metaTitle",
+                    "metaDescription",
+                    "keywords"
+                ],
+                "properties": {
+                    "pageType": {
+                        "type": "string",
+                        "enum": [
+                            "Page"
+                        ],
+                        "description": "Type of the page"
+                    },
+                    "metaTitle": {
+                        "type": "string",
+                        "description": "Meta title for SEO"
+                    },
+                    "metaDescription": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Meta description for SEO"
+                    },
+                    "keywords": {
+                        "type": "array",
+                        "description": "SEO keywords",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "metaImage": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uri",
+                        "description": "URL of the meta image"
+                    },
+                    "metaImageAlt": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Alt text for the meta image"
+                    }
+                }
+            }
+        },
+        "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "URL slug for the page"
+        },
+        "meta_title": {
+            "type": "string",
+            "description": "Meta title for SEO"
+        },
+        "meta_description": {
+            "type": "string",
+            "description": "Meta description for SEO"
+        },
+        "keywords": {
+            "type": "array",
+            "description": "SEO keywords",
+            "items": {
+                "type": "string"
+            }
+        },
+        "body": {
+            "type": "array",
+            "description": "Page body sections",
+            "items": {
+                "type": "object",
+                "required": [
+                    "_id",
+                    "sectionTitle",
+                    "data"
+                ],
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Unique identifier for the section"
+                    },
+                    "sectionTitle": {
+                        "type": "string",
+                        "description": "Title of the section"
+                    },
+                    "data": {
+                        "type": "array",
+                        "description": "Components within the section",
+                        "items": {
+                            "type": "object",
+                            "required": [
+                                "type",
+                                "_id"
+                            ],
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "title",
+                                        "description",
+                                        "media",
+                                        "menu",
+                                        "navbar",
+                                        "slider",
+                                        "card",
+                                        "footer"
+                                    ],
+                                    "description": "Type of the component"
+                                },
+                                "_id": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "description": "Unique identifier for the component"
+                                },
+                                "value": {
+                                    "type": "string",
+                                    "description": "Value for text-based components"
+                                },
+                                "id": {
+                                    "type": "integer",
+                                    "description": "Reference ID for media components"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "additional": {
+            "type": "array",
+            "description": "Additional metadata",
+            "items": {
+                "type": "object",
+                "required": [
+                    "pageType",
+                    "metaTitle"
+                ],
+                "properties": {
+                    "pageType": {
+                        "type": "string",
+                        "enum": [
+                            "Page"
+                        ],
+                        "description": "Type of the page"
+                    },
+                    "metaTitle": {
+                        "type": "string",
+                        "description": "Additional meta title"
+                    },
+                    "metaDescription": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Additional meta description"
+                    },
+                    "keywords": {
+                        "type": "array",
+                        "description": "Additional SEO keywords",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "metaImage": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uri",
+                        "description": "URL of the additional meta image"
+                    },
+                    "metaImageAlt": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Alt text for the additional meta image"
+                    }
+                }
+            }
+        },
+        "status": {
+            "type": "integer",
+            "enum": [
+                0,
+                1
+            ],
+            "description": "Status of the page (0: Inactive, 1: Active)"
+        }
+    },
+    "additionalProperties": false
+}

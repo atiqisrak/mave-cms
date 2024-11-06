@@ -1,18 +1,17 @@
 // pages/build-with-ai/index.jsx
 
-import React, { useState, useEffect, useRef } from "react";
-import dynamic from "next/dynamic";
-import { Avatar, Button, Input, message, Spin } from "antd";
-import { SendOutlined, CopyOutlined } from "@ant-design/icons";
+import React, { useState, useEffect } from "react";
+import { Button, message, Input } from "antd";
+import { SendOutlined } from "@ant-design/icons";
 import axios from "axios";
 import instance from "../../axios"; // Ensure this points to your Axios instance
-import { oneDark } from "react-syntax-highlighter/dist/cjs/styles/prism"; // Use CJS version to avoid SSR issues
 import Image from "next/image";
 
-const SyntaxHighlighter = dynamic(
-  () => import("react-syntax-highlighter").then((mod) => mod.Prism),
-  { ssr: false }
-);
+// Importing BuildWithAI Components
+import ChatContainer from "../../components/BuildWithAI/ChatContainer";
+import MessageInput from "../../components/BuildWithAI/MessageInput";
+import ActionButtons from "../../components/BuildWithAI/ActionButtons";
+import LoadingSpinner from "../../components/BuildWithAI/LoadingSpinner";
 
 const { TextArea } = Input;
 
@@ -24,51 +23,20 @@ export default function BuildWithAI() {
   const [isModifying, setIsModifying] = useState(false);
   const [modifyInput, setModifyInput] = useState("");
 
-  const chatEndRef = useRef(null);
-
-  const scrollToBottom = () => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  useEffect(() => {
+    const storedConversation = localStorage.getItem("conversation");
+    if (storedConversation) {
+      setConversation(JSON.parse(storedConversation));
+    }
+  }, []);
 
   useEffect(() => {
-    scrollToBottom();
+    localStorage.setItem("conversation", JSON.stringify(conversation));
   }, [conversation]);
 
-  const parseMessageContent = (content) => {
-    const parts = [];
-    const regex = /```(\w+)?\n([\s\S]*?)```/g;
-    let lastIndex = 0;
-    let match;
-
-    while ((match = regex.exec(content)) !== null) {
-      if (match.index > lastIndex) {
-        // Add text before the code block
-        parts.push({
-          type: "text",
-          content: content.substring(lastIndex, match.index),
-        });
-      }
-      // Add code block
-      parts.push({ type: "code", lang: match[1], content: match[2] });
-      lastIndex = regex.lastIndex;
-    }
-    if (lastIndex < content.length) {
-      // Add remaining text
-      parts.push({ type: "text", content: content.substring(lastIndex) });
-    }
-    return parts;
-  };
-
-  const copyToClipboard = (text) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        message.success("Copied to clipboard!");
-      })
-      .catch((err) => {
-        console.error("Error copying to clipboard: ", err);
-        message.error("Failed to copy to clipboard.");
-      });
+  const handleClearConversation = () => {
+    setConversation([]);
+    localStorage.removeItem("conversation");
   };
 
   const handleSendMessage = async () => {
@@ -92,10 +60,11 @@ export default function BuildWithAI() {
       });
 
       if (response.status === 200) {
-        const assistantMessage = response.data.json;
+        const { text, json } = response.data;
+
         setConversation([
           ...newConversation,
-          { role: "assistant", content: assistantMessage },
+          { role: "assistant", content: json, text },
         ]);
         message.success("JSON generated successfully!");
       } else {
@@ -103,7 +72,14 @@ export default function BuildWithAI() {
       }
     } catch (error) {
       console.error("Error:", error);
-      message.error("An unexpected error occurred.");
+      if (error.response && error.response.data && error.response.data.error) {
+        message.error(`Error: ${error.response.data.error}`);
+        if (error.response.data.details) {
+          console.log("Validation Details:", error.response.data.details);
+        }
+      } else {
+        message.error("An unexpected error occurred.");
+      }
     } finally {
       setLoading(false);
     }
@@ -119,19 +95,7 @@ export default function BuildWithAI() {
     setCreatingPage(true);
 
     try {
-      // Extract the JSON code block from the message content
-      const parts = parseMessageContent(lastAssistantMessage.content);
-      const codePart = parts.find(
-        (part) => part.type === "code" && part.lang === "json"
-      );
-
-      if (!codePart) {
-        message.error("No JSON code block found in the assistant's message.");
-        setCreatingPage(false);
-        return;
-      }
-
-      const jsonPayload = JSON.parse(codePart.content);
+      const jsonPayload = JSON.parse(lastAssistantMessage.content);
       console.log("JSON Payload:", jsonPayload);
       const response = await instance.post("/pages", jsonPayload, {
         headers: {
@@ -189,10 +153,10 @@ export default function BuildWithAI() {
       });
 
       if (response.status === 200) {
-        const assistantMessage = response.data.json;
+        const { text, json } = response.data;
         setConversation([
           ...newConversation,
-          { role: "assistant", content: assistantMessage },
+          { role: "assistant", content: json, text },
         ]);
         message.success("JSON modified successfully!");
       } else {
@@ -200,7 +164,14 @@ export default function BuildWithAI() {
       }
     } catch (error) {
       console.error("Error:", error);
-      message.error("An unexpected error occurred.");
+      if (error.response && error.response.data && error.response.data.error) {
+        message.error(`Error: ${error.response.data.error}`);
+        if (error.response.data.details) {
+          console.log("Validation Details:", error.response.data.details);
+        }
+      } else {
+        message.error("An unexpected error occurred.");
+      }
     } finally {
       setLoading(false);
     }
@@ -223,162 +194,63 @@ export default function BuildWithAI() {
         </p>
 
         {/* Chat Container */}
-        <div className="chat-container flex flex-col gap-4 mb-6 overflow-y-auto">
-          {conversation?.map((msg, index) => (
-            <div
-              key={index}
-              className={`chat-message flex gap-2 ${
-                msg.role === "user"
-                  ? "flex-row-reverse items-center"
-                  : "flex-row items-end"
-              }`}
-            >
-              <Image
-                // src={`/icons/mave/maveai.png`}
-                src={`${
-                  msg.role === "user"
-                    ? "/icons/mave_icons/user.svg"
-                    : "/icons/mave/maveai.png"
-                }`}
-                alt={msg.role}
-                width={30}
-                height={30}
-                objectFit="contain"
-                className={`${
-                  msg.role === "user"
-                    ? "rounded-full border-2 border-theme"
-                    : ""
-                }`}
-              />
-              <div
-                className={`rounded-lg p-4 max-w-6xl ${
-                  msg.role === "user"
-                    ? "bg-theme text-gray-600 font-semibold"
-                    : "bg-gray-200 text-gray-800"
-                }`}
-              >
-                {msg.role === "assistant" ? (
-                  parseMessageContent(msg.content).map((part, idx) => {
-                    if (part.type === "text") {
-                      return <p key={idx}>{part.content}</p>;
-                    } else if (part.type === "code") {
-                      return (
-                        <div key={idx} className="relative">
-                          <SyntaxHighlighter
-                            language={part.lang || "text"}
-                            style={oneDark}
-                            showLineNumbers
-                            wrapLongLines={true}
-                            customStyle={{ borderRadius: "8px" }}
-                          >
-                            {part.content}
-                          </SyntaxHighlighter>
-                          <Button
-                            icon={<CopyOutlined />}
-                            size="small"
-                            className="absolute top-2 right-2 bg-transparent text-white hover:text-gray-400"
-                            onClick={() => copyToClipboard(part.content)}
-                          />
-                        </div>
-                      );
-                    }
-                  })
-                ) : (
-                  <span>{msg.content}</span>
-                )}
-              </div>
-            </div>
-          ))}
-          <div ref={chatEndRef} />
-        </div>
+        <ChatContainer conversation={conversation} />
 
         {/* Input Area */}
-        <div className="flex flex-col gap-4">
-          {isModifying ? (
-            <>
-              <TextArea
-                autoSize={{
-                  minRows: 3,
-                  maxRows: 9,
-                }}
-                allowClear
-                ref={modifyInput ? (ref) => ref?.focus() : (ref) => ref?.blur()}
-                placeholder="Modify the JSON..."
-                value={modifyInput}
-                onChange={(e) => setModifyInput(e.target.value)}
-                className="resize-none border rounded-md p-2"
-              />
-              <div className="flex justify-end gap-4">
-                <Button
-                  onClick={handleDiscardModification}
-                  className="bg-gray-300 hover:bg-gray-400 text-gray-800"
-                >
-                  Discard
-                </Button>
-                <Button
-                  type="primary"
-                  onClick={handleSendModification}
-                  loading={loading}
-                  className="bg-theme hover:bg-yellow-600 text-white"
-                >
-                  Send
-                </Button>
-              </div>
-            </>
-          ) : (
-            <>
-              <TextArea
-                autoSize={{
-                  minRows: 3,
-                  maxRows: 9,
-                }}
-                allowClear
-                ref={userInput ? (ref) => ref?.focus() : (ref) => ref?.blur()}
-                placeholder="Make a homepage for my restaurant website..."
-                value={userInput}
-                onChange={(e) => setUserInput(e.target.value)}
-                className="resize-none border rounded-md p-2"
-              />
-              <div className="flex justify-end">
-                <Button
-                  icon={<SendOutlined />}
-                  onClick={handleSendMessage}
-                  loading={loading}
-                  className="bg-theme hover:bg-yellow-600 text-white"
-                >
-                  Send
-                </Button>
-              </div>
-            </>
-          )}
-        </div>
+        {isModifying ? (
+          <>
+            <TextArea
+              autoSize={{
+                minRows: 3,
+                maxRows: 9,
+              }}
+              allowClear
+              ref={modifyInput ? (ref) => ref?.focus() : (ref) => ref?.blur()}
+              placeholder="Modify the JSON..."
+              value={modifyInput}
+              onChange={(e) => setModifyInput(e.target.value)}
+              className="resize-none border rounded-md p-2"
+            />
+            <div className="flex justify-end gap-4">
+              <Button
+                onClick={handleDiscardModification}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800"
+              >
+                Discard
+              </Button>
+              <Button
+                type="primary"
+                onClick={handleSendModification}
+                loading={loading}
+                className="bg-theme hover:bg-yellow-600 text-white"
+              >
+                Send
+              </Button>
+            </div>
+          </>
+        ) : (
+          <MessageInput
+            userInput={userInput}
+            setUserInput={setUserInput}
+            handleSendMessage={handleSendMessage}
+            loading={loading}
+          />
+        )}
 
         {/* Action Buttons */}
-        {conversation?.length > 0 && !isModifying && (
-          <div className="flex justify-end gap-4 mt-6">
-            <Button
-              onClick={handleModify}
-              className="bg-yellow-500 hover:bg-yellow-600 text-white"
-            >
-              Modify
-            </Button>
-            <Button
-              type="primary"
-              onClick={handleCreatePage}
-              loading={creatingPage}
-              className="bg-green-500 hover:bg-green-600 text-white"
-            >
-              Create Page
-            </Button>
-          </div>
-        )}
+        <ActionButtons
+          handleModify={handleModify}
+          handleCreatePage={handleCreatePage}
+          conversation={conversation}
+          isModifying={isModifying}
+          handleClearConversation={handleClearConversation}
+        />
 
         {/* Loading Spinner */}
-        {(loading || creatingPage) && (
-          <div className="flex justify-center mt-4">
-            <Spin tip={loading ? "Processing..." : "Creating Page..."} />
-          </div>
-        )}
+        <LoadingSpinner
+          loading={loading || creatingPage}
+          text={creatingPage ? "Creating Page..." : "Processing..."}
+        />
       </div>
     </div>
   );
