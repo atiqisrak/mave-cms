@@ -20,6 +20,7 @@
     "@tinymce/tinymce-react": "^5.0.1",
     "ace-builds": "^1.36.3",
     "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
     "antd": "^5.19.0",
     "apexcharts": "^3.53.0",
     "axios": "^1.6.7",
