@@ -5,6 +5,8 @@ import UserStat from "../components/dashboard/UserStat";
 import SiteStat from "../components/dashboard/SiteStat";
 import LatestEvents from "../components/dashboard/LatestEvents";
 import SiteSpeed from "../components/dashboard/SiteSpeed";
+import Storage from "../components/dashboard/Storage";
+import AverageRequests from "../components/dashboard/AverageRequests";
 
 const index = () => {
   const [data, setData] = useState({});
@@ -21,8 +23,6 @@ const index = () => {
         navbars_response,
         sliders_response,
         cards_response,
-        pressrelease_response,
-        events_response,
         forms_response,
         footers_response,
       ] = await Promise.all([
@@ -32,8 +32,6 @@ const index = () => {
         instance.get("/navbars"),
         instance.get("/sliders"),
         instance.get("/cards"),
-        instance.get("/press_release"),
-        instance.get("/events"),
         instance.get("/forms"),
         instance.get("/footers"),
       ]);
@@ -45,8 +43,6 @@ const index = () => {
         navbars: navbars_response.data,
         sliders: sliders_response.data,
         cards: cards_response.data,
-        pressreleases: pressrelease_response.data,
-        events: events_response.data,
         forms: forms_response.data,
         footers: footers_response.data,
       });
@@ -69,38 +65,14 @@ const index = () => {
   return (
     <>
       {userData ? (
-        <div className="ViewContainer">
-          <div
-            // className="ViewContentContainer"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(2, 1fr)",
-              marginBottom: "6rem",
-              gap: "2rem",
-              marginLeft: "5%",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "2rem",
-              }}
-            >
-              <CounterCards />
-              <UserStat />
-              <SiteStat />
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "2rem",
-              }}
-            >
-              <LatestEvents />
-              <SiteSpeed />
-            </div>
+        <div className="mavecontainer">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24 ml-[5%]">
+            <CounterCards />
+            <Storage />
+            <SiteSpeed />
+            <UserStat />
+            <LatestEvents />
+            <AverageRequests />
           </div>
         </div>
       ) : (

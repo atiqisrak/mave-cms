@@ -1,164 +1,76 @@
 import React, { useEffect, useState } from "react";
-import changelog from "./changelog.json";
+import { Layout, Timeline, Tag, Button, Breadcrumb } from "antd";
 import moment from "moment";
-
-const ChangelogItem = ({ version, date, changes }) => {
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        margin: "3em 0",
-      }}
-    >
-      {console.log("Change: ", changes)}
-      <h2>Version {version}</h2>
-      <ul
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          margin: "2em 0",
-        }}
-      >
-        {Object.entries(changes).map(([type, changeList]) =>
-          changeList.map((change, index) => (
-            <li
-              key={index}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 14fr",
-                alignItems: "center",
-                borderBottom: "2px solid var(--gray)",
-                padding: "0.6em 0",
-              }}
-            >
-              <strong
-                style={{
-                  color: "white",
-                  backgroundColor:
-                    type === "BugFix" ? "var(--themes)" : "var(--theme)",
-                  border:
-                    type === "BugFix"
-                      ? "2px solid var(--themes)"
-                      : "2px solid var(--theme)",
-                  borderRadius: "5px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "0.3em",
-                  fontSize: "0.9em",
-                  fontWeight: "500",
-                }}
-              >
-                {type}
-              </strong>
-              <span
-                style={{
-                  padding: "0 1em",
-                  textWrap: "wrap",
-                  wordWrap: "break-word",
-                }}
-              >
-                {change}
-              </span>
-            </li>
-          ))
-        )}
-      </ul>
-    </div>
-  );
-};
+import changelog from "./changelog.json";
+import { HomeOutlined, SwapOutlined } from "@ant-design/icons";
+import NavItems from "../../components/ui/NavItems";
 
 const Changelog = () => {
-  const [changeLogs, setChangeLogs] = useState();
-  const formattedjson = JSON.stringify(changelog, null, 2);
+  const { Content } = Layout;
+  const [changeLogs, setChangeLogs] = useState([]);
+  const [reverse, setReverse] = useState(false);
 
   useEffect(() => {
-    setChangeLogs(
-      changelog.sort((a, b) => new Date(b.date) - new Date(a.date))
+    // Sort the changelog by date in descending order
+    const sortedLogs = changelog.sort(
+      (a, b) => new Date(b.date) - new Date(a.date)
     );
+    setChangeLogs(sortedLogs);
   }, []);
 
   return (
-    <div className="ViewContainer ViewContentContainer">
-      <h1
-        style={{
-          marginBottom: "2em",
-        }}
-      >
-        Changelog
-      </h1>
-      {changeLogs?.map((change, index) => {
-        return (
-          <div
-            style={{
-              gap: "2em",
-              display: "grid",
-              gridTemplateColumns: "1fr 9fr",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "var(--themes)",
-                  textAlign: "center",
-                  backgroundColor: "white",
-                  zIndex: "1",
-                  padding: "1.9em 1em",
-                  borderRadius: "50%",
-                  border: "2px solid var(--theme)",
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: "1.2em",
-                    fontWeight: "500",
-                  }}
-                >
-                  {moment(change.date).format("DD MMM YYYY")}
-                </span>
-              </div>
-              {index !== changeLogs.length - 1 && (
-                <div
-                  style={{
-                    borderLeft: "2px solid var(--theme)",
-                    height: "100%",
-                  }}
-                />
-              )}
-            </div>
-            <ChangelogItem
-              key={index}
-              version={change.version}
-              date={change.date}
-              changes={change.changes}
+    <div className="mavecontainer">
+      {/* <NavItems /> */}
+      <Layout className="site-layout-background pt-20 pr-10 pb-10 bg-transparent">
+        <Content className="p-10 bg-white rounded-lg min-h-10">
+          <div className="flex justify-between items-center">
+            <h1 className="text-4xl font-semibold text-theme text-center w-full mb-10">
+              Mave Changelogs
+            </h1>
+            <Button
+              icon={<SwapOutlined />}
+              onClick={() => setReverse(!reverse)}
+              style={{ marginBottom: "20px", transform: "rotate(90deg)" }}
             />
           </div>
-        );
-      })}
-      {/* JSON Structure */}
-      {/* <pre
+
+          <Timeline
+            mode="alternate"
+            pending="More to come..."
+            reverse={reverse}
+          >
+            {changeLogs?.map((log, index) => (
+              <Timeline.Item
+                key={index}
+                label={moment(log.date).format("DD MMM YYYY")}
                 style={{
-                    backgroundColor: "var(--black)",
-                    color: "var(--white)",
-                    padding: "1em",
-                    borderRadius: "5px",
-                    overflow: "auto",
-                    margin: "2em 0",
-                    textWrap: "wrap",
+                  paddingBottom: "20px",
+                  fontSize: "1.1em",
                 }}
-            >
-                {formattedjson}
-            </pre> */}
+              >
+                <h3 className="text-2xl font-semibold text-theme mb-10">
+                  Version {log.version}
+                </h3>
+                <>
+                  {Object.entries(log.changes)?.map(([type, changeList]) =>
+                    changeList?.map((change, i) => (
+                      <div
+                        key={i}
+                        className="mb-2 p-4 rounded-lg bg-white shadow-sm border-2 border-gray-200 hover:border-theme hover:shadow-md hover:scale-105 transition-all duration-300"
+                      >
+                        <Tag color={type === "BugFix" ? "red" : "green"}>
+                          {type}
+                        </Tag>
+                        {change}
+                      </div>
+                    ))
+                  )}
+                </>
+              </Timeline.Item>
+            ))}
+          </Timeline>
+        </Content>
+      </Layout>
     </div>
   );
 };

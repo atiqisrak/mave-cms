@@ -1,0 +1,43 @@
+title: "Demo Page"
+slug: "demo-page"
+
+metadata:
+  metaTitle: "Demo Page"
+  metaDescription: "This is a demo page for testing the Text to API feature."
+  keywords:
+    - "demo"
+    - "testing"
+    - "API"
+
+sections:
+  - sectionTitle: "New Section 1"
+    data:
+      - type: "title"
+        value: "Demo Title"
+      - type: "description"
+        value: "<p>Demo <strong>Description</strong></p>"
+      - type: "media"
+        id: 427  # Reference to the media component by ID
+
+  - sectionTitle: "New Section 2"
+    data:
+      - type: "menu"
+        id: 2    # Reference to the menu component by ID
+      - type: "navbar"
+        id: 24   # Reference to the navbar component by ID
+      - type: "slider"
+        id: 36   # Reference to the slider component by ID
+      - type: "card"
+        id: 172  # Reference to the card component by ID
+      - type: "footer"
+        id: 36   # Reference to the footer component by ID
+
+additional:
+  - pageType: "Page"
+    metaTitle: "Demo Page"
+    metaDescription: null
+    keywords: []
+    metaImage: null
+    metaImageAlt: null
+
+status: 1

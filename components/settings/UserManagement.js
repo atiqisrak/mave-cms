@@ -76,7 +76,7 @@ const UserManagement = () => {
   const handleCreateOrUpdateUser = (values) => {
     if (editingUser) {
       setUsers(
-        users.map((user) =>
+        users?.map((user) =>
           user.id === editingUser.id ? { ...user, ...values } : user
         )
       );
@@ -99,7 +99,7 @@ const UserManagement = () => {
 
   const handleBulkChangeRole = (userIds, role) => {
     setUsers(
-      users.map((user) =>
+      users?.map((user) =>
         userIds.includes(user.id) ? { ...user, role } : user
       )
     );

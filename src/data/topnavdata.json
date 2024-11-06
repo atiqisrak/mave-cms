@@ -1,18 +1,13 @@
 [
     {
-        "id": 1,
-        "name": "Home",
-        "link": "/"
-    },
-    {
         "id": 2,
         "name": "Dashboard",
-        "link": "/dashboard"
+        "link": "/"
     },
     {
         "id": 3,
         "name": "Pages",
-        "link": "/creator/pages"
+        "link": "/pages"
     },
     {
         "id": 4,
@@ -21,7 +16,7 @@
     },
     {
         "id": 5,
-        "name": "Chat with AI",
-        "link": "/write-ai"
+        "name": "MAVE AI",
+        "link": "/build-with-ai"
     }
 ]

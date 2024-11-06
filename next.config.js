@@ -8,7 +8,11 @@ const nextConfig = {
   },
   images: {
     reactStrictMode: true,
-    domains: ["mave.etherstaging.xyz"],
+    domains: [
+      "mave-cms.vercel.app",
+      "res.cloudinary.com",
+      "mave.ethertech.ltd",
+    ],
     unoptimized: true,
   },
 };

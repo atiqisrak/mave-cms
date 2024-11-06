@@ -27,7 +27,7 @@ import {
 } from "@ant-design/icons";
 import Loader from "./Loader";
 import router from "next/router";
-import MediaSelectionModal1 from "./MediaSelectionModal1";
+import MediaSelectionModal1 from "./PageBuilder/Modals/MediaSelectionModal.jsx";
 const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
 const { Panel } = Collapse;
 const Footer = () => {
@@ -323,1012 +323,1006 @@ const Footer = () => {
 
   return (
     <>
-      <div className="ViewContainer">
-        <div className="ViewContentContainer">
-          <div
-            className="TopbarContainer"
+      <div className="mavecontainer">
+        <div
+          className="TopbarContainer"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            // gridTemplateColumns: "1fr 1fr",
+            // backgroundColor:"red",
+            marginBottom: "1rem",
+          }}
+        >
+          <Breadcrumb
             style={{
-              display: "flex",
-              justifyContent: "space-between",
+              fontSize: "1.2em",
+              marginBottom: "1em",
+            }}
+            items={[
+              {
+                href: "/",
+                title: <HomeFilled />,
+              },
+              {
+                title: "Components",
+              },
+              {
+                title: "Menu Items",
+                menu: {
+                  items: [
+                    {
+                      title: "Gallery",
+                      onClick: () => router.push("/gallery"),
+                    },
+                    {
+                      title: "Menus Items",
+                      onClick: () => router.push("/menuitems"),
+                    },
+                    {
+                      title: "Menus",
+                      onClick: () => router.push("/menus"),
+                    },
+                    {
+                      title: "Navbars",
+                      onClick: () => router.push("/navbars"),
+                    },
+                    {
+                      title: "Sliders",
+                      onClick: () => router.push("/sliders"),
+                    },
+                    {
+                      title: "Cards",
+                      onClick: () => router.push("/cards"),
+                    },
+                    {
+                      title: "Forms",
+                      onClick: () => router.push("/forms"),
+                    },
+                    {
+                      title: "Footers",
+                      onClick: () => router.push("/footer"),
+                    },
+                  ],
+                },
+              },
+            ]}
+          />
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr",
               alignItems: "center",
-              // gridTemplateColumns: "1fr 1fr",
-              // backgroundColor:"red",
-              marginBottom: "1rem",
+              gap: "1rem",
             }}
           >
-            <Breadcrumb
+            <Button
+              type="primary"
+              onClick={() => toggleCollapseAdd()}
               style={{
+                backgroundColor: "var(--themes)",
+                borderColor: "var(--themes)",
+                color: "white",
+                borderRadius: "10px",
                 fontSize: "1.2em",
-                marginBottom: "1em",
+                // paddingBottom: "1.8em",
+                width: "15em",
               }}
-              items={[
-                {
-                  href: "/",
-                  title: <HomeFilled />,
-                },
-                {
-                  title: "Components",
-                },
-                {
-                  title: "Menu Items",
-                  menu: {
-                    items: [
-                      {
-                        title: "Gallery",
-                        onClick: () => router.push("/gallery"),
-                      },
-                      {
-                        title: "Menus Items",
-                        onClick: () => router.push("/menuitems"),
-                      },
-                      {
-                        title: "Menus",
-                        onClick: () => router.push("/menus"),
-                      },
-                      {
-                        title: "Navbars",
-                        onClick: () => router.push("/navbars"),
-                      },
-                      {
-                        title: "Sliders",
-                        onClick: () => router.push("/sliders"),
-                      },
-                      {
-                        title: "Cards",
-                        onClick: () => router.push("/cards"),
-                      },
-                      {
-                        title: "Forms",
-                        onClick: () => router.push("/forms"),
-                      },
-                      {
-                        title: "Footers",
-                        onClick: () => router.push("/footer"),
-                      },
-                    ],
-                  },
-                },
-              ]}
-            />
-            <div
+              icon={<PlusCircleOutlined />}
+            >
+              Add New Footer
+            </Button>
+            <Button
+              type="primary"
               style={{
-                display: "grid",
-                gridTemplateColumns: "1fr",
-                alignItems: "center",
-                gap: "1rem",
+                backgroundColor: "var(--theme)",
+                borderColor: "var(--theme)",
+                color: "white",
+                borderRadius: "10px",
+                fontSize: "1.2em",
+              }}
+              icon={<CopyOutlined />}
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  `${process.env.NEXT_PUBLIC_API_BASE_URL}/footers`
+                );
+                message.success("API Endpoint Copied");
               }}
             >
-              <Button
-                type="primary"
-                onClick={() => toggleCollapseAdd()}
-                style={{
-                  backgroundColor: "var(--themes)",
-                  borderColor: "var(--themes)",
-                  color: "white",
-                  borderRadius: "10px",
-                  fontSize: "1.2em",
-                  // paddingBottom: "1.8em",
-                  width: "15em",
-                }}
-                icon={<PlusCircleOutlined />}
-              >
-                Add New Footer
-              </Button>
-              <Button
-                type="primary"
-                style={{
-                  backgroundColor: "var(--theme)",
-                  borderColor: "var(--theme)",
-                  color: "white",
-                  borderRadius: "10px",
-                  fontSize: "1.2em",
-                }}
-                icon={<CopyOutlined />}
-                onClick={() => {
-                  navigator.clipboard.writeText(
-                    `${process.env.NEXT_PUBLIC_API_BASE_URL}/footers`
-                  );
-                  message.success("API Endpoint Copied");
-                }}
-              >
-                Copy API Endpoint
-              </Button>
-            </div>
+              Copy API Endpoint
+            </Button>
           </div>
-          {!isCollapsed1 && (
-            <div className="ViewContentContainer1">
-              <div>
-                <hr />
-                <div
-                  className="update_area"
-                  style={{ paddingTop: "1rem", marginBottom: "2rem" }}
-                >
-                  <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-                    <Col span={8}>
-                      <div className="content">
-                        <h3>Selected Logo:</h3>
-                        <br />
-                        {/* Media view */}
-                        {selectedMedia && (
-                          <Card size="small">
-                            <Image
-                              src={`${MEDIA_URL}/${selectedMedia.file_path}`}
-                              alt={selectedMedia.title}
-                              preview={false}
-                              width={"100%"}
-                              height={"100%"}
-                              style={{
-                                objectFit: "cover",
-                                borderRadius: 10,
-                                border:
-                                  selectedMedia === selectedMedia.id
-                                    ? "2px solid #1890ff"
-                                    : "none",
-                              }}
-                            />
-                            {/* <p>{selectedMedia.file_name}</p> */}
-                          </Card>
-                        )}
-
-                        <Button
-                          type="primary"
-                          onClick={handleOpenModal}
-                          style={{ marginTop: "1rem" }}
-                        >
-                          Change Logo
-                        </Button>
-
-                        <MediaSelectionModal1
-                          mediaList={mediaList}
-                          visible={modalVisible}
-                          onCancel={handleModalCancel}
-                          onSelect={handleMediaSelect}
-                        />
-                      </div>
-                      <br />
-                      <div className="content">
-                        <h3>Title English:</h3>
-                        <Input
-                          value={formData.title_en}
-                          onChange={(e) => handleChange(e, "title_en")}
-                          style={{ marginTop: ".5rem" }}
-                        />
-                      </div>
-                      <br />
-                      <div className="content">
-                        <h3>Title Bangla:</h3>
-                        <Input
-                          value={formData.title_bn}
-                          onChange={(e) => handleChange(e, "title_bn")}
-                          style={{ marginTop: ".5rem" }}
-                        />
-                      </div>
-                      <br />
-                      <div className="content">
-                        <h3>Address1 Title English:</h3>
-                        <Input
-                          value={formData.address1_title_en}
-                          onChange={(e) => handleChange(e, "address1_title_en")}
-                          style={{ marginTop: ".5rem" }}
-                        />
-                      </div>
-                      <br />
-                      <div className="content">
-                        <h3>Address1 Title Bangla:</h3>
-                        <Input
-                          value={formData.address1_title_bn}
-                          onChange={(e) => handleChange(e, "address1_title_bn")}
-                          style={{ marginTop: ".5rem" }}
-                        />
-                      </div>
-                      <br />
-                    </Col>
-                    <Col span={8}>
-                      <div className="content">
-                        <h3>Address1 Description English:</h3>
-                        <Input.TextArea
-                          rows={1}
-                          value={formData.address1_description_en}
-                          onChange={(e) =>
-                            handleChange(e, "address1_description_en")
-                          }
-                          style={{ marginTop: ".5rem" }}
-                        />
-                      </div>
-                      <br />
-                      <div className="content">
-                        <h3>Address1 Description Bangla:</h3>
-                        <Input.TextArea
-                          rows={2}
-                          value={formData.address1_description_bn}
-                          onChange={(e) =>
-                            handleChange(e, "address1_description_bn")
-                          }
-                          style={{ marginTop: ".5rem" }}
-                        />
-                      </div>
-                      <br />
-                      <div className="content">
-                        <h3>Address2 Title English:</h3>
-                        <Input
-                          value={formData.address2_title_en}
-                          onChange={(e) => handleChange(e, "address2_title_en")}
-                          style={{ marginTop: ".5rem" }}
-                        />
-                      </div>
-                      <br />
-                      <div className="content">
-                        <h3>Address2 Title Bangla:</h3>
-                        <Input
-                          value={formData.address2_title_bn}
-                          onChange={(e) => handleChange(e, "address2_title_bn")}
-                          style={{ marginTop: ".5rem" }}
-                        />
-                      </div>
-                      <br />
-                      <div className="content">
-                        <h3>Address2 Description English:</h3>
-                        <Input.TextArea
-                          rows={1}
-                          value={formData.address2_description_en}
-                          onChange={(e) =>
-                            handleChange(e, "address2_description_en")
-                          }
-                          style={{ marginTop: ".5rem" }}
-                        />
-                      </div>
-                      <br />
-                      <div className="content">
-                        <h3>Address2 Description Bangla:</h3>
-                        <Input.TextArea
-                          rows={1}
-                          value={formData.address2_description_bn}
-                          onChange={(e) =>
-                            handleChange(e, "address2_description_bn")
-                          }
-                          style={{ marginTop: ".5rem" }}
-                        />
-                      </div>
-                      <br />
-                      <div className="content">
-                        <h3>Column2 Menu:</h3>
-                        {console.log("Menu List: ", menuData)}
-                        <Select
-                          showSearch
-                          // mode="multiple"
-                          placeholder="Select menu items"
-                          style={{ width: "100%", marginTop: ".5rem" }}
-                          value={selectedItems} // Set the selected items from state
-                          onChange={handleSelectChange} // Set the event handler
-                        >
-                          {menuData?.map((item) => (
-                            <>
-                              <Option key={item.id} value={item?.id}>
-                                {item.name}
-                              </Option>
-                            </>
-                          ))}
-                        </Select>
-                      </div>
-                      <br />
-                      <div className="content">
-                        <h3>Column3 Menu:</h3>
-                        <Select
-                          showSearch
-                          // mode="multiple"
-                          placeholder="Select menu items"
-                          style={{ width: "100%", marginTop: ".5rem" }}
-                          value={selectedItemsColumn3} // Set the selected items from state
-                          onChange={handleSelectChangeColumn3} // Set the event handler
-                        >
-                          {menuData?.map((item) => (
-                            <>
-                              <Option key={item.id} value={item?.id}>
-                                {item.name}
-                              </Option>
-                            </>
-                          ))}
-                        </Select>
-                      </div>
-                    </Col>
-                    <Col span={8}>
-                      <div className="content">
-                        <h3>Column4 Menu:</h3>
-                        <Select
-                          showSearch
-                          // mode="multiple"
-                          placeholder="Select menu items"
-                          style={{ width: "100%", marginTop: ".5rem" }}
-                          value={selectedItemsColumn4} // Set the selected items from state
-                          onChange={handleSelectChangeColumn4} // Set the event handler
-                        >
-                          {menuData?.map((item) => (
-                            <>
-                              <Option key={item.id} value={item?.id}>
-                                {item.name}
-                              </Option>
-                            </>
-                          ))}
-                        </Select>
-                      </div>
-
-                      <br />
-                      <div className="content">
-                        <h3>Column4 Title En:</h3>
-                        <Input
-                          value={formData.column4_title_en}
-                          onChange={(e) => handleChange(e, "column4_title_en")}
-                          style={{ marginTop: ".5rem" }}
-                        />
-                      </div>
-                      <br />
-                      <div className="content">
-                        <h3>Column4 Title Bn:</h3>
-                        <Input
-                          value={formData.column4_title_bn}
-                          onChange={(e) => handleChange(e, "column4_title_bn")}
-                          style={{ marginTop: ".5rem" }}
-                        />
-                      </div>
-                      <br />
-                      <div className="content">
-                        <h3>Column4 Text En:</h3>
-                        <Input
-                          value={formData.column4_text_en}
-                          onChange={(e) => handleChange(e, "column4_text_en")}
-                          style={{ marginTop: ".5rem" }}
-                        />
-                      </div>
-                      <br />
-                      <div className="content">
-                        <h3>Column4 Text Bn:</h3>
-                        <Input
-                          value={formData.column4_text_bn}
-                          onChange={(e) => handleChange(e, "column4_text_bn")}
-                          style={{ marginTop: ".5rem" }}
-                        />
-                      </div>
-                      <br />
-                      <div className="content">
-                        <h3>Column4 Description English:</h3>
-                        <Input.TextArea
-                          rows={2}
-                          value={formData.column4_description_en}
-                          onChange={(e) =>
-                            handleChange(e, "column4_description_en")
-                          }
-                          style={{ marginTop: ".5rem" }}
-                          type="number"
-                        />
-                      </div>
-                      <br />
-
-                      <div className="content">
-                        <h3>Column4 Description Bangla:</h3>
-                        <Input.TextArea
-                          rows={1}
-                          value={formData.column4_description_bn}
-                          onChange={(e) =>
-                            handleChange(e, "column4_description_bn")
-                          }
-                          style={{ marginTop: ".5rem" }}
-                          type="number"
-                        />
-                      </div>
-                      <br />
-                      <div className="content">
-                        <h3>Bottom Menu:</h3>
-                        <Select
-                          showSearch
-                          // mode="multiple"
-                          placeholder="Select menu item"
-                          style={{ width: "100%", marginTop: ".5rem" }}
-                          value={selectedItemsBottom} // Set the selected items from state
-                          onChange={handleSelectChangeBottom} // Set the event handler
-                        >
-                          {menuData?.map((item) => (
-                            <>
-                              <Option key={item.id} value={item?.id}>
-                                {item.name}
-                              </Option>
-                            </>
-                          ))}
-                        </Select>
-                      </div>
-                    </Col>
-                    <Button
-                      icon={<SyncOutlined />}
-                      style={{
-                        marginTop: "1rem",
-                        marginLeft: "1rem",
-                        backgroundColor: "var(--success)",
-                        borderColor: "var(--success)",
-                        color: "white",
-                        borderRadius: "10px",
-                        fontSize: "1.2em",
-                        marginRight: "1em",
-                        // paddingBottom: "1.8em",
-                      }}
-                      onClick={() => handlePost()}
-                    >
-                      Add New Footer
-                    </Button>
-                    <Button
-                      style={{
-                        marginTop: "1rem",
-                        marginLeft: "1rem",
-                        backgroundColor: "var(--themes)",
-                        borderColor: "var(--themes)",
-                        color: "white",
-                        borderRadius: "10px",
-                        fontSize: "1.2em",
-                        // paddingBottom: "1.8em",
-                      }}
-                      onClick={() => handleClose()}
-                    >
-                      <CloseCircleOutlined />
-                      Cancel
-                    </Button>
-                  </Row>
-                </div>
-              </div>
-            </div>
-          )}
-          {footerData?.map((items) => (
-            <>
+        </div>
+        {!isCollapsed1 && (
+          <div className="ViewContentContainer1">
+            <div>
+              <hr />
               <div
-                key={items.id}
-                className="ViewContentContainer1"
-                style={{
-                  backgroundColor: "#000530",
-                  padding: "3rem",
-                  color: "#ffff",
-                  marginBottom: "1rem",
-                }}
+                className="update_area"
+                style={{ paddingTop: "1rem", marginBottom: "2rem" }}
               >
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                   <Col span={8}>
-                    <img
-                      src={`${MEDIA_URL}/${items?.logo?.file_path}`}
-                      width={292}
-                      alt=""
-                    />
-                    <div className="address1" style={{ marginTop: "2rem" }}>
-                      <h4>{items?.address1_title_en}</h4>
-                      <h4 style={{ color: "#c3c3c3" }}>
-                        {items?.address1_description_en}
-                      </h4>
-                    </div>
-                    <div className="address1" style={{ marginTop: "4rem" }}>
-                      <h4>{items?.address2_title_en}</h4>
-                      <h4 style={{ color: "#c3c3c3" }}>
-                        {items?.address2_description_en}
-                      </h4>
-                    </div>
-                  </Col>
-                  <Col span={4}>
-                    <h2>{items?.column2_menu?.name}</h2>
+                    <div className="content">
+                      <h3>Selected Logo:</h3>
+                      <br />
+                      {/* Media view */}
+                      {selectedMedia && (
+                        <Card size="small">
+                          <Image
+                            src={`${MEDIA_URL}/${selectedMedia.file_path}`}
+                            alt={selectedMedia.title}
+                            preview={false}
+                            width={"100%"}
+                            height={"100%"}
+                            style={{
+                              objectFit: "cover",
+                              borderRadius: 10,
+                              border:
+                                selectedMedia === selectedMedia.id
+                                  ? "2px solid #1890ff"
+                                  : "none",
+                            }}
+                          />
+                          {/* <p>{selectedMedia.file_name}</p> */}
+                        </Card>
+                      )}
 
-                    <h4 style={{ color: "#c3c3c3", marginTop: "1rem" }}>
-                      {items?.column2_menu?.menu_items?.map((item) => (
-                        <p style={{ color: "#fff", marginTop: "1rem" }}>
-                          {item?.title}
-                        </p>
-                      ))}
-                    </h4>
-                    {/*  */}
-                  </Col>
-                  <Col span={6}>
-                    <h2>{items?.column3_menu?.name}</h2>
-                    <h4 style={{ color: "#c3c3c3", marginTop: "1rem" }}>
-                      {items?.column3_menu?.menu_items?.map((item) => (
-                        <p style={{ color: "#fff", marginTop: "1rem" }}>
-                          {item?.title}
-                        </p>
-                      ))}
-                    </h4>
-                  </Col>
-                  <Col span={6}>
-                    <h2>Member Of</h2>
-
-                    <p
-                      style={{
-                        marginTop: ".5rem",
-                        display: "flex",
-                        justifyItems: "center",
-                        columnGap: "1rem",
-                      }}
-                    >
-                      {" "}
-                      {items?.column4_description_en}
-                    </p>
-                  </Col>
-                  <Col span={24} style={{ marginTop: "1rem" }}>
-                    <hr style={{ backgroundColor: "#fff" }} />
-                    <div
-                      className="buttom_menu"
-                      style={{
-                        display: "flex",
-                        columnGap: "4rem",
-                        alignItems: "center",
-                        marginTop: "1rem",
-                      }}
-                    >
-                      {/* <h4>© 2022 UNITED AYGAZ LPG LTD.</h4>
-                       */}
-                      <center>
-                        <h4>{items?.column4_description_en}</h4>
-                      </center>
-                      <h4
-                        style={{
-                          color: "#c3c3c3",
-                          display: "flex",
-                          columnGap: "2rem",
-                        }}
+                      <Button
+                        type="primary"
+                        onClick={handleOpenModal}
+                        style={{ marginTop: "1rem" }}
                       >
-                        {items?.bottom_menu?.menu_items?.map((item) => (
+                        Change Logo
+                      </Button>
+
+                      <MediaSelectionModal1
+                        mediaList={mediaList}
+                        visible={modalVisible}
+                        onCancel={handleModalCancel}
+                        onSelect={handleMediaSelect}
+                      />
+                    </div>
+                    <br />
+                    <div className="content">
+                      <h3>Title English:</h3>
+                      <Input
+                        value={formData.title_en}
+                        onChange={(e) => handleChange(e, "title_en")}
+                        style={{ marginTop: ".5rem" }}
+                      />
+                    </div>
+                    <br />
+                    <div className="content">
+                      <h3>Title Bangla:</h3>
+                      <Input
+                        value={formData.title_bn}
+                        onChange={(e) => handleChange(e, "title_bn")}
+                        style={{ marginTop: ".5rem" }}
+                      />
+                    </div>
+                    <br />
+                    <div className="content">
+                      <h3>Address1 Title English:</h3>
+                      <Input
+                        value={formData.address1_title_en}
+                        onChange={(e) => handleChange(e, "address1_title_en")}
+                        style={{ marginTop: ".5rem" }}
+                      />
+                    </div>
+                    <br />
+                    <div className="content">
+                      <h3>Address1 Title Bangla:</h3>
+                      <Input
+                        value={formData.address1_title_bn}
+                        onChange={(e) => handleChange(e, "address1_title_bn")}
+                        style={{ marginTop: ".5rem" }}
+                      />
+                    </div>
+                    <br />
+                  </Col>
+                  <Col span={8}>
+                    <div className="content">
+                      <h3>Address1 Description English:</h3>
+                      <Input.TextArea
+                        rows={1}
+                        value={formData.address1_description_en}
+                        onChange={(e) =>
+                          handleChange(e, "address1_description_en")
+                        }
+                        style={{ marginTop: ".5rem" }}
+                      />
+                    </div>
+                    <br />
+                    <div className="content">
+                      <h3>Address1 Description Bangla:</h3>
+                      <Input.TextArea
+                        rows={2}
+                        value={formData.address1_description_bn}
+                        onChange={(e) =>
+                          handleChange(e, "address1_description_bn")
+                        }
+                        style={{ marginTop: ".5rem" }}
+                      />
+                    </div>
+                    <br />
+                    <div className="content">
+                      <h3>Address2 Title English:</h3>
+                      <Input
+                        value={formData.address2_title_en}
+                        onChange={(e) => handleChange(e, "address2_title_en")}
+                        style={{ marginTop: ".5rem" }}
+                      />
+                    </div>
+                    <br />
+                    <div className="content">
+                      <h3>Address2 Title Bangla:</h3>
+                      <Input
+                        value={formData.address2_title_bn}
+                        onChange={(e) => handleChange(e, "address2_title_bn")}
+                        style={{ marginTop: ".5rem" }}
+                      />
+                    </div>
+                    <br />
+                    <div className="content">
+                      <h3>Address2 Description English:</h3>
+                      <Input.TextArea
+                        rows={1}
+                        value={formData.address2_description_en}
+                        onChange={(e) =>
+                          handleChange(e, "address2_description_en")
+                        }
+                        style={{ marginTop: ".5rem" }}
+                      />
+                    </div>
+                    <br />
+                    <div className="content">
+                      <h3>Address2 Description Bangla:</h3>
+                      <Input.TextArea
+                        rows={1}
+                        value={formData.address2_description_bn}
+                        onChange={(e) =>
+                          handleChange(e, "address2_description_bn")
+                        }
+                        style={{ marginTop: ".5rem" }}
+                      />
+                    </div>
+                    <br />
+                    <div className="content">
+                      <h3>Column2 Menu:</h3>
+                      {console.log("Menu List: ", menuData)}
+                      <Select
+                        showSearch
+                        // mode="multiple"
+                        placeholder="Select menu items"
+                        style={{ width: "100%", marginTop: ".5rem" }}
+                        value={selectedItems} // Set the selected items from state
+                        onChange={handleSelectChange} // Set the event handler
+                      >
+                        {menuData?.map((item) => (
                           <>
-                            {" "}
-                            <p
-                              style={{
-                                color: "#fff",
-                                textTransform: "uppercase",
-                              }}
-                            >
-                              {item?.title}
-                            </p>
+                            <Option key={item.id} value={item?.id}>
+                              {item.name}
+                            </Option>
                           </>
                         ))}
-                      </h4>
+                      </Select>
+                    </div>
+                    <br />
+                    <div className="content">
+                      <h3>Column3 Menu:</h3>
+                      <Select
+                        showSearch
+                        // mode="multiple"
+                        placeholder="Select menu items"
+                        style={{ width: "100%", marginTop: ".5rem" }}
+                        value={selectedItemsColumn3} // Set the selected items from state
+                        onChange={handleSelectChangeColumn3} // Set the event handler
+                      >
+                        {menuData?.map((item) => (
+                          <>
+                            <Option key={item.id} value={item?.id}>
+                              {item.name}
+                            </Option>
+                          </>
+                        ))}
+                      </Select>
                     </div>
                   </Col>
-                </Row>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "flex-end",
-                  columnGap: "1rem",
-                  height: "fit-content",
-                  marginBottom: "1rem",
-                }}
-              >
-                <div>
+                  <Col span={8}>
+                    <div className="content">
+                      <h3>Column4 Menu:</h3>
+                      <Select
+                        showSearch
+                        // mode="multiple"
+                        placeholder="Select menu items"
+                        style={{ width: "100%", marginTop: ".5rem" }}
+                        value={selectedItemsColumn4} // Set the selected items from state
+                        onChange={handleSelectChangeColumn4} // Set the event handler
+                      >
+                        {menuData?.map((item) => (
+                          <>
+                            <Option key={item.id} value={item?.id}>
+                              {item.name}
+                            </Option>
+                          </>
+                        ))}
+                      </Select>
+                    </div>
+
+                    <br />
+                    <div className="content">
+                      <h3>Column4 Title En:</h3>
+                      <Input
+                        value={formData.column4_title_en}
+                        onChange={(e) => handleChange(e, "column4_title_en")}
+                        style={{ marginTop: ".5rem" }}
+                      />
+                    </div>
+                    <br />
+                    <div className="content">
+                      <h3>Column4 Title Bn:</h3>
+                      <Input
+                        value={formData.column4_title_bn}
+                        onChange={(e) => handleChange(e, "column4_title_bn")}
+                        style={{ marginTop: ".5rem" }}
+                      />
+                    </div>
+                    <br />
+                    <div className="content">
+                      <h3>Column4 Text En:</h3>
+                      <Input
+                        value={formData.column4_text_en}
+                        onChange={(e) => handleChange(e, "column4_text_en")}
+                        style={{ marginTop: ".5rem" }}
+                      />
+                    </div>
+                    <br />
+                    <div className="content">
+                      <h3>Column4 Text Bn:</h3>
+                      <Input
+                        value={formData.column4_text_bn}
+                        onChange={(e) => handleChange(e, "column4_text_bn")}
+                        style={{ marginTop: ".5rem" }}
+                      />
+                    </div>
+                    <br />
+                    <div className="content">
+                      <h3>Column4 Description English:</h3>
+                      <Input.TextArea
+                        rows={2}
+                        value={formData.column4_description_en}
+                        onChange={(e) =>
+                          handleChange(e, "column4_description_en")
+                        }
+                        style={{ marginTop: ".5rem" }}
+                        type="number"
+                      />
+                    </div>
+                    <br />
+
+                    <div className="content">
+                      <h3>Column4 Description Bangla:</h3>
+                      <Input.TextArea
+                        rows={1}
+                        value={formData.column4_description_bn}
+                        onChange={(e) =>
+                          handleChange(e, "column4_description_bn")
+                        }
+                        style={{ marginTop: ".5rem" }}
+                        type="number"
+                      />
+                    </div>
+                    <br />
+                    <div className="content">
+                      <h3>Bottom Menu:</h3>
+                      <Select
+                        showSearch
+                        // mode="multiple"
+                        placeholder="Select menu item"
+                        style={{ width: "100%", marginTop: ".5rem" }}
+                        value={selectedItemsBottom} // Set the selected items from state
+                        onChange={handleSelectChangeBottom} // Set the event handler
+                      >
+                        {menuData?.map((item) => (
+                          <>
+                            <Option key={item.id} value={item?.id}>
+                              {item.name}
+                            </Option>
+                          </>
+                        ))}
+                      </Select>
+                    </div>
+                  </Col>
                   <Button
-                    icon={<EditOutlined />}
+                    icon={<SyncOutlined />}
                     style={{
-                      backgroundColor: "var(--theme)",
-                      borderColor: "var(--theme)",
+                      marginTop: "1rem",
+                      marginLeft: "1rem",
+                      backgroundColor: "var(--success)",
+                      borderColor: "var(--success)",
                       color: "white",
                       borderRadius: "10px",
-                      fontSize: "1em",
+                      fontSize: "1.2em",
                       marginRight: "1em",
                       // paddingBottom: "1.8em",
                     }}
-                    onClick={() => toggleCollapse(items.id, items)}
+                    onClick={() => handlePost()}
                   >
-                    {isCollapsed && id === items.id ? "Edit" : "Update"}
+                    Add New Footer
                   </Button>
-                </div>
-
-                <Popconfirm
-                  title="Are you sure you want to delete this Footer item?"
-                  onConfirm={() => handleDelete(items.id)}
-                  okText="Sure"
-                  cancelText="Cancel"
-                  open={deleteConfirmationVisible && deleteItemId === items.id}
-                  onOpenChange={(visible) => {
-                    if (!visible) {
-                      handleCancelDelete();
-                    }
-                  }}
-                >
                   <Button
-                    type="primary"
-                    danger
                     style={{
+                      marginTop: "1rem",
+                      marginLeft: "1rem",
+                      backgroundColor: "var(--themes)",
+                      borderColor: "var(--themes)",
+                      color: "white",
                       borderRadius: "10px",
-                      fontSize: "1em",
+                      fontSize: "1.2em",
                       // paddingBottom: "1.8em",
                     }}
-                    onClick={() => showDeleteConfirmation(items.id)}
-                    icon={<DeleteOutlined />}
+                    onClick={() => handleClose()}
                   >
-                    Delete
+                    <CloseCircleOutlined />
+                    Cancel
                   </Button>
-                </Popconfirm>
+                </Row>
               </div>
-              {!isCollapsed && id === items.id && (
-                <div className="ViewContentContainer1">
-                  <div>
-                    <hr />
-                    <div
-                      className="update_area"
-                      style={{ paddingTop: "1rem", marginBottom: "2rem" }}
+            </div>
+          </div>
+        )}
+        {footerData?.map((items) => (
+          <>
+            <div
+              key={items.id}
+              className="ViewContentContainer1"
+              style={{
+                backgroundColor: "#000530",
+                padding: "3rem",
+                color: "#ffff",
+                marginBottom: "1rem",
+              }}
+            >
+              <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                <Col span={8}>
+                  <img
+                    src={`${MEDIA_URL}/${items?.logo?.file_path}`}
+                    width={292}
+                    alt=""
+                  />
+                  <div className="address1" style={{ marginTop: "2rem" }}>
+                    <h4>{items?.address1_title_en}</h4>
+                    <h4 style={{ color: "#c3c3c3" }}>
+                      {items?.address1_description_en}
+                    </h4>
+                  </div>
+                  <div className="address1" style={{ marginTop: "4rem" }}>
+                    <h4>{items?.address2_title_en}</h4>
+                    <h4 style={{ color: "#c3c3c3" }}>
+                      {items?.address2_description_en}
+                    </h4>
+                  </div>
+                </Col>
+                <Col span={4}>
+                  <h2>{items?.column2_menu?.name}</h2>
+
+                  <h4 style={{ color: "#c3c3c3", marginTop: "1rem" }}>
+                    {items?.column2_menu?.menu_items?.map((item) => (
+                      <p style={{ color: "#fff", marginTop: "1rem" }}>
+                        {item?.title}
+                      </p>
+                    ))}
+                  </h4>
+                  {/*  */}
+                </Col>
+                <Col span={6}>
+                  <h2>{items?.column3_menu?.name}</h2>
+                  <h4 style={{ color: "#c3c3c3", marginTop: "1rem" }}>
+                    {items?.column3_menu?.menu_items?.map((item) => (
+                      <p style={{ color: "#fff", marginTop: "1rem" }}>
+                        {item?.title}
+                      </p>
+                    ))}
+                  </h4>
+                </Col>
+                <Col span={6}>
+                  <h2>Member Of</h2>
+
+                  <p
+                    style={{
+                      marginTop: ".5rem",
+                      display: "flex",
+                      justifyItems: "center",
+                      columnGap: "1rem",
+                    }}
+                  >
+                    {" "}
+                    {items?.column4_description_en}
+                  </p>
+                </Col>
+                <Col span={24} style={{ marginTop: "1rem" }}>
+                  <hr style={{ backgroundColor: "#fff" }} />
+                  <div
+                    className="buttom_menu"
+                    style={{
+                      display: "flex",
+                      columnGap: "4rem",
+                      alignItems: "center",
+                      marginTop: "1rem",
+                    }}
+                  >
+                    {/* <h4>© 2022 UNITED AYGAZ LPG LTD.</h4>
+                     */}
+                    <center>
+                      <h4>{items?.column4_description_en}</h4>
+                    </center>
+                    <h4
+                      style={{
+                        color: "#c3c3c3",
+                        display: "flex",
+                        columnGap: "2rem",
+                      }}
                     >
-                      <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-                        <Col span={8}>
-                          <div className="content">
-                            <h3>Selected Logo:</h3>
-                            <br />
-                            {/* Media view */}
-                            {selectedMedia ? (
-                              <Card size="small">
-                                <Image
-                                  src={`${MEDIA_URL}/${selectedMedia.file_path}`}
-                                  alt={selectedMedia.title}
-                                  preview={false}
-                                  width={"100%"}
-                                  height={"100%"}
-                                  style={{
-                                    objectFit: "cover",
-                                    borderRadius: 10,
-                                    border:
-                                      selectedMedia === selectedMedia.id
-                                        ? "2px solid #1890ff"
-                                        : "none",
-                                  }}
-                                />
-                                {/* <p>{selectedMedia.file_name}</p> */}
-                              </Card>
-                            ) : (
-                              <Card size="small">
-                                <Image
-                                  src={`${MEDIA_URL}/${items.logo.file_path}`}
-                                  alt={items.file_name}
-                                  preview={false}
-                                  width={"100%"}
-                                  height={"100%"}
-                                  style={{
-                                    objectFit: "cover",
-                                    borderRadius: 10,
-                                    border:
-                                      selectedMedia === selectedMedia.id
-                                        ? "2px solid #1890ff"
-                                        : "none",
-                                  }}
-                                />
-                              </Card>
-                            )}
-                            <Button
-                              type="primary"
-                              onClick={handleOpenModal}
-                              style={{ marginTop: "1rem" }}
-                            >
-                              Change Logo
-                            </Button>
+                      {items?.bottom_menu?.menu_items?.map((item) => (
+                        <>
+                          {" "}
+                          <p
+                            style={{
+                              color: "#fff",
+                              textTransform: "uppercase",
+                            }}
+                          >
+                            {item?.title}
+                          </p>
+                        </>
+                      ))}
+                    </h4>
+                  </div>
+                </Col>
+              </Row>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-end",
+                columnGap: "1rem",
+                height: "fit-content",
+                marginBottom: "1rem",
+              }}
+            >
+              <div>
+                <Button
+                  icon={<EditOutlined />}
+                  style={{
+                    backgroundColor: "var(--theme)",
+                    borderColor: "var(--theme)",
+                    color: "white",
+                    borderRadius: "10px",
+                    fontSize: "1em",
+                    marginRight: "1em",
+                    // paddingBottom: "1.8em",
+                  }}
+                  onClick={() => toggleCollapse(items.id, items)}
+                >
+                  {isCollapsed && id === items.id ? "Edit" : "Update"}
+                </Button>
+              </div>
 
-                            <MediaSelectionModal1
-                              mediaList={mediaList}
-                              visible={modalVisible}
-                              onCancel={handleModalCancel}
-                              onSelect={handleMediaSelect}
-                            />
-                          </div>
+              <Popconfirm
+                title="Are you sure you want to delete this Footer item?"
+                onConfirm={() => handleDelete(items.id)}
+                okText="Sure"
+                cancelText="Cancel"
+                open={deleteConfirmationVisible && deleteItemId === items.id}
+                onOpenChange={(visible) => {
+                  if (!visible) {
+                    handleCancelDelete();
+                  }
+                }}
+              >
+                <Button
+                  type="primary"
+                  danger
+                  style={{
+                    borderRadius: "10px",
+                    fontSize: "1em",
+                    // paddingBottom: "1.8em",
+                  }}
+                  onClick={() => showDeleteConfirmation(items.id)}
+                  icon={<DeleteOutlined />}
+                >
+                  Delete
+                </Button>
+              </Popconfirm>
+            </div>
+            {!isCollapsed && id === items.id && (
+              <div className="ViewContentContainer1">
+                <div>
+                  <hr />
+                  <div
+                    className="update_area"
+                    style={{ paddingTop: "1rem", marginBottom: "2rem" }}
+                  >
+                    <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                      <Col span={8}>
+                        <div className="content">
+                          <h3>Selected Logo:</h3>
                           <br />
-                          <div className="content">
-                            <h3>Title English:</h3>
-                            <Input
-                              value={formData.title_en}
-                              onChange={(e) => handleChange(e, "title_en")}
-                              style={{ marginTop: ".5rem" }}
-                            />
-                          </div>
-                          <br />
-                          <div className="content">
-                            <h3>Title Bangla:</h3>
-                            <Input
-                              value={formData.title_bn}
-                              onChange={(e) => handleChange(e, "title_bn")}
-                              style={{ marginTop: ".5rem" }}
-                            />
-                          </div>
-                          <br />
-                          <div className="content">
-                            <h3>Address1 Title English:</h3>
-                            <Input
-                              value={formData.address1_title_en}
-                              onChange={(e) =>
-                                handleChange(e, "address1_title_en")
-                              }
-                              style={{ marginTop: ".5rem" }}
-                            />
-                          </div>
-                          <br />
-                          <div className="content">
-                            <h3>Address1 Title Bangla:</h3>
-                            <Input
-                              value={formData.address1_title_bn}
-                              onChange={(e) =>
-                                handleChange(e, "address1_title_bn")
-                              }
-                              style={{ marginTop: ".5rem" }}
-                            />
-                          </div>
-                          <br />
-                        </Col>
-                        <Col span={8}>
-                          <div className="content">
-                            <h3>Address1 Description English:</h3>
-                            <Input.TextArea
-                              rows={1}
-                              value={formData.address1_description_en}
-                              onChange={(e) =>
-                                handleChange(e, "address1_description_en")
-                              }
-                              style={{ marginTop: ".5rem" }}
-                            />
-                          </div>
-                          <br />
-                          <div className="content">
-                            <h3>Address1 Description Bangla:</h3>
-                            <Input.TextArea
-                              rows={2}
-                              value={formData.address1_description_bn}
-                              onChange={(e) =>
-                                handleChange(e, "address1_description_bn")
-                              }
-                              style={{ marginTop: ".5rem" }}
-                            />
-                          </div>
-                          <br />
-                          <div className="content">
-                            <h3>Address2 Title English:</h3>
-                            <Input
-                              value={formData.address2_title_en}
-                              onChange={(e) =>
-                                handleChange(e, "address2_title_en")
-                              }
-                              style={{ marginTop: ".5rem" }}
-                            />
-                          </div>
-                          <br />
-                          <div className="content">
-                            <h3>Address2 Title Bangla:</h3>
-                            <Input
-                              value={formData.address2_title_bn}
-                              onChange={(e) =>
-                                handleChange(e, "address2_title_bn")
-                              }
-                              style={{ marginTop: ".5rem" }}
-                            />
-                          </div>
-                          <br />
-                          <div className="content">
-                            <h3>Address2 Description English:</h3>
-                            <Input.TextArea
-                              rows={1}
-                              value={formData.address2_description_en}
-                              onChange={(e) =>
-                                handleChange(e, "address2_description_en")
-                              }
-                              style={{ marginTop: ".5rem" }}
-                            />
-                          </div>
-                          <br />
-                          <div className="content">
-                            <h3>Address2 Description Bangla:</h3>
-                            <Input.TextArea
-                              rows={1}
-                              value={formData.address2_description_bn}
-                              onChange={(e) =>
-                                handleChange(e, "address2_description_bn")
-                              }
-                              style={{ marginTop: ".5rem" }}
-                            />
-                          </div>
-                          <br />
-                          <div className="content">
-                            <h3>Column2 Menu:</h3>
-                            <Select
-                              showSearch
-                              // mode="multiple"
-                              placeholder="Select menu items"
-                              style={{ width: "100%", marginTop: ".5rem" }}
-                              value={
-                                selectedItems
-                                  ? selectedItems
-                                  : items?.column2_menu?.name
-                              } // Set the selected items from state
-                              onChange={handleSelectChange} // Set the event handler
-                            >
-                              {menuData?.map((item) => (
-                                <>
-                                  <Option key={item.id} value={item?.id}>
-                                    {item.name}
-                                  </Option>
-                                </>
-                              ))}
-                            </Select>
-                          </div>
-                          <br />
-                          <div className="content">
-                            <h3>Column3 Menu:</h3>
-                            <Select
-                              showSearch
-                              // mode="multiple"
-                              placeholder="Select menu items"
-                              style={{ width: "100%", marginTop: ".5rem" }}
-                              value={
-                                selectedItemsColumn3
-                                  ? selectedItemsColumn3
-                                  : items?.column3_menu?.name
-                              } // Set the selected items from state
-                              onChange={handleSelectChangeColumn3} // Set the event handler
-                            >
-                              {menuData?.map((item) => (
-                                <>
-                                  <Option key={item.id} value={item?.id}>
-                                    {item.name}
-                                  </Option>
-                                </>
-                              ))}
-                            </Select>
-                          </div>
-                        </Col>
-                        <Col span={8}>
-                          <div className="content">
-                            <h3>Column4 Menu:</h3>
-                            <Select
-                              showSearch
-                              // mode="multiple"
-                              placeholder="Select menu items"
-                              style={{ width: "100%", marginTop: ".5rem" }}
-                              value={
-                                selectedItemsColumn4
-                                  ? selectedItemsColumn4
-                                  : items?.column3_menu?.name
-                              } // Set the selected items from state
-                              onChange={handleSelectChangeColumn4} // Set the event handler
-                            >
-                              {menuData?.map((item) => (
-                                <>
-                                  <Option key={item.id} value={item?.id}>
-                                    {item.name}
-                                  </Option>
-                                </>
-                              ))}
-                            </Select>
-                          </div>
+                          {/* Media view */}
+                          {selectedMedia ? (
+                            <Card size="small">
+                              <Image
+                                src={`${MEDIA_URL}/${selectedMedia.file_path}`}
+                                alt={selectedMedia.title}
+                                preview={false}
+                                width={"100%"}
+                                height={"100%"}
+                                style={{
+                                  objectFit: "cover",
+                                  borderRadius: 10,
+                                  border:
+                                    selectedMedia === selectedMedia.id
+                                      ? "2px solid #1890ff"
+                                      : "none",
+                                }}
+                              />
+                              {/* <p>{selectedMedia.file_name}</p> */}
+                            </Card>
+                          ) : (
+                            <Card size="small">
+                              <Image
+                                src={`${MEDIA_URL}/${items.logo.file_path}`}
+                                alt={items.file_name}
+                                preview={false}
+                                width={"100%"}
+                                height={"100%"}
+                                style={{
+                                  objectFit: "cover",
+                                  borderRadius: 10,
+                                  border:
+                                    selectedMedia === selectedMedia.id
+                                      ? "2px solid #1890ff"
+                                      : "none",
+                                }}
+                              />
+                            </Card>
+                          )}
+                          <Button
+                            type="primary"
+                            onClick={handleOpenModal}
+                            style={{ marginTop: "1rem" }}
+                          >
+                            Change Logo
+                          </Button>
 
-                          <br />
-                          <div className="content">
-                            <h3>Column4 Title En:</h3>
-                            <Input
-                              value={formData.column4_title_en}
-                              onChange={(e) =>
-                                handleChange(e, "column4_title_en")
-                              }
-                              style={{ marginTop: ".5rem" }}
-                            />
-                          </div>
-                          <br />
-                          <div className="content">
-                            <h3>Column4 Title Bn:</h3>
-                            <Input
-                              value={formData.column4_title_bn}
-                              onChange={(e) =>
-                                handleChange(e, "column4_title_bn")
-                              }
-                              style={{ marginTop: ".5rem" }}
-                            />
-                          </div>
-                          <br />
-                          <div className="content">
-                            <h3>Column4 Text En:</h3>
-                            <Input
-                              value={formData.column4_text_en}
-                              onChange={(e) =>
-                                handleChange(e, "column4_text_en")
-                              }
-                              style={{ marginTop: ".5rem" }}
-                            />
-                          </div>
-                          <br />
-                          <div className="content">
-                            <h3>Column4 Text Bn:</h3>
-                            <Input
-                              value={formData.column4_text_bn}
-                              onChange={(e) =>
-                                handleChange(e, "column4_text_bn")
-                              }
-                              style={{ marginTop: ".5rem" }}
-                            />
-                          </div>
-                          <br />
-                          <div className="content">
-                            <h3>Column4 Description English:</h3>
-                            <Input.TextArea
-                              rows={2}
-                              value={formData.column4_description_en}
-                              onChange={(e) =>
-                                handleChange(e, "column4_description_en")
-                              }
-                              style={{ marginTop: ".5rem" }}
-                              type="number"
-                            />
-                          </div>
-                          <br />
+                          <MediaSelectionModal1
+                            mediaList={mediaList}
+                            visible={modalVisible}
+                            onCancel={handleModalCancel}
+                            onSelect={handleMediaSelect}
+                          />
+                        </div>
+                        <br />
+                        <div className="content">
+                          <h3>Title English:</h3>
+                          <Input
+                            value={formData.title_en}
+                            onChange={(e) => handleChange(e, "title_en")}
+                            style={{ marginTop: ".5rem" }}
+                          />
+                        </div>
+                        <br />
+                        <div className="content">
+                          <h3>Title Bangla:</h3>
+                          <Input
+                            value={formData.title_bn}
+                            onChange={(e) => handleChange(e, "title_bn")}
+                            style={{ marginTop: ".5rem" }}
+                          />
+                        </div>
+                        <br />
+                        <div className="content">
+                          <h3>Address1 Title English:</h3>
+                          <Input
+                            value={formData.address1_title_en}
+                            onChange={(e) =>
+                              handleChange(e, "address1_title_en")
+                            }
+                            style={{ marginTop: ".5rem" }}
+                          />
+                        </div>
+                        <br />
+                        <div className="content">
+                          <h3>Address1 Title Bangla:</h3>
+                          <Input
+                            value={formData.address1_title_bn}
+                            onChange={(e) =>
+                              handleChange(e, "address1_title_bn")
+                            }
+                            style={{ marginTop: ".5rem" }}
+                          />
+                        </div>
+                        <br />
+                      </Col>
+                      <Col span={8}>
+                        <div className="content">
+                          <h3>Address1 Description English:</h3>
+                          <Input.TextArea
+                            rows={1}
+                            value={formData.address1_description_en}
+                            onChange={(e) =>
+                              handleChange(e, "address1_description_en")
+                            }
+                            style={{ marginTop: ".5rem" }}
+                          />
+                        </div>
+                        <br />
+                        <div className="content">
+                          <h3>Address1 Description Bangla:</h3>
+                          <Input.TextArea
+                            rows={2}
+                            value={formData.address1_description_bn}
+                            onChange={(e) =>
+                              handleChange(e, "address1_description_bn")
+                            }
+                            style={{ marginTop: ".5rem" }}
+                          />
+                        </div>
+                        <br />
+                        <div className="content">
+                          <h3>Address2 Title English:</h3>
+                          <Input
+                            value={formData.address2_title_en}
+                            onChange={(e) =>
+                              handleChange(e, "address2_title_en")
+                            }
+                            style={{ marginTop: ".5rem" }}
+                          />
+                        </div>
+                        <br />
+                        <div className="content">
+                          <h3>Address2 Title Bangla:</h3>
+                          <Input
+                            value={formData.address2_title_bn}
+                            onChange={(e) =>
+                              handleChange(e, "address2_title_bn")
+                            }
+                            style={{ marginTop: ".5rem" }}
+                          />
+                        </div>
+                        <br />
+                        <div className="content">
+                          <h3>Address2 Description English:</h3>
+                          <Input.TextArea
+                            rows={1}
+                            value={formData.address2_description_en}
+                            onChange={(e) =>
+                              handleChange(e, "address2_description_en")
+                            }
+                            style={{ marginTop: ".5rem" }}
+                          />
+                        </div>
+                        <br />
+                        <div className="content">
+                          <h3>Address2 Description Bangla:</h3>
+                          <Input.TextArea
+                            rows={1}
+                            value={formData.address2_description_bn}
+                            onChange={(e) =>
+                              handleChange(e, "address2_description_bn")
+                            }
+                            style={{ marginTop: ".5rem" }}
+                          />
+                        </div>
+                        <br />
+                        <div className="content">
+                          <h3>Column2 Menu:</h3>
+                          <Select
+                            showSearch
+                            // mode="multiple"
+                            placeholder="Select menu items"
+                            style={{ width: "100%", marginTop: ".5rem" }}
+                            value={
+                              selectedItems
+                                ? selectedItems
+                                : items?.column2_menu?.name
+                            } // Set the selected items from state
+                            onChange={handleSelectChange} // Set the event handler
+                          >
+                            {menuData?.map((item) => (
+                              <>
+                                <Option key={item.id} value={item?.id}>
+                                  {item.name}
+                                </Option>
+                              </>
+                            ))}
+                          </Select>
+                        </div>
+                        <br />
+                        <div className="content">
+                          <h3>Column3 Menu:</h3>
+                          <Select
+                            showSearch
+                            // mode="multiple"
+                            placeholder="Select menu items"
+                            style={{ width: "100%", marginTop: ".5rem" }}
+                            value={
+                              selectedItemsColumn3
+                                ? selectedItemsColumn3
+                                : items?.column3_menu?.name
+                            } // Set the selected items from state
+                            onChange={handleSelectChangeColumn3} // Set the event handler
+                          >
+                            {menuData?.map((item) => (
+                              <>
+                                <Option key={item.id} value={item?.id}>
+                                  {item.name}
+                                </Option>
+                              </>
+                            ))}
+                          </Select>
+                        </div>
+                      </Col>
+                      <Col span={8}>
+                        <div className="content">
+                          <h3>Column4 Menu:</h3>
+                          <Select
+                            showSearch
+                            // mode="multiple"
+                            placeholder="Select menu items"
+                            style={{ width: "100%", marginTop: ".5rem" }}
+                            value={
+                              selectedItemsColumn4
+                                ? selectedItemsColumn4
+                                : items?.column3_menu?.name
+                            } // Set the selected items from state
+                            onChange={handleSelectChangeColumn4} // Set the event handler
+                          >
+                            {menuData?.map((item) => (
+                              <>
+                                <Option key={item.id} value={item?.id}>
+                                  {item.name}
+                                </Option>
+                              </>
+                            ))}
+                          </Select>
+                        </div>
 
-                          <div className="content">
-                            <h3>Column4 Description Bangla:</h3>
-                            <Input.TextArea
-                              rows={1}
-                              value={formData.column4_description_bn}
-                              onChange={(e) =>
-                                handleChange(e, "column4_description_bn")
-                              }
-                              style={{ marginTop: ".5rem" }}
-                              type="number"
-                            />
-                          </div>
-                          <br />
-                          <div className="content">
-                            <h3>Bottom Menu:</h3>
-                            <Select
-                              showSearch
-                              // mode="multiple"
-                              placeholder="Select menu item"
-                              style={{ width: "100%", marginTop: ".5rem" }}
-                              value={
-                                selectedItemsBottom
-                                  ? selectedItemsBottom
-                                  : items?.bottom_menu?.name
-                              } // Set the selected items from state
-                              onChange={handleSelectChangeBottom} // Set the event handler
-                            >
-                              {menuData?.map((item) => (
-                                <>
-                                  <Option key={item.id} value={item?.id}>
-                                    {item.name}
-                                  </Option>
-                                </>
-                              ))}
-                            </Select>
-                          </div>
-                        </Col>
-                        <Button
-                          icon={<SyncOutlined />}
-                          style={{
-                            marginTop: "1rem",
-                            marginLeft: "1rem",
-                            backgroundColor: "var(--success)",
-                            borderColor: "var(--success)",
-                            color: "white",
-                            borderRadius: "10px",
-                            fontSize: "1.2em",
-                            marginRight: "1em",
-                            // paddingBottom: "1.8em",
-                          }}
-                          onClick={() => handleUpdate()}
-                        >
-                          Update
-                        </Button>
-                        <Button
-                          style={{
-                            marginTop: "1rem",
-                            marginLeft: "1rem",
-                            backgroundColor: "var(--themes)",
-                            borderColor: "var(--themes)",
-                            color: "white",
-                            borderRadius: "10px",
-                            fontSize: "1.2em",
-                            // paddingBottom: "1.8em",
-                          }}
-                          onClick={() => toggleCollapse(true)}
-                        >
-                          <CloseCircleOutlined />
-                          Cancel
-                        </Button>
-                      </Row>
-                    </div>
+                        <br />
+                        <div className="content">
+                          <h3>Column4 Title En:</h3>
+                          <Input
+                            value={formData.column4_title_en}
+                            onChange={(e) =>
+                              handleChange(e, "column4_title_en")
+                            }
+                            style={{ marginTop: ".5rem" }}
+                          />
+                        </div>
+                        <br />
+                        <div className="content">
+                          <h3>Column4 Title Bn:</h3>
+                          <Input
+                            value={formData.column4_title_bn}
+                            onChange={(e) =>
+                              handleChange(e, "column4_title_bn")
+                            }
+                            style={{ marginTop: ".5rem" }}
+                          />
+                        </div>
+                        <br />
+                        <div className="content">
+                          <h3>Column4 Text En:</h3>
+                          <Input
+                            value={formData.column4_text_en}
+                            onChange={(e) => handleChange(e, "column4_text_en")}
+                            style={{ marginTop: ".5rem" }}
+                          />
+                        </div>
+                        <br />
+                        <div className="content">
+                          <h3>Column4 Text Bn:</h3>
+                          <Input
+                            value={formData.column4_text_bn}
+                            onChange={(e) => handleChange(e, "column4_text_bn")}
+                            style={{ marginTop: ".5rem" }}
+                          />
+                        </div>
+                        <br />
+                        <div className="content">
+                          <h3>Column4 Description English:</h3>
+                          <Input.TextArea
+                            rows={2}
+                            value={formData.column4_description_en}
+                            onChange={(e) =>
+                              handleChange(e, "column4_description_en")
+                            }
+                            style={{ marginTop: ".5rem" }}
+                            type="number"
+                          />
+                        </div>
+                        <br />
+
+                        <div className="content">
+                          <h3>Column4 Description Bangla:</h3>
+                          <Input.TextArea
+                            rows={1}
+                            value={formData.column4_description_bn}
+                            onChange={(e) =>
+                              handleChange(e, "column4_description_bn")
+                            }
+                            style={{ marginTop: ".5rem" }}
+                            type="number"
+                          />
+                        </div>
+                        <br />
+                        <div className="content">
+                          <h3>Bottom Menu:</h3>
+                          <Select
+                            showSearch
+                            // mode="multiple"
+                            placeholder="Select menu item"
+                            style={{ width: "100%", marginTop: ".5rem" }}
+                            value={
+                              selectedItemsBottom
+                                ? selectedItemsBottom
+                                : items?.bottom_menu?.name
+                            } // Set the selected items from state
+                            onChange={handleSelectChangeBottom} // Set the event handler
+                          >
+                            {menuData?.map((item) => (
+                              <>
+                                <Option key={item.id} value={item?.id}>
+                                  {item.name}
+                                </Option>
+                              </>
+                            ))}
+                          </Select>
+                        </div>
+                      </Col>
+                      <Button
+                        icon={<SyncOutlined />}
+                        style={{
+                          marginTop: "1rem",
+                          marginLeft: "1rem",
+                          backgroundColor: "var(--success)",
+                          borderColor: "var(--success)",
+                          color: "white",
+                          borderRadius: "10px",
+                          fontSize: "1.2em",
+                          marginRight: "1em",
+                          // paddingBottom: "1.8em",
+                        }}
+                        onClick={() => handleUpdate()}
+                      >
+                        Update
+                      </Button>
+                      <Button
+                        style={{
+                          marginTop: "1rem",
+                          marginLeft: "1rem",
+                          backgroundColor: "var(--themes)",
+                          borderColor: "var(--themes)",
+                          color: "white",
+                          borderRadius: "10px",
+                          fontSize: "1.2em",
+                          // paddingBottom: "1.8em",
+                        }}
+                        onClick={() => toggleCollapse(true)}
+                      >
+                        <CloseCircleOutlined />
+                        Cancel
+                      </Button>
+                    </Row>
                   </div>
                 </div>
-              )}
-            </>
-          ))}
-        </div>
+              </div>
+            )}
+          </>
+        ))}
       </div>
     </>
   );

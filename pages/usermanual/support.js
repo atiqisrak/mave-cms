@@ -13,7 +13,7 @@ const Support = () => {
 
   return (
     <div
-      className="ViewContainer ViewContentContainer"
+      className="mavecontainer"
       style={{
         marginTop: "6em",
       }}

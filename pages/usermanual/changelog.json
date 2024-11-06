@@ -1,5 +1,53 @@
 [
     {
+        "version": "v 0.3.49",
+        "date": "2024-10-30",
+        "changes": {
+            "Feature": [
+                "Introduced a whole new look for the CMS",
+                "Page Builder is completely revamped",
+                "You get a whole new experience with custom model, form and footer builder",
+                "User can create, update, delete and view models and create their own CMS",
+                "Page builder got some exciting new features and widgets like carousel, accordion, table, etc."
+            ],
+            "BugFix": [
+                "Fixed the issue where user could not match their current pages with links",
+                "Fixed the slider of cards issue. Users can modify fluently",
+                "Removed success and error messages from the page editor and components"
+            ]
+        }
+    },
+    {
+        "version": "v 0.3.21",
+        "date": "2024-09-22",
+        "changes": {
+            "Feature": [
+                "Added new icons in the sidebar",
+                "Mave logo has changed"
+            ],
+            "BugFix": [
+                "Fixed slider elements update issue/bug"
+            ]
+        }
+    },
+    {
+        "version": "v 0.3.19",
+        "date": "2024-08-11",
+        "changes": {
+            "Feature": [
+                "Introducing new dynamic form builder under Tools",
+                "User can create, update, delete and view forms",
+                "User can add fields in the form",
+                "User can add validation in the form fields",
+                "Added Terms and Conditions, Contributing, Issue Template, Pull Request Template, Code of Conduct in the CMS",
+                "User can check these documentation from User Manual > Documentation"
+            ],
+            "BugFix": [
+                "Fixed slider elements update issue/bug"
+            ]
+        }
+    },
+    {
         "version": "v 0.3.1",
         "date": "2024-05-21",
         "changes": {
@@ -13,7 +61,7 @@
         "date": "2024-06-03",
         "changes": {
             "Feature": [
-                "Updated the Galler view",
+                "Updated the Gallery view",
                 "User can copy, view and download the media"
             ]
         }

@@ -91,10 +91,11 @@ const UserList = ({
     };
     try {
       const response = await instance.post("/admin/register", items);
-      if (response.status === 200) {
+      if (response.status === 201) {
         console.log("User created successfully");
+        message.success("User created successfully");
         setCreateUser(false);
-        window.location.reload();
+        fetchUsers();
       }
     } catch (error) {
       message.error("Something went wrong");
@@ -120,7 +121,7 @@ const UserList = ({
       const response = await instance.put(`/admin/user/${id}`, updatedUser);
       if (response.status === 200) {
         console.log("User Updated Successfully");
-        setUsers(users.map((user) => (user.id === id ? updatedUser : user)));
+        setUsers(users?.map((user) => (user.id === id ? updatedUser : user)));
         setUserEdit(false);
       }
     } catch (error) {
@@ -146,7 +147,9 @@ const UserList = ({
       const response = await instance.delete(`/admin/user/${id}`);
       if (response.status === 200) {
         console.log("User Deleted Successfully");
+        message.success("User Deleted Successfully");
         setUsers(users.filter((user) => user.id !== id));
+        fetchUsers();
       }
     } catch (error) {
       message.error("Something went wrong");
@@ -157,7 +160,7 @@ const UserList = ({
 
   const emailValidation = (email) => {
     const emailRegEx =
-      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+)*@(gmail\.com|webable\.digital)$/;
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+)*@(gmail\.com|mave\.cms|webable\.digital)$/;
     if (!email.trim()) {
       setEmailMessage("Email is required. (e.g.: username@gmail.com)");
       setValidEmail(false);
@@ -198,9 +201,6 @@ const UserList = ({
                 borderRadius: "5px",
               }}
             >
-              <center>
-                <h1>User Management</h1>
-              </center>
               <Row
                 gutter={16}
                 style={{
@@ -210,17 +210,14 @@ const UserList = ({
                   marginTop: "2rem",
                 }}
               >
-                <Col span={6}>
+                <Col span={9}>
                   <h3 style={{ fontWeight: "bold" }}>Name</h3>
                 </Col>
-                <Col span={6}>
+                <Col span={9}>
                   <h3 style={{ fontWeight: "bold" }}>Email</h3>
                 </Col>
                 <Col span={4}>
                   <h3 style={{ fontWeight: "bold" }}>Role</h3>
-                </Col>
-                <Col span={6}>
-                  <h3 style={{ fontWeight: "bold" }}>Permissions</h3>
                 </Col>
                 <Col span={2}>
                   <h3 style={{ fontWeight: "bold" }}>Actions</h3>
@@ -237,7 +234,7 @@ const UserList = ({
                   }}
                   key={user.id}
                 >
-                  <Col span={6}>
+                  <Col span={9}>
                     {userEdit && user?.id == editUserId ? (
                       <Input
                         defaultValue={user?.name}
@@ -249,7 +246,7 @@ const UserList = ({
                       user?.name
                     )}
                   </Col>
-                  <Col span={6}>
+                  <Col span={9}>
                     {userEdit && user?.id == editUserId ? (
                       <Input
                         defaultValue={user?.email}
@@ -272,7 +269,7 @@ const UserList = ({
                         }
                         style={{ width: "100%" }}
                       >
-                        {roles2.map((role) => (
+                        {roles2?.map((role) => (
                           <Select.Option value={role.id} key={role.id}>
                             {role.name}
                           </Select.Option>
@@ -283,9 +280,6 @@ const UserList = ({
                     ) : (
                       "Guest"
                     )}
-                  </Col>
-                  <Col span={6}>
-                    <p>All</p>
                   </Col>
                   <Col span={2}>
                     {userEdit && user?.id == editUserId ? (
@@ -337,148 +331,6 @@ const UserList = ({
                 </Row>
               ))}
             </Col>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
-            }}
-          >
-            <Button
-              type="primary"
-              style={{
-                backgroundColor: createUser ? "red" : "var(--theme)",
-                color: "white",
-                padding: "0.5rem 1rem",
-              }}
-              onClick={() => setCreateUser(!createUser)}
-            >
-              {createUser ? "Cancel" : "Create User"}
-            </Button>
-            {createUser && (
-              <Row
-                gutter={16}
-                style={{
-                  marginTop: "1rem",
-                  backgroundColor: "#ceedff",
-                  padding: "1rem 1em",
-                  borderRadius: "5px",
-                }}
-              >
-                <Col span={6}>
-                  <label htmlFor="name">Name</label>
-                  <Input
-                    style={{
-                      backgroundColor: "white",
-                      padding: "0.5rem 1rem",
-                    }}
-                    placeholder="Name"
-                    value={name}
-                    required
-                    onChange={(e) => handleChange(e, "name")}
-                  />
-                </Col>
-                <Col span={6}>
-                  <label htmlFor="email">Email</label>
-                  <Input
-                    style={{
-                      backgroundColor: "white",
-                      padding: "0.5rem 1rem",
-                    }}
-                    placeholder="username@gmail.com"
-                    value={email}
-                    required
-                    onChange={(e) => {
-                      handleChange(e, "email");
-                      emailValidation(e.target.value);
-                    }}
-                  />
-                  {!validEmail && (
-                    <p style={{ color: "red" }}>{emailMessage}</p>
-                  )}
-                </Col>
-                <Col span={4}>
-                  <label htmlFor="password">Password</label>
-                  <Input
-                    style={{
-                      backgroundColor: "white",
-                      padding: "0.5rem 1rem",
-                    }}
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    required
-                    onChange={(e) => handleChange(e, "password")}
-                    placeholder="Password"
-                    className="input-field"
-                    suffix={
-                      showPassword ? (
-                        <EyeOutlined onClick={togglePasswordVisibility} />
-                      ) : (
-                        <EyeInvisibleOutlined
-                          onClick={togglePasswordVisibility}
-                        />
-                      )
-                    }
-                  />
-                </Col>
-                <Col span={4}>
-                  <label htmlFor="confirmPassword">Confirm Password</label>
-                  <Input
-                    style={{
-                      backgroundColor: "white",
-                      padding: "0.5rem 1rem",
-                    }}
-                    type={showConfirmPassword ? "text" : "password"}
-                    value={confirmPassword}
-                    required
-                    onChange={(e) => handleChange(e, "confirmPassword")}
-                    placeholder="Confirm Password"
-                    className="input-field"
-                    suffix={
-                      showConfirmPassword ? (
-                        <EyeOutlined
-                          onClick={toggleConfirmPasswordVisibility}
-                        />
-                      ) : (
-                        <EyeInvisibleOutlined
-                          onClick={toggleConfirmPasswordVisibility}
-                        />
-                      )
-                    }
-                  />
-                </Col>
-                <Col span={4}>
-                  <div
-                    className="flexed-between"
-                    style={{ marginTop: "1.6em" }}
-                  >
-                    <Button
-                      type="primary"
-                      disabled={!passwordsMatch}
-                      style={{
-                        backgroundColor: "var(--theme)",
-                        color: "white",
-                        padding: "0.5rem 1rem",
-                      }}
-                      onClick={isSubmitDisabled ? null : handleCreateUser}
-                    >
-                      Create
-                    </Button>
-                    <Button
-                      danger
-                      style={{
-                        padding: "0.5rem 1rem",
-                      }}
-                      onClick={() => setCreateUser(false)}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </Col>
-              </Row>
-            )}
           </div>
         </>
       )}

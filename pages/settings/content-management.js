@@ -1,24 +1,13 @@
 import React from "react";
-import { Layout, Breadcrumb } from "antd";
-import ContentManagement from "../../components/settings/contentManagement";
+import { Layout, Breadcrumb, Button } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import Link from "next/link";
+import ContentManagement from "../../components/settings/contentManagement";
 
-const { Content } = Layout;
-const menuItems = [
-  {
-    key: "1",
-    label: <Link href="/settings/general-settings">General Settings</Link>,
-  },
-  {
-    key: "2",
-    label: <Link href="/settings/user-management">User Management</Link>,
-  },
-  { key: "3", label: <Link href="/settings/seo-settings">SEO Settings</Link> },
-];
 const ContentManagementPage = () => {
+  const { Content } = Layout;
   return (
-    <div className="ViewContainer">
+    <div className="mavecontainer">
       <Layout
         style={{
           padding: "0 24px 24px",
@@ -27,31 +16,38 @@ const ContentManagementPage = () => {
         }}
       >
         <Breadcrumb
-          separator=">"
-          items={[
-            {
-              title: <HomeOutlined style={{ fontSize: "1.2rem" }} />,
-              href: "/",
-            },
-            { title: "Settings", href: "/settings" },
-            {
-              title: "Content Management",
-              menu: {
-                items: menuItems,
-              },
-            },
-          ]}
-          style={{ marginBottom: "2rem", fontSize: "1.2rem" }}
-        />
+          style={{
+            margin: "16px 0",
+            fontSize: "1rem",
+            fontWeight: 600,
+          }}
+        >
+          <Breadcrumb.Item>
+            <Button icon={<HomeOutlined />} type="link" href="/" />
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>Settings</Breadcrumb.Item>
+          <Breadcrumb.Item>Content Management</Breadcrumb.Item>
+        </Breadcrumb>
+
         <Content
           style={{
-            padding: 24,
+            padding: "24px",
             margin: 0,
             minHeight: 280,
             backgroundColor: "#fff",
+            borderRadius: "8px",
           }}
         >
-          <h1>Content Management Settings</h1>
+          <h1
+            style={{
+              fontSize: "1.8rem",
+              fontWeight: 600,
+              marginBottom: "1.5rem",
+              textAlign: "center",
+            }}
+          >
+            Content Management Settings
+          </h1>
           <ContentManagement />
         </Content>
       </Layout>

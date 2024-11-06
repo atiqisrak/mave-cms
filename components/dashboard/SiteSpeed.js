@@ -1,151 +1,131 @@
-import { MoreOutlined } from "@ant-design/icons";
-import { Menu } from "antd";
+// components/SiteSpeed.js
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import React, { useState, useEffect } from "react";
 
-export const siteSpeedData = {
-  responseTime: 631,
-  grade: "75",
-  pageSize: "1.2mb",
-  loadTime: "2.5s",
-  requests: 89,
+const ReactApexChart = dynamic(() => import("react-apexcharts"), {
+  ssr: false,
+});
+
+export const generateRandomSiteSpeedData = () => {
+  const data = [];
+  const now = new Date();
+
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(now.getTime() + i * 60 * 60 * 1000); // Increment by 1 hour
+    data.push({
+      x: date, // Use Date objects for datetime
+      y: Math.floor(Math.random() * 100) + 50, // Random value between 50 and 150
+    });
+  }
+
+  return data;
 };
 
 export default function SiteSpeed() {
-  return (
-    <div
-      style={{
-        padding: "2rem",
-        borderRadius: "1rem",
-        backgroundColor: "white",
-      }}
-    >
-      <div
-        className="flexed-between"
-        style={{
-          borderBottom: "1px solid var(--gray)",
-          marginBottom: "1rem",
-          paddingBottom: "1rem",
-        }}
-      >
-        <h4
-          style={{
-            fontSize: "1.1rem",
-            fontWeight: 500,
-            color: "var(--black)",
-          }}
-        >
-          Site Speed
-        </h4>
-        <MoreOutlined />
-      </div>
+  const [chartOptions, setChartOptions] = useState({});
+  const [chartSeries, setChartSeries] = useState([]);
 
-      {/* Speed Data */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 2fr",
-          gap: "2rem",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "1rem",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "16em",
-              height: "16em",
-              backgroundColor: "#F5F7FF",
-              borderRadius: "50%",
-              border: "2px solid blue",
-              color: "blue",
-            }}
-          >
-            <h1>{siteSpeedData.responseTime}</h1>
-            <p>mc</p>
-          </div>
-        </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "2rem",
-          }}
-        >
-          {/* Grade, Page Size, Load Time, Requests */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
-              gap: "1rem",
-              color: "blue",
-              backgroundColor: "#F5F7FF",
-              borderRadius: "2rem",
-              padding: "3rem 2rem",
-            }}
-          >
-            <h2>{siteSpeedData.grade}</h2>
-            <p>Grade</p>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
-              gap: "1rem",
-              color: "blue",
-              backgroundColor: "#F5F7FF",
-              borderRadius: "2rem",
-              padding: "3rem 2rem",
-            }}
-          >
-            <h2>{siteSpeedData.pageSize}</h2>
-            <p>Page Size</p>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
-              gap: "1rem",
-              color: "blue",
-              backgroundColor: "#F5F7FF",
-              borderRadius: "2rem",
-              padding: "3rem 2rem",
-            }}
-          >
-            <h2>{siteSpeedData.loadTime}</h2>
-            <p>Load Time</p>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
-              gap: "1rem",
-              color: "blue",
-              backgroundColor: "#F5F7FF",
-              borderRadius: "2rem",
-              padding: "3rem 2rem",
-            }}
-          >
-            <h2>{siteSpeedData.requests}</h2>
-            <p>Requests</p>
-          </div>
-        </div>
+  useEffect(() => {
+    const seriesData = generateRandomSiteSpeedData();
+
+    setChartOptions({
+      chart: {
+        type: "area",
+        toolbar: { show: false },
+        height: 350,
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      stroke: {
+        curve: "smooth",
+        width: 2,
+        colors: ["#fcb813"],
+      },
+      fill: {
+        type: "gradient",
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.25,
+          opacityTo: 0,
+          stops: [25, 100],
+          colorStops: [
+            {
+              offset: 0,
+              color: "#fcb813",
+              opacity: 1,
+            },
+            {
+              offset: 100,
+              color: "#fcb813",
+              opacity: 0.25,
+            },
+          ],
+        },
+      },
+      xaxis: {
+        type: "datetime",
+        labels: {
+          rotate: -45,
+        },
+        tickAmount: 7,
+        tooltip: {
+          enabled: true,
+        },
+      },
+      tooltip: {
+        x: {
+          format: "yyyy-MM-dd HH:mm",
+        },
+      },
+      responsive: [
+        {
+          breakpoint: 768,
+          options: {
+            chart: {
+              height: 300,
+            },
+            xaxis: {
+              labels: {
+                rotate: -45,
+              },
+            },
+          },
+        },
+      ],
+    });
+
+    setChartSeries([
+      {
+        name: "Page Load Time",
+        data: seriesData,
+      },
+    ]);
+  }, []);
+
+  return (
+    <div className="border-2 border-gray-300 rounded-xl bg-white p-4">
+      <div className="flex justify-between items-center border-b-2 border-gray-300 p-3 mb-4">
+        <h3 className="text-lg font-semibold">Site Speed</h3>
+        <Image
+          src="/icons/mave_icons/threedots.svg"
+          alt="Three Dots"
+          width={40}
+          height={40}
+          className="transform rotate-90"
+        />
       </div>
+      {chartSeries.length > 0 && (
+        <ReactApexChart
+          options={chartOptions}
+          series={chartSeries}
+          type="area"
+          height={350}
+          className="w-full"
+        />
+      )}
+      {/* {console.log("Chart Series: ", chartSeries)} */}
     </div>
   );
 }

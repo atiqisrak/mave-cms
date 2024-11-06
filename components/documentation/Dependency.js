@@ -50,7 +50,7 @@ const Dependency = () => {
   };
 
   const installCommand = `npm i ${dependencies
-    .map((dep) => dep.split(": ")[0])
+    ?.map((dep) => dep.split(": ")[0])
     .join(" ")}`;
 
   return (

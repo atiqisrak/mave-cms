@@ -1,112 +1,131 @@
-import { MoreOutlined } from "@ant-design/icons";
-import { Menu } from "antd";
-import React, { useState } from "react";
-import { Chart } from "react-google-charts";
+// components/UserStat.js
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import React, { useState, useEffect } from "react";
 
-export const monthData = [
-  ["Days", "Users"],
-  ["1-5", 1234],
-  ["6-10", 1416],
-  ["11-15", 1345],
-  ["16-20", 1456],
-  ["21-25", 1234],
-  ["26-30", 1416],
-  ["31", 1345],
-];
+const ReactApexChart = dynamic(() => import("react-apexcharts"), {
+  ssr: false,
+});
 
-export const sixMonthsData = [
-  ["Month", "Users"],
-  ["Jan", 100],
-  ["Feb", 622],
-  ["Mar", 846],
-  ["Apr", 1175],
-  ["May", 1456],
-  ["Jun", 1234],
-];
+export const generateRandomActiveUsersData = () => {
+  const data = [];
+  const now = new Date();
 
-export const yearData = [
-  ["Year", "Users"],
-  ["2020", 1000],
-  ["2021", 2000],
-  ["2022", 3000],
-  ["2023", 4000],
-  ["2024", 5000],
-  ["2025", 6000],
-];
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(now.getTime() + i * 60 * 60 * 1000); // Increment by 1 hour
+    data.push({
+      x: date, // Use Date objects for datetime
+      y: Math.floor(Math.random() * 1000) + 200, // Random value between 200 and 1200
+    });
+  }
 
-export const options = {
-  title: "User Stat",
-  subtitle: "Users per month",
-  bar: {
-    groupWidth: "35%",
-  },
-  vAxis: {
-    title: "Users",
-  },
-  legend: {
-    position: "none",
-  },
-  colors: ["#29CC39"],
-  animation: {
-    startup: true,
-    easing: "linear",
-    duration: 1500,
-  },
+  return data;
 };
 
 export default function UserStat() {
-  const [dataTypes, setDataTypes] = useState("Month");
+  const [chartOptions, setChartOptions] = useState({});
+  const [chartSeries, setChartSeries] = useState([]);
 
-  const data =
-    dataTypes === "Month"
-      ? monthData
-      : dataTypes === "6 Months"
-      ? sixMonthsData
-      : yearData;
+  useEffect(() => {
+    const seriesData = generateRandomActiveUsersData();
+
+    setChartOptions({
+      chart: {
+        type: "area",
+        toolbar: { show: false },
+        height: 350,
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      stroke: {
+        curve: "smooth",
+        width: 2,
+        colors: ["#fcb813"],
+      },
+      fill: {
+        type: "gradient",
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.25,
+          opacityTo: 0,
+          stops: [25, 100],
+          colorStops: [
+            {
+              offset: 0,
+              color: "#fcb813",
+              opacity: 1,
+            },
+            {
+              offset: 100,
+              color: "#fcb813",
+              opacity: 0.25,
+            },
+          ],
+        },
+      },
+      xaxis: {
+        type: "datetime",
+        labels: {
+          rotate: -45,
+        },
+        tickAmount: 7,
+        tooltip: {
+          enabled: true,
+        },
+      },
+      tooltip: {
+        x: {
+          format: "yyyy-MM-dd HH:mm",
+        },
+      },
+      responsive: [
+        {
+          breakpoint: 768,
+          options: {
+            chart: {
+              height: 300,
+            },
+            xaxis: {
+              labels: {
+                rotate: -45,
+              },
+            },
+          },
+        },
+      ],
+    });
+
+    setChartSeries([
+      {
+        name: "Concurrent Active Users",
+        data: seriesData,
+      },
+    ]);
+  }, []);
 
   return (
-    <div
-      style={{
-        padding: "2rem",
-        borderRadius: "1rem",
-        backgroundColor: "white",
-      }}
-    >
-      <div
-        className="flexed-among"
-        style={{
-          borderBottom: "1px solid var(--gray)",
-          marginBottom: "1rem",
-        }}
-      >
-        <h4
-          style={{
-            fontSize: "1.1rem",
-            fontWeight: 500,
-            color: "var(--black)",
-          }}
-        >
-          User Stat
-        </h4>
-        <Menu
-          mode="horizontal"
-          defaultSelectedKeys={["Month"]}
-          onClick={(e) => setDataTypes(e.key)}
-        >
-          <Menu.Item key="Month">Month</Menu.Item>
-          <Menu.Item key="6 Months">6 Months</Menu.Item>
-          <Menu.Item key="Year">Year</Menu.Item>
-        </Menu>
-        <MoreOutlined />
+    <div className="border-2 border-gray-300 rounded-xl bg-white p-4">
+      <div className="flex justify-between items-center border-b-2 border-gray-300 p-3 mb-4">
+        <h3 className="text-lg font-semibold">Concurrent Active Users</h3>
+        <Image
+          src="/icons/mave_icons/threedots.svg"
+          alt="Three Dots"
+          width={40}
+          height={40}
+          className="transform rotate-90"
+        />
       </div>
-
-      <Chart
-        chartType="Bar"
-        width={"100%"}
-        height={"600px"}
-        data={data}
-        options={options}
-      />
+      {chartSeries.length > 0 && (
+        <ReactApexChart
+          options={chartOptions}
+          series={chartSeries}
+          type="area"
+          height={350}
+          className="w-full"
+        />
+      )}
+      {/* {console.log("Chart Series: ", chartSeries)} */}
     </div>
   );
 }

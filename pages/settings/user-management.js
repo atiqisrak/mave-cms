@@ -1,25 +1,18 @@
 import React from "react";
-import { Layout, Breadcrumb } from "antd";
-import UserManagement from "../../components/settings/UserManagement";
-import { HomeOutlined } from "@ant-design/icons";
+import { Button, Layout, Menu, Tabs } from "antd";
+import {
+  HomeOutlined,
+  PlusCircleOutlined,
+  UserSwitchOutlined,
+} from "@ant-design/icons";
 import Link from "next/link";
+import RolePermission from "../../components/rolepermission/RolePermission";
 
 const { Content } = Layout;
-const menuItems = [
-  {
-    key: "1",
-    label: <Link href="/settings/general-settings">General Settings</Link>,
-  },
-  {
-    key: "2",
-    label: <Link href="/settings/content-management">Content Management</Link>,
-  },
-  { key: "3", label: <Link href="/settings/seo-settings">SEO Settings</Link> },
-];
 
 const UserManagementPage = () => {
   return (
-    <div className="ViewContainer">
+    <div className="mavecontainer">
       <Layout
         style={{
           padding: "0 24px 24px",
@@ -27,32 +20,68 @@ const UserManagementPage = () => {
           backgroundColor: "transparent",
         }}
       >
-        <Breadcrumb
-          separator=">"
-          items={[
-            {
-              title: <HomeOutlined style={{ fontSize: "1.2rem" }} />,
-              href: "/",
-            },
-            { title: "Settings", href: "/settings" },
-            {
-              title: "User Management",
-              menu: {
-                items: menuItems,
-              },
-            },
-          ]}
-          style={{ marginBottom: "2rem", fontSize: "1.2rem" }}
-        />
+        {/* Users, Registration, Access Control, Role Permission */}
         <Content
           style={{
-            padding: 24,
             margin: 0,
             minHeight: 280,
             backgroundColor: "#fff",
           }}
         >
-          <UserManagement />
+          <div
+            className="top-nav"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 4fr 1fr",
+              alignItems: "center",
+              borderBottom: "1px solid #f0f0f0",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginLeft: 16,
+              }}
+            >
+              <UserSwitchOutlined />
+              <h3>User Management</h3>
+            </div>
+            <div>
+              <Menu
+                mode="horizontal"
+                defaultSelectedKeys={["1"]}
+                style={{ marginBottom: 16, fontWeight: "bold" }}
+                // className="font-bold"
+              >
+                <Menu.Item key="1">
+                  <Link href="/settings/users-settings">Users</Link>
+                </Menu.Item>
+                <Menu.Item key="2">
+                  <Link href="/settings/user-registration">Registration</Link>
+                </Menu.Item>
+                <Menu.Item key="3">
+                  <Link href="/settings/access-control">Access Control</Link>
+                </Menu.Item>
+                <Menu.Item key="4">
+                  <Link href="/settings/role-permission">Role Permission</Link>
+                </Menu.Item>
+              </Menu>
+            </div>
+            <div>
+              <Button
+                type="primary"
+                style={{
+                  marginBottom: 16,
+                  backgroundColor: "var(--maveyellow)",
+                  color: "white",
+                }}
+                icon={<PlusCircleOutlined />}
+              >
+                Add Role
+              </Button>
+            </div>
+          </div>
         </Content>
       </Layout>
     </div>

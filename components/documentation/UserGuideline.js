@@ -114,48 +114,6 @@ const UserGuideline = () => {
         </div>
       ),
     },
-    // {
-    //   title: "Components",
-    //   content: (
-    //     <div>
-    //       <Title level={3}>Components</Title>
-    //       <Steps direction="vertical" current={currentStep}>
-    //         <Step
-    //           title="Gallery"
-    //           description="Manage and upload media files."
-    //         />
-    //         <Step
-    //           title="Menu Items"
-    //           description="Create and manage menu items."
-    //         />
-    //         <Step title="Menus" description="Group menu items into menus." />
-    //         <Step
-    //           title="Navbars"
-    //           description="Create and manage navigation bars."
-    //         />
-    //         <Step
-    //           title="Cards"
-    //           description="Create and manage content cards."
-    //         />
-    //         <Step
-    //           title="Sliders"
-    //           description="Create and manage image sliders."
-    //         />
-    //         <Step
-    //           title="Press Release"
-    //           description="Publish and manage press releases."
-    //         />
-    //         <Step title="Events" description="Create and manage events." />
-    //         <Step title="Forms" description="Create and manage forms." />
-    //         <Step title="Footers" description="Create and manage footers." />
-    //         <Step
-    //           title="Form Responses"
-    //           description="Manage responses from forms."
-    //         />
-    //       </Steps>
-    //     </div>
-    //   ),
-    // },
     {
       title: "Gallery",
       content: (
@@ -457,7 +415,7 @@ const UserGuideline = () => {
         <Title level={2}>User Guideline</Title>
       </center>
       <Tabs defaultActiveKey="1" centered type="card" tabPosition="left">
-        {steps.map((step, index) => (
+        {steps?.map((step, index) => (
           <TabPane tab={step.title} key={index + 1}>
             {step.content}
             <div className="steps-action" style={{ marginTop: "24px" }}>

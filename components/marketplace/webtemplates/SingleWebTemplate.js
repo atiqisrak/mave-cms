@@ -135,7 +135,7 @@ export default function SingleWebTemplate({ product }) {
             paddingBottom: "8rem",
           }}
         >
-          {product.detail_images.map((image) => (
+          {product.detail_images?.map((image) => (
             <div
               style={{
                 borderRadius: "10px",

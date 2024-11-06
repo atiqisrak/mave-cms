@@ -25,7 +25,7 @@ const Support = () => (
 
     <Title level={3}>Support Channels</Title>
     <Row gutter={[16, 16]}>
-      {supportChannels.map((channel, index) => (
+      {supportChannels?.map((channel, index) => (
         <Col xs={24} sm={12} md={12} lg={6} key={index}>
           <Card
             title={channel.title}

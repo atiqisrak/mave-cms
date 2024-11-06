@@ -1,0 +1,38 @@
+// pages/api/mave-cloudinary.js
+
+import axios from "axios";
+
+export default async function handler(req, res) {
+  if (req.method !== "GET") {
+    return res.status(405).json({ message: "Method Not Allowed" });
+  }
+
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const apiKey = process.env.CLOUDINARY_API_KEY;
+  const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+  const resourceType = req.query.resourceType || "image"; // Default to 'image'
+
+  const url = `https://api.cloudinary.com/v1_1/${cloudName}/resources/${resourceType}`;
+
+  try {
+    const response = await axios.get(url, {
+      auth: {
+        username: apiKey,
+        password: apiSecret,
+      },
+      params: {
+        // Optional: You can add parameters like max_results, prefix, etc.
+        max_results: 50, // Adjust as needed
+      },
+    });
+
+    res.status(200).json({ resources: response.data.resources });
+  } catch (error) {
+    console.error(
+      "Error fetching Cloudinary media:",
+      error.response?.data || error.message
+    );
+    res.status(500).json({ message: "Error fetching media items" });
+  }
+}

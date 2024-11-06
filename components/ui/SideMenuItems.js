@@ -1,296 +1,265 @@
-import {
-  CalculatorOutlined,
-  LoginOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
-import { Image, Menu, Popover } from "antd";
-import React, { useEffect, useState } from "react";
+// components/ui/SideMenuItems.js
+
+import { LoginOutlined } from "@ant-design/icons";
+import { Menu, Spin } from "antd";
+import React, { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import AuthorizedSideMenuData from "../../src/data/authorisedsidemenus.json";
 import UnAuthorizedSideMenuData from "../../src/data/unauthorisedsidemenu.json";
 import Godfather from "../../src/data/godfather.json";
+import Image from "next/image";
+import instance from "../../axios";
+import { useMenuRefresh } from "../../src/context/MenuRefreshContext";
+
+const { SubMenu, Item } = Menu;
 
 const SideMenuItems = ({
   token,
   user,
   handleLogout,
-  setIsModalOpen,
+  setIsModalOpen, // Received prop
   collapsed,
   theme,
   setTheme,
 }) => {
-  const [loading, setLoading] = useState(false);
+  const { refreshMenu } = useMenuRefresh(); // Consume context
+  const [isLoading, setIsLoading] = useState(false);
   const [sideMenuData, setSideMenuData] = useState([]);
-  const [selectedMenuItem, setSelectedMenuItem] = useState("1");
+  const [godfatherData, setGodfatherData] = useState([]);
+  const [customModels, setCustomModels] = useState([]);
+  const [selectedMenuItem, setSelectedMenuItem] = useState("");
+  const [openKeys, setOpenKeys] = useState([]);
   const router = useRouter();
 
+  // Initialize sideMenuData based on authentication
   useEffect(() => {
     if (token && user) {
-      setSideMenuData(AuthorizedSideMenuData);
+      // Deep clone to prevent mutating the original JSON
+      const authorizedMenu = JSON.parse(JSON.stringify(AuthorizedSideMenuData));
+      setSideMenuData(authorizedMenu);
+
+      // Check for Godfather users
+      if (
+        user?.email === "atiqisrak@niloy.com" ||
+        user?.email === "Zeeshan.akhtar@webable.digital" ||
+        user?.email === "su@mave.cms"
+      ) {
+        setGodfatherData(Godfather);
+      } else {
+        setGodfatherData([]);
+      }
     } else {
       setSideMenuData(UnAuthorizedSideMenuData);
+      setGodfatherData([]);
     }
   }, [token, user]);
 
+  // Combine authorized menus with godfather data
+  const allMenuData = useMemo(() => {
+    return [...sideMenuData, ...godfatherData];
+  }, [sideMenuData, godfatherData]);
+
+  // Fetch custom models
+  const fetchCustomModels = async () => {
+    setIsLoading(true);
+    try {
+      const response = await instance.get("/generated-models");
+      if (response.status === 200) {
+        setCustomModels(response.data);
+      } else {
+        console.error("Failed to fetch custom models");
+      }
+    } catch (error) {
+      console.error("Failed to fetch custom models", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    if (router.isReady && sideMenuData?.length > 0) {
+    if (token) {
+      fetchCustomModels();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token, refreshMenu]); // Add refreshMenu as a dependency
+
+  // Compute final menu data with custom models appended to Creator Studio
+  const finalMenuData = useMemo(() => {
+    // Deep clone to prevent state mutation
+    const menuData = JSON.parse(JSON.stringify(allMenuData));
+
+    if (token && user && customModels.length > 0) {
+      // Find the Creator Studio menu
+      const creatorStudioMenu = menuData.find(
+        (menu) => menu.title === "Creator Studio"
+      );
+
+      if (creatorStudioMenu) {
+        // Map custom models to submenu items
+        const customModelItems = customModels.map((model) => ({
+          id: `custom-${model.id}`, // Ensure unique id
+          icon: "/icons/mave/custom-models.svg",
+          link: `/custom-models/${model.id}`,
+          title: model.model_name
+            .split(" ")
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" "),
+        }));
+
+        // Append custom models to Creator Studio's submenu
+        creatorStudioMenu.submenu = [
+          ...creatorStudioMenu.submenu,
+          ...customModelItems,
+        ];
+      }
+    }
+
+    return menuData;
+  }, [allMenuData, customModels, token, user]);
+
+  // Manage selected menu item based on current path
+  useEffect(() => {
+    if (router.isReady && finalMenuData.length > 0) {
       const currentPath = router.pathname;
       const selectedItem =
-        sideMenuData.find((item) => item.link === currentPath) || {};
-      setSelectedMenuItem(selectedItem.id);
-    }
-  }, [router.pathname, sideMenuData]);
+        finalMenuData.find((item) => item.link === currentPath) ||
+        finalMenuData
+          .flatMap((item) => item.submenu || [])
+          .find((subItem) => subItem.link === currentPath) ||
+        {};
+      if (selectedItem.id !== undefined) {
+        setSelectedMenuItem(selectedItem.id.toString());
 
-  const handleMenuClick = (item) => {
-    setSelectedMenuItem(item.key);
-    const selectedItem = sideMenuData.find(
-      (menuItem) => menuItem.id === item.key
-    );
-    if (selectedItem) {
+        // Set openKeys based on selected item
+        const parentItem = finalMenuData.find((item) =>
+          item.submenu?.some(
+            (sub) => sub.id.toString() === selectedItem.id.toString()
+          )
+        );
+        if (parentItem) {
+          setOpenKeys([parentItem.id.toString()]);
+        } else {
+          setOpenKeys([]);
+        }
+      } else {
+        setSelectedMenuItem("");
+        setOpenKeys([]);
+      }
+    }
+  }, [router.pathname, finalMenuData]);
+
+  // Handle menu click
+  const handleMenuClick = ({ key }) => {
+    setSelectedMenuItem(key);
+    const selectedItem =
+      finalMenuData.find((menuItem) => menuItem.id.toString() === key) ||
+      finalMenuData
+        .flatMap((menuItem) => menuItem.submenu || [])
+        .find((subItem) => subItem.id.toString() === key);
+
+    if (selectedItem && selectedItem.link) {
       router.push(selectedItem.link);
     }
   };
 
-  // console.log("Side menu data", sideMenuData);
+  // Handle submenu open changes to allow only one open submenu
+  const onOpenChange = (keys) => {
+    if (keys.length > 1) {
+      // Only keep the latest opened key
+      setOpenKeys([keys[keys.length - 1]]);
+    } else {
+      setOpenKeys(keys);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Spin tip="Loading custom models..." />
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <Menu
-        theme={theme === "dark" ? "dark" : "light"}
-        mode="inline"
-        collapsible
-        collapsedWidth={collapsed ? 80 : 250}
-        defaultSelectedKeys={[selectedMenuItem]}
-        onClick={handleMenuClick}
-        style={{ margin: 0, border: "1px solid transparent" }}
-      >
-        {sideMenuData && sideMenuData?.length > 0 ? (
-          sideMenuData?.map((item) =>
-            item?.submenu?.length > 0 ? (
-              <Menu.SubMenu
-                key={item.id}
-                onClick={() => {
-                  setSelectedMenuItem(item.id);
-                }}
-                title={
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "10px",
-                    }}
-                  >
-                    {collapsed ? (
-                      <Image
-                        className="sidebaricon"
-                        preview={false}
-                        src={item.icon
-                          .replace("collapsed", "expand")
-                          .replace("dark", "light")}
-                        alt="logo"
-                        width={25}
-                        height={25}
-                      />
-                    ) : (
-                      <Image
-                        className="sidebaricon"
-                        preview={false}
-                        src={item.icon
-                          .replace("expand", "collapsed")
-                          .replace("light", "dark")}
-                        alt="logo"
-                        width={25}
-                        height={25}
-                      />
-                    )}
-                    {!collapsed && <strong>{item.title}</strong>}
-                  </div>
-                }
-                style={{
-                  fontSize: "1.1em",
-                  fontWeight: "bold",
-                  marginTop: "10%",
-                }}
-              >
-                {item?.submenu?.map((subItem) => (
-                  <Menu.Item
-                    key={subItem.id}
-                    onClick={() => router.push(subItem.link)}
-                    style={{
-                      marginTop: "10%",
-                      fontSize: "1.1em",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "10px",
-                        // alignItems: "center",
-                      }}
-                    >
-                      <Image
-                        className="sidebaricon"
-                        preview={false}
-                        src={subItem.icon}
-                        alt="logo"
-                        width={25}
-                        height={25}
-                      />
-                      <strong>{subItem.title}</strong>
-                    </div>
-                  </Menu.Item>
-                ))}
-              </Menu.SubMenu>
-            ) : (
-              <Menu.Item
-                key={item.id}
-                onClick={() => {
-                  setSelectedMenuItem(item.id);
-                  router.push(item.link);
-                }}
-                style={{
-                  marginTop: "10%",
-                  fontSize: "1.1em",
-                  fontWeight: "bold",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "10px",
-                    // alignItems: "center",
-                  }}
-                >
+    <Menu
+      theme={theme === "dark" ? "dark" : "light"}
+      mode="inline"
+      selectedKeys={[selectedMenuItem]}
+      openKeys={openKeys}
+      onOpenChange={onOpenChange}
+      onClick={handleMenuClick}
+      className="w-full h-full"
+    >
+      {finalMenuData && finalMenuData.length > 0 ? (
+        finalMenuData.map((item) =>
+          item?.submenu?.length > 0 ? (
+            <SubMenu
+              key={item.id.toString()}
+              title={
+                <div className="flex items-center gap-2 font-semibold">
                   <Image
-                    className="sidebaricon"
-                    preview={false}
                     src={item.icon}
-                    alt="logo"
-                    width={25}
-                    height={25}
+                    alt={`${item.title} icon`}
+                    width={collapsed ? 50 : 40}
+                    height={collapsed ? 50 : 40}
+                    className="main-menu-icon"
                   />
-                  {!collapsed && <strong>{item.title}</strong>}
+                  {!collapsed && <span>{item.title}</span>}
                 </div>
-              </Menu.Item>
-            )
-          )
-        ) : (
-          <Menu.Item key="no-data">No data found</Menu.Item>
-        )}
-        {(user && user?.email === "atiqisrak@niloy.com") ||
-        user?.email === "lordofgalaxy@webable.digital"
-          ? Godfather?.map((item) => (
-              <Menu.SubMenu
-                key={item.id}
-                onClick={() => {
-                  setSelectedMenuItem(item.id);
-                }}
-                title={
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "10px",
-                    }}
-                  >
-                    {collapsed ? (
-                      <Image
-                        className="sidebaricon"
-                        preview={false}
-                        src={item.icon
-                          .replace("collapsed", "expand")
-                          .replace("dark", "light")}
-                        alt="logo"
-                      />
-                    ) : (
-                      <Image
-                        className="sidebaricon"
-                        preview={false}
-                        src={item.icon
-                          .replace("expand", "collapsed")
-                          .replace("light", "dark")}
-                        alt="logo"
-                        width={25}
-                        height={25}
-                      />
-                    )}
-                    {!collapsed && <strong>{item.title}</strong>}
+              }
+              className="border-2 border-gray-200 mb-2"
+            >
+              {item.submenu.map((subItem) => (
+                <Item key={subItem.id.toString()} className="">
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src={subItem.icon}
+                      alt={`${subItem.title} icon`}
+                      width={30}
+                      height={30}
+                    />
+                    <span className="text-md font-semibold text-gray-500">
+                      {subItem.title}
+                    </span>
                   </div>
-                }
-                style={{
-                  fontSize: "1.1em",
-                  fontWeight: "bold",
-                  marginTop: "10%",
-                }}
-              >
-                {item?.submenu?.map((subItem) => (
-                  <Menu.Item
-                    key={subItem.id}
-                    onClick={() => router.push(subItem.link)}
-                    style={{
-                      marginTop: "10%",
-                      fontSize: "1.1em",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "10px",
-                        // alignItems: "center",
-                      }}
-                    >
-                      <Image
-                        className="sidebaricon"
-                        preview={false}
-                        src={subItem.icon}
-                        alt="logo"
-                        width={25}
-                        height={25}
-                      />
-                      <Popover
-                        content={
-                          <div className="flexed-between">
-                            <Image
-                              preview={false}
-                              src={subItem?.icon}
-                              alt="logo"
-                              style={{
-                                width: "30px",
-                                height: "30px",
-                                marginRight: "10px",
-                              }}
-                            />
-                            <h4>{subItem.title}</h4>
-                          </div>
-                        }
-                        trigger="hover"
-                        placement="right"
-                      >
-                        <strong>
-                          {/* {subItem.title} */}
-                          {subItem.title.length > 10
-                            ? subItem.title.substring(0, 10) + "..."
-                            : subItem.title}
-                        </strong>
-                      </Popover>
-                    </div>
-                  </Menu.Item>
-                ))}
-              </Menu.SubMenu>
-            ))
-          : null}
+                </Item>
+              ))}
+            </SubMenu>
+          ) : (
+            <Item
+              key={item.id.toString()}
+              className={`border-2 ${
+                token ? "border-yellow-400" : "border-gray-400"
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <Image
+                  src={item.icon}
+                  alt={`${item.title} icon`}
+                  width={20}
+                  height={20}
+                />
+                {!collapsed && <span>{item.title}</span>}
+              </div>
+            </Item>
+          )
+        )
+      ) : (
+        <Item key="no-data">No data found</Item>
+      )}
 
-        {user ? null : (
-          <Menu.Item
-            key="login"
-            icon={<LoginOutlined />}
-            onClick={() => setIsModalOpen(true)}
-          >
-            Login
-          </Menu.Item>
-        )}
-      </Menu>
-    </div>
+      {/* Login Menu Item for Unauthorized Users */}
+      {!token && (
+        <Item
+          key="login"
+          icon={<LoginOutlined />}
+          onClick={() => setIsModalOpen(true)} // Use the setter to open the modal
+          className="border-2 border-gray-400 mt-4"
+        >
+          {!collapsed && <span>Login</span>}
+        </Item>
+      )}
+    </Menu>
   );
 };
 

@@ -1,147 +1,151 @@
 [
     {
-        "id": 1,
-        "menu": "Home",
-        "title": "Home",
-        "icon": "/icons/mave_icons/home.svg",
-        "link": "/"
-    },
-    {
         "id": 2,
         "menu": "Components",
         "title": "Components",
-        "icon": "/icons/mave_icons/component.svg",
+        "icon": "/icons/mave/component.svg",
         "submenu": [
             {
                 "id": 3,
-                "icon": "/icons/mave_icons/gallery.svg",
+                "icon": "/icons/mave/media.svg",
                 "link": "/gallery",
                 "title": "Media Library"
             },
             {
                 "id": 4,
-                "icon": "/icons/mave_icons/menuitem.svg",
+                "icon": "/icons/mave/menuitems.svg",
                 "link": "/menuitems",
                 "title": "Menu Items"
             },
             {
                 "id": 6,
-                "icon": "/icons/mave_icons/menu.svg",
+                "icon": "/icons/mave/menus.svg",
                 "link": "/menus",
                 "title": "Menus"
             },
             {
                 "id": 7,
-                "icon": "/icons/mave_icons/navbar.svg",
+                "icon": "/icons/mave/navbar.svg",
                 "link": "/navbars",
                 "title": "Navbars"
             },
             {
                 "id": 8,
-                "icon": "/icons/mave_icons/carousel.svg",
+                "icon": "/icons/mave/slider.svg",
                 "link": "/sliders",
                 "title": "Sliders"
             },
             {
                 "id": 9,
-                "icon": "/icons/mave_icons/card.svg",
+                "icon": "/icons/mave/cards.svg",
                 "link": "/cards",
                 "title": "Cards"
             },
             {
                 "id": 10,
-                "icon": "/icons/mave_icons/press.svg",
-                "link": "/pressrelease",
-                "title": "Press Release"
-            },
-            {
-                "id": 11,
-                "icon": "/icons/mave_icons/event.svg",
-                "link": "/events",
-                "title": "Events"
-            },
-            {
-                "id": 12,
-                "icon": "/icons/mave_icons/form.svg",
-                "link": "/forms",
-                "title": "Forms"
-            },
-            {
-                "id": 13,
-                "icon": "/icons/mave_icons/footer.svg",
+                "icon": "/icons/mave/footer.svg",
                 "link": "/footer",
                 "title": "Footers"
             }
         ]
     },
     {
-        "id": 14,
-        "menu": "Form Responses",
-        "title": "Form Responses",
-        "icon": "/icons/mave_icons/formresponse.svg",
-        "link": "/formresponses"
-    },
-    {
-        "id": 15,
+        "id": 11,
         "menu": "Creator Studio",
         "title": "Creator Studio",
-        "icon": "/icons/mave_icons/creatorstudio.svg",
+        "icon": "/icons/mave/creatorstudio.svg",
         "submenu": [
             {
-                "id": 16,
-                "icon": "/icons/mave_icons/page.svg",
-                "link": "/creator/pages",
+                "id": 12,
+                "icon": "/icons/mave/forms.svg",
+                "link": "/pages",
                 "title": "Pages"
             },
             {
-                "id": 17,
-                "icon": "/icons/mave_icons/blog.svg",
+                "id": 13,
+                "icon": "/icons/mave/blogs.svg",
                 "link": "/blogs",
                 "title": "Blogs"
-            },
-            {
-                "id": 18,
-                "icon": "/icons/mave_icons/createblog.svg",
-                "link": "/blogs/createblog",
-                "title": "Create Blog"
             }
         ]
     },
     {
-        "id": 19,
+        "id": 15,
         "menu": "User Manual",
         "title": "User Manual",
-        "icon": "/icons/mave_icons/usermanual.svg",
+        "icon": "/icons/mave/usermanual.svg",
         "submenu": [
             {
-                "id": 20,
-                "icon": "/icons/mave_icons/changelog.svg",
+                "id": 16,
+                "icon": "/icons/mave/changelog.svg",
                 "link": "/usermanual/changelog",
                 "title": "Changelog"
             },
             {
-                "id": 21,
-                "icon": "/icons/mave_icons/documentation.svg",
+                "id": 17,
+                "icon": "/icons/mave/documentation.svg",
                 "link": "/usermanual/documentation",
-                "title": "Documentation"
+                "title": "Docs"
             },
             {
-                "id": 22,
-                "icon": "/icons/mave_icons/userguide.svg",
+                "id": 18,
+                "icon": "/icons/mave/browser.svg",
                 "link": "/usermanual/userguide",
                 "title": "User Guide"
             },
             {
-                "id": 23,
-                "icon": "/icons/mave_icons/faq.svg",
+                "id": 19,
+                "icon": "/icons/mave/faq.svg",
                 "link": "/usermanual/faq",
                 "title": "FAQ"
             },
             {
-                "id": 24,
-                "icon": "/icons/mave_icons/support.svg",
+                "id": 20,
+                "icon": "/icons/mave/headphones2.svg",
                 "link": "/usermanual/support",
                 "title": "Support"
+            }
+        ]
+    },
+    {
+        "id": 21,
+        "menu": "Settings",
+        "title": "Settings",
+        "icon": "/icons/mave/settings.svg",
+        "link": "settings",
+        "submenu": [
+            {
+                "id": 22,
+                "icon": "/icons/mave/settings.svg",
+                "link": "/settings/cms-settings",
+                "title": "CMS Settings"
+            },
+            {
+                "id": 24,
+                "icon": "/icons/mave/user-settings.svg",
+                "link": "/settings/users-settings",
+                "title": "User Settings"
+            }
+        ]
+    },
+    {
+        "id": 25,
+        "menu": "Tools",
+        "title": "Tools",
+        "icon": "/icons/mave/tools.svg",
+        "link": "tools",
+        "submenu": [
+            {
+                "id": 27,
+                "icon": "/icons/mave/exam.svg",
+                "link": "/formbuilder",
+                "title": "Form Builder"
+            },
+            {
+                "id": 28,
+                "icon": "/icons/mave/feedback.svg",
+                "link": "/formbuilder/form-responses",
+                "title": "Responses"
             }
         ]
     }

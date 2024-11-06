@@ -73,7 +73,7 @@ export default function BlogPost() {
 
   return (
     <div
-      className="ViewContainer"
+      className="mavecontainer"
       style={{
         display: "flex",
         flexDirection: "column",
