@@ -98,9 +98,9 @@ const PageEditForm = ({ page, onSubmit, onCancel }) => {
         />
       </div>
 
-      {/* Page Name BN */}
+      {/* Page Name Alt */}
       <div className="flex flex-col">
-        <label className="font-semibold">Page Name (BN):</label>
+        <label className="font-semibold">Page Name (Alt):</label>
         <Input
           value={tempPageNameBn}
           onChange={(e) => setTempPageNameBn(e.target.value)}

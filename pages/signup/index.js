@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Form, Input, Image, message } from "antd";
+import { Button, Form, Input, Image, message, Modal } from "antd";
 import Link from "next/link";
 import {
   EyeInvisibleOutlined,
@@ -8,6 +8,8 @@ import {
   MailOutlined,
   PhoneOutlined,
   UserOutlined,
+  CheckCircleOutlined,
+  ArrowRightOutlined, // Importing the success icon
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import instance from "../../axios"; // Assuming axios is set up correctly
@@ -15,6 +17,7 @@ import Loader from "../../components/Loader"; // Assuming you have a Loader comp
 
 export default function Signup() {
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false); // State for modal visibility
   const router = useRouter();
 
   const handleSignup = async (values) => {
@@ -31,15 +34,27 @@ export default function Signup() {
         password_confirmation,
       });
       if (res?.status === 201) {
-        // Success - Redirect to login after signup
-        message.success("Signup successful! Please login to continue.");
-        router.push("/login");
+        // Success - Show the success modal
+        setIsModalVisible(true);
       }
     } catch (error) {
       console.error("Error during signup:", error);
+      // Optionally, display an error message to the user
+      message.error(
+        error?.response?.data?.message || "Signup failed. Please try again."
+      );
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+    router.push("/login");
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
   };
 
   if (isLoading) {
@@ -328,7 +343,6 @@ export default function Signup() {
                     padding: "1.5rem 0",
                     marginTop: "2rem",
                   }}
-                  disabled
                 >
                   Sign Up
                 </Button>
@@ -337,6 +351,39 @@ export default function Signup() {
           </div>
         </div>
       </div>
+
+      {/* Success Modal */}
+      <Modal
+        open={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={[]}
+        centered
+        closable={false}
+      >
+        <div
+          style={{
+            textAlign: "center",
+            padding: "2rem",
+          }}
+        >
+          <CheckCircleOutlined
+            style={{ fontSize: "4rem", color: "#52c41a", marginBottom: "1rem" }}
+          />
+          <h2
+            className="font-bold text-3xl text-black mb-3
+          "
+          >
+            Signup Successful!
+          </h2>
+          <p className="text-gray-600 text-lg mb-10">
+            Your account has been created successfully.
+          </p>
+          <Button key="login" className="mavebutton" onClick={handleOk}>
+            Go to Login
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }

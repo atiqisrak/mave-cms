@@ -14,7 +14,7 @@ const PageInfoDisplay = ({ page }) => {
           {page.page_name_en}
         </h1>
 
-        {/* Page Name BN */}
+        {/* Page Name Alt */}
         <h1>
           <span className="font-semibold text-theme">Page Alt Title: </span>
           {page.page_name_bn}

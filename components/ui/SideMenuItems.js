@@ -39,15 +39,16 @@ const SideMenuItems = ({
       setSideMenuData(authorizedMenu);
 
       // Check for Godfather users
-      if (
-        user?.email === "atiqisrak@niloy.com" ||
-        user?.email === "Zeeshan.akhtar@webable.digital" ||
-        user?.email === "su@mave.cms"
-      ) {
-        setGodfatherData(Godfather);
-      } else {
-        setGodfatherData([]);
-      }
+      // if (
+      //   user?.email === "atiqisrak@niloy.com" ||
+      //   user?.email === "Zeeshan.akhtar@webable.digital" ||
+      //   user?.email === "su@mave.cms"
+      // ) {
+      //   setGodfatherData(Godfather);
+      // } else {
+      //   setGodfatherData([]);
+      // }
+      setGodfatherData(Godfather);
     } else {
       setSideMenuData(UnAuthorizedSideMenuData);
       setGodfatherData([]);

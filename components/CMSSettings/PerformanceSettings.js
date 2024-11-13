@@ -17,7 +17,11 @@ const PerformanceSettings = ({ config, id }) => {
     try {
       await instance.put(`/settings/${id}`, {
         type: "performance-settings",
-        config: values,
+        config: {
+          name: "Performance Settings",
+          description: "Performance Settings for MAVE",
+          ...values,
+        },
       });
       message.success("Performance Settings updated successfully!");
     } catch (error) {
@@ -30,23 +34,6 @@ const PerformanceSettings = ({ config, id }) => {
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinish}>
-      {/* Name and Description */}
-      {/* <Form.Item
-        name="name"
-        label="Name"
-        rules={[{ required: true, message: "Name is required." }]}
-      >
-        <Input disabled />
-      </Form.Item>
-
-      <Form.Item
-        name="description"
-        label="Description"
-        rules={[{ required: true, message: "Description is required." }]}
-      >
-        <Input.TextArea rows={4} disabled />
-      </Form.Item> */}
-
       {/* Minify HTML */}
       <Form.Item name="minifyHtml" label="Minify HTML" valuePropName="checked">
         <Switch />

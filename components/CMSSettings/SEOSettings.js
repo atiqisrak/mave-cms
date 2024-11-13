@@ -17,7 +17,11 @@ const SEOSettings = ({ config, id }) => {
     try {
       await instance.put(`/settings/${id}`, {
         type: "seo-settings",
-        config: values,
+        config: {
+          name: "SEO Settings",
+          description: "SEO Settings for MAVE",
+          ...values,
+        },
       });
       message.success("SEO Settings updated successfully!");
     } catch (error) {
@@ -30,23 +34,6 @@ const SEOSettings = ({ config, id }) => {
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinish}>
-      {/* Name and Description */}
-      {/* <Form.Item
-        name="name"
-        label="Name"
-        rules={[{ required: true, message: "Name is required." }]}
-      >
-        <Input disabled />
-      </Form.Item>
-
-      <Form.Item
-        name="description"
-        label="Description"
-        rules={[{ required: true, message: "Description is required." }]}
-      >
-        <Input.TextArea rows={4} disabled />
-      </Form.Item> */}
-
       {/* Meta Title */}
       <Form.Item
         name="metaTitle"

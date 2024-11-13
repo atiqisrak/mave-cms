@@ -32,22 +32,6 @@ const UserList = ({
   const [loading, setLoading] = useState(false);
   const [validEmail, setValidEmail] = useState(false);
   const [emailMessage, setEmailMessage] = useState("");
-
-  const [roles, setRoles] = useState([
-    { id: 1, u_id: "9zrsdrfhw8", name: "Super Admin" },
-    { id: 2, u_id: "y8wewowlhl", name: "Admin" },
-    { id: 3, u_id: "btrq7wcnsv", name: "Editor" },
-    { id: 4, u_id: "lf0kaur5u4", name: "User" },
-    { id: 5, u_id: "c66aaozpxq", name: "Guest" },
-  ]);
-
-  const [roles2, setRoles2] = useState([
-    { id: 1, u_id: "y8wewowlhl", name: "Admin" },
-    { id: 2, u_id: "btrq7wcnsv", name: "Editor" },
-    { id: 3, u_id: "lf0kaur5u4", name: "User" },
-    { id: 4, u_id: "c66aaozpxq", name: "Guest" },
-  ]);
-
   const [userEdit, setUserEdit] = useState(false);
   const [editUserId, setEditUserId] = useState(null);
   const [modifiedUserData, setModifiedUserData] = useState({});

@@ -9,6 +9,7 @@ const ActionButtons = ({
   conversation,
   isModifying,
   handleClearConversation,
+  validJson,
 }) => {
   if (conversation.length === 0 || isModifying) return null;
 
@@ -20,16 +21,17 @@ const ActionButtons = ({
       >
         Clear Conversation
       </Button>
-      <Button
+      {/* <Button
         onClick={handleModify}
         className="bg-yellow-500 hover:bg-yellow-600 text-white"
       >
         Modify
-      </Button>
+      </Button> */}
       <Button
         type="primary"
         onClick={handleCreatePage}
         className="bg-green-500 hover:bg-green-600 text-white"
+        disabled={!validJson}
       >
         Create Page
       </Button>

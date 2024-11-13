@@ -29,7 +29,11 @@ const SecuritySettings = ({ config, id }) => {
     try {
       await instance.put(`/settings/${id}`, {
         type: "security-settings",
-        config: values,
+        config: {
+          name: "Security Settings",
+          description: "Security Settings for MAVE",
+          ...values,
+        },
       });
       message.success("Security Settings updated successfully!");
     } catch (error) {
@@ -39,15 +43,6 @@ const SecuritySettings = ({ config, id }) => {
       setSaving(false);
     }
   };
-
-  // const fetchPermissions = async () => {
-  //   try {
-  //     const response = await instance.get("/permissions");
-  //     setPermissions(response.data);
-  //   } catch (error) {
-  //     console.error("Error fetching permissions:", error);
-  //   }
-  // };
 
   const fetchRolesPermissions = async () => {
     try {
@@ -73,23 +68,6 @@ const SecuritySettings = ({ config, id }) => {
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinish}>
-      {/* Name and Description */}
-      {/* <Form.Item
-        name="name"
-        label="Name"
-        rules={[{ required: true, message: "Name is required." }]}
-      >
-        <Input disabled />
-      </Form.Item>
-
-      <Form.Item
-        name="description"
-        label="Description"
-        rules={[{ required: true, message: "Description is required." }]}
-      >
-        <Input.TextArea rows={4} disabled />
-      </Form.Item> */}
-
       {/* Enable Registration */}
       <Form.Item
         name={["registration", "enabled"]}
@@ -99,14 +77,6 @@ const SecuritySettings = ({ config, id }) => {
         <Switch />
       </Form.Item>
 
-      {/* Default Role */}
-      {/* <Form.Item
-        name={["registration", "defaultRole"]}
-        label="Default Role"
-        rules={[{ required: true, message: "Default Role is required." }]}
-      >
-        <Input />
-      </Form.Item> */}
       <Form.Item
         name={["registration", "defaultRole"]}
         label="Default Role"

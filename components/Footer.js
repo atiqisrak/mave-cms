@@ -662,7 +662,7 @@ const Footer = () => {
                     </div>
                     <br />
                     <div className="content">
-                      <h3>Column4 Title Bn:</h3>
+                      <h3>Column4 Title Alt:</h3>
                       <Input
                         value={formData.column4_title_bn}
                         onChange={(e) => handleChange(e, "column4_title_bn")}
@@ -680,7 +680,7 @@ const Footer = () => {
                     </div>
                     <br />
                     <div className="content">
-                      <h3>Column4 Text Bn:</h3>
+                      <h3>Column4 Text Alt:</h3>
                       <Input
                         value={formData.column4_text_bn}
                         onChange={(e) => handleChange(e, "column4_text_bn")}
@@ -1204,7 +1204,7 @@ const Footer = () => {
                         </div>
                         <br />
                         <div className="content">
-                          <h3>Column4 Title Bn:</h3>
+                          <h3>Column4 Title Alt:</h3>
                           <Input
                             value={formData.column4_title_bn}
                             onChange={(e) =>
@@ -1224,7 +1224,7 @@ const Footer = () => {
                         </div>
                         <br />
                         <div className="content">
-                          <h3>Column4 Text Bn:</h3>
+                          <h3>Column4 Text Alt:</h3>
                           <Input
                             value={formData.column4_text_bn}
                             onChange={(e) => handleChange(e, "column4_text_bn")}

@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { Form, Switch, Input, Button, message } from "antd";
 import instance from "../../axios";
-
 const APISettings = ({ config, id }) => {
   const [form] = Form.useForm();
   const [saving, setSaving] = useState(false);
@@ -17,7 +16,11 @@ const APISettings = ({ config, id }) => {
     try {
       await instance.put(`/settings/${id}`, {
         type: "api-settings",
-        config: values,
+        config: {
+          name: "API Settings",
+          description: "API Settings for MAVE",
+          ...values,
+        },
       });
       message.success("API Settings updated successfully!");
     } catch (error) {
@@ -30,23 +33,6 @@ const APISettings = ({ config, id }) => {
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinish}>
-      {/* Name and Description */}
-      {/* <Form.Item
-        name="name"
-        label="Name"
-        rules={[{ required: true, message: "Name is required." }]}
-      >
-        <Input disabled />
-      </Form.Item>
-
-      <Form.Item
-        name="description"
-        label="Description"
-        rules={[{ required: true, message: "Description is required." }]}
-      >
-        <Input.TextArea rows={4} disabled />
-      </Form.Item> */}
-
       {/* REST API Settings */}
       <Form.Item
         name={["restApi", "enabled"]}

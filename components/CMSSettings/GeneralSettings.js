@@ -11,8 +11,6 @@ const GeneralSettings = ({ config, id }) => {
   const [form] = Form.useForm();
   const [saving, setSaving] = useState(false);
 
-  console.log("Config:", config);
-
   // Define theme options with theme and accent colors
   const theme_options = [
     {
@@ -62,7 +60,11 @@ const GeneralSettings = ({ config, id }) => {
       // Construct the payload
       const payload = {
         type: "general-settings",
-        config: values,
+        config: {
+          name: "General Settings",
+          description: "General Settings for MAVE",
+          ...values,
+        },
         media_list: config.media_list || null,
         created_by: config.created_by || null,
       };
@@ -97,23 +99,6 @@ const GeneralSettings = ({ config, id }) => {
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinish}>
-      {/* Name and Description */}
-      <Form.Item
-        name="name"
-        label="Name"
-        rules={[{ required: true, message: "Name is required." }]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
-        name="description"
-        label="Description"
-        rules={[{ required: true, message: "Description is required." }]}
-      >
-        <Input.TextArea rows={4} />
-      </Form.Item>
-
       {/* Site Title */}
       <Form.Item
         name="siteTitle"

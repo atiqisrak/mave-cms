@@ -127,62 +127,96 @@ ${JSON.stringify(
 4. **No Additional Properties:**
    - Do not include any properties not defined in the provided structure.
 
-5. **Response Format:**
+5. **JSON Validity:**
+   - Ensure that the JSON is syntactically correct. Avoid trailing commas, comments, or any invalid JSON syntax.
+
+6. **Response Format:**
    - Start with a brief confirmation text.
    - Provide the JSON configuration within triple backticks and specify the language as \`json\`.
 
 **Example Response:**
 
-Sure, here is the JSON configuration for your marketing agency page with 8 sections:
+Sure, here is the JSON configuration for your portfolio page for Atiq Israk:
 
 \`\`\`json
 {
-  "page_name_en": "Marketing Agency",
-  "page_name_bn": "মার্কেটিং এজেন্সি",
+  "page_name_en": "Portfolio - Atiq Israk",
+  "page_name_bn": "পরিচয়পত্র - আতিক ইসরাক",
   "type": "Page",
   "head": [
     {
       "pageType": "Page",
-      "metaTitle": "Marketing Excellence",
-      "metaDescription": "Leading marketing agency providing top-notch services.",
-      "keywords": ["marketing", "agency", "digital marketing"],
-      "metaImage": "https://example.com/meta-image.jpg",
-      "metaImageAlt": "Marketing Agency Meta Image"
+      "metaTitle": "Portfolio of Atiq Israk",
+      "metaDescription": "Showcasing the professional portfolio of Atiq Israk.",
+      "keywords": [
+        "Atiq Israk",
+        "Portfolio",
+        "Professional"
+      ],
+      "metaImage": null,
+      "metaImageAlt": null
     }
   ],
-  "slug": "marketing-agency",
-  "meta_title": "Marketing Excellence",
-  "meta_description": "Leading marketing agency providing top-notch services.",
-  "keywords": ["marketing", "agency", "digital marketing"],
+  "slug": "portfolio-atiq-israk",
+  "meta_title": "Portfolio of Atiq Israk",
+  "meta_description": "Showcasing the professional portfolio of Atiq Israk.",
+  "keywords": [
+    "Atiq Israk",
+    "Portfolio",
+    "Professional"
+  ],
   "body": [
     {
       "_id": "550e8400-e29b-41d4-a716-446655440000",
-      "sectionTitle": "Our Services",
+      "sectionTitle": "About Me",
       "data": [
         {
           "type": "title",
           "_id": "550e8400-e29b-41d4-a716-446655440001",
-          "value": "Comprehensive Marketing Solutions"
+          "value": "Atiq Israk - Professional Portfolio"
         },
         {
           "type": "description",
           "_id": "550e8400-e29b-41d4-a716-446655440002",
-          "value": "We offer a wide range of marketing services tailored to your business needs."
+          "value": "Welcome to my professional portfolio. Here you can find information about my skills, experience, and projects."
         },
         {
           "type": "media",
           "_id": "550e8400-e29b-41d4-a716-446655440003",
           "id": 123
         },
-        // ...additional components
+        {
+          "type": "menu",
+          "_id": "550e8400-e29b-41d4-a716-446655440004",
+          "id": 456
+        },
+        {
+          "type": "navbar",
+          "_id": "550e8400-e29b-41d4-a716-446655440005",
+          "id": 789
+        },
+        {
+          "type": "slider",
+          "_id": "550e8400-e29b-41d4-a716-446655440006",
+          "id": 101
+        },
+        {
+          "type": "card",
+          "_id": "550e8400-e29b-41d4-a716-446655440007",
+          "id": 112
+        },
+        {
+          "type": "footer",
+          "_id": "550e8400-e29b-41d4-a716-446655440008",
+          "id": 131
+        }
       ]
-    },
-    // ...additional sections
+    }
   ],
   "additional": [
     {
       "pageType": "Page",
-      "metaTitle": "Additional Marketing Details",
+      "metaTitle": "Additional Portfolio Details",
       "metaDescription": null,
       "keywords": [],
       "metaImage": null,
@@ -207,13 +241,17 @@ Sure, here is the JSON configuration for your marketing agency page with 8 secti
       temperature: 0.3,
     };
 
+    // Fetch API settings to get the OpenAI API key
+    const settings = await getApiSettings();
+    const openaiApiKey = settings.externalApis.openai.apiKey;
+
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
       requestPayload,
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          Authorization: `Bearer ${openaiApiKey}`,
         },
       }
     );
@@ -268,16 +306,22 @@ Sure, here is the JSON configuration for your marketing agency page with 8 secti
 
     // Validate the generated JSON
     const valid = validate(parsedJson);
+
+    // Prepare response data
+    const responseData = {
+      text,
+      json: parsedJson,
+      isValid: valid,
+    };
+
+    // If not valid, include validation errors
     if (!valid) {
+      responseData.validationErrors = validate.errors;
       console.error("JSON Schema Validation Errors:", validate.errors);
-      return res.status(400).json({
-        error: "Generated JSON does not conform to the required schema.",
-        details: validate.errors,
-      });
     }
 
-    // Send the JSON object instead of a string
-    res.status(200).json({ text, json: parsedJson });
+    // Send the response with isValid flag
+    res.status(200).json(responseData);
   } catch (error) {
     console.error(
       "Error generating JSON:",

@@ -1,11 +1,8 @@
-// pages/build-with-ai/index.jsx
+// Example snippet in build-with-ai/index.jsx
 
 import React, { useState, useEffect } from "react";
-import { Button, message, Input } from "antd";
-import { SendOutlined } from "@ant-design/icons";
+import { Button, message, Input, Modal } from "antd";
 import axios from "axios";
-import instance from "../../axios"; // Ensure this points to your Axios instance
-import Image from "next/image";
 
 // Importing BuildWithAI Components
 import ChatContainer from "../../components/BuildWithAI/ChatContainer";
@@ -60,13 +57,34 @@ export default function BuildWithAI() {
       });
 
       if (response.status === 200) {
-        const { text, json } = response.data;
+        const { text, json, isValid, validationErrors } = response.data;
 
-        setConversation([
-          ...newConversation,
-          { role: "assistant", content: json, text },
-        ]);
-        message.success("JSON generated successfully!");
+        // Append assistant's text to the conversation
+        const assistantMessage = {
+          role: "assistant",
+          content: text, // Ensure content is a string
+        };
+
+        setConversation([...newConversation, assistantMessage]);
+
+        if (isValid) {
+          message.success("JSON generated successfully!");
+          // Optionally, handle the JSON (e.g., display it or allow further actions)
+          console.log("Generated JSON:", json);
+        } else {
+          message.error("JSON generated but contains validation errors.");
+          // Display validation errors in a modal or any other UI component
+          const errorMessages = validationErrors.map((err, index) => (
+            <li key={index}>
+              {err.instancePath || "root"} {err.message}
+            </li>
+          ));
+
+          Modal.error({
+            title: "JSON Validation Errors",
+            content: <ul>{errorMessages}</ul>,
+          });
+        }
       } else {
         message.error(response.data.error || "Failed to generate JSON.");
       }
@@ -75,7 +93,7 @@ export default function BuildWithAI() {
       if (error.response && error.response.data && error.response.data.error) {
         message.error(`Error: ${error.response.data.error}`);
         if (error.response.data.details) {
-          console.log("Validation Details:", error.response.data.details);
+          console.log("Details:", error.response.data.details);
         }
       } else {
         message.error("An unexpected error occurred.");
@@ -92,12 +110,22 @@ export default function BuildWithAI() {
       return;
     }
 
+    // Find the corresponding JSON response
+    const jsonResponse = conversation.find(
+      (msg) => msg.role === "assistant" && msg.json
+    );
+
+    if (!jsonResponse || !jsonResponse.isValid) {
+      message.error("Cannot create page. The JSON is invalid or missing.");
+      return;
+    }
+
     setCreatingPage(true);
 
     try {
-      const jsonPayload = JSON.parse(lastAssistantMessage.content);
+      const jsonPayload = jsonResponse.json;
       console.log("JSON Payload:", jsonPayload);
-      const response = await instance.post("/pages", jsonPayload, {
+      const response = await axios.post("/pages", jsonPayload, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -137,6 +165,17 @@ export default function BuildWithAI() {
       return;
     }
 
+    const jsonResponse = conversation.find(
+      (msg) => msg.role === "assistant" && msg.json
+    );
+
+    if (!jsonResponse || !jsonResponse.isValid) {
+      message.error(
+        "Cannot modify JSON. The current JSON is invalid or missing."
+      );
+      return;
+    }
+
     const newConversation = [
       ...conversation,
       { role: "user", content: modifyInput },
@@ -153,12 +192,32 @@ export default function BuildWithAI() {
       });
 
       if (response.status === 200) {
-        const { text, json } = response.data;
-        setConversation([
-          ...newConversation,
-          { role: "assistant", content: json, text },
-        ]);
-        message.success("JSON modified successfully!");
+        const { text, json, isValid, validationErrors } = response.data;
+
+        // Append assistant's text to the conversation
+        const assistantMessage = {
+          role: "assistant",
+          content: text, // Ensure content is a string
+        };
+
+        setConversation([...newConversation, assistantMessage]);
+
+        if (isValid) {
+          message.success("JSON modified successfully!");
+          console.log("Modified JSON:", json);
+        } else {
+          message.error("JSON modified but contains validation errors.");
+          const errorMessages = validationErrors.map((err, index) => (
+            <li key={index}>
+              {err.instancePath || "root"} {err.message}
+            </li>
+          ));
+
+          Modal.error({
+            title: "JSON Validation Errors",
+            content: <ul>{errorMessages}</ul>,
+          });
+        }
       } else {
         message.error(response.data.error || "Failed to modify JSON.");
       }
