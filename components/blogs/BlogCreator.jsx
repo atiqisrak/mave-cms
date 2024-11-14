@@ -160,7 +160,7 @@ const BlogCreator = ({ creatorMode, setCreatorMode, fetchBlogs }) => {
           },
         ],
       });
-      if (response.status === 200) {
+      if (response.status === 201) {
         console.log("Blog created successfully: ", response.data);
         fetchBlogs();
         router.push("/blogs");

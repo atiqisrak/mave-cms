@@ -15,6 +15,7 @@ export default function CreateBlog() {
     try {
       const response = await instance.get("/pages");
       if (response.status === 200) {
+        console.log("Blog Data: ", response.data);
         const blogData = response.data.filter((blog) => blog.type === "Blog");
         setBlogs(blogData);
       }

@@ -6,6 +6,8 @@ import ChatHeader from "./ChatHeader";
 import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import { DeleteOutlined } from "@ant-design/icons";
+import { marked } from "marked";
+import DOMPurify from "dompurify";
 
 const WriteWithAIChat = ({ setVisible, setContent }) => {
   const [conversation, setConversation] = useState([]);
@@ -91,8 +93,14 @@ const WriteWithAIChat = ({ setVisible, setContent }) => {
   };
 
   const handleAddToBlog = (aiMessage) => {
-    // setContent((prevContent) => prevContent + "\n" + aiMessage);
-    setContent(aiMessage);
+    // Convert Markdown to HTML
+    const htmlContent = marked(aiMessage);
+
+    // Sanitize the HTML
+    const sanitizedHtml = DOMPurify.sanitize(htmlContent);
+
+    // Add the sanitized HTML content to the blog editor
+    setContent(sanitizedHtml);
     message.success("Content added to the blog editor.");
   };
 

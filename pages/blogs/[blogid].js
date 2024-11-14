@@ -241,9 +241,9 @@ export default function BlogPost() {
                 </Button>
               </Popconfirm>
             </div>
-            <div className="mt-4">
+            {/* <div className="mt-4">
               <Text />
-            </div>
+            </div> */}
           </div>
         </>
       )}

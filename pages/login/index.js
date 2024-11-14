@@ -71,21 +71,6 @@ export default function Login() {
                 Continue with Google
               </h3>
             </Button>
-            {/* <Button
-              block
-              className="flex justify-center items-center gap-4 py-8 border-2 border-[#C9C9C9] bg-white"
-            >
-              <Image
-                src="/images/ui/Github.png"
-                alt="Github Logo"
-                width={30}
-                height={30}
-                objectFit="contain"
-              />
-              <h3 className="text-[#797B7E] text-[1.2rem] font-medium capitalize">
-                Continue with Github
-              </h3>
-            </Button> */}
           </div>
           <div className="flex justify-center items-center gap-2">
             <Image
@@ -111,6 +96,8 @@ export default function Login() {
               name="login"
               initialValues={{
                 remember: true,
+                email: "demouser@mave.com",
+                password: "Demo@Mave2025",
               }}
               onFinish={handleLogin}
             >
