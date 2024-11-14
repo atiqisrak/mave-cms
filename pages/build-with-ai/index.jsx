@@ -9,6 +9,7 @@ import ChatContainer from "../../components/BuildWithAI/ChatContainer";
 import MessageInput from "../../components/BuildWithAI/MessageInput";
 import ActionButtons from "../../components/BuildWithAI/ActionButtons";
 import LoadingSpinner from "../../components/BuildWithAI/LoadingSpinner";
+import instance from "../../axios";
 
 const { TextArea } = Input;
 
@@ -59,24 +60,26 @@ export default function BuildWithAI() {
       if (response.status === 200) {
         const { text, json, isValid, validationErrors } = response.data;
 
-        // Append assistant's text to the conversation
+        // Construct the assistant message correctly
         const assistantMessage = {
           role: "assistant",
-          content: text, // Ensure content is a string
+          content: text, // Must be a string
+          json: json, // Parsed JSON object
+          isValid: isValid, // Boolean indicating schema validity
+          validationErrors: validationErrors || [], // Array of validation errors
         };
 
         setConversation([...newConversation, assistantMessage]);
 
         if (isValid) {
           message.success("JSON generated successfully!");
-          // Optionally, handle the JSON (e.g., display it or allow further actions)
           console.log("Generated JSON:", json);
         } else {
           message.error("JSON generated but contains validation errors.");
-          // Display validation errors in a modal or any other UI component
+          // Display validation errors in a modal
           const errorMessages = validationErrors.map((err, index) => (
             <li key={index}>
-              {err.instancePath || "root"} {err.message}
+              {err.instancePath || "root"}: {err.message}
             </li>
           ));
 
@@ -125,7 +128,7 @@ export default function BuildWithAI() {
     try {
       const jsonPayload = jsonResponse.json;
       console.log("JSON Payload:", jsonPayload);
-      const response = await axios.post("/pages", jsonPayload, {
+      const response = await instance.post("/pages", jsonPayload, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -152,7 +155,6 @@ export default function BuildWithAI() {
   const handleModify = () => {
     setIsModifying(true);
   };
-
   const handleSendModification = async () => {
     if (!modifyInput.trim()) {
       message.warning("Please enter a modification.");
@@ -194,10 +196,13 @@ export default function BuildWithAI() {
       if (response.status === 200) {
         const { text, json, isValid, validationErrors } = response.data;
 
-        // Append assistant's text to the conversation
+        // Construct the assistant message correctly
         const assistantMessage = {
           role: "assistant",
-          content: text, // Ensure content is a string
+          content: text, // Must be a string
+          json: json, // Parsed JSON object
+          isValid: isValid, // Boolean indicating schema validity
+          validationErrors: validationErrors || [], // Array of validation errors
         };
 
         setConversation([...newConversation, assistantMessage]);
@@ -207,9 +212,10 @@ export default function BuildWithAI() {
           console.log("Modified JSON:", json);
         } else {
           message.error("JSON modified but contains validation errors.");
+          // Display validation errors in a modal
           const errorMessages = validationErrors.map((err, index) => (
             <li key={index}>
-              {err.instancePath || "root"} {err.message}
+              {err.instancePath || "root"}: {err.message}
             </li>
           ));
 
@@ -240,6 +246,90 @@ export default function BuildWithAI() {
     setIsModifying(false);
     setModifyInput("");
   };
+  // Inside the BuildWithAI component
+
+  const handleResend = (index) => {
+    const failedUserMessage = conversation[index - 1]; // Assuming the error is in the assistant's response after the user message
+    if (failedUserMessage && failedUserMessage.role === "user") {
+      handleSendSpecificMessage(failedUserMessage.content, index - 1);
+    }
+  };
+
+  const handleRegenerate = (index) => {
+    const failedAssistantMessage = conversation[index];
+    if (failedAssistantMessage && failedAssistantMessage.role === "assistant") {
+      // Remove the failed assistant message
+      const updatedConversation = conversation.filter((_, i) => i !== index);
+      setConversation(updatedConversation);
+      // Resend the last user message to regenerate assistant's response
+      const lastUserMessage = conversation[index - 1];
+      if (lastUserMessage && lastUserMessage.role === "user") {
+        handleSendSpecificMessage(lastUserMessage.content, index - 1);
+      }
+    }
+  };
+
+  // New helper function to resend a specific message
+  const handleSendSpecificMessage = async (messageContent, messageIndex) => {
+    setLoading(true);
+    try {
+      const newConversation = [...conversation];
+      // Update the user message if necessary
+      newConversation[messageIndex] = { role: "user", content: messageContent };
+      setConversation(newConversation);
+
+      const response = await axios.post("/api/conversational-json", {
+        messages: newConversation,
+      });
+
+      if (response.status === 200) {
+        const { text, json, isValid, validationErrors } = response.data;
+
+        // Construct the assistant message correctly
+        const assistantMessage = {
+          role: "assistant",
+          content: text, // Must be a string
+          json: json, // Parsed JSON object
+          isValid: isValid, // Boolean indicating schema validity
+          validationErrors: validationErrors || [], // Array of validation errors
+        };
+
+        setConversation([...newConversation, assistantMessage]);
+
+        if (isValid) {
+          message.success("JSON generated successfully!");
+          console.log("Generated JSON:", json);
+        } else {
+          message.error("JSON generated but contains validation errors.");
+          // Display validation errors in a modal
+          const errorMessages = validationErrors.map((err, idx) => (
+            <li key={idx}>
+              {err.instancePath || "root"}: {err.message}
+            </li>
+          ));
+
+          Modal.error({
+            title: "JSON Validation Errors",
+            content: <ul>{errorMessages}</ul>,
+          });
+        }
+      } else {
+        message.error(response.data.error || "Failed to generate JSON.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      if (error.response && error.response.data && error.response.data.error) {
+        message.error(`Error: ${error.response.data.error}`);
+        if (error.response.data.details) {
+          console.log("Details:", error.response.data.details);
+        }
+      } else {
+        message.error("An unexpected error occurred.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="mavecontainer">
@@ -253,7 +343,11 @@ export default function BuildWithAI() {
         </p>
 
         {/* Chat Container */}
-        <ChatContainer conversation={conversation} />
+        <ChatContainer
+          conversation={conversation}
+          handleResend={handleResend}
+          handleRegenerate={handleRegenerate}
+        />
 
         {/* Input Area */}
         {isModifying ? (

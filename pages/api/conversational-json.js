@@ -242,8 +242,14 @@ Sure, here is the JSON configuration for your portfolio page for Atiq Israk:
     };
 
     // Fetch API settings to get the OpenAI API key
-    const settings = await getApiSettings();
-    const openaiApiKey = settings.externalApis.openai.apiKey;
+    const openaiApiKey = process.env.OPENAI_API_KEY;
+
+    if (!openaiApiKey) {
+      console.error("OpenAI API key is not defined in environment variables.");
+      return res
+        .status(500)
+        .json({ error: "OpenAI API key is not configured." });
+    }
 
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",

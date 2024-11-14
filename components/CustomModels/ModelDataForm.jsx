@@ -1,42 +1,179 @@
-import { Button, Drawer, Form, Input } from "antd";
+import {
+  Button,
+  Drawer,
+  Form,
+  Input,
+  InputNumber,
+  DatePicker,
+  Checkbox,
+  Select,
+  Space,
+} from "antd";
+import { useState } from "react";
+import axios from "axios";
+import moment from "moment";
+
+const { Option } = Select;
 
 export default function ModelDataForm({
   fields,
-  customModelData,
-  setCustomModelData,
   createModeVisible,
   setCreateModeVisible,
+  modelRoute,
+  fetchCustomModelData,
 }) {
-  return (
-    <div>
-      <Drawer
-        title="Create New Model Data"
-        width={720}
-        onClose={() => setCreateModeVisible(false)}
-        open={createModeVisible}
-        footer={
-          <div
-            style={{
-              textAlign: "right",
-            }}
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({});
+
+  const handleCreateModelData = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_DYNAMIC_MODEL_URL}${modelRoute}`,
+        formData
+      );
+      if (response.status === 201) {
+        setFormData({});
+        setCreateModeVisible(false);
+        fetchCustomModelData();
+      } else {
+        console.error("Failed to create model data");
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Helper function to render input based on field type
+  const renderInput = (field) => {
+    switch (field.type) {
+      case "string":
+        return (
+          <Input
+            value={formData[field.name]}
+            onChange={(e) =>
+              setFormData({ ...formData, [field.name]: e.target.value })
+            }
+          />
+        );
+      case "text":
+        return (
+          <Input.TextArea
+            value={formData[field.name]}
+            onChange={(e) =>
+              setFormData({ ...formData, [field.name]: e.target.value })
+            }
+            rows={4}
+          />
+        );
+      case "integer":
+      case "unsignedBigInteger":
+        return (
+          <InputNumber
+            style={{ width: "100%" }}
+            value={formData[field.name]}
+            onChange={(value) =>
+              setFormData({ ...formData, [field.name]: value })
+            }
+          />
+        );
+      case "boolean":
+        return (
+          <Checkbox
+            checked={formData[field.name]}
+            onChange={(e) =>
+              setFormData({ ...formData, [field.name]: e.target.checked })
+            }
           >
-            <Button
-              onClick={() => setCreateModeVisible(false)}
-              style={{ marginRight: 8 }}
-            >
-              Cancel
-            </Button>
-            <Button onClick={() => setCreateModeVisible(false)} type="primary">
-              Submit
-            </Button>
-          </div>
-        }
-      >
+            {field.name}
+          </Checkbox>
+        );
+      case "date":
+        return (
+          <DatePicker
+            style={{ width: "100%" }}
+            value={formData[field.name] ? moment(formData[field.name]) : null}
+            onChange={(date, dateString) =>
+              setFormData({ ...formData, [field.name]: dateString })
+            }
+          />
+        );
+      case "json":
+        return (
+          <Input.TextArea
+            value={formData[field.name]}
+            onChange={(e) =>
+              setFormData({ ...formData, [field.name]: e.target.value })
+            }
+            rows={4}
+            placeholder="Enter valid JSON"
+          />
+        );
+      case "array":
+        return (
+          <Select
+            mode="tags"
+            style={{ width: "100%" }}
+            placeholder="Enter values"
+            value={formData[field.name]}
+            onChange={(value) =>
+              setFormData({ ...formData, [field.name]: value })
+            }
+          >
+            {/* Optionally, you can provide predefined options */}
+          </Select>
+        );
+      default:
+        return (
+          <Input
+            value={formData[field.name]}
+            onChange={(e) =>
+              setFormData({ ...formData, [field.name]: e.target.value })
+            }
+          />
+        );
+    }
+  };
+
+  return (
+    <Drawer
+      title="Create New Model Data"
+      width={720}
+      onClose={() => setCreateModeVisible(false)}
+      open={createModeVisible}
+      footer={
+        <div
+          style={{
+            textAlign: "right",
+          }}
+        >
+          <Button
+            onClick={() => setCreateModeVisible(false)}
+            style={{ marginRight: 8 }}
+            className="mavecancelbutton"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleCreateModelData}
+            type="primary"
+            loading={loading}
+            className="mavebutton"
+          >
+            Submit
+          </Button>
+        </div>
+      }
+    >
+      <Form layout="vertical">
         {fields?.map((field) => (
           <Form.Item
             key={field.name}
-            label={field.name}
+            label={field.type !== "boolean" ? field.name : ""}
             name={field.name}
+            valuePropName={field.type === "boolean" ? "checked" : "value"}
             rules={[
               {
                 required: field.required,
@@ -44,18 +181,10 @@ export default function ModelDataForm({
               },
             ]}
           >
-            <Input
-              value={customModelData[field.name]}
-              onChange={(e) => {
-                setCustomModelData({
-                  ...customModelData,
-                  [field.name]: e.target.value,
-                });
-              }}
-            />
+            {renderInput(field)}
           </Form.Item>
         ))}
-      </Drawer>
-    </div>
+      </Form>
+    </Drawer>
   );
 }

@@ -31,7 +31,7 @@ const ActionButtons = ({
         type="primary"
         onClick={handleCreatePage}
         className="bg-green-500 hover:bg-green-600 text-white"
-        disabled={!validJson}
+        // disabled={!validJson}
       >
         Create Page
       </Button>

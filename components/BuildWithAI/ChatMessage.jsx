@@ -1,52 +1,9 @@
-// components/BuildWithAI/ChatMessage.jsx
-
 import React from "react";
-import { Button, message } from "antd";
-import { CopyOutlined } from "@ant-design/icons";
-import dynamic from "next/dynamic";
+import { Button, message as antdMessage } from "antd";
 import Image from "next/image";
+import CodeBlock from "./CodeBlock";
 
-const SyntaxHighlighter = dynamic(
-  () => import("react-syntax-highlighter").then((mod) => mod.Prism),
-  { ssr: false }
-);
-import { oneDark } from "react-syntax-highlighter/dist/cjs/styles/prism"; // Ensure CJS version
-
-const CodeBlock = ({ language, content }) => {
-  const copyToClipboard = () => {
-    navigator.clipboard
-      .writeText(content)
-      .then(() => {
-        message.success("Copied to clipboard!");
-      })
-      .catch((err) => {
-        console.error("Failed to copy!", err);
-        message.error("Failed to copy!");
-      });
-  };
-
-  return (
-    <div className="relative">
-      <SyntaxHighlighter
-        language={language || "text"}
-        style={oneDark}
-        showLineNumbers
-        wrapLongLines={true}
-        customStyle={{ borderRadius: "8px" }}
-      >
-        {content}
-      </SyntaxHighlighter>
-      <Button
-        icon={<CopyOutlined />}
-        size="small"
-        onClick={copyToClipboard}
-        className="absolute top-2 right-2 bg-transparent text-white hover:text-gray-400"
-      />
-    </div>
-  );
-};
-
-const ChatMessage = ({ message }) => {
+const ChatMessage = ({ message, onResend, onRegenerate }) => {
   const isUser = message.role === "user";
 
   // Debugging: Log the message object to verify fields
@@ -86,11 +43,40 @@ const ChatMessage = ({ message }) => {
             {message.text && <p className="mb-6 text-xl">{message.text}</p>}
 
             {/* Render JSON Configuration */}
-            {message.content && (
+            {message.json && (
               <CodeBlock
                 language="json"
-                content={JSON.stringify(message.content, null, 2)}
+                content={JSON.stringify(message.json, null, 2)}
               />
+            )}
+
+            {/* Render Validation Errors and Buttons */}
+            {!message.isValid && message.validationErrors && (
+              <div className="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                <p className="font-semibold">Validation Errors:</p>
+                <ul className="list-disc list-inside">
+                  {message.validationErrors.map((err, index) => (
+                    <li key={index}>
+                      {err.instancePath || "root"}: {err.message}
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-4 flex gap-2">
+                  <Button
+                    type="primary"
+                    onClick={onResend}
+                    className="bg-theme hover:bg-yellow-600 text-white"
+                  >
+                    Resend
+                  </Button>
+                  <Button
+                    onClick={onRegenerate}
+                    className="bg-gray-300 hover:bg-gray-400 text-gray-800"
+                  >
+                    Regenerate
+                  </Button>
+                </div>
+              </div>
             )}
           </>
         )}

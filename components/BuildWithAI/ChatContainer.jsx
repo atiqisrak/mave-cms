@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import ChatMessage from "./ChatMessage";
 
-const ChatContainer = ({ conversation }) => {
+const ChatContainer = ({ conversation, handleResend, handleRegenerate }) => {
   const chatEndRef = useRef(null);
 
   useEffect(() => {
@@ -16,7 +16,13 @@ const ChatContainer = ({ conversation }) => {
       style={{ maxHeight: "500px" }}
     >
       {conversation?.map((msg, index) => (
-        <ChatMessage key={index} message={msg} />
+        // <ChatMessage key={index} message={msg} />
+        <ChatMessage
+          key={index}
+          message={msg}
+          onResend={() => handleResend(index)}
+          onRegenerate={() => handleRegenerate(index)}
+        />
       ))}
       <div ref={chatEndRef} />
     </div>
