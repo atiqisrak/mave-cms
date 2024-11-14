@@ -23,13 +23,16 @@ const FeaturedImageSelector = ({
           Select Featured Image
         </button>
       )}
+      {featuredImage && console.log("featuredImage", featuredImage)}
       <Image
         src={
+          // featuredImage
+          //   ? `${MEDIA_URL}/${
+          //       mediaAssets?.find((item) => item.id === featuredImage)
+          //         ?.file_path
+          //     }`
           featuredImage
-            ? `${MEDIA_URL}/${
-                mediaAssets?.find((item) => item.id === featuredImage)
-                  ?.file_path
-              }`
+            ? `${MEDIA_URL}/${featuredImage?.map((item) => item.file_path)}`
             : "/images/Image_Placeholder.png"
         }
         alt="Featured Image"

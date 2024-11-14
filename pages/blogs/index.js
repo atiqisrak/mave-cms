@@ -1,13 +1,12 @@
-import { Button } from "antd";
+// pages/blogs/index.js
+
 import { useEffect, useState } from "react";
 import instance from "../../axios";
-import router from "next/router";
 import BlogShowcase from "../../components/blogs/BlogShowcase";
-import { RightCircleFilled } from "@ant-design/icons";
-import BlogCreator from "../../components/blogs/BlogCreator";
+import BlogShowcaseHeader from "../../components/blogs/BlogShowcaseHeader";
+import { Spin, message } from "antd";
 
-export default function index() {
-  const [creatorMode, setCreatorMode] = useState(false);
+export default function BlogIndex() {
   const [blogs, setBlogs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -16,12 +15,12 @@ export default function index() {
     try {
       const response = await instance.get("/pages");
       if (response.status === 200) {
-        response?.data?.map((blog, index) => {
-          blog?.type === "Blog" && setBlogs((prev) => [...prev, blog]);
-        });
+        const blogData = response.data.filter((blog) => blog.type === "Blog");
+        setBlogs(blogData);
       }
     } catch (error) {
-      console.log("Error fetching blogs: ", error);
+      console.error("Error fetching blogs: ", error);
+      message.error("Failed to fetch blogs. Please try again.");
     }
     setIsLoading(false);
   };
@@ -30,73 +29,53 @@ export default function index() {
     fetchBlogs();
   }, []);
 
-  console.log("Blog data: ", blogs);
-
   return (
-    <div className="mavecontainer">
-      <center>
-        <h1
-          style={{
-            margin: "2rem 0",
-            color: "var(--theme)",
-            fontSize: "2rem",
-            fontWeight: "bold",
-          }}
-        >
-          Welcome to blogs
-        </h1>
-        <BlogShowcase
-          blogs={blogs}
-          setBlogs={setBlogs}
-          fetchBlogs={fetchBlogs}
-        />
-      </center>
+    <div className="mavecontainer max-w-7xl mx-auto p-6">
+      {isLoading ? (
+        <div className="flex justify-center items-center h-screen">
+          <Spin size="large" />
+        </div>
+      ) : (
+        <>
+          {/* Blog Showcase Header */}
+          <BlogShowcaseHeader
+            onAddBlog={() => (window.location.href = "/blogs/createblog")}
+            searchTerm="" // Implement search functionality
+            setSearchTerm={() => {}} // Implement search functionality
+            sortType="asc" // Implement sort functionality
+            setSortType={() => {}} // Implement sort functionality
+            handleFilter={() => {}} // Implement filter functionality
+            handleSelectAll={() => {}} // Implement select all functionality
+            allSelected={false} // Implement select all state
+            filterOptions={{
+              categories: [
+                { id: 1, name: "News", value: "news" },
+                { id: 2, name: "Tech", value: "tech" },
+                { id: 3, name: "Health", value: "health" },
+                { id: 4, name: "Sports", value: "sports" },
+                { id: 5, name: "Entertainment", value: "entertainment" },
+                { id: 6, name: "Science", value: "science" },
+              ],
+              tags: [
+                { id: 1, name: "News", value: "news" },
+                { id: 2, name: "Tech", value: "tech" },
+                { id: 3, name: "Health", value: "health" },
+                { id: 4, name: "Sports", value: "sports" },
+                { id: 5, name: "Entertainment", value: "entertainment" },
+                { id: 6, name: "Science", value: "science" },
+              ],
+            }}
+            applyFilters={() => {}} // Implement apply filters
+            resetFilters={() => {}} // Implement reset filters
+          />
 
-      {/* <BlogEditor /> */}
-      {/* <Button
-        style={{
-          display: creatorMode ? "none" : "block",
-          margin: "1rem",
-          backgroundColor: "var(--theme)",
-          color: "white",
-          fontSize: "1rem",
-          fontWeight: "bold",
-          border: "none",
-          position: "absolute",
-          top: "30px",
-          right: "0",
-        }}
-        onClick={() => {
-          setCreatorMode(!creatorMode);
-        }}
-      >
-        Create Blog
-      </Button> */}
-      <center>
-        <Button
-          style={{
-            margin: "1rem",
-            backgroundColor: "var(--themes)",
-            color: "white",
-            fontSize: "1rem",
-            fontWeight: "bold",
-            border: "none",
-            height: "3rem",
-          }}
-          onClick={() => {
-            router.push("/blogs/createblog");
-          }}
-          icon={<RightCircleFilled />}
-        >
-          Go to Creator Page
-        </Button>
-      </center>
-      {creatorMode && (
-        <BlogCreator
-          creatorMode={creatorMode}
-          setCreatorMode={setCreatorMode}
-          fetchBlogs={fetchBlogs}
-        />
+          {/* Blog Showcase */}
+          <BlogShowcase
+            blogs={blogs}
+            setBlogs={setBlogs}
+            fetchBlogs={fetchBlogs}
+          />
+        </>
       )}
     </div>
   );

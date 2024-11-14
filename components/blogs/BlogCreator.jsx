@@ -196,7 +196,7 @@ const BlogCreator = ({ creatorMode, setCreatorMode, fetchBlogs }) => {
       </Breadcrumb>
 
       {/* AI Assistance Button */}
-      <div className="flex justify-end mb-4 px-6">
+      {/* <div className="flex justify-end mb-4 px-6">
         <Button
           icon={<RobotOutlined />}
           className="mavebutton"
@@ -204,7 +204,7 @@ const BlogCreator = ({ creatorMode, setCreatorMode, fetchBlogs }) => {
         >
           Write with AI
         </Button>
-      </div>
+      </div> */}
 
       {/* Blog Creation Form */}
       <div className="flex flex-col space-y-6 px-6">

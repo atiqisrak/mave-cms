@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react";
+// pages/blogs/createblog.js
+
+import { useState, useEffect } from "react";
 import instance from "../../axios";
 import BlogCreator from "../../components/blogs/BlogCreator";
+import { Spin, message } from "antd";
 
-export default function createblog() {
+export default function CreateBlog() {
   const [creatorMode, setCreatorMode] = useState(false);
   const [blogs, setBlogs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -12,14 +15,12 @@ export default function createblog() {
     try {
       const response = await instance.get("/pages");
       if (response.status === 200) {
-        // setBlogs(response.data);
-        response?.data?.map((blog, index) => {
-          // setBlogs((prev) => [...prev, blog]);
-          blog?.type === "Blog" && setBlogs((prev) => [...prev, blog]);
-        });
+        const blogData = response.data.filter((blog) => blog.type === "Blog");
+        setBlogs(blogData);
       }
     } catch (error) {
-      console.log("Error fetching blogs: ", error);
+      console.error("Error fetching blogs: ", error);
+      message.error("Failed to fetch blogs. Please try again.");
     }
     setIsLoading(false);
   };
@@ -29,12 +30,18 @@ export default function createblog() {
   }, []);
 
   return (
-    <div className="mavecontainer">
-      <BlogCreator
-        creatorMode={creatorMode}
-        setCreatorMode={setCreatorMode}
-        fetchBlogs={fetchBlogs}
-      />
+    <div className="mavecontainer max-w-7xl mx-auto p-6">
+      {isLoading ? (
+        <div className="flex justify-center items-center h-screen">
+          <Spin size="large" />
+        </div>
+      ) : (
+        <BlogCreator
+          creatorMode={creatorMode}
+          setCreatorMode={setCreatorMode}
+          fetchBlogs={fetchBlogs}
+        />
+      )}
     </div>
   );
 }

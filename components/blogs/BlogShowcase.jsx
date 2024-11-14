@@ -25,38 +25,6 @@ const BlogShowcase = ({ blogs, setBlogs, fetchBlogs }) => {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      {/* Header */}
-      <BlogShowcaseHeader
-        onAddBlog={() => router.push("/blogs/createblog")}
-        searchTerm="" // Implement search functionality
-        setSearchTerm={() => {}} // Implement search functionality
-        sortType="asc" // Implement sort functionality
-        setSortType={() => {}} // Implement sort functionality
-        handleFilter={() => {}} // Implement filter functionality
-        handleSelectAll={() => {}} // Implement select all functionality
-        allSelected={false} // Implement select all state
-        filterOptions={{
-          categories: [
-            { id: 1, name: "News", value: "news" },
-            { id: 2, name: "Tech", value: "tech" },
-            { id: 3, name: "Health", value: "health" },
-            { id: 4, name: "Sports", value: "sports" },
-            { id: 5, name: "Entertainment", value: "entertainment" },
-            { id: 6, name: "Science", value: "science" },
-          ],
-          tags: [
-            { id: 1, name: "News", value: "news" },
-            { id: 2, name: "Tech", value: "tech" },
-            { id: 3, name: "Health", value: "health" },
-            { id: 4, name: "Sports", value: "sports" },
-            { id: 5, name: "Entertainment", value: "entertainment" },
-            { id: 6, name: "Science", value: "science" },
-          ],
-        }}
-        applyFilters={() => {}} // Implement apply filters
-        resetFilters={() => {}} // Implement reset filters
-      />
-
       {/* Main Content */}
       <div className="flex flex-col md:flex-row gap-6">
         {/* Left Column: Blog List */}

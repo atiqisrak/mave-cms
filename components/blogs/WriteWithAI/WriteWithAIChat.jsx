@@ -1,15 +1,11 @@
-// components/WriteWithAI/WriteWithAIChat.jsx
+// components/blogs/WriteWithAI/WriteWithAIChat.jsx
 
 import React, { useState, useEffect, useRef } from "react";
-import { Spin, message } from "antd";
+import { Spin, message, Button, Popconfirm } from "antd";
 import ChatHeader from "./ChatHeader";
 import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
-import { Popconfirm } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import instance from "../../../axios";
 
 const WriteWithAIChat = ({ setVisible, setContent }) => {
   const [conversation, setConversation] = useState([]);
@@ -18,7 +14,7 @@ const WriteWithAIChat = ({ setVisible, setContent }) => {
   const chatEndRef = useRef(null);
 
   useEffect(() => {
-    // Load conversation from localStorage
+    // Load conversation from localStorage on mount
     const storedConversation = localStorage.getItem("aiConversation");
     if (storedConversation) {
       setConversation(JSON.parse(storedConversation));
@@ -26,7 +22,7 @@ const WriteWithAIChat = ({ setVisible, setContent }) => {
   }, []);
 
   useEffect(() => {
-    // Scroll to bottom when conversation updates
+    // Scroll to the bottom when the conversation updates
     if (chatEndRef.current) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
@@ -35,23 +31,38 @@ const WriteWithAIChat = ({ setVisible, setContent }) => {
   }, [conversation]);
 
   const handleSend = async () => {
-    if (!prompt.trim()) return;
+    if (!prompt.trim()) {
+      message.warning("Please enter a prompt before sending.");
+      return;
+    }
+
+    // Add user message to conversation
     const userMessage = { message: prompt, sender: "user" };
     setConversation((prev) => [...prev, userMessage]);
     setPrompt("");
     setLoading(true);
 
     try {
-      // Replace with your AI API endpoint
-      const response = await instance.post("/ai/generate", { prompt });
+      const response = await fetch("/api/gemini/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt }),
+      });
 
-      if (response.status === 200) {
-        const aiText = response.data.text; // Adjust based on your API response
+      if (response.ok) {
+        const data = await response.json();
+        const aiText = data.text; // The generated text from Gemini
+        if (aiText === "No response generated.") {
+          message.info("The AI could not generate a response.");
+        }
         const aiMessage = { message: aiText, sender: "ai" };
         setConversation((prev) => [...prev, aiMessage]);
-        setContent(aiText); // Optionally set the content in parent
+        setContent(aiText); // Optionally set the content in parent component
       } else {
-        message.error("Failed to get response from AI.");
+        const errorData = await response.json();
+        message.error(errorData.message || "Failed to get a response from AI.");
       }
     } catch (error) {
       console.error("Error communicating with AI:", error);
@@ -78,6 +89,11 @@ const WriteWithAIChat = ({ setVisible, setContent }) => {
           <ChatMessage key={index} message={msg.message} sender={msg.sender} />
         ))}
         <div ref={chatEndRef} />
+        {loading && (
+          <div className="flex justify-center items-center mt-4">
+            <Spin tip="AI is generating a response..." />
+          </div>
+        )}
       </div>
 
       {/* Input Field */}

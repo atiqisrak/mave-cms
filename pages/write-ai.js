@@ -1,5 +1,5 @@
 import React from "react";
-import WriteWithAI from "../components/blogs/WriteWithAI";
+import WriteWithAI from "../components/blogs/WriteWithAI/WriteWithAI";
 
 export default function WriteAi() {
   return (
