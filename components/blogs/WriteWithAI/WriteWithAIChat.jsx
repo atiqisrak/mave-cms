@@ -48,7 +48,11 @@ const WriteWithAIChat = ({ setVisible, setContent }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt }),
+        // body: JSON.stringify({ prompt }),
+        body: JSON.stringify({
+          prompt,
+          history: conversation, // Include the conversation history
+        }),
       });
 
       if (response.ok) {
@@ -78,6 +82,12 @@ const WriteWithAIChat = ({ setVisible, setContent }) => {
     message.success("Conversation cleared.");
   };
 
+  const handleAddToBlog = (aiMessage) => {
+    // Append the AI message to the existing content
+    setContent((prevContent) => prevContent + "\n" + aiMessage);
+    message.success("Content added to the blog editor.");
+  };
+
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
@@ -85,8 +95,13 @@ const WriteWithAIChat = ({ setVisible, setContent }) => {
 
       {/* Conversation Window */}
       <div className="flex-1 overflow-y-auto p-4 bg-gray-100 rounded-lg">
-        {conversation.map((msg, index) => (
-          <ChatMessage key={index} message={msg.message} sender={msg.sender} />
+        {conversation?.map((msg, index) => (
+          <ChatMessage
+            key={index}
+            message={msg.message}
+            sender={msg.sender}
+            onAddToBlog={handleAddToBlog}
+          />
         ))}
         <div ref={chatEndRef} />
         {loading && (

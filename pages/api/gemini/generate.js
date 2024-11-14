@@ -14,7 +14,7 @@ export default async function handler(req, res) {
       .json({ message: `Method ${req.method} not allowed` });
   }
 
-  const { prompt } = req.body;
+  const { prompt, history } = req.body;
 
   if (!prompt || typeof prompt !== "string") {
     return res
@@ -44,9 +44,20 @@ export default async function handler(req, res) {
       responseMimeType: "text/plain",
     };
 
+    // const chatSession = model.startChat({
+    //   generationConfig,
+    //   history: [],
+    // });
+
+    // Build the conversation history
+    const formattedHistory = history.map((msg) => ({
+      author: msg.sender === "user" ? "USER" : "ASSISTANT",
+      content: msg.message,
+    }));
+
     const chatSession = model.startChat({
       generationConfig,
-      history: [], // Add previous messages if implementing a conversational context
+      history: formattedHistory,
     });
 
     const result = await chatSession.sendMessage(prompt);

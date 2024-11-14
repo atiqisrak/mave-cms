@@ -3,7 +3,7 @@ import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 import rehypeSanitize from "rehype-sanitize";
 
-const ChatMessage = ({ message, sender }) => {
+const ChatMessage = ({ message, sender, onAddToBlog }) => {
   return (
     <div
       className={`flex ${
@@ -31,6 +31,14 @@ const ChatMessage = ({ message, sender }) => {
         <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
           {message}
         </ReactMarkdown>
+        {sender === "ai" && (
+          <button
+            onClick={() => onAddToBlog(message)}
+            className="mt-2 text-theme underline"
+          >
+            Add to Blog
+          </button>
+        )}
       </div>
       {sender === "user" && (
         <div className="ml-2">

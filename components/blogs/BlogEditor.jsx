@@ -34,7 +34,13 @@ const BlogEditor = ({ content, setContent, onContentChange }) => {
       <WriteWithAI
         visible={modalVisible}
         setVisible={setModalVisible}
-        setContent={setContent}
+        // setContent={setContent}
+        setContent={(newContent) => {
+          // Append the new content to existing content
+          const updatedContent = content + "\n" + newContent;
+          setContent(updatedContent);
+          onContentChange(updatedContent); // Update the editor
+        }}
       />
     </div>
   );
