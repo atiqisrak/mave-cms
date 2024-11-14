@@ -1,8 +1,12 @@
 // components/slider/SlidersHeader.jsx
 
 import React from "react";
-import { Input, Button } from "antd";
-import { PlusCircleOutlined, SearchOutlined } from "@ant-design/icons";
+import { Input, Button, Tooltip, message } from "antd";
+import {
+  CopyOutlined,
+  PlusCircleOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 import Image from "next/image";
 
 const SlidersHeader = ({
@@ -34,8 +38,20 @@ const SlidersHeader = ({
             onClick={onAddSlider}
             className="mavebutton"
           >
-            Add New Slider
+            Create Slider
           </Button>
+          <Tooltip title="Copy API Endpoint">
+            <Button
+              icon={<CopyOutlined />}
+              className="mavecancelbutton"
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  `${process.env.NEXT_PUBLIC_API_BASE_URL}/sliders`
+                );
+                message.success("API Endpoint copied to clipboard");
+              }}
+            ></Button>
+          </Tooltip>
         </div>
       </div>
 

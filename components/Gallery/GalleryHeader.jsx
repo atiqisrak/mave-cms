@@ -1,7 +1,7 @@
 // components/Gallery/GalleryHeader.jsx
 
 import React from "react";
-import { Button, Input, Select, Space, Switch } from "antd";
+import { Button, Input, message, Select, Space, Switch, Tooltip } from "antd";
 import {
   PlusCircleOutlined,
   FilterOutlined,
@@ -42,6 +42,7 @@ const GalleryHeader = ({
           </div>
           <h2 className="text-2xl font-semibold">Gallery</h2>
         </div>
+
         <div className="flex items-center gap-2 mt-4 md:mt-0">
           <Button
             icon={<PlusCircleOutlined />}
@@ -50,6 +51,18 @@ const GalleryHeader = ({
           >
             Add Media
           </Button>
+          <Tooltip title="Copy API Endpoint">
+            <Button
+              icon={<CopyOutlined />}
+              className="mavecancelbutton"
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  `${process.env.NEXT_PUBLIC_API_BASE_URL}/media`
+                );
+                message.success("API Endpoint copied to clipboard");
+              }}
+            ></Button>
+          </Tooltip>
         </div>
       </div>
       <div className="flex items-center justify-between gap-4 mb-4 px-3 py-1">

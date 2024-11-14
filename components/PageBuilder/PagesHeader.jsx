@@ -2,11 +2,20 @@
 
 import {
   CloseCircleFilled,
+  CopyOutlined,
   FilterOutlined,
   PlusCircleOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { Button, Input, Breadcrumb, Switch, Select } from "antd";
+import {
+  Button,
+  Input,
+  Breadcrumb,
+  Switch,
+  Select,
+  Tooltip,
+  message,
+} from "antd";
 import React from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -56,18 +65,43 @@ const PagesHeader = ({
             <div className="flex items-center gap-2">
               <Button
                 icon={<PlusCircleOutlined />}
-                className="mavebutton"
-                onClick={onCreate}
-              >
-                Create Page
-              </Button>
-              <Button
-                icon={<PlusCircleOutlined />}
                 className="mavecancelbutton"
                 onClick={onFooterCreate}
               >
                 Create Footer
               </Button>
+              <Tooltip title="Copy Footers API Endpoint">
+                <Button
+                  icon={<CopyOutlined />}
+                  className="mavebutton"
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      `${process.env.NEXT_PUBLIC_API_BASE_URL}/pages?type=Footer`
+                    );
+                    message.success("API Endpoint copied to clipboard");
+                  }}
+                ></Button>
+              </Tooltip>
+
+              <Button
+                icon={<PlusCircleOutlined />}
+                className="mavebutton"
+                onClick={onCreate}
+              >
+                Create Page
+              </Button>
+              <Tooltip title="Copy Pages API Endpoint">
+                <Button
+                  icon={<CopyOutlined />}
+                  className="mavecancelbutton"
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      `${process.env.NEXT_PUBLIC_API_BASE_URL}/pages?type=Page`
+                    );
+                    message.success("API Endpoint copied to clipboard");
+                  }}
+                ></Button>
+              </Tooltip>
             </div>
           )}
         </div>

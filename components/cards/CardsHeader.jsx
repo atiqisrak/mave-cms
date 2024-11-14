@@ -1,12 +1,21 @@
 // components/cards/CardsHeader.jsx
 
 import React from "react";
-import { Breadcrumb, Button, Input, Select, Switch } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Input,
+  message,
+  Select,
+  Switch,
+  Tooltip,
+} from "antd";
 import {
   HomeFilled,
   PlusCircleOutlined,
   FilterOutlined,
   SearchOutlined,
+  CopyOutlined,
 } from "@ant-design/icons";
 import router from "next/router";
 import Image from "next/image";
@@ -45,6 +54,18 @@ const CardsHeader = ({
           >
             Create Card
           </Button>
+          <Tooltip title="Copy API Endpoint">
+            <Button
+              icon={<CopyOutlined />}
+              className="mavecancelbutton"
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  `${process.env.NEXT_PUBLIC_API_BASE_URL}/cards`
+                );
+                message.success("API Endpoint copied to clipboard");
+              }}
+            ></Button>
+          </Tooltip>
         </div>
       </div>
       <div className="flex items-center justify-between gap-4 mb-4 px-3 py-1">

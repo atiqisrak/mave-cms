@@ -1,9 +1,10 @@
 // components/Navbars/NavbarHeader.js
 
 import React from "react";
-import { Input, Switch, Button, Select, message } from "antd";
+import { Input, Switch, Button, Select, message, Tooltip } from "antd";
 import {
   CheckCircleFilled,
+  CopyOutlined,
   FilterOutlined,
   PlusCircleOutlined,
   SearchOutlined,
@@ -41,8 +42,20 @@ const NavbarHeader = ({
             onClick={onAddNavbar}
             className="mavebutton"
           >
-            Add New Navbar
+            Create Navbar
           </Button>
+          <Tooltip title="Copy API Endpoint">
+            <Button
+              icon={<CopyOutlined />}
+              className="mavecancelbutton"
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  `${process.env.NEXT_PUBLIC_API_BASE_URL}/navbars`
+                );
+                message.success("API Endpoint copied to clipboard");
+              }}
+            ></Button>
+          </Tooltip>
         </div>
       </div>
       <div className="flex items-center justify-between gap-4 mb-4 px-3 py-1">
