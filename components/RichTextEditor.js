@@ -37,6 +37,11 @@ const RichTextEditor = ({ defaultValue, onChange, editMode }) => {
   };
 
   useEffect(() => {
+    // Update editorHtml when defaultValue changes
+    setEditorHtml(defaultValue || "");
+  }, [defaultValue]);
+
+  useEffect(() => {
     // Dynamically import the CSS files on the client side
     if (typeof window !== "undefined") {
       import("react-quill/dist/quill.snow.css");
@@ -45,6 +50,7 @@ const RichTextEditor = ({ defaultValue, onChange, editMode }) => {
       setIsLoaded(true);
     }
   }, []);
+
   if (!isLoaded) {
     return null;
   }

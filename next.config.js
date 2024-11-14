@@ -1,4 +1,5 @@
 const nextConfig = {
+  target: "server",
   dangerouslyAllowSVG: true,
   distDir: ".next",
   output: "out",

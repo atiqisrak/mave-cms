@@ -42,32 +42,40 @@ const WriteWithAIChat = ({ setVisible, setContent }) => {
     setPrompt("");
     setLoading(true);
 
+    // Prepare the payload
+    const payload = {
+      prompt: {
+        history: conversation,
+        instruction: prompt,
+      },
+    };
+
     try {
       const response = await fetch("/api/gemini/generate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        // body: JSON.stringify({ prompt }),
-        body: JSON.stringify({
-          prompt,
-          history: conversation, // Include the conversation history
-        }),
+        body: JSON.stringify(payload),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        const aiText = data.text; // The generated text from Gemini
-        if (aiText === "No response generated.") {
-          message.info("The AI could not generate a response.");
-        }
-        const aiMessage = { message: aiText, sender: "ai" };
-        setConversation((prev) => [...prev, aiMessage]);
-        setContent(aiText); // Optionally set the content in parent component
-      } else {
+      if (!response.ok) {
         const errorData = await response.json();
-        message.error(errorData.message || "Failed to get a response from AI.");
+        throw new Error(
+          errorData.message || "Failed to get a response from AI."
+        );
       }
+
+      const data = await response.json();
+
+      const aiText = data.text;
+
+      if (!aiText) {
+        message.info("The AI could not generate a response.");
+      }
+
+      const aiMessage = { message: aiText, sender: "ai" };
+      setConversation((prev) => [...prev, aiMessage]);
     } catch (error) {
       console.error("Error communicating with AI:", error);
       message.error("An error occurred while communicating with AI.");
@@ -83,8 +91,8 @@ const WriteWithAIChat = ({ setVisible, setContent }) => {
   };
 
   const handleAddToBlog = (aiMessage) => {
-    // Append the AI message to the existing content
-    setContent((prevContent) => prevContent + "\n" + aiMessage);
+    // setContent((prevContent) => prevContent + "\n" + aiMessage);
+    setContent(aiMessage);
     message.success("Content added to the blog editor.");
   };
 
@@ -100,7 +108,7 @@ const WriteWithAIChat = ({ setVisible, setContent }) => {
             key={index}
             message={msg.message}
             sender={msg.sender}
-            onAddToBlog={handleAddToBlog}
+            onAddToBlog={msg.sender === "ai" ? handleAddToBlog : null}
           />
         ))}
         <div ref={chatEndRef} />

@@ -1,10 +1,6 @@
 // pages/api/gemini/generate.js
 
-import {
-  GoogleGenerativeAI,
-  HarmCategory,
-  HarmBlockThreshold,
-} from "@google/generative-ai";
+import fetch from "node-fetch";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -14,12 +10,12 @@ export default async function handler(req, res) {
       .json({ message: `Method ${req.method} not allowed` });
   }
 
-  const { prompt, history } = req.body;
+  const { prompt } = req.body;
 
-  if (!prompt || typeof prompt !== "string") {
-    return res
-      .status(400)
-      .json({ message: "A valid 'prompt' is required in the request body." });
+  if (!prompt || typeof prompt !== "object") {
+    return res.status(400).json({
+      message: "A valid 'prompt' object is required in the request body.",
+    });
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
@@ -30,56 +26,53 @@ export default async function handler(req, res) {
   }
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey);
+    const { history, instruction } = prompt;
 
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-    });
-
-    const generationConfig = {
-      temperature: 1,
-      topP: 0.95,
-      topK: 40,
-      maxOutputTokens: 800, // Adjust as needed
-      responseMimeType: "text/plain",
-    };
-
-    // const chatSession = model.startChat({
-    //   generationConfig,
-    //   history: [],
-    // });
-
-    // Build the conversation history
-    const formattedHistory = history.map((msg) => ({
-      author: msg.sender === "user" ? "USER" : "ASSISTANT",
-      content: msg.message,
+    // Build the 'contents' array
+    const contents = history.map((msg) => ({
+      role: msg.sender === "user" ? "user" : "model",
+      parts: [{ text: msg.message }],
     }));
 
-    const chatSession = model.startChat({
-      generationConfig,
-      history: formattedHistory,
+    // Append the latest instruction
+    contents.push({
+      role: "user",
+      parts: [{ text: instruction }],
     });
 
-    const result = await chatSession.sendMessage(prompt);
+    const requestBody = {
+      contents,
+      // Optional: You can include generationConfig, safetySettings, etc.
+    };
 
-    const generatedText = result.response.text();
-
-    if (!generatedText) {
-      console.warn("Gemini API returned an empty response.");
-      return res.status(200).json({ text: "No response generated." });
-    }
-
-    res.status(200).json({ text: generatedText });
-  } catch (error) {
-    console.error(
-      "Error communicating with Gemini API:",
-      error.response ? error.response.data : error.message
+    // Make the request to Gemini API
+    const apiResponse = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      }
     );
 
-    const errorMessage =
-      (error.response && error.response.data && error.response.data.message) ||
-      "Failed to generate content.";
+    if (!apiResponse.ok) {
+      const errorData = await apiResponse.json();
+      throw new Error(
+        errorData.error.message || "Failed to get a response from Gemini API."
+      );
+    }
 
-    res.status(500).json({ message: errorMessage });
+    const responseData = await apiResponse.json();
+
+    // Extract the text content from the response
+    const textContent =
+      responseData.candidates[0]?.content.parts
+        .map((part) => part.text)
+        .join("") || "";
+
+    res.status(200).json({ text: textContent });
+  } catch (error) {
+    console.error("Error communicating with Gemini API:", error);
+    res.status(500).json({ message: error.message });
   }
 }

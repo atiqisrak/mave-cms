@@ -1,7 +1,10 @@
+// components/WriteWithAI/ChatMessage.jsx
+
 import React from "react";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 import rehypeSanitize from "rehype-sanitize";
+import { Button } from "antd";
 
 const ChatMessage = ({ message, sender, onAddToBlog }) => {
   return (
@@ -31,19 +34,19 @@ const ChatMessage = ({ message, sender, onAddToBlog }) => {
         <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
           {message}
         </ReactMarkdown>
-        {sender === "ai" && (
-          <button
+        {sender === "ai" && onAddToBlog && (
+          <Button
+            className="mavebutton mt-10"
             onClick={() => onAddToBlog(message)}
-            className="mt-2 text-theme underline"
           >
             Add to Blog
-          </button>
+          </Button>
         )}
       </div>
       {sender === "user" && (
         <div className="ml-2">
           <Image
-            src="/icons/mave_icons/user.svg" // Ensure this path exists
+            src="/icons/mave_icons/user.svg"
             width={40}
             height={40}
             alt="User Avatar"
