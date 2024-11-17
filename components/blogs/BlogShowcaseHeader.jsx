@@ -128,6 +128,7 @@ const BlogShowcaseHeader = ({
             defaultValue="10"
             className="w-fit h-11 border border-gray-300 rounded-md"
             onChange={(value) => handleFilter({ itemsPerPage: value })}
+            showSearch
           >
             <Option value="10">10</Option>
             <Option value="20">20</Option>
@@ -168,7 +169,7 @@ const BlogShowcaseHeader = ({
           }}
         >
           <Form.Item label="Category" name="category">
-            <Select placeholder="Select a Category" allowClear>
+            <Select placeholder="Select a Category" allowClear showSearch>
               {filterOptions?.categories?.map((cat) => (
                 <Option key={cat.id} value={cat.value}>
                   {cat.name}
@@ -178,7 +179,12 @@ const BlogShowcaseHeader = ({
           </Form.Item>
 
           <Form.Item label="Tags" name="tags">
-            <Select mode="multiple" placeholder="Select Tags" allowClear>
+            <Select
+              mode="multiple"
+              placeholder="Select Tags"
+              allowClear
+              showSearch
+            >
               {filterOptions?.tags?.map((tag) => (
                 <Option key={tag.id} value={tag.value}>
                   {tag.name}

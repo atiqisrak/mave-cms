@@ -40,6 +40,7 @@ const BlogFormFields = ({
         className="text-lg font-medium"
         value={category}
         onChange={(value) => setMeta({ ...meta, category: value })}
+        showSearch
       >
         {blog_categories.map((cat) => (
           <Option key={cat.id} value={cat.value}>
@@ -55,6 +56,7 @@ const BlogFormFields = ({
         className="text-lg font-medium"
         value={tags}
         onChange={(value) => setMeta({ ...meta, tags: value })}
+        showSearch
       >
         {blog_tags.map((tag) => (
           <Option key={tag.id} value={tag.value}>

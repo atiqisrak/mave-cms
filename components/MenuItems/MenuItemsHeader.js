@@ -119,6 +119,7 @@ const MenuItemsHeader = ({
             defaultValue="10"
             className=" w-fit h-11 border-1 border-gray-300 rounded-md"
             onChange={onShowChange}
+            showSearch
           >
             <Option value="10">10</Option>
             <Option value="20">20</Option>
@@ -159,7 +160,7 @@ const MenuItemsHeader = ({
         >
           {filterOptions && (
             <Form.Item label="Parent Menu" name="parent_id">
-              <Select placeholder="Select a Parent Menu" allowClear>
+              <Select placeholder="Select a Parent Menu" allowClear showSearch>
                 {filterOptions?.parentMenus?.map((menu) => (
                   <Option key={menu.id} value={menu.id}>
                     {menu.title}

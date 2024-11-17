@@ -80,6 +80,7 @@ const BulkUserActions = ({ onBulkDelete, onBulkChangeRole, users }) => {
         placeholder="Select bulk action"
         onChange={handleActionChange}
         style={{ width: "200px", marginTop: "16px" }}
+        showSearch
       >
         <Option value="delete">Delete</Option>
         <Option value="changeRole">Change Role</Option>
@@ -89,6 +90,7 @@ const BulkUserActions = ({ onBulkDelete, onBulkChangeRole, users }) => {
           placeholder="Select role"
           onChange={handleRoleChange}
           style={{ width: "200px", marginTop: "16px" }}
+          showSearch
         >
           <Option value="admin">Admin</Option>
           <Option value="editor">Editor</Option>

@@ -49,6 +49,7 @@ const FilterDrawer = ({ visible, onClose, setFilteredUsers, users = [] }) => {
             defaultValue="name"
             onChange={(value) => setSortField(value)}
             style={{ width: "100%" }}
+            showSearch
           >
             <Option value="name">Sort by Name</Option>
             <Option value="email">Sort by Email</Option>

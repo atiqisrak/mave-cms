@@ -15,6 +15,7 @@ const CardSelector = ({
 }) => (
   <div>
     <Select
+      showSearch
       mode="multiple"
       placeholder="Select cards"
       value={selectedCards}

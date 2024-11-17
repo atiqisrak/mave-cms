@@ -52,7 +52,7 @@ const TopBar = ({
             gap: "1.5rem",
           }}
         >
-          <Select defaultValue="10" style={{ width: "fit-content" }}>
+          <Select defaultValue="10" style={{ width: "fit-content" }} showSearch>
             <Option value="10">10 Rows</Option>
             <Option value="20">20 Rows</Option>
             <Option value="30">30 Rows</Option>

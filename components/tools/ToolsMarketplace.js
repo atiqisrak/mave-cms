@@ -363,6 +363,7 @@ const ToolsMarketplace = () => {
             defaultValue="All"
             style={{ width: 120 }}
             onChange={handleCategoryChange}
+            showSearch
           >
             {categories?.map((category, index) => (
               <Select.Option key={index} value={category}>

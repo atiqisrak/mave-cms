@@ -219,7 +219,10 @@ export default function ManageData() {
                     },
                   ]}
                 >
-                  <Select placeholder={`Select ${field.relatedModel}`}>
+                  <Select
+                    placeholder={`Select ${field.relatedModel}`}
+                    showSearch
+                  >
                     {/* Fetch and map related model data */}
                     {/* You would need to fetch the related model's data here */}
                   </Select>

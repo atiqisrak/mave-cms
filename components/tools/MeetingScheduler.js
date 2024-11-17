@@ -207,6 +207,7 @@ const MeetingScheduler = () => {
                   }}
                   placeholder="Select a duration"
                   allowClear
+                  showSearch
                 >
                   <Select.Option value="15">15 minutes</Select.Option>
                   <Select.Option value="30">30 minutes</Select.Option>
@@ -231,6 +232,7 @@ const MeetingScheduler = () => {
                   placeholder="Select a location"
                   allowClear
                   onChange={(value) => setMeetingLocation(value)}
+                  showSearch
                 >
                   <Select.Option value="online">Online</Select.Option>
                   <Select.Option value="offline">Offline</Select.Option>
@@ -253,6 +255,7 @@ const MeetingScheduler = () => {
                     }}
                     placeholder="Select a meeting room"
                     allowClear
+                    showSearch
                   >
                     <Select.Option value="1">Meeting Room 1</Select.Option>
                     <Select.Option value="2">Meeting Room 2</Select.Option>

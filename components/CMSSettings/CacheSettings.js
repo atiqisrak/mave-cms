@@ -42,7 +42,7 @@ const CacheSettings = ({ config, id }) => {
         label="Cache Driver"
         rules={[{ required: true, message: "Cache Driver is required." }]}
       >
-        <Select>
+        <Select showSearch>
           <Option value="file">File</Option>
           <Option value="redis">Redis</Option>
           <Option value="memcached">Memcached</Option>

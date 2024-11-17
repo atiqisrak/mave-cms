@@ -243,6 +243,7 @@ const TestimonialComponent = ({
               onChange={handleLayoutChange}
               style={{ width: 150 }}
               disabled={preview}
+              showSearch
             >
               <Option value="carousel">Carousel</Option>
               <Option value="grid">Grid</Option>
@@ -252,6 +253,7 @@ const TestimonialComponent = ({
               onChange={handleFontChange}
               style={{ width: 150 }}
               disabled={preview}
+              showSearch
             >
               <Option value="Arial">Arial</Option>
               <Option value="Helvetica">Helvetica</Option>

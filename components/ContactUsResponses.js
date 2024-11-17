@@ -227,6 +227,7 @@ const ContactUsResponses = () => {
                           defaultValue={message?.status}
                           style={{ width: 120 }}
                           onChange={handleStatusChange}
+                          showSearch
                         >
                           <Select.Option value="0">Unread</Select.Option>
                           <Select.Option value="1">Read</Select.Option>

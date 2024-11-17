@@ -99,6 +99,7 @@ const YoutubeAudioExtractor = () => {
               }}
               value={audioFormat}
               onChange={(value) => setAudioFormat(value)}
+              showSearch
             >
               <Select.Option value="mp3">MP3</Select.Option>
               <Select.Option value="wav">WAV</Select.Option>

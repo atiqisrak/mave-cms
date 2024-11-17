@@ -126,6 +126,7 @@ const PagesHeader = ({
             defaultValue="10"
             className="w-32 h-11 border border-gray-300 rounded-md"
             onChange={onShowChange}
+            showSearch
           >
             <Select.Option value="10">10</Select.Option>
             <Select.Option value="20">20</Select.Option>

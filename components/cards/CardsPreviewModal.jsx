@@ -355,7 +355,7 @@ const CardsPreviewModal = ({
                 name="page_name"
                 rules={[{ required: true, message: "Please select a page" }]}
               >
-                <Select placeholder="Select Page" allowClear>
+                <Select placeholder="Select Page" allowClear showSearch>
                   {pages
                     ?.filter((page) => page.page_name_en)
                     ?.map((page) => (
@@ -385,7 +385,11 @@ const CardsPreviewModal = ({
                   name="link_page_id"
                   rules={[{ required: true, message: "Please select a page" }]}
                 >
-                  <Select placeholder="Select a Page to link" allowClear>
+                  <Select
+                    placeholder="Select a Page to link"
+                    allowClear
+                    showSearch
+                  >
                     {pages?.map((page) => (
                       <Select.Option key={page.id} value={page.id}>
                         {page.page_name_en}

@@ -83,6 +83,7 @@ const MenusHeader = ({
             defaultValue="10"
             className=" w-fit h-11 border-1 border-gray-300 rounded-md"
             onChange={onShowChange}
+            showSearch
           >
             <Select.Option value="10">10</Select.Option>
             <Select.Option value="20">20</Select.Option>

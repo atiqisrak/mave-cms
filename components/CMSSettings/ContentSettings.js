@@ -44,7 +44,7 @@ const ContentSettings = ({ config, id }) => {
           { required: true, message: "Default Content Status is required." },
         ]}
       >
-        <Select>
+        <Select showSearch>
           <Option value="draft">Draft</Option>
           <Option value="published">Published</Option>
           <Option value="archived">Archived</Option>
@@ -90,7 +90,11 @@ const ContentSettings = ({ config, id }) => {
           },
         ]}
       >
-        <Select mode="multiple" placeholder="Select allowed file types">
+        <Select
+          mode="multiple"
+          placeholder="Select allowed file types"
+          showSearch
+        >
           <Option value="jpg">JPG</Option>
           <Option value="jpeg">JPEG</Option>
           <Option value="png">PNG</Option>

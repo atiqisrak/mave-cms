@@ -82,7 +82,7 @@ const SecuritySettings = ({ config, id }) => {
         label="Default Role"
         rules={[{ required: true, message: "Default Role is required." }]}
       >
-        <Select placeholder="Select default role">
+        <Select placeholder="Select default role" showSearch>
           {roles?.map((role) => (
             <Option key={role.id} value={role.id}>
               {role.title}
@@ -98,7 +98,11 @@ const SecuritySettings = ({ config, id }) => {
           { required: true, message: "Please select at least one permission." },
         ]}
       >
-        <Select mode="multiple" placeholder="Select default permissions">
+        <Select
+          mode="multiple"
+          placeholder="Select default permissions"
+          showSearch
+        >
           {permissions?.map((permission) => (
             <Option key={permission.id} value={permission.id}>
               {permission.category} &gt; {permission.title}
@@ -115,7 +119,7 @@ const SecuritySettings = ({ config, id }) => {
           { required: true, message: "Default User Status is required." },
         ]}
       >
-        <Select>
+        <Select showSearch>
           <Option value="active">Active</Option>
           <Option value="inactive">Inactive</Option>
           <Option value="pending">Pending</Option>
@@ -259,7 +263,7 @@ const SecuritySettings = ({ config, id }) => {
           }),
         ]}
       >
-        <Select mode="multiple" placeholder="Select SSO providers">
+        <Select mode="multiple" placeholder="Select SSO providers" showSearch>
           <Option value="Google">Google</Option>
           <Option value="Facebook">Facebook</Option>
           <Option value="GitHub">GitHub</Option>

@@ -130,6 +130,7 @@ const IconListComponent = ({
             onChange={handleOrientationChange}
             style={{ width: 150 }}
             disabled={preview}
+            showSearch
           >
             <Option value="vertical">Vertical</Option>
             <Option value="horizontal">Horizontal</Option>
@@ -139,6 +140,7 @@ const IconListComponent = ({
             onChange={handleIconSizeChange}
             style={{ width: 150 }}
             disabled={preview}
+            showSearch
           >
             <Option value={16}>16px</Option>
             <Option value={24}>24px</Option>

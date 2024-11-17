@@ -150,7 +150,7 @@ const UserForm = ({ visible, fetchUsers, onCancel, initialValues, roles }) => {
             label="Role"
             rules={[{ required: true, message: "Please select the role!" }]}
           >
-            <Select>
+            <Select showSearch>
               {roles &&
                 roles?.map((role, index) => (
                   <Option key={index} value={role.id}>

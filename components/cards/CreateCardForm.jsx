@@ -255,7 +255,7 @@ const CreateCardForm = ({ onSuccess, onCancel, pages, media }) => {
               { required: true, message: "Please select a page to link" },
             ]}
           >
-            <Select placeholder="Select a Page to link" allowClear>
+            <Select placeholder="Select a Page to link" allowClear showSearch>
               {pages?.map((page) => (
                 <Select.Option key={page.id} value={page.id}>
                   {page.page_name_en}

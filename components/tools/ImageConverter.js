@@ -36,6 +36,7 @@ const ImageConverter = () => {
             style={{ width: 120 }}
             onChange={(value) => handleConvert(record, value)}
             disabled={record.converted || loading}
+            showSearch
           >
             <Select.Option value="webp">WebP</Select.Option>
             <Select.Option value="png">PNG</Select.Option>

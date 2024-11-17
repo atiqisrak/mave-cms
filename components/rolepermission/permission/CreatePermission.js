@@ -177,6 +177,7 @@ export default function CreatePermission({ setModalVisible }) {
             onChange={handleSelectChange}
             value={formData.api_request_type}
             style={{ width: "100%" }}
+            showSearch
           >
             <Option value="GET">GET</Option>
             <Option value="POST">POST</Option>

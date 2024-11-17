@@ -84,6 +84,7 @@ const CardsHeader = ({
             defaultValue={itemsPerPage}
             onChange={onItemsPerPageChange}
             style={{ width: 120 }}
+            showSearch
           >
             <Option value={12}>12</Option>
             <Option value={24}>24</Option>

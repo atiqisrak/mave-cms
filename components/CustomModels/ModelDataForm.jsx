@@ -121,6 +121,7 @@ export default function ModelDataForm({
             onChange={(value) =>
               setFormData({ ...formData, [field.name]: value })
             }
+            showSearch
           >
             {/* Optionally, you can provide predefined options */}
           </Select>

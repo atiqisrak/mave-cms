@@ -105,7 +105,7 @@ const GeneralSetting = () => {
         name="timezone"
         rules={[{ required: true, message: "Please select the timezone!" }]}
       >
-        <Select placeholder="Select timezone">
+        <Select placeholder="Select timezone" showSearch>
           <Option value="UTC">UTC</Option>
           <Option value="GMT">GMT</Option>
         </Select>
@@ -116,7 +116,7 @@ const GeneralSetting = () => {
         name="language"
         rules={[{ required: true, message: "Please select the language!" }]}
       >
-        <Select placeholder="Select language">
+        <Select placeholder="Select language" showSearch>
           <Option value="en">English</Option>
           <Option value="bn">Bangla</Option>
         </Select>

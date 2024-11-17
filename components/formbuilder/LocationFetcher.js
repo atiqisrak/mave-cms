@@ -47,6 +47,7 @@ export default function LocationFetcher({
           value: division.division,
         }))}
         onChange={handleDivisionChange}
+        showSearch
       />
       <Select
         placeholder="Select District"
@@ -57,6 +58,7 @@ export default function LocationFetcher({
         }))}
         disabled={!selectedDivision}
         onChange={handleDistrictChange}
+        showSearch
       />
     </div>
   );

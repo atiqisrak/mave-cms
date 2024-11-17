@@ -236,6 +236,7 @@ const FormBuilder = () => {
                       setFormAttributes({ ...formAttributes, enctype: value })
                     }
                     style={{ width: "100%" }}
+                    showSearch
                   >
                     <Select.Option value="application/x-www-form-urlencoded">
                       application/x-www-form-urlencoded

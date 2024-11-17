@@ -126,6 +126,7 @@ const AccordionSelectionModal = ({
               <Select
                 value={item.contentType}
                 onChange={(value) => handleContentTypeChange(value, index)}
+                showSearch
               >
                 <Option value="text">Text</Option>
                 <Option value="accordion">Nested Accordion</Option>
@@ -238,6 +239,7 @@ const AccordionSelectionModalNested = ({ data, onChange }) => {
             <Select
               value={item.contentType}
               onChange={(value) => handleContentTypeChange(value, index)}
+              showSearch
             >
               <Option value="text">Text</Option>
               <Option value="accordion">Nested Accordion</Option>

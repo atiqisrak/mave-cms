@@ -101,7 +101,7 @@ const PreviewModal = ({ visible, onClose, media, mediaType, handleEdit }) => {
                   <Input />
                 </Form.Item>
                 <Form.Item label="Tags" name="tags">
-                  <Select mode="tags" placeholder="Enter tags">
+                  <Select mode="tags" placeholder="Enter tags" showSearch>
                     {media.tags &&
                       media.tags?.map((tag) => (
                         <Option key={tag} value={tag}>

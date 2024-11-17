@@ -26,7 +26,7 @@ export default function TopNav({ activeTab, setActiveTab }) {
         </span>
       </h4>
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
-        <Select style={{ width: 60 }} placeholder="10">
+        <Select style={{ width: 60 }} placeholder="10" showSearch>
           <Select.Option value="10">10</Select.Option>
           <Select.Option value="20">20</Select.Option>
           <Select.Option value="30">30</Select.Option>

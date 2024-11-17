@@ -19,6 +19,7 @@ const UserRow = ({ user, roles, handleUserEdit, handleDeleteUser }) => {
         <Select
           defaultValue={roles.find((role) => role.id == user.role_id)?.id}
           disabled
+          showSearch
         >
           {roles?.map((role) => (
             <Select.Option value={role.id} key={role.id}>

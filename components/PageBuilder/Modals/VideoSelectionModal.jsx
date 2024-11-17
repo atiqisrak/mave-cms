@@ -128,7 +128,7 @@ const VideoSelectionModal = ({
         </Form.Item>
 
         <Form.Item name="aspectRatio" label="Aspect Ratio">
-          <Select>
+          <Select showSearch>
             <Option value="16/9">16:9</Option>
             <Option value="4/3">4:3</Option>
             <Option value="1/1">1:1</Option>

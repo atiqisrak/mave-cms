@@ -47,7 +47,7 @@ export default function AccessControl() {
           <Checkbox>Email Verification</Checkbox>
         </Form.Item>
         <Form.Item name="passwordPolicy" label="Password Policy">
-          <Select placeholder="Select password policy" allowClear>
+          <Select placeholder="Select password policy" allowClear showSearch>
             <Select.Option value="weak">Weak (4+ characters)</Select.Option>
             <Select.Option value="medium">
               Medium (6+ characters, mixed case, numbers)
@@ -58,7 +58,7 @@ export default function AccessControl() {
           </Select>
         </Form.Item>
         <Form.Item name="sessionTimeout" label="Session Timeout">
-          <Select placeholder="Select session timeout" allowClear>
+          <Select placeholder="Select session timeout" allowClear showSearch>
             <Select.Option value={15}>15 minutes</Select.Option>
             <Select.Option value={30}>30 minutes</Select.Option>
             <Select.Option value={60}>1 hour</Select.Option>
@@ -76,6 +76,7 @@ export default function AccessControl() {
             placeholder="Enter white-listed IPs"
             style={{ width: "100%" }}
             allowClear
+            showSearch
             disabled={!isIpWhitelistingEnabled} // Dynamically disable based on checkbox state
           />
         </Form.Item>

@@ -252,6 +252,7 @@ const UserList = ({
                           handleUserInputChange("role_id", value)
                         }
                         style={{ width: "100%" }}
+                        showSearch
                       >
                         {roles2?.map((role) => (
                           <Select.Option value={role.id} key={role.id}>

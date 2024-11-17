@@ -42,7 +42,7 @@ const EmailSettings = ({ config, id }) => {
         label="Mail Driver"
         rules={[{ required: true, message: "Mail Driver is required." }]}
       >
-        <Select>
+        <Select showSearch>
           <Option value="smtp">SMTP</Option>
           <Option value="sendmail">Sendmail</Option>
           <Option value="mailgun">Mailgun</Option>
@@ -101,7 +101,7 @@ const EmailSettings = ({ config, id }) => {
         label="Mail Encryption"
         rules={[{ required: true, message: "Mail Encryption is required." }]}
       >
-        <Select>
+        <Select showSearch>
           <Option value="tls">TLS</Option>
           <Option value="ssl">SSL</Option>
           <Option value="none">None</Option>

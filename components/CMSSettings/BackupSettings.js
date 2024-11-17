@@ -50,7 +50,7 @@ const BackupSettings = ({ config, id }) => {
         label="Backup Frequency"
         rules={[{ required: true, message: "Backup Frequency is required." }]}
       >
-        <Select>
+        <Select showSearch>
           <Option value="daily">Daily</Option>
           <Option value="weekly">Weekly</Option>
           <Option value="monthly">Monthly</Option>
@@ -72,7 +72,7 @@ const BackupSettings = ({ config, id }) => {
         label="Backup Location"
         rules={[{ required: true, message: "Backup Location is required." }]}
       >
-        <Select>
+        <Select showSearch>
           <Option value="local">Local</Option>
           <Option value="remote">Remote</Option>
         </Select>

@@ -201,7 +201,7 @@ const GeneralSettings = ({ config, id }) => {
         label="Timezone"
         rules={[{ required: true, message: "Timezone is required." }]}
       >
-        <Select>
+        <Select showSearch>
           <Option value="Asia/Dhaka">Asia/Dhaka</Option>
           <Option value="America/New_York">America/New_York</Option>
           <Option value="Europe/London">Europe/London</Option>
@@ -216,7 +216,7 @@ const GeneralSettings = ({ config, id }) => {
         label="Date Format"
         rules={[{ required: true, message: "Date Format is required." }]}
       >
-        <Select>
+        <Select showSearch>
           <Option value="DD-MM-YYYY">DD-MM-YYYY</Option>
           <Option value="MM-DD-YYYY">MM-DD-YYYY</Option>
           <Option value="YYYY-MM-DD">YYYY-MM-DD</Option>
@@ -230,7 +230,7 @@ const GeneralSettings = ({ config, id }) => {
         label="Time Format"
         rules={[{ required: true, message: "Time Format is required." }]}
       >
-        <Select>
+        <Select showSearch>
           <Option value="hh:mm A">12-hour (hh:mm AM/PM)</Option>
           <Option value="HH:mm">24-hour (HH:mm)</Option>
         </Select>
@@ -252,6 +252,7 @@ const GeneralSettings = ({ config, id }) => {
         rules={[{ required: true, message: "Theme selection is required." }]}
       >
         <Select
+          showSearch
           placeholder="Select Theme"
           onChange={(value) => {
             const selectedTheme = theme_options.find(

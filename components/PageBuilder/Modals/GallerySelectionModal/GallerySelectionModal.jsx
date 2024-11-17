@@ -155,7 +155,7 @@ const GallerySelectionModal = ({
             label="Gallery Layout"
             rules={[{ required: true, message: "Please select a layout." }]}
           >
-            <Select onChange={(value) => setLayout(value)}>
+            <Select onChange={(value) => setLayout(value)} showSearch>
               <Option value="grid">Grid</Option>
               <Option value="masonry">Masonry</Option>
               <Option value="carousel">Carousel</Option>

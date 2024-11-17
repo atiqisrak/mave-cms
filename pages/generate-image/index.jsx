@@ -82,6 +82,7 @@ const GenerateImagePage = () => {
               }
             }}
             className="w-full sm:w-1/2 mb-4 sm:mb-0"
+            showSearch
           >
             {modelOptions.map((option) => (
               <Option key={option.value} value={option.value}>
@@ -93,6 +94,7 @@ const GenerateImagePage = () => {
             value={size}
             onChange={(value) => setSize(value)}
             className="w-full sm:w-1/2"
+            showSearch
           >
             {sizeOptions[model].map((size) => (
               <Option key={size} value={size}>
@@ -107,6 +109,7 @@ const GenerateImagePage = () => {
               value={quality}
               onChange={(value) => setQuality(value)}
               className="w-full sm:w-1/2 mb-4 sm:mb-0"
+              showSearch
             >
               {qualityOptions.map((quality) => (
                 <Option key={quality} value={quality}>
@@ -118,6 +121,7 @@ const GenerateImagePage = () => {
               value={style}
               onChange={(value) => setStyle(value)}
               className="w-full sm:w-1/2"
+              showSearch
             >
               {styleOptions.map((style) => (
                 <Option key={style} value={style}>

@@ -85,7 +85,7 @@ const ContentManagement = () => {
           { required: true, message: "Please select a default setting!" },
         ]}
       >
-        <Select placeholder="Select content status" allowClear>
+        <Select placeholder="Select content status" allowClear showSearch>
           <Option value="draft">Draft</Option>
           <Option value="publish">Publish</Option>
           <Option value="pendingApproval">Pending Approval</Option>
@@ -109,6 +109,7 @@ const ContentManagement = () => {
           mode="multiple"
           placeholder="Select allowed file types"
           allowClear
+          showSearch
         >
           <Option value="png">png</Option>
           <Option value="jpg">jpg</Option>

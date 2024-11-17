@@ -13,8 +13,9 @@ const CardItem = ({
   onDeleteCard,
   onPreviewCard,
 }) => {
+  console.log("Cards: ", card);
   // Fetch the associated media file
-  const cardMedia = media.find((m) => m.id === card.media_ids);
+  // const cardMedia = media.find((m) => m.id === card.media_ids);
 
   const actions = [
     <Button
@@ -42,10 +43,10 @@ const CardItem = ({
       <Card
         hoverable
         cover={
-          cardMedia ? (
+          card ? (
             <Image
               alt={card.title_en}
-              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${cardMedia.file_path}`}
+              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${card?.media_files?.file_path}`}
               width={500}
               height={300}
               objectFit="cover"
@@ -65,11 +66,12 @@ const CardItem = ({
         className="flex flex-col"
       >
         <Card.Meta
+          className="flex-grow pt-10"
           title={card.title_en || "Title Unavailable"}
           description={
             <div
               dangerouslySetInnerHTML={{
-                __html: card.description_en.slice(0, 60) + "...",
+                __html: card.description_en?.slice(0, 60) + "...",
               }}
             />
           }
@@ -81,10 +83,10 @@ const CardItem = ({
       <List.Item actions={actions}>
         <List.Item.Meta
           avatar={
-            cardMedia ? (
+            card ? (
               <Image
                 alt={card.title_en}
-                src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${cardMedia.file_path}`}
+                src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${card?.media_files?.file_path}`}
                 width={100}
                 height={100}
                 style={{ objectFit: "cover" }}

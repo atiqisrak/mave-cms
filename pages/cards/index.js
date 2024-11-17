@@ -83,7 +83,7 @@ const CardsPage = () => {
 
     if (searchTerm) {
       tempCards = tempCards.filter((card) =>
-        card.title_en.toLowerCase().includes(searchTerm.toLowerCase())
+        card?.title_en?.toLowerCase()?.includes(searchTerm?.toLowerCase())
       );
     }
 

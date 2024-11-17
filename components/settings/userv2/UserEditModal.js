@@ -96,7 +96,7 @@ const UserEditModal = ({ visible, user, onCancel, fetchUsers, roles }) => {
           label="Role"
           rules={[{ required: true, message: "Please select the role" }]}
         >
-          <Select value={userRole?.id}>
+          <Select value={userRole?.id} showSearch>
             {roles?.map((role) => (
               <Option key={role.id} value={role.id}>
                 {role.title}

@@ -41,6 +41,7 @@ const CardsControls = ({
           value={selectedPageFilter}
           onChange={(value) => setSelectedPageFilter(value)}
           className="w-48 md:w-72"
+          showSearch
         >
           {pages?.map((page) => (
             <Select.Option key={page.slug} value={page.page_name}>
@@ -55,6 +56,7 @@ const CardsControls = ({
           value={sortField}
           onChange={(value) => setSortField(value)}
           className="w-36"
+          showSearch
         >
           <Select.Option value="name">Name</Select.Option>
           <Select.Option value="date">Date</Select.Option>
@@ -66,6 +68,7 @@ const CardsControls = ({
           value={sortType}
           onChange={(value) => setSortType(value)}
           className="w-36"
+          showSearch
         >
           <Select.Option value="asc">Ascending</Select.Option>
           <Select.Option value="desc">Descending</Select.Option>

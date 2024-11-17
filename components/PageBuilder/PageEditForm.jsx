@@ -168,6 +168,7 @@ const PageEditForm = ({ page, onSubmit, onCancel }) => {
           placeholder="Enter Meta Keywords"
           allowClear
           size="large"
+          showSearch
         >
           {tempPageMetaKeywords?.map((keyword) => (
             <Option key={keyword} value={keyword}>

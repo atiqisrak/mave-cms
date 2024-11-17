@@ -34,7 +34,7 @@ const PasswordManagementSettings = () => {
           { required: true, message: "Please select a password policy!" },
         ]}
       >
-        <Select>
+        <Select showSearch>
           <Option value="strong">
             Strong (8+ characters, mixed case, numbers, symbols)
           </Option>

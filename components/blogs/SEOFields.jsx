@@ -27,6 +27,7 @@ const SEOFields = ({ seo, setSeo }) => {
         className="text-lg font-medium"
         value={seo.seoKeywords}
         onChange={(value) => setSeo({ ...seo, seoKeywords: value })}
+        showSearch
       >
         {/* Optionally, predefined keywords can be added here */}
       </Select>

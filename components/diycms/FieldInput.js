@@ -82,6 +82,7 @@ export default function FieldInput({
         <Select
           value={fieldData.type}
           onChange={(value) => handleChange("type", value)}
+          showSearch
         >
           <Option value="string">String</Option>
           <Option value="text">Text</Option>
@@ -105,6 +106,7 @@ export default function FieldInput({
             handleChange("relationshipType", "None");
           }}
           allowClear
+          showSearch
         >
           {availableModels?.map((model, index) => (
             <Option key={index} value={model}>
@@ -119,6 +121,7 @@ export default function FieldInput({
             placeholder="Select relationship type"
             value={fieldData.relationshipType || "None"}
             onChange={(value) => handleChange("relationshipType", value)}
+            showSearch
           >
             {relationshipOptions?.map((option) => (
               <Option key={option.value} value={option.value}>
