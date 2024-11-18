@@ -56,11 +56,13 @@ const MediaSelectionModal = ({
     try {
       const response = await instance.get("/media");
       setMediaList(response.data);
+      console.log("Media List", response.data);
       const filteredAndSorted = filterAndSortMedia(
         response.data,
         searchQuery,
         sortOrder
       );
+      console.log("Filtered and Sorted", filteredAndSorted);
       setSortedMedia(filteredAndSorted);
     } catch (error) {
       message.error("Failed to fetch media items.");
@@ -70,7 +72,9 @@ const MediaSelectionModal = ({
 
   const filterAndSortMedia = (list, query, order) => {
     const filtered = list.filter((media) =>
-      media.title.toLowerCase().includes(query.toLowerCase())
+      media.title
+        ? media.title.toLowerCase().includes(query.toLowerCase())
+        : media.file_name.toLowerCase().includes(query.toLowerCase())
     );
     const sorted = filtered.sort((a, b) => {
       const dateA = new Date(a.created_at);
@@ -116,15 +120,20 @@ const MediaSelectionModal = ({
     onClose();
   };
 
+  // const isItemSelected = (item) => {
+  //   return selectedMedia.some((media) => media.id === item.id);
+  // };
   const isItemSelected = (item) => {
-    return selectedMedia.some((media) => media.id === item.id);
+    return selectedMedia.some(
+      (media) => media?.id === item.id || media?.file_path === item.file_path
+    );
   };
 
   // Handle page change
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
-
+  console.log("Sorted Media", sortedMedia);
   // Calculate items for the current page
   const paginatedMedia = sortedMedia.slice(
     (currentPage - 1) * pageSize,
@@ -132,6 +141,11 @@ const MediaSelectionModal = ({
   );
 
   const handleUploadSuccess = (uploadedMedia) => {
+    // Check if uploadedMedia is valid
+    if (!uploadedMedia) {
+      console.error("Upload failed or no media returned.");
+      return;
+    }
     // Refresh media list after upload
     fetchMedia();
 
@@ -140,15 +154,23 @@ const MediaSelectionModal = ({
       const singleMedia = Array.isArray(uploadedMedia)
         ? uploadedMedia[0]
         : uploadedMedia;
-      setSelectedMedia([singleMedia]);
-      onSelectMedia([singleMedia]);
-      onClose();
+      // Ensure singleMedia is defined
+      if (singleMedia) {
+        setSelectedMedia([singleMedia]);
+        onSelectMedia([singleMedia]);
+        onClose();
+      } else {
+        message.error("No media selected after upload.");
+      }
     } else {
       const newSelected = Array.isArray(uploadedMedia)
         ? [...selectedMedia, ...uploadedMedia]
         : [...selectedMedia, uploadedMedia];
-      setSelectedMedia(newSelected);
-      onSelectMedia(newSelected);
+
+      // Filter out undefined elements
+      const validSelected = newSelected.filter((media) => media);
+      setSelectedMedia(validSelected);
+      onSelectMedia(validSelected);
     }
 
     message.success("Media uploaded and selected successfully.");
@@ -195,6 +217,7 @@ const MediaSelectionModal = ({
                   >
                     Refresh
                   </Button>
+                  {console.log("Paginated Media", paginatedMedia)}
                 </div>
               </div>
 
@@ -211,6 +234,7 @@ const MediaSelectionModal = ({
                 }}
                 dataSource={paginatedMedia}
                 loading={loading}
+                locale={{ emptyText: "No media items found." }}
                 renderItem={(item) => (
                   <List.Item>
                     <div
@@ -221,6 +245,7 @@ const MediaSelectionModal = ({
                       }`}
                       onClick={() => handleSelection(item)}
                     >
+                      {console.log("Paginated Media", paginatedMedia)}
                       {item.file_type.startsWith("image/") ? (
                         <Image
                           src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${item.file_path}`}

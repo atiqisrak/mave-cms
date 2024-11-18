@@ -116,12 +116,23 @@ const AddNavbarForm = ({ menus, media, onCancel, fetchNavbars }) => {
           Create
         </Button>
       </div>
-      <MediaSelectionModal
+      {/* <MediaSelectionModal
         isVisible={mediaModalVisible}
         onClose={() => setMediaModalVisible(false)}
         selectionMode="single"
         onSelectMedia={(selectedMedia) => {
           setNewLogoId(selectedMedia.id);
+          setMediaModalVisible(false);
+        }}
+      /> */}
+      <MediaSelectionModal
+        isVisible={mediaModalVisible}
+        onClose={() => setMediaModalVisible(false)}
+        selectionMode="single"
+        onSelectMedia={(selectedMedia) => {
+          if (selectedMedia.length > 0) {
+            setNewLogoId(selectedMedia[0].id);
+          }
           setMediaModalVisible(false);
         }}
       />

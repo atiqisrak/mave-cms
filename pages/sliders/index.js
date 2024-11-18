@@ -106,7 +106,9 @@ const Sliders = () => {
   // Update imageSliders and cardSliders based on displayedSliders
   useEffect(() => {
     const images = displayedSliders.filter(
-      (slider) => slider.type && slider.type.toLowerCase() === "image"
+      // (slider) => slider.type && slider.type.toLowerCase() === "image"
+      // slider type image or no slider type
+      (slider) => !slider.type || slider.type.toLowerCase() === "image"
     );
     const cards = displayedSliders.filter(
       (slider) => slider.type && slider.type.toLowerCase() === "card"

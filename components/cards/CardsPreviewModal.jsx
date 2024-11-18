@@ -31,7 +31,7 @@ const CardsPreviewModal = ({
   pages,
   media,
 }) => {
-  console.log("selectedCard", selectedCard);
+  // console.log("selectedCard", selectedCard);
   const [isMediaModalVisible, setIsMediaModalVisible] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [linkType, setLinkType] = useState("independent");
@@ -131,7 +131,9 @@ const CardsPreviewModal = ({
           infoType: "Description (English)",
           details: (
             <div
-              dangerouslySetInnerHTML={{ __html: selectedCard.description_en }}
+              dangerouslySetInnerHTML={{
+                __html: selectedCard.description_en?.slice(0, 300) + "...",
+              }}
             />
           ),
         },
@@ -140,7 +142,9 @@ const CardsPreviewModal = ({
           infoType: "Description (Alternate)",
           details: (
             <div
-              dangerouslySetInnerHTML={{ __html: selectedCard.description_bn }}
+              dangerouslySetInnerHTML={{
+                __html: selectedCard.description_bn?.slice(0, 300) + "...",
+              }}
             />
           ),
         },

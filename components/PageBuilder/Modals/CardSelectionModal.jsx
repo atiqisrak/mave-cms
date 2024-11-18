@@ -61,7 +61,27 @@ const CardSelectionModal = ({ isVisible, onClose, onSelectCard }) => {
     // Search filter
     if (searchQuery) {
       data = data.filter((card) =>
-        card.title_en.toLowerCase().includes(searchQuery.toLowerCase())
+        // card?.title_en
+        //   ? card?.title_en?.toLowerCase().includes(searchQuery.toLowerCase())
+        //   : card?.page_name?.toLowerCase().includes(searchQuery.toLowerCase())
+        // if both title_en and page_name are not available, show no results
+        card?.title_en ||
+        card?.title_bn ||
+        card?.page_name ||
+        card?.description_en ||
+        card?.description_bn
+          ? card?.title_en?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            card?.title_bn?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            card?.page_name
+              ?.toLowerCase()
+              .includes(searchQuery.toLowerCase()) ||
+            card?.description_en
+              ?.toLowerCase()
+              .includes(searchQuery.toLowerCase()) ||
+            card?.description_bn
+              ?.toLowerCase()
+              .includes(searchQuery.toLowerCase())
+          : false
       );
     }
 
@@ -143,7 +163,6 @@ const CardSelectionModal = ({ isVisible, onClose, onSelectCard }) => {
       onCancel={onClose}
       footer={null}
       width={900}
-      bodyStyle={{ padding: "20px" }}
     >
       {/* Sorting and Search Controls */}
       <div className="flex justify-between items-center mb-4">
@@ -178,6 +197,7 @@ const CardSelectionModal = ({ isVisible, onClose, onSelectCard }) => {
       <List
         loading={loading}
         dataSource={paginatedData}
+        locale={{ emptyText: "No cards found" }}
         renderItem={(item) => (
           <List.Item>
             <div

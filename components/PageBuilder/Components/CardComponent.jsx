@@ -250,7 +250,8 @@ const CardComponent = ({
                   {selectedCardData.description_en ? (
                     <div
                       dangerouslySetInnerHTML={{
-                        __html: selectedCardData.description_en,
+                        __html:
+                          selectedCardData.description_en.slice(0, 200) + "...",
                       }}
                     />
                   ) : (
