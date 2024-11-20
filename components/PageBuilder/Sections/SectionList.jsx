@@ -23,6 +23,7 @@ const SectionList = ({ sections = [], setSections }) => {
   const addSection = () => {
     const newSection = {
       _id: uuidv4(),
+      _category: "root",
       sectionTitle: "New Section",
       data: [],
     };

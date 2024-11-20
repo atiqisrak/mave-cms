@@ -6,6 +6,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import AuthorizedSideMenuData from "../../src/data/authorisedsidemenus.json";
 import UnAuthorizedSideMenuData from "../../src/data/unauthorisedsidemenu.json";
+import NiloyLabs from "../../src/data/niloy.json";
 import Godfather from "../../src/data/godfather.json";
 import Image from "next/image";
 import instance from "../../axios";
@@ -85,20 +86,54 @@ const SideMenuItems = ({
   }, [token, refreshMenu]); // Add refreshMenu as a dependency
 
   // Compute final menu data with custom models appended to Creator Studio
+  // const finalMenuData = useMemo(() => {
+  //   // Deep clone to prevent state mutation
+  //   const menuData = JSON.parse(JSON.stringify(allMenuData));
+
+  //   if (token && user && customModels.length > 0) {
+  //     // Find the Creator Studio menu
+  //     const creatorStudioMenu = menuData.find(
+  //       (menu) => menu.title === "Creator Studio"
+  //     );
+
+  //     if (creatorStudioMenu) {
+  //       // Map custom models to submenu items
+  //       const customModelItems = customModels.map((model) => ({
+  //         id: `custom-${model.id}`, // Ensure unique id
+  //         icon: "/icons/mave/custom-models.svg",
+  //         link: `/custom-models/${model.id}`,
+  //         title: model.model_name
+  //           .split(" ")
+  //           .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+  //           .join(" "),
+  //       }));
+
+  //       // Append custom models to Creator Studio's submenu
+  //       creatorStudioMenu.submenu = [
+  //         ...creatorStudioMenu.submenu,
+  //         ...customModelItems,
+  //       ];
+  //     }
+  //   }
+
+  //   return menuData;
+  // }, [allMenuData, customModels, token, user]);
+
   const finalMenuData = useMemo(() => {
-    // Deep clone to prevent state mutation
     const menuData = JSON.parse(JSON.stringify(allMenuData));
 
+    // Include Niloy Labs data
+    // const niloyLabsData = JSON.parse(JSON.stringify(NiloyLabs));
+    // menuData.push(...niloyLabsData);
+
     if (token && user && customModels.length > 0) {
-      // Find the Creator Studio menu
       const creatorStudioMenu = menuData.find(
         (menu) => menu.title === "Creator Studio"
       );
 
       if (creatorStudioMenu) {
-        // Map custom models to submenu items
         const customModelItems = customModels.map((model) => ({
-          id: `custom-${model.id}`, // Ensure unique id
+          id: `custom-${model.id}`,
           icon: "/icons/mave/custom-models.svg",
           link: `/custom-models/${model.id}`,
           title: model.model_name
@@ -107,7 +142,6 @@ const SideMenuItems = ({
             .join(" "),
         }));
 
-        // Append custom models to Creator Studio's submenu
         creatorStudioMenu.submenu = [
           ...creatorStudioMenu.submenu,
           ...customModelItems,
@@ -116,7 +150,7 @@ const SideMenuItems = ({
     }
 
     return menuData;
-  }, [allMenuData, customModels, token, user]);
+  }, [allMenuData, NiloyLabs, customModels, token, user]);
 
   // Manage selected menu item based on current path
   useEffect(() => {
@@ -149,7 +183,6 @@ const SideMenuItems = ({
     }
   }, [router.pathname, finalMenuData]);
 
-  // Handle menu click
   const handleMenuClick = ({ key }) => {
     setSelectedMenuItem(key);
     const selectedItem =

@@ -1,0 +1,16 @@
+[
+    {
+        "id": 201,
+        "menu": "Niloy Labs",
+        "title": "Niloy Labs",
+        "icon": "/icons/mave/mave_core.png",
+        "submenu": [
+            {
+                "id": 202,
+                "icon": "/icons/mave_icons/event.svg",
+                "link": "/events",
+                "title": "Events"
+            }
+        ]
+    }
+]

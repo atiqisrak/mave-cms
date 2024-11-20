@@ -158,12 +158,6 @@ export default function NavItems({
           </div>
         </>
       ) : (
-        // <div
-        //   className="ml-auto text-base font-semibold text-gray-700 cursor-pointer"
-        //   onClick={() => router.push("/login")}
-        // >
-        //   Login
-        // </div>
         <div className="flex justify-center">
           <Button
             icon={<LoginOutlined />}
