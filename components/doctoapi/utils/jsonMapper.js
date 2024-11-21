@@ -69,7 +69,6 @@ export const mapYamlToJson = (yamlData) => {
   });
 
   const jsonPayload = {
-    // title: yamlData.title,
     page_name_en: yamlData.title,
     page_name_bn: yamlData.title,
     type: "Page",

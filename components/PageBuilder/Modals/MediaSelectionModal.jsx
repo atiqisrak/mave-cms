@@ -56,13 +56,11 @@ const MediaSelectionModal = ({
     try {
       const response = await instance.get("/media");
       setMediaList(response.data);
-      console.log("Media List", response.data);
       const filteredAndSorted = filterAndSortMedia(
         response.data,
         searchQuery,
         sortOrder
       );
-      console.log("Filtered and Sorted", filteredAndSorted);
       setSortedMedia(filteredAndSorted);
     } catch (error) {
       message.error("Failed to fetch media items.");
@@ -133,7 +131,6 @@ const MediaSelectionModal = ({
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
-  console.log("Sorted Media", sortedMedia);
   // Calculate items for the current page
   const paginatedMedia = sortedMedia.slice(
     (currentPage - 1) * pageSize,
@@ -217,7 +214,6 @@ const MediaSelectionModal = ({
                   >
                     Refresh
                   </Button>
-                  {console.log("Paginated Media", paginatedMedia)}
                 </div>
               </div>
 
@@ -245,7 +241,6 @@ const MediaSelectionModal = ({
                       }`}
                       onClick={() => handleSelection(item)}
                     >
-                      {console.log("Paginated Media", paginatedMedia)}
                       {item.file_type.startsWith("image/") ? (
                         <Image
                           src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${item.file_path}`}
