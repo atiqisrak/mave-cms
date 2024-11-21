@@ -119,7 +119,7 @@ const PageEditForm = ({ page, onSubmit, onCancel }) => {
           placeholder="e.g., about-us"
           allowClear
           size="large"
-          disabled // Assuming slug is not editable; remove if editable
+          // disabled
         />
         <span className="text-xs text-gray-500">
           *Use only lowercase letters, numbers, and hyphens.

@@ -35,7 +35,7 @@ const SectionHeader = ({
       });
       return;
     }
-    updateSection({ ...section, sectionTitle: title });
+    updateSection({ ...section, sectionTitle: title, _category: "root" });
     setIsEditing(false);
   };
 

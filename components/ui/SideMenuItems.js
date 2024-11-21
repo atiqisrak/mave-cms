@@ -123,8 +123,9 @@ const SideMenuItems = ({
     const menuData = JSON.parse(JSON.stringify(allMenuData));
 
     // Include Niloy Labs data
-    // const niloyLabsData = JSON.parse(JSON.stringify(NiloyLabs));
-    // menuData.push(...niloyLabsData);
+    const niloyLabsData = JSON.parse(JSON.stringify(NiloyLabs));
+
+    user?.email === "atiqisrak@niloy.com" && menuData.push(...niloyLabsData);
 
     if (token && user && customModels.length > 0) {
       const creatorStudioMenu = menuData.find(
