@@ -26,7 +26,7 @@
     "axios": "^1.6.7",
     "cloudinary": "^2.5.1",
     "croppie": "^2.6.5",
-    "dayjs": "^1.11.10",
+    "dayjs": "^1.11.13",
     "dompurify": "^3.2.0",
     "dotenv": "^16.3.1",
     "event-source-polyfill": "^1.0.31",
@@ -82,6 +82,7 @@
   },
   "devDependencies": {
     "@tailwindcss/line-clamp": "^0.4.4",
+    "antd-dayjs-webpack-plugin": "^1.0.6",
     "autoprefixer": "^10.4.20",
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",

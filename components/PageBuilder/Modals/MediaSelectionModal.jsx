@@ -27,6 +27,7 @@ const MediaSelectionModal = ({
   onClose,
   onSelectMedia,
   selectionMode = "single",
+  maxSelection = 1,
   initialSelectedMedia = [],
 }) => {
   const [mediaList, setMediaList] = useState([]);
@@ -101,10 +102,12 @@ const MediaSelectionModal = ({
     if (selectionMode === "single") {
       setSelectedMedia([item]);
     } else {
-      if (selectedMedia.some((media) => media.id === item.id)) {
+      if (isItemSelected(item)) {
         setSelectedMedia(selectedMedia.filter((media) => media.id !== item.id));
-      } else {
+      } else if (selectedMedia.length < maxSelection) {
         setSelectedMedia([...selectedMedia, item]);
+      } else {
+        message.warning(`You can select up to ${maxSelection} images.`);
       }
     }
   };
@@ -114,7 +117,10 @@ const MediaSelectionModal = ({
       message.warning("Please select at least one media item.");
       return;
     }
-    onSelectMedia(selectedMedia); // Always pass an array
+    // onSelectMedia(selectedMedia);
+    const selected =
+      selectionMode === "single" ? selectedMedia[0] : selectedMedia;
+    onSelectMedia(selected);
     onClose();
   };
 

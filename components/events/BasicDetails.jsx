@@ -1,5 +1,3 @@
-// components/events/BasicDetails.jsx
-
 import {
   Form,
   Input,
@@ -8,9 +6,9 @@ import {
   Radio,
   Select,
   Button,
+  message,
 } from "antd";
-import { useState, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { useState } from "react";
 import MediaSelectionModal from "../PageBuilder/Modals/MediaSelectionModal";
 import Image from "next/image";
 
@@ -21,45 +19,65 @@ const BasicDetails = ({ form }) => {
   const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState([]);
 
-  const handleMediaSelect = (media) => {
+  const handleMediaSelect = (mediaArray) => {
+    if (mediaArray.length > 3) {
+      message.warning("You can select up to 3 images.");
+      return;
+    }
     form.setFieldsValue({
-      coverImage: media.id,
+      images: mediaArray.map((media) => media.id),
+      coverImage: mediaArray[0].id, // Default cover image
     });
-    setSelectedMedia([media]);
+    setSelectedMedia(mediaArray);
     setIsMediaModalOpen(false);
   };
-
-  useEffect(() => {
-    // Reset cover image preview when form resets
-    return () => {
-      form.setFieldsValue({ coverImage: null });
-      setSelectedMedia([]);
-    };
-  }, [form]);
 
   return (
     <>
       <Form.Item
-        name="coverImage"
-        label="Cover Image"
-        rules={[{ required: true, message: "Please select a cover image" }]}
+        preserve={true}
+        name="images"
+        label="Event Images"
+        rules={[
+          { required: true, message: "Please select event images (up to 3)" },
+        ]}
       >
-        <Button onClick={() => setIsMediaModalOpen(true)}>
-          Select Cover Image
+        <Button
+          className="mavebutton"
+          onClick={() => setIsMediaModalOpen(true)}
+        >
+          Select Images
         </Button>
       </Form.Item>
-      {console.log("Selected Media", selectedMedia && selectedMedia[0]?.[0])}
       {selectedMedia.length > 0 && (
-        <Image
-          src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedMedia[0]?.[0]?.file_path}`}
-          alt="Selected Cover Image"
-          width={300}
-          height={150}
-          className="mt-4"
-        />
+        <div className="flex space-x-4 mt-4">
+          {selectedMedia.map((media) => (
+            <div key={media.id} className="relative">
+              <Image
+                src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}
+                alt={`Selected Image`}
+                width={300}
+                height={200}
+                objectFit="cover"
+                className={`border ${
+                  form.getFieldValue("coverImage") === media.id
+                    ? "border-yellow-500"
+                    : "border-gray-300"
+                }`}
+                onClick={() => form.setFieldsValue({ coverImage: media.id })}
+              />
+              {form.getFieldValue("coverImage") === media.id && (
+                <span className="absolute top-0 left-0 bg-yellow-500 text-white px-1 text-xs">
+                  Cover
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
       )}
 
       <Form.Item
+        preserve={true}
         name="title"
         label="Event Title"
         rules={[{ required: true, message: "Please enter the event title" }]}
@@ -68,6 +86,7 @@ const BasicDetails = ({ form }) => {
       </Form.Item>
 
       <Form.Item
+        preserve={true}
         name="shortDescription"
         label="Short Description"
         rules={[
@@ -82,22 +101,30 @@ const BasicDetails = ({ form }) => {
       </Form.Item>
 
       <Form.Item
+        preserve={true}
         name="date"
         label="Event Date"
         rules={[{ required: true, message: "Please select the event date" }]}
       >
-        <DatePicker style={{ width: "100%" }} />
+        <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
       </Form.Item>
 
       <Form.Item
+        preserve={true}
         name="time"
         label="Event Time"
         rules={[{ required: true, message: "Please select the event time" }]}
       >
-        <TimePicker style={{ width: "100%" }} />
+        <TimePicker
+          style={{ width: "100%" }}
+          format="h:mm A"
+          use12Hours
+          minuteStep={5}
+        />
       </Form.Item>
 
       <Form.Item
+        preserve={true}
         name="locationType"
         label="Location Type"
         rules={[{ required: true, message: "Please select the location type" }]}
@@ -110,6 +137,7 @@ const BasicDetails = ({ form }) => {
       </Form.Item>
 
       <Form.Item
+        preserve={true}
         name="ticketing"
         label="Ticketing Options"
         rules={[
@@ -130,7 +158,8 @@ const BasicDetails = ({ form }) => {
         isVisible={isMediaModalOpen}
         onSelectMedia={handleMediaSelect}
         onClose={() => setIsMediaModalOpen(false)}
-        selectionMode="single"
+        selectionMode="multiple"
+        maxSelection={3}
         initialSelectedMedia={selectedMedia}
       />
     </>

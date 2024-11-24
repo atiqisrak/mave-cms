@@ -1,28 +1,30 @@
-// components/events/OrganizerInfo.jsx
-
-import { Form, Select, Input, Button } from "antd";
+import { Form, Select, Input, Button, message } from "antd";
 import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import MediaSelectionModal from "../PageBuilder/Modals/MediaSelectionModal";
+import Image from "next/image";
 
 const { Option } = Select;
 
 const OrganizerInfo = ({ form }) => {
   const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
+  const [selectedMedia, setSelectedMedia] = useState([]);
 
   const handleMediaSelect = (media) => {
     form.setFieldsValue({
       newOrganizer: {
+        ...form.getFieldValue("newOrganizer"),
         logo: media.id,
       },
     });
+    setSelectedMedia([media]);
     setIsMediaModalOpen(false);
+    message.success("Organizer logo selected successfully!");
   };
 
   return (
     <>
       <Form.Item
+        preserve={true}
         name="organizerSelection"
         label="Select Organizer"
         rules={[{ required: true, message: "Please select an organizer" }]}
@@ -34,6 +36,7 @@ const OrganizerInfo = ({ form }) => {
       </Form.Item>
 
       <Form.Item
+        preserve={true}
         shouldUpdate={(prev, current) =>
           prev.organizerSelection !== current.organizerSelection
         }
@@ -44,6 +47,7 @@ const OrganizerInfo = ({ form }) => {
           if (selection === "existing") {
             return (
               <Form.Item
+                preserve={true}
                 name="existingOrganizerId"
                 label="Existing Organizer"
                 rules={[
@@ -64,6 +68,7 @@ const OrganizerInfo = ({ form }) => {
             return (
               <>
                 <Form.Item
+                  preserve={true}
                   name={["newOrganizer", "name"]}
                   label="Organizer Name"
                   rules={[
@@ -73,17 +78,34 @@ const OrganizerInfo = ({ form }) => {
                   <Input placeholder="Enter organizer name" />
                 </Form.Item>
                 <Form.Item
+                  preserve={true}
                   name={["newOrganizer", "logo"]}
                   label="Organizer Logo"
                   rules={[
-                    { required: true, message: "Please select organizer logo" },
+                    {
+                      required: true,
+                      message: "Please select organizer logo",
+                    },
                   ]}
                 >
-                  <Button onClick={() => setIsMediaModalOpen(true)}>
+                  <Button
+                    className="mavebutton"
+                    onClick={() => setIsMediaModalOpen(true)}
+                  >
                     Select Logo
                   </Button>
                 </Form.Item>
+                {selectedMedia.length > 0 && (
+                  <Image
+                    src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedMedia[0]?.file_path}`}
+                    alt="Organizer Logo"
+                    width={100}
+                    height={100}
+                    className="mt-4"
+                  />
+                )}
                 <Form.Item
+                  preserve={true}
                   name={["newOrganizer", "country"]}
                   label="Country"
                   rules={[{ required: true, message: "Please select country" }]}
@@ -96,6 +118,7 @@ const OrganizerInfo = ({ form }) => {
                   </Select>
                 </Form.Item>
                 <Form.Item
+                  preserve={true}
                   name={["newOrganizer", "shortDescription"]}
                   label="Short Description"
                   rules={[
