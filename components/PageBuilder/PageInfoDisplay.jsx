@@ -1,36 +1,56 @@
 // components/PageBuilder/PageInfoDisplay.jsx
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
 const PageInfoDisplay = ({ page }) => {
+  const [type, setType] = useState("");
+
+  useEffect(() => {
+    if (page?.type === "Event") {
+      setType("Event");
+    } else if (page?.type === "Blog") {
+      setType("Blog");
+    } else if (page?.type === "Footer") {
+      setType("Footer");
+    } else if (page?.type === "Page") {
+      setType("Page");
+    } else {
+      setType("Unknown");
+    }
+  }, [page]);
+
   return (
     <div className="grid grid-cols-2 transition-all duration-300">
       <div className="flex flex-col transition-all duration-300">
         {/* Page Name EN */}
         <h1>
-          <span className="font-semibold text-theme">Page Name (EN): </span>
+          <span className="font-semibold text-theme">{type} Title:</span>
           {page.page_name_en}
         </h1>
 
         {/* Page Name Alt */}
         <h1>
-          <span className="font-semibold text-theme">Page Alt Title: </span>
+          <span className="font-semibold text-theme">{type} Title (Alt):</span>
           {page.page_name_bn}
         </h1>
 
         {/* Page Slug */}
-        <Link href={`/page-builder/${page.id}`}>
-          <div className="cursor-pointer flex gap-1 items-center">
-            <span className="font-semibold text-theme">Link:</span>
-            <span className="text-blue-500 hover:underline">/{page.slug}</span>
-          </div>
-        </Link>
+        {type === "Page" && (
+          <Link href={`/page-builder/${page.id}`}>
+            <div className="cursor-pointer flex gap-1 items-center">
+              <span className="font-semibold text-theme">Link:</span>
+              <span className="text-blue-500 hover:underline">
+                /{page.slug}
+              </span>
+            </div>
+          </Link>
+        )}
 
         {/* Page Type */}
         <h1>
-          <span className="font-semibold text-theme">Page Type: </span>
+          <span className="font-semibold text-theme">Type: </span>
           <span className="text-gray-600 font-semibold">
             {page.additional && page.additional.length > 0
               ? page.additional?.map((type) => type.pageType).join(", ")

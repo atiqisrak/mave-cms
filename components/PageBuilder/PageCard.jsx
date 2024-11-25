@@ -7,7 +7,7 @@ import {
   PlusCircleOutlined,
 } from "@ant-design/icons";
 import { Button, Card, message, Popconfirm } from "antd";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import PageInfoDisplay from "./PageInfoDisplay";
 import PageEditForm from "./PageEditForm";
@@ -20,6 +20,21 @@ const PageCard = ({
   handleEditPageInfo,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [type, setType] = useState("Page");
+
+  useEffect(() => {
+    if (page?.type === "Event") {
+      setType("Event");
+    } else if (page?.type === "Blog") {
+      setType("Blog");
+    } else if (page?.type === "Footer") {
+      setType("Footer");
+    } else if (page?.type === "Page") {
+      setType("Page");
+    } else {
+      setType("Unknown");
+    }
+  }, [page]);
 
   const router = useRouter();
 
@@ -38,7 +53,7 @@ const PageCard = ({
 
   return (
     <Card
-      title={`Page ID-${page.id} : ${page.page_name_en}`}
+      title={`${type} ID-${page.id} : ${page.page_name_en}`}
       extra={
         <div className="flex space-x-2 transition-all duration-300">
           <Button
@@ -46,7 +61,7 @@ const PageCard = ({
             onClick={() => router.push(`/page-builder/${page.id}`)}
             className="mavebutton"
           >
-            Edit Page
+            Edit {type}
           </Button>
           <Button
             type="default"
@@ -87,7 +102,7 @@ const PageCard = ({
                 onClick={startEditing}
                 className="mavebutton"
               >
-                Edit Page Info
+                Edit {type} Info
               </Button>
               <Popconfirm
                 title="Are you sure you want to delete this page?"
@@ -96,7 +111,7 @@ const PageCard = ({
                 cancelText="No"
               >
                 <Button icon={<DeleteFilled />} className="mavecancelbutton">
-                  Delete Page
+                  Delete {type}
                 </Button>
               </Popconfirm>
             </div>
