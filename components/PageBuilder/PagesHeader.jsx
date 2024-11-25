@@ -7,15 +7,7 @@ import {
   PlusCircleOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import {
-  Button,
-  Input,
-  Breadcrumb,
-  Switch,
-  Select,
-  Tooltip,
-  message,
-} from "antd";
+import { Button, Input, Switch, Select, Tooltip, message } from "antd";
 import React from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -30,6 +22,7 @@ const PagesHeader = ({
   setSortType,
   onShowChange,
   handleFilter,
+  title = "Pages",
 }) => {
   const router = useRouter();
 
@@ -46,11 +39,11 @@ const PagesHeader = ({
               src="/icons/mave/forms.svg"
               width={24}
               height={24}
-              alt="Pages"
+              alt={title}
               className="w-6"
             />
           </div>
-          <h2 className="text-2xl font-semibold">Pages</h2>
+          <h2 className="text-2xl font-semibold">{title}</h2>
         </div>
         <div className="flex items-center gap-2 mt-4 md:mt-0">
           {createMode ? (
@@ -63,40 +56,47 @@ const PagesHeader = ({
             </Button>
           ) : (
             <div className="flex items-center gap-2">
-              <Button
-                icon={<PlusCircleOutlined />}
-                className="mavecancelbutton"
-                onClick={onFooterCreate}
-              >
-                Create Footer
-              </Button>
-              <Tooltip title="Copy Footers API Endpoint">
-                <Button
-                  icon={<CopyOutlined />}
-                  className="mavebutton"
-                  onClick={() => {
-                    navigator.clipboard.writeText(
-                      `${process.env.NEXT_PUBLIC_API_BASE_URL}/pages?type=Footer`
-                    );
-                    message.success("API Endpoint copied to clipboard");
-                  }}
-                ></Button>
-              </Tooltip>
+              {title === "Pages" && (
+                <>
+                  <Button
+                    icon={<PlusCircleOutlined />}
+                    className="mavecancelbutton"
+                    onClick={onFooterCreate}
+                  >
+                    Create Footer
+                  </Button>
+                  <Tooltip title="Copy Footers API Endpoint">
+                    <Button
+                      icon={<CopyOutlined />}
+                      className="mavebutton"
+                      onClick={() => {
+                        navigator.clipboard.writeText(
+                          `${process.env.NEXT_PUBLIC_API_BASE_URL}/pages?type=Footer`
+                        );
+                        message.success("API Endpoint copied to clipboard");
+                      }}
+                    ></Button>
+                  </Tooltip>
+                </>
+              )}
 
               <Button
                 icon={<PlusCircleOutlined />}
                 className="mavebutton"
                 onClick={onCreate}
               >
-                Create Page
+                Create {title.slice(0, -1)}
               </Button>
-              <Tooltip title="Copy Pages API Endpoint">
+              <Tooltip title={`Copy ${title} API Endpoint`}>
                 <Button
                   icon={<CopyOutlined />}
                   className="mavecancelbutton"
                   onClick={() => {
                     navigator.clipboard.writeText(
-                      `${process.env.NEXT_PUBLIC_API_BASE_URL}/pages?type=Page`
+                      `${process.env.NEXT_PUBLIC_API_BASE_URL}/pages?type=${title.slice(
+                        0,
+                        -1
+                      )}`
                     );
                     message.success("API Endpoint copied to clipboard");
                   }}
@@ -142,7 +142,7 @@ const PagesHeader = ({
             Filter
           </Button>
           <Input
-            placeholder="Search (e.g. Home)"
+            placeholder={`Search (e.g. ${title.slice(0, -1)})`}
             className="w-full md:w-72 h-11 border-2 border-gray-300 rounded-md"
             allowClear
             prefix={<SearchOutlined />}

@@ -51,7 +51,7 @@ const BasicDetails = ({ form }) => {
       </Form.Item>
       {selectedMedia.length > 0 && (
         <div className="flex space-x-4 mt-4">
-          {selectedMedia.map((media) => (
+          {selectedMedia?.map((media) => (
             <div key={media.id} className="relative">
               <Image
                 src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}

@@ -1,3 +1,5 @@
+// components/Events/EventsForm.jsx
+
 import { useState, useEffect } from "react";
 import { Form, Button, Steps, message } from "antd";
 import BasicDetails from "./BasicDetails";
@@ -10,10 +12,13 @@ import dayjs from "dayjs";
 
 const { Step } = Steps;
 
-const EventsForm = () => {
+const EventsForm = ({ eventData }) => {
+  console.log("Event Data:", eventData);
   const [current, setCurrent] = useState(0);
   const [previewVisible, setPreviewVisible] = useState(false);
   const [form] = Form.useForm();
+
+  const isEditMode = !!eventData;
 
   const steps = [
     {
@@ -69,10 +74,6 @@ const EventsForm = () => {
       // Process date and time using dayjs
       const eventDate = values.date.format("YYYY-MM-DD");
       const eventTime = values.time.format("h:mm A");
-
-      console.log("values.date:", values.date);
-      console.log("values.time:", values.time);
-      console.log("All form values:", values);
 
       // Process bookingDuration
       const bookingStart = values.bookingDuration
@@ -240,100 +241,56 @@ const EventsForm = () => {
         status: 1,
       };
 
-      const response = await instance.post("/pages", payload);
-
-      console.log("Payload: ", payload);
-      if (response.status === 201) {
-        message.success("Event published successfully");
-        form.resetFields();
-        setCurrent(0);
-        setPreviewVisible(false);
-        localStorage.removeItem("eventFormData");
+      if (isEditMode) {
+        const response = await instance.put(`/pages/${eventData.id}`, payload);
+        if (response.status === 200) {
+          message.success("Event updated successfully");
+          form.resetFields();
+          setCurrent(0);
+          setPreviewVisible(false);
+        } else {
+          console.error("Unexpected response status:", response.status);
+          message.error("Failed to update event");
+        }
       } else {
-        // Handle unexpected status codes
-        console.error("Unexpected response status:", response.status);
-        message.error("Failed to publish event");
+        const response = await instance.post("/pages", payload);
+        if (response.status === 201) {
+          message.success("Event published successfully");
+          form.resetFields();
+          setCurrent(0);
+          setPreviewVisible(false);
+          localStorage.removeItem("eventFormData");
+        } else {
+          console.error("Unexpected response status:", response.status);
+          message.error("Failed to publish event");
+        }
       }
     } catch (error) {
       if (error.response) {
-        // The request was made, and the server responded with a status code outside of the 2xx range
         console.error("Server responded with error:", error.response.data);
         message.error(
-          `Failed to publish event: ${error.response.data.message || error.response.statusText}`
+          `Failed to ${isEditMode ? "update" : "publish"} event: ${
+            error.response.data.message || error.response.statusText
+          }`
         );
       } else if (error.request) {
-        // The request was made, but no response was received
         console.error("No response received:", error.request);
-        message.error("Failed to publish event: No response from server");
+        message.error(
+          `Failed to ${isEditMode ? "update" : "publish"} event: No response from server`
+        );
       } else {
-        // Something else happened
         console.error("Error during request:", error.message);
-        message.error(`Failed to publish event: ${error.message}`);
+        message.error(
+          `Failed to ${isEditMode ? "update" : "publish"} event: ${error.message}`
+        );
       }
     }
   };
 
   // Function to save form data to localStorage
   const saveFormDataToLocalStorage = (allValues) => {
-    const formData = { ...allValues };
-
-    // Convert dayjs objects to strings
-    if (formData.date) {
-      formData.date = formData.date.toISOString();
-    }
-    if (formData.time) {
-      formData.time = formData.time.format("HH:mm");
-    }
-    if (formData.bookingDuration) {
-      formData.bookingDuration = [
-        formData.bookingDuration[0].toISOString(),
-        formData.bookingDuration[1].toISOString(),
-      ];
-    }
-    if (formData.agendas) {
-      formData.agendas = formData.agendas.map((agenda) => ({
-        ...agenda,
-        startTime: agenda.startTime.format("HH:mm"),
-        endTime: agenda.endTime.format("HH:mm"),
-      }));
-    }
-
-    localStorage.setItem("eventFormData", JSON.stringify(formData));
-  };
-
-  useEffect(() => {
-    const savedData = localStorage.getItem("eventFormData");
-    if (savedData) {
-      const parsedData = JSON.parse(savedData);
-
-      // Convert date strings back to dayjs objects
-      if (parsedData.date) {
-        parsedData.date = dayjs(parsedData.date);
-      }
-      if (parsedData.time) {
-        parsedData.time = dayjs(parsedData.time, "h:mm A");
-      }
-      if (parsedData.bookingDuration) {
-        parsedData.bookingDuration = [
-          dayjs(parsedData.bookingDuration[0]),
-          dayjs(parsedData.bookingDuration[1]),
-        ];
-      }
-      if (parsedData.agendas) {
-        parsedData.agendas = parsedData.agendas.map((agenda) => ({
-          ...agenda,
-          startTime: dayjs(agenda.startTime, "HH:mm"),
-          endTime: dayjs(agenda.endTime, "HH:mm"),
-        }));
-      }
-
-      form.setFieldsValue(parsedData);
-    }
-  }, [form]);
-
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      const formData = form.getFieldsValue();
+    if (!isEditMode) {
+      const formData = { ...allValues };
 
       // Convert dayjs objects to strings
       if (formData.date) {
@@ -357,13 +314,183 @@ const EventsForm = () => {
       }
 
       localStorage.setItem("eventFormData", JSON.stringify(formData));
-    };
+    }
+  };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [form]);
+  useEffect(() => {
+    if (isEditMode && eventData) {
+      // Map eventData to form fields
+      const formValues = {};
+
+      formValues.title = eventData.page_name_en;
+
+      const basicDetailsSection = eventData.body.find(
+        (section) => section.sectionTitle === "Basic Event Details"
+      );
+      if (basicDetailsSection) {
+        basicDetailsSection.data.forEach((item) => {
+          switch (item.type) {
+            case "title":
+              formValues.title = item.value;
+              break;
+            case "description":
+              formValues.shortDescription = item.value;
+              break;
+            case "media":
+              formValues.coverImage = item.id;
+              break;
+            case "dateTime":
+              formValues.date = dayjs(item.date);
+              formValues.time = dayjs(item.time, "h:mm A");
+              break;
+            case "locationType":
+              formValues.locationType = item.value;
+              break;
+            case "ticketing":
+              formValues.ticketing = item.value;
+              break;
+            // Include other cases as needed
+          }
+        });
+      }
+
+      const overviewSection = eventData.body.find(
+        (section) => section.sectionTitle === "Event Overview and Agendas"
+      );
+      if (overviewSection) {
+        overviewSection.data.forEach((item) => {
+          switch (item.type) {
+            case "fullDescription":
+              formValues.fullDescription = item.value;
+              break;
+            case "venueDetails":
+              formValues.venue = item.venue;
+              formValues.mapCoordinates = item.mapCoordinates;
+              break;
+            case "onlineDetails":
+              formValues.onlineLink = item.onlineLink;
+              formValues.attendeeLimit = item.attendeeLimit;
+              break;
+            case "agendas":
+              formValues.agendas = item.agendaItems.map((agenda) => ({
+                ...agenda,
+                startTime: dayjs(agenda.startTime, "HH:mm"),
+                endTime: dayjs(agenda.endTime, "HH:mm"),
+              }));
+              break;
+            // Include other cases as needed
+          }
+        });
+      }
+
+      const ticketingSection = eventData.body.find(
+        (section) => section.sectionTitle === "Ticketing Details"
+      );
+      if (ticketingSection) {
+        ticketingSection.data.forEach((item) => {
+          switch (item.type) {
+            case "ticketTypes":
+              formValues.ticketTypes = item.ticketOptions;
+              break;
+            case "bookingDuration":
+              formValues.bookingDuration = [
+                dayjs(item.bookingStart),
+                dayjs(item.bookingEnd),
+              ];
+              break;
+            case "promoCodes":
+              formValues.promoCodes = item.promoList;
+              break;
+            // Include other cases as needed
+          }
+        });
+      }
+
+      const organizerSection = eventData.body.find(
+        (section) => section.sectionTitle === "Organizer Information"
+      );
+      if (organizerSection) {
+        organizerSection.data.forEach((item) => {
+          if (item.type === "organizer") {
+            formValues.organizerSelection = item.organizerSelection;
+            if (item.organizerSelection === "existing") {
+              formValues.existingOrganizerId = item.existingOrganizerId;
+            } else if (item.organizerSelection === "new") {
+              formValues.newOrganizer = item.newOrganizer;
+            }
+          }
+        });
+      }
+
+      // Set form values
+      form.setFieldsValue(formValues);
+    } else if (!isEditMode) {
+      // Load data from localStorage for new event
+      const savedData = localStorage.getItem("eventFormData");
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+
+        // Convert date strings back to dayjs objects
+        if (parsedData.date) {
+          parsedData.date = dayjs(parsedData.date);
+        }
+        if (parsedData.time) {
+          parsedData.time = dayjs(parsedData.time, "h:mm A");
+        }
+        if (parsedData.bookingDuration) {
+          parsedData.bookingDuration = [
+            dayjs(parsedData.bookingDuration[0]),
+            dayjs(parsedData.bookingDuration[1]),
+          ];
+        }
+        if (parsedData.agendas) {
+          parsedData.agendas = parsedData.agendas.map((agenda) => ({
+            ...agenda,
+            startTime: dayjs(agenda.startTime, "HH:mm"),
+            endTime: dayjs(agenda.endTime, "HH:mm"),
+          }));
+        }
+
+        form.setFieldsValue(parsedData);
+      }
+    }
+  }, [eventData, form, isEditMode]);
+
+  useEffect(() => {
+    if (!isEditMode) {
+      const handleBeforeUnload = () => {
+        const formData = form.getFieldsValue();
+
+        // Convert dayjs objects to strings
+        if (formData.date) {
+          formData.date = formData.date.toISOString();
+        }
+        if (formData.time) {
+          formData.time = formData.time.format("HH:mm");
+        }
+        if (formData.bookingDuration) {
+          formData.bookingDuration = [
+            formData.bookingDuration[0].toISOString(),
+            formData.bookingDuration[1].toISOString(),
+          ];
+        }
+        if (formData.agendas) {
+          formData.agendas = formData.agendas.map((agenda) => ({
+            ...agenda,
+            startTime: agenda.startTime.format("HH:mm"),
+            endTime: agenda.endTime.format("HH:mm"),
+          }));
+        }
+
+        localStorage.setItem("eventFormData", JSON.stringify(formData));
+      };
+
+      window.addEventListener("beforeunload", handleBeforeUnload);
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+      };
+    }
+  }, [form, isEditMode]);
 
   return (
     <div className="bg-white rounded-lg p-10">
@@ -381,7 +508,9 @@ const EventsForm = () => {
         layout="vertical"
         className="mb-6"
         onValuesChange={(changedValues, allValues) => {
-          saveFormDataToLocalStorage(allValues);
+          if (!isEditMode) {
+            saveFormDataToLocalStorage(allValues);
+          }
         }}
       >
         {steps[current].content}
@@ -414,6 +543,7 @@ const EventsForm = () => {
         onEdit={() => setPreviewVisible(false)}
         onPublish={handlePublish}
         eventData={form.getFieldsValue(true)}
+        isEditMode={isEditMode}
       />
     </div>
   );

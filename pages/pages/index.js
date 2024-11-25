@@ -259,7 +259,6 @@ const Pages = () => {
       <PagesTabs
         typePages={typePages.slice(0, itemsPerPage)}
         typeSubpages={typeSubpages.slice(0, itemsPerPage)}
-        typeFooters={typeFooters.slice(0, itemsPerPage)}
         handleExpand={handleExpand}
         expandedPageId={expandedPageId}
         handleDeletePage={handleDeletePage}

@@ -44,7 +44,7 @@
             {
                 "id": 10,
                 "icon": "/icons/mave/footer.svg",
-                "link": "/pages",
+                "link": "/footers",
                 "title": "Footers"
             }
         ]
