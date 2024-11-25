@@ -76,9 +76,6 @@ const CreateCardForm = ({ onSuccess, onCancel, pages, media }) => {
 
   // Handle media selection
   const handleMediaSelect = (mediaItem) => {
-    if (Array.isArray(mediaItem)) {
-      mediaItem = mediaItem[0]; // Ensure single media selection
-    }
     setSelectedMedia(mediaItem);
     form.setFieldsValue({ media_ids: mediaItem.id });
     setIsMediaModalVisible(false);

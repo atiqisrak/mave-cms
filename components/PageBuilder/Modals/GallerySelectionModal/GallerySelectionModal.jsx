@@ -15,7 +15,7 @@ const GallerySelectionModal = ({
   initialGallery,
 }) => {
   const [form] = Form.useForm();
-  const [selectedImages, setSelectedImages] = useState(
+  const [selectedMedia, setSelectedMedia] = useState(
     initialGallery?.images || []
   );
   const [layout, setLayout] = useState(initialGallery?.layout || "grid");
@@ -29,7 +29,7 @@ const GallerySelectionModal = ({
 
   useEffect(() => {
     if (isVisible) {
-      setSelectedImages(initialGallery?.images || []);
+      setSelectedMedia(initialGallery?.images || []);
       setLayout(initialGallery?.layout || "grid");
       setColumns(initialGallery?.settings?.columns || 3);
       setSpacing(initialGallery?.settings?.spacing || 16);
@@ -40,7 +40,7 @@ const GallerySelectionModal = ({
       });
     } else {
       form.resetFields();
-      setSelectedImages([]);
+      setSelectedMedia([]);
       setLayout("grid");
       setColumns(3);
       setSpacing(16);
@@ -48,8 +48,8 @@ const GallerySelectionModal = ({
   }, [isVisible, initialGallery, form]);
 
   const handleOk = () => {
-    if (selectedImages.length === 0) {
-      message.error("Please select at least one image.");
+    if (selectedMedia.length === 0) {
+      message.error("Please select at least one media item.");
       return;
     }
 
@@ -57,7 +57,7 @@ const GallerySelectionModal = ({
       .validateFields()
       .then((values) => {
         const galleryData = {
-          images: selectedImages,
+          images: selectedMedia,
           layout: values.layout,
           settings: {
             columns: values.layout !== "carousel" ? values.columns : null,
@@ -75,19 +75,95 @@ const GallerySelectionModal = ({
   const handleCancel = () => {
     onClose();
     form.resetFields();
-    setSelectedImages(initialGallery?.images || []);
+    setSelectedMedia(initialGallery?.images || []);
     setLayout(initialGallery?.layout || "grid");
     setColumns(initialGallery?.settings?.columns || 3);
     setSpacing(initialGallery?.settings?.spacing || 16);
   };
 
   const handleMediaSelect = (media) => {
-    setSelectedImages(media);
+    setSelectedMedia(media);
     setIsMediaModalVisible(false);
   };
 
-  const removeImage = (id) => {
-    setSelectedImages(selectedImages.filter((img) => img.id !== id));
+  const removeMedia = (id) => {
+    setSelectedMedia(selectedMedia.filter((item) => item.id !== id));
+  };
+
+  const renderMediaItem = (media) => {
+    const fileUrl = `${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`;
+    const fileType = media.file_type || "";
+
+    if (fileType.startsWith("image/")) {
+      return (
+        <Image
+          src={fileUrl}
+          alt={media.alt || "Selected Image"}
+          width={100}
+          height={100}
+          objectFit="cover"
+          layout="fixed"
+        />
+      );
+    } else if (fileType.startsWith("video/")) {
+      return (
+        <video
+          src={fileUrl}
+          width={100}
+          height={100}
+          controls
+          style={{ objectFit: "cover" }}
+        />
+      );
+    } else if (fileType === "application/pdf") {
+      return (
+        <div
+          style={{
+            width: 100,
+            height: 100,
+            backgroundColor: "#f0f0f0",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            padding: 8,
+          }}
+        >
+          <a
+            href={fileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ wordBreak: "break-word" }}
+          >
+            {media.title || "View Document"}
+          </a>
+        </div>
+      );
+    } else {
+      return (
+        <div
+          style={{
+            width: 100,
+            height: 100,
+            backgroundColor: "#f0f0f0",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            padding: 8,
+          }}
+        >
+          <a
+            href={fileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ wordBreak: "break-word" }}
+          >
+            {media.title || "Download File"}
+          </a>
+        </div>
+      );
+    }
   };
 
   return (
@@ -102,8 +178,7 @@ const GallerySelectionModal = ({
         cancelText="Cancel"
       >
         <Form form={form} layout="vertical">
-          {/* Media Selection */}
-          <Form.Item label="Select Images" required>
+          <Form.Item label="Select Media" required>
             <Button
               type="dashed"
               onClick={() => setIsMediaModalVisible(true)}
@@ -112,31 +187,20 @@ const GallerySelectionModal = ({
             >
               Open Media Library
             </Button>
-            <div className="selected-images mt-4 flex flex-wrap">
-              {selectedImages?.map((image) => (
+            <div className="selected-media mt-4 flex flex-wrap">
+              {selectedMedia?.map((media) => (
                 <div
-                  key={image.id}
-                  className="image-thumbnail mr-2 mb-2 relative inline-block"
+                  key={media.id}
+                  className="media-thumbnail mr-2 mb-2 relative inline-block"
                   style={{ width: 100, height: 100 }}
                 >
-                  {console.log(
-                    "image",
-                    `${process.env.NEXT_PUBLIC_MEDIA_URL}/${image.file_path}`
-                  )}
-                  <Image
-                    src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${image.file_path}`}
-                    alt={image.alt || "Selected Image"}
-                    width={100}
-                    height={100}
-                    objectFit="cover"
-                    layout="fixed"
-                  />
+                  {renderMediaItem(media)}
                   <Button
                     icon={<MinusOutlined />}
                     size="small"
                     type="text"
                     danger
-                    onClick={() => removeImage(image.id)}
+                    onClick={() => removeMedia(media.id)}
                     style={{
                       position: "absolute",
                       top: 0,
@@ -149,7 +213,6 @@ const GallerySelectionModal = ({
             </div>
           </Form.Item>
 
-          {/* Layout Selection */}
           <Form.Item
             name="layout"
             label="Gallery Layout"
@@ -162,7 +225,6 @@ const GallerySelectionModal = ({
             </Select>
           </Form.Item>
 
-          {/* Settings for Grid and Masonry */}
           {(layout === "grid" || layout === "masonry") && (
             <>
               <Form.Item
@@ -210,7 +272,6 @@ const GallerySelectionModal = ({
             </>
           )}
 
-          {/* Settings for Carousel */}
           {layout === "carousel" && (
             <Form.Item
               name="spacing"
@@ -232,16 +293,14 @@ const GallerySelectionModal = ({
             </Form.Item>
           )}
         </Form>
+        <MediaSelectionModal
+          isVisible={isMediaModalVisible}
+          onClose={() => setIsMediaModalVisible(false)}
+          onSelectMedia={handleMediaSelect}
+          selectionMode="multiple"
+          initialSelectedMedia={selectedMedia}
+        />
       </Modal>
-
-      {/* Media Selection Modal */}
-      <MediaSelectionModal
-        isVisible={isMediaModalVisible}
-        onClose={() => setIsMediaModalVisible(false)}
-        onSelectMedia={handleMediaSelect}
-        selectionMode="multiple"
-        initialSelectedMedia={selectedImages}
-      />
     </>
   );
 };

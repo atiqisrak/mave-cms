@@ -2,11 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Button, Modal, Typography, message, Carousel, Popconfirm } from "antd";
-import {
-  EditOutlined,
-  DeleteOutlined,
-  ExportOutlined,
-} from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import GallerySelectionModal from "../Modals/GallerySelectionModal/GallerySelectionModal";
 import Image from "next/image";
 
@@ -16,12 +12,12 @@ const GalleryComponent = ({
   component,
   updateComponent,
   deleteComponent,
-  preview = false, // New prop with default value
+  preview = false,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [galleryData, setGalleryData] = useState(component._mave || {});
   const [lightboxVisible, setLightboxVisible] = useState(false);
-  const [currentImage, setCurrentImage] = useState(null);
+  const [currentMedia, setCurrentMedia] = useState(null);
 
   useEffect(() => {
     setGalleryData(component._mave || {});
@@ -47,14 +43,96 @@ const GalleryComponent = ({
     });
   };
 
-  const openLightbox = (image) => {
-    setCurrentImage(image);
+  const openLightbox = (media) => {
+    setCurrentMedia(media);
     setLightboxVisible(true);
+  };
+
+  const renderMediaItem = (media) => {
+    const fileUrl = `${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`;
+    const fileType = media.file_type || "";
+
+    if (fileType.startsWith("image/")) {
+      return (
+        <div
+          key={media.id}
+          className="media-item"
+          onClick={() => openLightbox(media)}
+          style={{ cursor: "pointer" }}
+        >
+          <Image
+            src={fileUrl}
+            alt={media.title || "Media"}
+            width={300}
+            height={200}
+            objectFit="cover"
+            layout="responsive"
+            placeholder="blur"
+            blurDataURL="/Image_Placeholder.png"
+          />
+        </div>
+      );
+    } else if (fileType.startsWith("video/")) {
+      return (
+        <div
+          key={media.id}
+          className="media-item"
+          onClick={() => openLightbox(media)}
+          style={{ cursor: "pointer" }}
+        >
+          <video src={fileUrl} width="100%" height="auto" controls />
+        </div>
+      );
+    } else if (fileType === "application/pdf") {
+      return (
+        <div
+          key={media.id}
+          className="media-item"
+          onClick={() => openLightbox(media)}
+          style={{
+            cursor: "pointer",
+            width: "100%",
+            height: "auto",
+            backgroundColor: "#f0f0f0",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 16,
+          }}
+        >
+          <Typography.Text strong>
+            {media.title || "View Document"}
+          </Typography.Text>
+        </div>
+      );
+    } else {
+      return (
+        <div
+          key={media.id}
+          className="media-item"
+          onClick={() => openLightbox(media)}
+          style={{
+            cursor: "pointer",
+            width: "100%",
+            height: "auto",
+            backgroundColor: "#f0f0f0",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 16,
+          }}
+        >
+          <Typography.Text strong>
+            {media.title || "Download File"}
+          </Typography.Text>
+        </div>
+      );
+    }
   };
 
   const renderGallery = () => {
     if (!galleryData.images || galleryData.images.length === 0) {
-      return <Paragraph>No images selected.</Paragraph>;
+      return <Paragraph>No media selected.</Paragraph>;
     }
 
     switch (galleryData.layout) {
@@ -70,25 +148,7 @@ const GalleryComponent = ({
               gap: `${galleryData.settings.spacing || 16}px`,
             }}
           >
-            {galleryData.images?.map((image) => (
-              <div
-                key={image.id}
-                className="grid-item"
-                onClick={() => openLightbox(image)}
-                style={{ cursor: "pointer" }}
-              >
-                <Image
-                  src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${image.file_path}`}
-                  alt={image.title || "Gallery Image"}
-                  width={300}
-                  height={200}
-                  objectFit="cover"
-                  layout="responsive"
-                  placeholder="blur"
-                  blurDataURL="/Image_Placeholder.png"
-                />
-              </div>
-            ))}
+            {galleryData.images?.map((media) => renderMediaItem(media))}
           </div>
         );
       case "masonry":
@@ -100,26 +160,15 @@ const GalleryComponent = ({
               columnGap: `${galleryData.settings.spacing || 16}px`,
             }}
           >
-            {galleryData.images?.map((image) => (
+            {galleryData.images?.map((media) => (
               <div
-                key={image.id}
+                key={media.id}
                 className="masonry-item"
-                onClick={() => openLightbox(image)}
                 style={{
                   marginBottom: `${galleryData.settings.spacing || 16}px`,
-                  cursor: "pointer",
                 }}
               >
-                <Image
-                  src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${image.file_path}`}
-                  alt={image.alt || "Gallery Image"}
-                  width={300}
-                  height={200}
-                  objectFit="cover"
-                  layout="responsive"
-                  placeholder="blur"
-                  blurDataURL="/Image_Placeholder.png"
-                />
+                {renderMediaItem(media)}
               </div>
             ))}
           </div>
@@ -131,18 +180,29 @@ const GalleryComponent = ({
             dotPosition="bottom"
             style={{ maxWidth: "800px", margin: "0 auto" }}
           >
-            {galleryData.images?.map((image) => (
-              <div key={image.id} onClick={() => openLightbox(image)}>
-                <Image
-                  src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${image.file_path}`}
-                  alt={image.alt || "Gallery Image"}
-                  width={800}
-                  height={450}
-                  objectFit="cover"
-                  layout="responsive"
-                  placeholder="blur"
-                  blurDataURL="/Image_Placeholder.png"
-                />
+            {galleryData.images?.map((media) => (
+              <div key={media.id} onClick={() => openLightbox(media)}>
+                {media.file_type.startsWith("image/") ? (
+                  <Image
+                    src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}
+                    alt={media.alt || "Gallery Image"}
+                    width={800}
+                    height={450}
+                    objectFit="cover"
+                    layout="responsive"
+                    placeholder="blur"
+                    blurDataURL="/Image_Placeholder.png"
+                  />
+                ) : media.file_type.startsWith("video/") ? (
+                  <video
+                    src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}
+                    width="100%"
+                    height="auto"
+                    controls
+                  />
+                ) : (
+                  renderMediaItem(media)
+                )}
               </div>
             ))}
           </Carousel>
@@ -156,8 +216,7 @@ const GalleryComponent = ({
     return (
       <div className="preview-gallery-component p-4 bg-gray-100 rounded-md">
         {renderGallery()}
-        {/* Lightbox Modal */}
-        {currentImage && (
+        {currentMedia && (
           <Modal
             open={lightboxVisible}
             footer={null}
@@ -165,17 +224,38 @@ const GalleryComponent = ({
             centered
             width="60%"
           >
-            <Image
-              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${currentImage.file_path}`}
-              alt={currentImage.alt || "Gallery Image"}
-              width={1200}
-              height={800}
-              objectFit="contain"
-              layout="responsive"
-            />
-            {currentImage.title && (
+            {currentMedia.file_type.startsWith("image/") ? (
+              <Image
+                src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${currentMedia.file_path}`}
+                alt={currentMedia.alt || "Gallery Image"}
+                width={1200}
+                height={800}
+                objectFit="contain"
+                layout="responsive"
+              />
+            ) : currentMedia.file_type.startsWith("video/") ? (
+              <video
+                src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${currentMedia.file_path}`}
+                width="100%"
+                height="auto"
+                controls
+              />
+            ) : currentMedia.file_type === "application/pdf" ? (
+              <iframe
+                src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${currentMedia.file_path}`}
+                width="100%"
+                height="800px"
+              />
+            ) : (
+              <div style={{ textAlign: "center", padding: "20px" }}>
+                <Typography.Text strong>
+                  {currentMedia.title || "Download File"}
+                </Typography.Text>
+              </div>
+            )}
+            {currentMedia.title && (
               <Typography.Title level={4}>
-                {currentImage.title}
+                {currentMedia.title}
               </Typography.Title>
             )}
           </Modal>
@@ -186,7 +266,6 @@ const GalleryComponent = ({
 
   return (
     <div className="border p-4 rounded-md bg-gray-50">
-      {/* Header with Component Title and Action Buttons */}
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-semibold">Gallery Component</h3>
         <div>
@@ -206,11 +285,9 @@ const GalleryComponent = ({
         </div>
       </div>
 
-      {/* Gallery Display */}
       {renderGallery()}
 
-      {/* Lightbox Modal */}
-      {currentImage && (
+      {currentMedia && (
         <Modal
           open={lightboxVisible}
           footer={null}
@@ -218,21 +295,41 @@ const GalleryComponent = ({
           centered
           width="60%"
         >
-          <Image
-            src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${currentImage.file_path}`}
-            alt={currentImage.alt || "Gallery Image"}
-            width={1200}
-            height={800}
-            objectFit="contain"
-            layout="responsive"
-          />
-          {currentImage.title && (
-            <Typography.Title level={4}>{currentImage.title}</Typography.Title>
+          {currentMedia.file_type.startsWith("image/") ? (
+            <Image
+              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${currentMedia.file_path}`}
+              alt={currentMedia.alt || "Gallery Image"}
+              width={1200}
+              height={800}
+              objectFit="contain"
+              layout="responsive"
+            />
+          ) : currentMedia.file_type.startsWith("video/") ? (
+            <video
+              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${currentMedia.file_path}`}
+              width="100%"
+              height="auto"
+              controls
+            />
+          ) : currentMedia.file_type === "application/pdf" ? (
+            <iframe
+              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${currentMedia.file_path}`}
+              width="100%"
+              height="800px"
+            />
+          ) : (
+            <div style={{ textAlign: "center", padding: "20px" }}>
+              <Typography.Text strong>
+                {currentMedia.title || "Download File"}
+              </Typography.Text>
+            </div>
+          )}
+          {currentMedia.title && (
+            <Typography.Title level={4}>{currentMedia.title}</Typography.Title>
           )}
         </Modal>
       )}
 
-      {/* Gallery Selection Modal */}
       {!preview && (
         <GallerySelectionModal
           isVisible={isModalVisible}

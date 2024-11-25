@@ -204,23 +204,17 @@ const SliderForm = ({
           editingItemId={editingItemId}
           onCancelEdit={onCancelEdit}
         />
-
-        {/* Media Selection Modal */}
-        <MediaSelectionModal
-          isVisible={isMediaModalVisible}
-          onClose={() => setIsMediaModalVisible(false)}
-          onSelectMedia={(media) => {
-            // Prevent duplicate selections
-            if (selectionMode === "single") {
-              setSelectedMedia([media]);
-            } else {
-              // 'media' is an array of selected media objects
-              setSelectedMedia(media);
-            }
-          }}
-          selectionMode={selectionMode}
-        />
       </Form>
+
+      {/* Media Selection Modal */}
+      <MediaSelectionModal
+        isVisible={isMediaModalVisible}
+        onClose={() => setIsMediaModalVisible(false)}
+        onSelectMedia={(media) => {
+          setSelectedMedia(media);
+        }}
+        selectionMode={selectionMode}
+      />
     </Modal>
   );
 };

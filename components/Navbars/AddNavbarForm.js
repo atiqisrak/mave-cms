@@ -13,6 +13,7 @@ const AddNavbarForm = ({ menus, media, onCancel, fetchNavbars }) => {
   const [newLogoId, setNewLogoId] = useState(null);
   const [newMenuId, setNewMenuId] = useState(null);
   const [mediaModalVisible, setMediaModalVisible] = useState(false);
+  const [selectedMedia, setSelectedMedia] = useState(null);
 
   const handleAddNavbar = async () => {
     if (!newNavbarTitleEn || !newLogoId || !newMenuId) {
@@ -51,7 +52,7 @@ const AddNavbarForm = ({ menus, media, onCancel, fetchNavbars }) => {
         </Col>
         <Col xs={24} md={12}>
           <Input
-            placeholder="Navbar Title (Bangla)"
+            placeholder="Navbar Title (Alternate)"
             value={newNavbarTitleBn}
             onChange={(e) => setNewNavbarTitleBn(e.target.value)}
           />
@@ -60,21 +61,15 @@ const AddNavbarForm = ({ menus, media, onCancel, fetchNavbars }) => {
           <Button onClick={() => setMediaModalVisible(true)}>
             {newLogoId ? "Change Logo" : "Select Logo"}
           </Button>
-          {newLogoId && media.find((item) => item.id === newLogoId) ? (
+          {newLogoId && selectedMedia ? (
             <div className="mt-2">
               <Image
                 src={
-                  media.find((item) => item.id === newLogoId).file_path
-                    ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${
-                        media.find((item) => item.id === newLogoId).file_path
-                      }`
+                  selectedMedia.file_path
+                    ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedMedia.file_path}`
                     : "/images/Image_placeholder.png"
                 }
-                alt={
-                  media.find((item) => item.id === newLogoId).file_name
-                    ? media.find((item) => item.id === newLogoId).file_name
-                    : "Navbar Logo"
-                }
+                alt={selectedMedia.file_name || "Navbar Logo"}
                 width={100}
                 height={100}
                 className="rounded-lg object-cover"
@@ -116,22 +111,14 @@ const AddNavbarForm = ({ menus, media, onCancel, fetchNavbars }) => {
           Create
         </Button>
       </div>
-      {/* <MediaSelectionModal
-        isVisible={mediaModalVisible}
-        onClose={() => setMediaModalVisible(false)}
-        selectionMode="single"
-        onSelectMedia={(selectedMedia) => {
-          setNewLogoId(selectedMedia.id);
-          setMediaModalVisible(false);
-        }}
-      /> */}
       <MediaSelectionModal
         isVisible={mediaModalVisible}
         onClose={() => setMediaModalVisible(false)}
         selectionMode="single"
-        onSelectMedia={(selectedMedia) => {
-          if (selectedMedia.length > 0) {
-            setNewLogoId(selectedMedia[0].id);
+        onSelectMedia={(selected) => {
+          if (selected) {
+            setNewLogoId(selected.id);
+            setSelectedMedia(selected);
           }
           setMediaModalVisible(false);
         }}

@@ -95,9 +95,6 @@ const CardsPreviewModal = ({
 
   // Handle media selection
   const handleMediaSelect = (mediaItem) => {
-    if (Array.isArray(mediaItem)) {
-      mediaItem = mediaItem[0]; // Ensure single media selection
-    }
     setSelectedMedia(mediaItem);
     form.setFieldsValue({ media_ids: mediaItem.id });
     setIsMediaModalVisible(false);
@@ -307,7 +304,10 @@ const CardsPreviewModal = ({
               {/* Media Selection */}
               <Form.Item label="Media" required>
                 <div className="flex flex-col">
-                  <Button onClick={() => setIsMediaModalVisible(true)}>
+                  <Button
+                    onClick={() => setIsMediaModalVisible(true)}
+                    className="mavebutton"
+                  >
                     Change Media
                   </Button>
                   <div className="flex justify-between mt-4">
@@ -318,7 +318,7 @@ const CardsPreviewModal = ({
                         src={
                           selectedCard.media_files
                             ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedCard.media_files.file_path}`
-                            : PLACEHOLDER_IMAGE
+                            : "/images/Image_Placeholder.png"
                         }
                         alt="Current Media"
                         width={200}
@@ -475,14 +475,14 @@ const CardsPreviewModal = ({
         </>
       )}
       {/* Media Selection Modal */}
-      {isEditing && (
+      {/* {isEditing && (
         <MediaSelectionModal
           isVisible={isMediaModalVisible}
           onClose={() => setIsMediaModalVisible(false)}
           onSelectMedia={handleMediaSelect}
           selectionMode="single"
         />
-      )}
+      )} */}
     </Drawer>
   );
 };

@@ -92,13 +92,12 @@ const EventsForm = () => {
         : [];
 
       const payload = {
-        ...values,
         type: "Event",
         slug: values.title.toLowerCase().replace(/\s+/g, "-"),
         favicon_id: 10,
         page_name_en: values.title,
         page_name_bn: values.title,
-        head: [
+        additional: [
           {
             pageType: "Event",
             metaTitle: values.title,
@@ -116,7 +115,7 @@ const EventsForm = () => {
         ],
         body: [
           {
-            _id: "section-1",
+            _id: "71cfce51-cb18-475d-8216-b875ae3ae8c6",
             sectionTitle: "Basic Event Details",
             _category: "root",
             data: [
@@ -152,10 +151,11 @@ const EventsForm = () => {
                 value: values.ticketing,
                 details: { onSite: true, online: true },
               },
+              // Include any other relevant fields from values here
             ],
           },
           {
-            _id: "section-2",
+            _id: "25a2aaf6-b501-44b6-a572-269b2c916c44",
             sectionTitle: "Event Overview and Agendas",
             _category: "root",
             data: [
@@ -194,12 +194,53 @@ const EventsForm = () => {
               },
             ],
           },
-          // Add other sections as needed
+          {
+            _id: "5a2aaf6-b501-44b6-a572-26e2c916c44",
+            sectionTitle: "Ticketing Details",
+            _category: "root",
+            data: [
+              {
+                type: "ticketTypes",
+                _id: "ticketTypes-" + Date.now(),
+                ticketOptions: values.ticketTypes,
+              },
+              {
+                type: "bookingDuration",
+                _id: "bookingDuration-" + Date.now(),
+                bookingStart: bookingStart,
+                bookingEnd: bookingEnd,
+              },
+              {
+                type: "promoCodes",
+                _id: "promoCodes-" + Date.now(),
+                promoList: values.promoCodes,
+              },
+            ],
+          },
+          {
+            _id: "5a2aaf6-b501-44b6-a572-26e64916c44",
+            sectionTitle: "Organizer Information",
+            _category: "root",
+            data: [
+              {
+                type: "organizer",
+                _id: "organizer-" + Date.now(),
+                organizerSelection: values.organizerSelection,
+                ...(values.organizerSelection === "existing"
+                  ? { existingOrganizerId: values.existingOrganizerId }
+                  : {}),
+                ...(values.organizerSelection === "new"
+                  ? { newOrganizer: values.newOrganizer }
+                  : {}),
+              },
+            ],
+          },
+          // Add any additional sections as needed
         ],
         status: 1,
       };
 
-      const response = await instance.post("/api/pages", payload);
+      const response = await instance.post("/pages", payload);
 
       console.log("Payload: ", payload);
       if (response.status === 201) {

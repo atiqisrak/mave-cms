@@ -1,9 +1,8 @@
 // components/PageBuilder/Components/MediaComponent.jsx
 
 import React, { useState } from "react";
-import { Button, Modal, Popconfirm, Typography, message } from "antd";
+import { Button, Popconfirm, message } from "antd";
 import {
-  EditOutlined,
   DeleteOutlined,
   CheckOutlined,
   CloseOutlined,
@@ -13,13 +12,11 @@ import {
 import MediaSelectionModal from "../Modals/MediaSelectionModal";
 import Image from "next/image";
 
-const { Paragraph } = Typography;
-
 const MediaComponent = ({
   component,
   updateComponent,
   deleteComponent,
-  preview = false, // New prop with default value
+  preview = false,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [mediaData, setMediaData] = useState(component._mave);
@@ -28,14 +25,7 @@ const MediaComponent = ({
 
   // Handle selection from MediaSelectionModal
   const handleSelectMedia = (selectedMedia) => {
-    if (selectedMedia.length > 1 && component.selectionMode !== "multiple") {
-      message.error("Please select only one media item for this component.");
-      return;
-    }
-    // For single selection, take the first item
-    const media =
-      component.selectionMode === "multiple" ? selectedMedia : selectedMedia[0];
-    setSelectedMediaData(media);
+    setSelectedMediaData(selectedMedia);
     setIsModalVisible(false);
     setIsEditing(true);
   };
@@ -81,6 +71,65 @@ const MediaComponent = ({
     deleteComponent();
   };
 
+  // Helper function to render media based on file type
+  const renderMediaItem = (media) => {
+    const fileUrl = `${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`;
+    const fileType = media.file_type || "";
+
+    if (fileType.startsWith("image/")) {
+      return (
+        <Image
+          key={media.id}
+          src={fileUrl}
+          alt={media.title || "Image"}
+          width={250}
+          height={200}
+          objectFit="cover"
+          className="rounded-lg"
+        />
+      );
+    } else if (fileType.startsWith("video/")) {
+      return (
+        <video
+          key={media.id}
+          src={fileUrl}
+          controls
+          width={250}
+          height={200}
+          className="rounded-lg"
+        />
+      );
+    } else if (fileType === "application/pdf") {
+      // For PDF files
+      return (
+        <div key={media.id} className="flex flex-col items-center">
+          <a
+            href={fileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 underline"
+          >
+            {media.title || "View Document"}
+          </a>
+        </div>
+      );
+    } else {
+      // For other file types
+      return (
+        <div key={media.id} className="flex flex-col items-center">
+          <a
+            href={fileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 underline"
+          >
+            {media.title || "Download File"}
+          </a>
+        </div>
+      );
+    }
+  };
+
   // If in preview mode, render the media content only
   if (preview) {
     return (
@@ -88,30 +137,11 @@ const MediaComponent = ({
         {mediaData ? (
           component.selectionMode === "multiple" ? (
             <div className="grid grid-cols-2 gap-4">
-              {mediaData.map((media) => (
-                <Image
-                  key={media.id}
-                  src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}
-                  alt={media.title}
-                  width={250}
-                  height={200}
-                  objectFit="cover"
-                  preview={false}
-                  className="rounded-lg"
-                />
-              ))}
+              {mediaData.map((media) => renderMediaItem(media))}
             </div>
           ) : (
             <div className="flex justify-center">
-              <Image
-                src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${mediaData.file_path}`}
-                alt={mediaData.title}
-                width={650}
-                height={400}
-                objectFit="cover"
-                preview={false}
-                className="rounded-lg"
-              />
+              {renderMediaItem(mediaData)}
             </div>
           )
         ) : (
@@ -179,15 +209,13 @@ const MediaComponent = ({
             <h4 className="mb-2 text-md font-semibold">Current Media</h4>
           )}
           {mediaData ? (
-            <Image
-              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${mediaData.file_path}`}
-              alt={mediaData.title}
-              width={250}
-              height={200}
-              objectFit="cover"
-              preview={false}
-              className="rounded-lg"
-            />
+            component.selectionMode === "multiple" ? (
+              <div className="grid grid-cols-2 gap-4">
+                {mediaData.map((media) => renderMediaItem(media))}
+              </div>
+            ) : (
+              renderMediaItem(mediaData)
+            )
           ) : (
             <Button
               icon={<ExportOutlined />}
@@ -207,29 +235,10 @@ const MediaComponent = ({
               <h4 className="mb-2 text-md font-medium">Selected Media</h4>
               {component.selectionMode === "multiple" ? (
                 <div className="grid grid-cols-2 gap-4">
-                  {selectedMediaData?.map((media) => (
-                    <Image
-                      key={media.id}
-                      src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}
-                      alt={media.title}
-                      width={250}
-                      height={200}
-                      objectFit="cover"
-                      preview={false}
-                      className="rounded-lg"
-                    />
-                  ))}
+                  {selectedMediaData.map((media) => renderMediaItem(media))}
                 </div>
               ) : (
-                <Image
-                  src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedMediaData.file_path}`}
-                  alt={selectedMediaData.title}
-                  width={250}
-                  height={200}
-                  objectFit="cover"
-                  preview={false}
-                  className="rounded-lg"
-                />
+                renderMediaItem(selectedMediaData)
               )}
             </div>
           </div>
@@ -241,7 +250,7 @@ const MediaComponent = ({
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         onSelectMedia={handleSelectMedia}
-        selectionMode={component.selectionMode} // Pass the selection mode
+        selectionMode={component.selectionMode}
       />
     </div>
   );

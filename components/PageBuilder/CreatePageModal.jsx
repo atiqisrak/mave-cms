@@ -47,6 +47,13 @@ const CreatePageModal = ({ visible, onCancel, onPageCreated, fetchPages }) => {
         type: "Page",
         favicon_id: 10, // Assuming default favicon_id; adjust as needed
         slug: newSlug,
+        head: {
+          title: newPageTitleEn,
+          description: "",
+          keywords: [],
+          image: "",
+          imageAlt: "",
+        },
         additional: [
           {
             pageType: "Page",

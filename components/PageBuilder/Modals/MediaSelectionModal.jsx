@@ -22,14 +22,24 @@ const { Option } = Select;
 const { TabPane } = Tabs;
 const { Search } = Input;
 
-const MediaSelectionModal = ({
-  isVisible,
-  onClose,
-  onSelectMedia,
-  selectionMode = "single",
-  maxSelection = 1,
-  initialSelectedMedia = [],
-}) => {
+const MediaSelectionModal = (props) => {
+  const {
+    isVisible,
+    onClose,
+    onSelectMedia,
+    selectionMode = "single",
+    maxSelection: propMaxSelection,
+    initialSelectedMedia = [],
+  } = props;
+
+  // Determine the maximum selection allowed
+  const maxSelection =
+    propMaxSelection !== undefined
+      ? propMaxSelection
+      : selectionMode === "single"
+        ? 1
+        : Infinity;
+
   const [mediaList, setMediaList] = useState([]);
   const [sortedMedia, setSortedMedia] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -98,16 +108,24 @@ const MediaSelectionModal = ({
     setCurrentPage(1); // Reset to first page on search
   };
 
+  const isItemSelected = (item) => {
+    return selectedMedia.some(
+      (media) => media?.id === item.id || media?.file_path === item.file_path
+    );
+  };
+
   const handleSelection = (item) => {
     if (selectionMode === "single") {
       setSelectedMedia([item]);
     } else {
       if (isItemSelected(item)) {
         setSelectedMedia(selectedMedia.filter((media) => media.id !== item.id));
-      } else if (selectedMedia.length < maxSelection) {
-        setSelectedMedia([...selectedMedia, item]);
+      } else if (selectedMedia.length >= maxSelection) {
+        if (maxSelection !== Infinity) {
+          message.warning(`You can select up to ${maxSelection} images.`);
+        }
       } else {
-        message.warning(`You can select up to ${maxSelection} images.`);
+        setSelectedMedia([...selectedMedia, item]);
       }
     }
   };
@@ -117,20 +135,10 @@ const MediaSelectionModal = ({
       message.warning("Please select at least one media item.");
       return;
     }
-    // onSelectMedia(selectedMedia);
     const selected =
       selectionMode === "single" ? selectedMedia[0] : selectedMedia;
     onSelectMedia(selected);
     onClose();
-  };
-
-  // const isItemSelected = (item) => {
-  //   return selectedMedia.some((media) => media.id === item.id);
-  // };
-  const isItemSelected = (item) => {
-    return selectedMedia.some(
-      (media) => media?.id === item.id || media?.file_path === item.file_path
-    );
   };
 
   // Handle page change

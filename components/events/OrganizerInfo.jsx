@@ -58,8 +58,10 @@ const OrganizerInfo = ({ form }) => {
                 ]}
               >
                 <Select placeholder="Select existing organizer">
-                  <Option value="301">Tech Innovators Inc.</Option>
-                  <Option value="302">Future Tech Events</Option>
+                  <Option value="Tech Innovators Inc.">
+                    Tech Innovators Inc.
+                  </Option>
+                  <Option value="Future Tech Events">Future Tech Events</Option>
                 </Select>
               </Form.Item>
             );

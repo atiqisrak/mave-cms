@@ -78,10 +78,8 @@ const PageEditForm = ({ page, onSubmit, onCancel }) => {
   };
 
   const handleSelectMedia = (media) => {
-    // Assuming media[0].file_path contains the relative path
-    setTempPageMetaImage(
-      `${process.env.NEXT_PUBLIC_MEDIA_URL}/${media[0].file_path}`
-    );
+    setTempPageMetaImage(media.file_path);
+    setIsModalVisible(false);
   };
 
   return (
@@ -188,7 +186,7 @@ const PageEditForm = ({ page, onSubmit, onCancel }) => {
         {tempPageMetaImage && (
           <div className="relative w-32 h-32 mt-2">
             <Image
-              src={tempPageMetaImage}
+              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${tempPageMetaImage}`}
               alt="Meta Image"
               layout="fill"
               objectFit="cover"
@@ -200,7 +198,9 @@ const PageEditForm = ({ page, onSubmit, onCancel }) => {
         <MediaSelectionModal
           isVisible={isModalVisible}
           onClose={() => setIsModalVisible(false)}
-          onSelectMedia={handleSelectMedia}
+          onSelectMedia={(selectedMedia) => {
+            handleSelectMedia(selectedMedia);
+          }}
           selectionMode="single"
         />
 
