@@ -7,6 +7,16 @@ const nextConfig = {
     dirs: ["."],
     ignoreDuringBuilds: true,
   },
+  compilerOptions: {
+    baseUrl: ".",
+    paths: {
+      "@/components/*": ["components/*"],
+      "@/pages/*": ["pages/*"],
+      "@/public/*": ["public/*"],
+      "@/styles/*": ["styles/*"],
+      "@/utils/*": ["utils/*"],
+    },
+  },
   images: {
     reactStrictMode: true,
     domains: [
