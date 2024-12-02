@@ -31,6 +31,8 @@ const PageCard = ({
       setType("Footer");
     } else if (page?.type === "Page") {
       setType("Page");
+    } else if (page?.type === "Subpage") {
+      setType("Subpage");
     } else {
       setType("Unknown");
     }

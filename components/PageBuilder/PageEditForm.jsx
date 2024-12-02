@@ -1,6 +1,6 @@
 // components/PageBuilder/PageEditForm.jsx
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Input, Radio, Select, message } from "antd";
 import {
   CheckCircleFilled,
@@ -13,72 +13,107 @@ import MediaSelectionModal from "./Modals/MediaSelectionModal";
 const { Option } = Select;
 
 const PageEditForm = ({ page, onSubmit, onCancel }) => {
-  const [tempPageNameEn, setTempPageNameEn] = useState(page.page_name_en);
-  const [tempPageNameBn, setTempPageNameBn] = useState(page.page_name_bn);
-  const [tempPageSlug, setTempPageSlug] = useState(page.slug);
-  const [tempPageType, setTempPageType] = useState(
-    page.additional && page.additional.length > 0
-      ? page.additional[0].pageType
-      : "Page"
-  );
-  const [tempPageMetaTitle, setTempPageMetaTitle] = useState(
-    page.additional && page.additional.length > 0
-      ? page.additional[0].metaTitle
-      : ""
-  );
-  const [tempPageMetaDescription, setTempPageMetaDescription] = useState(
-    page.additional && page.additional.length > 0
-      ? page.additional[0].metaDescription
-      : ""
-  );
-  const [tempPageMetaKeywords, setTempPageMetaKeywords] = useState(
-    page.additional && page.additional.length > 0
-      ? page.additional[0].keywords
-      : []
-  );
-  const [tempPageMetaImage, setTempPageMetaImage] = useState(
-    page.additional && page.additional.length > 0
-      ? page.additional[0].metaImage
-      : ""
-  );
-  const [tempPageMetaImageAlt, setTempPageMetaImageAlt] = useState(
-    page.additional && page.additional.length > 0
-      ? page.additional[0].metaImageAlt
-      : ""
-  );
+  const [formData, setFormData] = useState({
+    pageNameEn: "",
+    pageNameBn: "",
+    slug: "",
+    pageType: "Page",
+    metaTitle: "",
+    metaDescription: "",
+    keywords: [],
+    metaImage: "",
+    metaImageAlt: "",
+    type: "Page", // This will mirror 'pageType'
+  });
+
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  // Initialize form data when the 'page' prop changes
+  useEffect(() => {
+    if (page) {
+      const additional = page.additional && page.additional[0];
+      const initialPageType = additional?.pageType || "Page";
+
+      setFormData({
+        pageNameEn: page.page_name_en || "",
+        pageNameBn: page.page_name_bn || "",
+        slug: page.slug || "",
+        pageType: initialPageType,
+        metaTitle: additional?.metaTitle || "",
+        metaDescription: additional?.metaDescription || "",
+        keywords: additional?.keywords || [],
+        metaImage: additional?.metaImage || "",
+        metaImageAlt: additional?.metaImageAlt || "",
+        type: initialPageType,
+      });
+    }
+  }, [page]);
+
+  // Generic handler for input changes
+  const handleChange = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+      // If 'pageType' changes, also update 'type' to mirror it
+      ...(field === "pageType" ? { type: value } : {}),
+    }));
+  };
+
+  // Handle form submission
   const handleSubmit = () => {
-    if (tempPageNameEn.trim() === "" || tempPageSlug.trim() === "") {
+    const {
+      pageNameEn,
+      slug,
+      pageType,
+      metaTitle,
+      metaDescription,
+      keywords,
+      metaImage,
+      metaImageAlt,
+      type,
+      pageNameBn,
+    } = formData;
+
+    // Basic validation
+    if (pageNameEn.trim() === "" || slug.trim() === "") {
       message.error("Page name and slug cannot be empty.");
       return;
     }
 
     // Validate slug format (only lowercase letters, numbers, and hyphens)
     const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-    if (!slugRegex.test(tempPageSlug)) {
+    if (!slugRegex.test(slug)) {
       message.error(
         "Invalid slug format. Use only lowercase letters, numbers, and hyphens."
       );
       return;
     }
 
-    onSubmit({
+    // Prepare the payload
+    const payload = {
       id: page.id,
-      pageNameEn: tempPageNameEn,
-      pageNameBn: tempPageNameBn,
-      slug: tempPageSlug,
-      pageType: tempPageType,
-      metaTitle: tempPageMetaTitle,
-      metaDescription: tempPageMetaDescription,
-      keywords: tempPageMetaKeywords,
-      metaImage: tempPageMetaImage,
-      metaImageAlt: tempPageMetaImageAlt,
-    });
+      pageNameEn,
+      pageNameBn,
+      slug,
+      pageType,
+      type,
+      metaTitle,
+      metaDescription,
+      keywords,
+      metaImage,
+      metaImageAlt,
+    };
+
+    // Submit the form data
+    onSubmit(payload);
   };
 
+  // Handle media selection from the modal
   const handleSelectMedia = (media) => {
-    setTempPageMetaImage(media.file_path);
+    setFormData((prev) => ({
+      ...prev,
+      metaImage: media.file_path,
+    }));
     setIsModalVisible(false);
   };
 
@@ -88,8 +123,8 @@ const PageEditForm = ({ page, onSubmit, onCancel }) => {
       <div className="flex flex-col">
         <label className="font-semibold">Page Name (EN):</label>
         <Input
-          value={tempPageNameEn}
-          onChange={(e) => setTempPageNameEn(e.target.value)}
+          value={formData.pageNameEn}
+          onChange={(e) => handleChange("pageNameEn", e.target.value)}
           placeholder="Enter English Page Name"
           allowClear
           size="large"
@@ -100,8 +135,8 @@ const PageEditForm = ({ page, onSubmit, onCancel }) => {
       <div className="flex flex-col">
         <label className="font-semibold">Page Name (Alt):</label>
         <Input
-          value={tempPageNameBn}
-          onChange={(e) => setTempPageNameBn(e.target.value)}
+          value={formData.pageNameBn}
+          onChange={(e) => handleChange("pageNameBn", e.target.value)}
           placeholder="Enter Bengali Page Name"
           allowClear
           size="large"
@@ -112,12 +147,11 @@ const PageEditForm = ({ page, onSubmit, onCancel }) => {
       <div className="flex flex-col">
         <label className="font-semibold">Page Slug:</label>
         <Input
-          value={tempPageSlug}
-          onChange={(e) => setTempPageSlug(e.target.value)}
+          value={formData.slug}
+          onChange={(e) => handleChange("slug", e.target.value)}
           placeholder="e.g., about-us"
           allowClear
           size="large"
-          // disabled
         />
         <span className="text-xs text-gray-500">
           *Use only lowercase letters, numbers, and hyphens.
@@ -128,8 +162,8 @@ const PageEditForm = ({ page, onSubmit, onCancel }) => {
       <div className="flex flex-col">
         <label className="font-semibold">Page Type:</label>
         <Radio.Group
-          onChange={(e) => setTempPageType(e.target.value)}
-          value={tempPageType}
+          onChange={(e) => handleChange("pageType", e.target.value)}
+          value={formData.pageType}
           size="large"
         >
           <Radio value="Page">Page</Radio>
@@ -141,8 +175,8 @@ const PageEditForm = ({ page, onSubmit, onCancel }) => {
       <div className="flex flex-col gap-4">
         <label className="font-semibold">Page Meta Title:</label>
         <Input
-          value={tempPageMetaTitle}
-          onChange={(e) => setTempPageMetaTitle(e.target.value)}
+          value={formData.metaTitle}
+          onChange={(e) => handleChange("metaTitle", e.target.value)}
           placeholder="Enter Meta Title"
           allowClear
           size="large"
@@ -150,8 +184,8 @@ const PageEditForm = ({ page, onSubmit, onCancel }) => {
 
         <label className="font-semibold">Page Meta Description:</label>
         <Input.TextArea
-          value={tempPageMetaDescription}
-          onChange={(e) => setTempPageMetaDescription(e.target.value)}
+          value={formData.metaDescription}
+          onChange={(e) => handleChange("metaDescription", e.target.value)}
           placeholder="Enter Meta Description"
           allowClear
           size="large"
@@ -161,14 +195,14 @@ const PageEditForm = ({ page, onSubmit, onCancel }) => {
         <label className="font-semibold">Page Meta Keywords:</label>
         <Select
           mode="tags"
-          value={tempPageMetaKeywords}
-          onChange={(value) => setTempPageMetaKeywords(value)}
+          value={formData.keywords}
+          onChange={(value) => handleChange("keywords", value)}
           placeholder="Enter Meta Keywords"
           allowClear
           size="large"
           showSearch
         >
-          {tempPageMetaKeywords?.map((keyword) => (
+          {formData.keywords?.map((keyword) => (
             <Option key={keyword} value={keyword}>
               {keyword}
             </Option>
@@ -183,10 +217,10 @@ const PageEditForm = ({ page, onSubmit, onCancel }) => {
         >
           Select Meta Image
         </Button>
-        {tempPageMetaImage && (
+        {formData.metaImage && (
           <div className="relative w-32 h-32 mt-2">
             <Image
-              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${tempPageMetaImage}`}
+              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${formData.metaImage}`}
               alt="Meta Image"
               layout="fill"
               objectFit="cover"
@@ -198,16 +232,14 @@ const PageEditForm = ({ page, onSubmit, onCancel }) => {
         <MediaSelectionModal
           isVisible={isModalVisible}
           onClose={() => setIsModalVisible(false)}
-          onSelectMedia={(selectedMedia) => {
-            handleSelectMedia(selectedMedia);
-          }}
+          onSelectMedia={handleSelectMedia}
           selectionMode="single"
         />
 
         <label className="font-semibold">Page Meta Image Alt Text:</label>
         <Input
-          value={tempPageMetaImageAlt}
-          onChange={(e) => setTempPageMetaImageAlt(e.target.value)}
+          value={formData.metaImageAlt}
+          onChange={(e) => handleChange("metaImageAlt", e.target.value)}
           placeholder="Enter Meta Image Alt Text"
           allowClear
           size="large"
@@ -220,6 +252,7 @@ const PageEditForm = ({ page, onSubmit, onCancel }) => {
           icon={<CheckCircleFilled />}
           onClick={handleSubmit}
           className="mavebutton"
+          type="primary" // Added type for better UI
         >
           Submit
         </Button>

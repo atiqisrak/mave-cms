@@ -29,22 +29,12 @@ const Pages = () => {
       setLoading(true);
       const response = await instance.get("/pages");
       if (response.data) {
-        const mainPages = response.data.filter(
-          (page) =>
-            page.type === "Page" &&
-            (!page.additional || page.additional[0].pageType === "Page")
-        );
+        const mainPages = response.data.filter((page) => page.type === "Page");
         const subPages = response.data.filter(
-          (page) =>
-            page.type === "Page" &&
-            page.additional &&
-            page.additional[0].pageType === "Subpage"
+          (page) => page.type === "Subpage"
         );
 
-        const footers = response.data.filter(
-          (page) =>
-            page.type === "Footer" && page.additional[0].pageType === "Footer"
-        );
+        const footers = response.data.filter((page) => page.type === "Footer");
         setTypePages(mainPages);
         setTypeSubpages(subPages);
         setTypeFooters(footers);
@@ -127,6 +117,7 @@ const Pages = () => {
     pageNameBn,
     slug,
     pageType,
+    type,
     metaTitle,
     metaDescription,
     keywords,
@@ -138,6 +129,7 @@ const Pages = () => {
         page_name_en: pageNameEn,
         page_name_bn: pageNameBn,
         slug: slug,
+        type: type,
         additional: [
           {
             pageType: pageType,
@@ -160,6 +152,7 @@ const Pages = () => {
                   page_name_en: pageNameEn,
                   page_name_bn: pageNameBn,
                   slug: slug,
+                  type: type,
                   additional: [
                     {
                       pageType,
