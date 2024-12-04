@@ -13,6 +13,14 @@ const MenuItemsList = ({
   selectedItemIds,
   setSelectedItemIds,
 }) => {
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedItemIds(menuItems.map((item) => item.id));
+    } else {
+      setSelectedItemIds([]);
+    }
+  };
+
   return (
     <div className="bg-white p-4 shadow-md border-t-2 border-gray-300">
       <Row className="font-semibold border-b pb-2 mb-2">
@@ -22,19 +30,10 @@ const MenuItemsList = ({
               selectedItemIds.length === menuItems.length &&
               menuItems.length > 0
             }
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelectedItemIds(menuItems?.map((item) => item.id));
-              } else {
-                setSelectedItemIds([]);
-              }
-            }}
+            onChange={handleSelectAll}
           />
         </Col>
-        <Col xs={2} md={2}>
-          Item ID
-        </Col>
-        <Col xs={8} md={3}>
+        <Col xs={8} md={4}>
           Item Name
         </Col>
         <Col xs={8} md={4}>
@@ -51,7 +50,7 @@ const MenuItemsList = ({
         </Col>
       </Row>
       {menuItems.length > 0 ? (
-        menuItems?.map((menuItem) => (
+        menuItems.map((menuItem) => (
           <MenuItemRow
             key={menuItem.id}
             menuItem={menuItem}

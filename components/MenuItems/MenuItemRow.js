@@ -11,6 +11,7 @@ import {
   Popconfirm,
   message,
   Checkbox,
+  Tooltip,
 } from "antd";
 import {
   SyncOutlined,
@@ -41,7 +42,7 @@ const MenuItemRow = ({
   const [editedParentId, setEditedParentId] = useState(menuItem.parent_id);
 
   useEffect(() => {
-    if (isEditing) {
+    if (editingItemId === menuItem.id) {
       setEditedTitleEn(menuItem.title);
       setEditedTitleBn(menuItem.title_bn);
       setEditedLink(menuItem.link);
@@ -50,17 +51,66 @@ const MenuItemRow = ({
       );
       setEditedParentId(menuItem.parent_id);
     }
-  }, [isEditing, menuItem]);
+  }, [editingItemId, menuItem]);
+
+  const generateSlug = (text) => {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/[^\w\-]+/g, "");
+  };
+
+  const generateFullLink = (page) => {
+    const parentPaths = [];
+    let currentParentId = editedParentId;
+
+    // Build the parent path slugs
+    while (currentParentId) {
+      const parentMenuItem = menuItems.find(
+        (item) => item.id === currentParentId
+      );
+      if (parentMenuItem) {
+        const slug = generateSlug(parentMenuItem.title);
+        parentPaths.unshift(slug);
+        currentParentId = parentMenuItem.parent_id;
+      } else {
+        break;
+      }
+    }
+
+    // Get the current menu item's slug
+    const currentMenuItemSlug = generateSlug(editedTitleEn);
+
+    // Build the full path
+    const fullPath = `/${[...parentPaths, currentMenuItemSlug].join("/")}`;
+
+    // Build the query parameters
+    const pageId = page ? page.id : "";
+    const pageName = page ? generateSlug(page.page_name_en) : "";
+
+    const queryParams = page ? `?pageId=${pageId}&pageName=${pageName}` : "";
+
+    return fullPath + queryParams;
+  };
 
   const handleUpdate = async () => {
     try {
+      let fullLink = editedLink;
+
+      if (linkType === "page") {
+        const selectedPage = pages.find((page) => page.slug === editedLink);
+        fullLink = generateFullLink(selectedPage);
+      }
+
       const updatedMenuItem = {
         ...menuItem,
         title: editedTitleEn || menuItem.title,
         title_bn: editedTitleBn || menuItem.title_bn,
         parent_id: editedParentId || null,
-        link: editedLink || menuItem.link,
+        link: fullLink || menuItem.link,
       };
+
       const response = await instance.put(
         `/menuitems/${menuItem.id}`,
         updatedMenuItem
@@ -68,7 +118,7 @@ const MenuItemRow = ({
       if (response.status === 200) {
         message.success("Menu item updated successfully");
         setMenuItems((prevMenuItems) =>
-          prevMenuItems?.map((item) =>
+          prevMenuItems.map((item) =>
             item.id === menuItem.id ? response.data : item
           )
         );
@@ -101,29 +151,34 @@ const MenuItemRow = ({
 
   const handleCheckboxChange = (e) => {
     const checked = e.target.checked;
-    if (checked) {
-      setSelectedItemIds([...selectedItemIds, menuItem.id]);
-    } else {
-      setSelectedItemIds(selectedItemIds.filter((id) => id !== menuItem.id));
-    }
+    setSelectedItemIds((prevSelectedItemIds) => {
+      if (checked) {
+        return [...prevSelectedItemIds, menuItem.id];
+      } else {
+        return prevSelectedItemIds.filter((id) => id !== menuItem.id);
+      }
+    });
   };
 
   const isSelected = selectedItemIds.includes(menuItem.id);
+
+  const getParentTitle = (parentId) => {
+    const parent = menuItems.find((item) => item.id === parentId);
+    return parent ? parent.title : "No Parent";
+  };
 
   return (
     <Row className="border-b py-2 items-center">
       <Col xs={2} md={1}>
         <Checkbox checked={isSelected} onChange={handleCheckboxChange} />
       </Col>
-      <Col xs={2} md={2}>
-        <p>{menuItem.id}</p>
-      </Col>
-      <Col xs={8} md={3}>
+      <Col xs={8} md={4}>
         {isEditing ? (
           <Input
             value={editedTitleEn}
             onChange={(e) => setEditedTitleEn(e.target.value)}
             className="w-11/12"
+            placeholder="Item Name"
           />
         ) : (
           <p>{menuItem.title}</p>
@@ -135,6 +190,7 @@ const MenuItemRow = ({
             value={editedTitleBn}
             onChange={(e) => setEditedTitleBn(e.target.value)}
             className="w-11/12"
+            placeholder="আইটেম নাম"
           />
         ) : (
           <p>{menuItem.title_bn || "N/A"}</p>
@@ -149,23 +205,19 @@ const MenuItemRow = ({
             onChange={(value) => setEditedParentId(value)}
             className="w-11/12"
             allowClear
-            value={editedParentId}
+            value={editedParentId || undefined}
           >
             <Option value={null}>No Parent</Option>
             {menuItems
               .filter((item) => item.id !== menuItem.id)
-              ?.map((item) => (
+              .map((item) => (
                 <Option key={item.id} value={item.id}>
                   {item.title}
                 </Option>
               ))}
           </Select>
         ) : (
-          <p>
-            {menuItem.parent_id
-              ? menuItems.find((item) => item.id === menuItem.parent_id)?.title
-              : "N/A"}
-          </p>
+          <p>{getParentTitle(menuItem.parent_id)}</p>
         )}
       </Col>
       <Col xs={8} md={4}>
@@ -183,21 +235,12 @@ const MenuItemRow = ({
                 showSearch
                 placeholder="Select a page"
                 optionFilterProp="children"
-                onChange={(value) => setEditedLink("/" + value)}
+                onChange={(value) => setEditedLink(value)}
                 className="w-11/12 mt-2"
-                value={
-                  menuItem.link && menuItem.link.startsWith("/")
-                    ? menuItem.link.replace("/", "").split("?")[0]
-                    : undefined
-                }
+                value={editedLink || undefined}
               >
-                {pages?.map((page) => (
-                  <Option
-                    key={page.id}
-                    value={`${page.slug}?pageId=${
-                      page.id
-                    }&pageName=${page.page_name_en.replace(/\s/g, "-")}`}
-                  >
+                {pages.map((page) => (
+                  <Option key={page.id} value={page.slug}>
                     {page.page_name_en}
                   </Option>
                 ))}
@@ -207,15 +250,18 @@ const MenuItemRow = ({
                 value={editedLink}
                 onChange={(e) => setEditedLink(e.target.value)}
                 className="mt-2 w-11/12"
+                placeholder="Enter custom link"
               />
             )}
           </>
         ) : (
-          <p className="text-theme underline">
-            {menuItem.link.length > 20
-              ? menuItem.link.slice(0, 20) + "..."
-              : menuItem.link}
-          </p>
+          <Tooltip title={menuItem.link}>
+            <p className="text-theme underline">
+              {menuItem.link.length > 30
+                ? menuItem.link.slice(0, 30) + "..."
+                : menuItem.link}
+            </p>
+          </Tooltip>
         )}
       </Col>
       <Col xs={24} md={6} className="flex gap-2 mt-2 md:mt-0">

@@ -14,6 +14,8 @@ import {
 import { PlusCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import instance from "../../axios";
 
+const { Option } = Select;
+
 const AddMenuItemForm = ({ pages, menuItems, onCancel, fetchMenuItems }) => {
   const [newMenuItemTitle, setNewMenuItemTitle] = useState("");
   const [newMenuItemTitleBn, setNewMenuItemTitleBn] = useState("");
@@ -21,16 +23,87 @@ const AddMenuItemForm = ({ pages, menuItems, onCancel, fetchMenuItems }) => {
   const [linkType, setLinkType] = useState("independent");
   const [newParentId, setNewParentId] = useState(null);
 
+  const generateSlug = (text) => {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/[^\w\-]+/g, "");
+  };
+
+  const generateFullLink = (page) => {
+    const parentPaths = [];
+    let currentParentId = newParentId;
+
+    // Build the parent path slugs
+    while (currentParentId) {
+      const parentMenuItem = menuItems.find(
+        (item) => item.id === currentParentId
+      );
+      if (parentMenuItem) {
+        const slug = generateSlug(parentMenuItem.title);
+        parentPaths.unshift(slug);
+        currentParentId = parentMenuItem.parent_id;
+      } else {
+        break;
+      }
+    }
+
+    // Get the current menu item's slug
+    const currentMenuItemSlug = generateSlug(newMenuItemTitle);
+
+    // Build the full path
+    const fullPath = `/${[...parentPaths, currentMenuItemSlug].join("/")}`;
+
+    // Build the query parameters
+    const pageId = page ? page.id : "";
+    const pageName = page ? generateSlug(page.page_name_en) : "";
+
+    const queryParams = page ? `?pageId=${pageId}&pageName=${pageName}` : "";
+
+    return fullPath + queryParams;
+  };
+
   const handleAddMenuItem = async () => {
     try {
-      const response = await instance.post("/menuitems", [
-        {
-          title: newMenuItemTitle || "N/A",
-          title_bn: newMenuItemTitleBn || "N/A",
-          parent_id: newParentId || null,
-          link: newMenuItemLink ? "/" + newMenuItemLink : "/",
-        },
-      ]);
+      let fullLink = newMenuItemLink ? newMenuItemLink : "/";
+
+      if (linkType === "page") {
+        const selectedPage = pages.find(
+          (page) => page.slug === newMenuItemLink
+        );
+        fullLink = generateFullLink(selectedPage);
+      } else if (linkType === "independent") {
+        // For independent links, include parent paths if any
+        const parentPaths = [];
+        let currentParentId = newParentId;
+
+        while (currentParentId) {
+          const parentMenuItem = menuItems.find(
+            (item) => item.id === currentParentId
+          );
+          if (parentMenuItem) {
+            const slug = generateSlug(parentMenuItem.title);
+            parentPaths.unshift(slug);
+            currentParentId = parentMenuItem.parent_id;
+          } else {
+            break;
+          }
+        }
+
+        const currentMenuItemSlug = generateSlug(newMenuItemTitle);
+        fullLink = `/${[...parentPaths, currentMenuItemSlug].join("/")}`;
+      }
+
+      const newMenuItem = {
+        title: newMenuItemTitle || "N/A",
+        title_bn: newMenuItemTitleBn || "N/A",
+        parent_id: newParentId || null,
+        link: fullLink,
+      };
+
+      const response = await instance.post("/menuitems", [newMenuItem]);
+
       if (response.status === 201) {
         message.success("Menu item added successfully");
         fetchMenuItems();
@@ -72,11 +145,11 @@ const AddMenuItemForm = ({ pages, menuItems, onCancel, fetchMenuItems }) => {
             className="w-full mt-2"
             allowClear
           >
-            <Select.Option value={null}>No Parent</Select.Option>
+            <Option value={null}>No Parent</Option>
             {menuItems?.map((menuItem) => (
-              <Select.Option key={menuItem.id} value={menuItem.id}>
+              <Option key={menuItem.id} value={menuItem.id}>
                 {menuItem.title}
-              </Select.Option>
+              </Option>
             ))}
           </Select>
         </Col>
@@ -100,14 +173,9 @@ const AddMenuItemForm = ({ pages, menuItems, onCancel, fetchMenuItems }) => {
               className="w-full mt-2"
             >
               {pages?.map((page) => (
-                <Select.Option
-                  key={page.id}
-                  value={`${page.slug}?pageId=${
-                    page.id
-                  }&pageName=${page.page_name_en.replace(/\s/g, "-")}`}
-                >
+                <Option key={page.id} value={page.slug}>
                   {page.page_name_en}
-                </Select.Option>
+                </Option>
               ))}
             </Select>
           ) : (

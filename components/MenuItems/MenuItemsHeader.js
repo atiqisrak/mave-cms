@@ -87,7 +87,7 @@ const MenuItemsHeader = ({
               className="mavecancelbutton"
               onClick={() => {
                 navigator.clipboard.writeText(
-                  `${process.env.NEXT_PUBLIC_API_BASE_URL}/menu-items`
+                  `${process.env.NEXT_PUBLIC_API_BASE_URL}/menuitems`
                 );
                 message.success("API Endpoint copied to clipboard");
               }}
