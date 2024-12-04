@@ -70,7 +70,12 @@ const SectionHeader = ({
             allowClear
           />
         ) : (
-          <h2 className="text-xl font-bold ml-2">{section.sectionTitle}</h2>
+          <h2
+            className="text-xl font-bold ml-2 cursor-pointer"
+            onClick={handleEdit}
+          >
+            {section.sectionTitle}
+          </h2>
         )}
       </div>
 

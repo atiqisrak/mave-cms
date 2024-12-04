@@ -56,30 +56,6 @@ const PagesHeader = ({
             </Button>
           ) : (
             <div className="flex items-center gap-2">
-              {title === "Pages" && (
-                <>
-                  <Button
-                    icon={<PlusCircleOutlined />}
-                    className="mavecancelbutton"
-                    onClick={onFooterCreate}
-                  >
-                    Create Footer
-                  </Button>
-                  <Tooltip title="Copy Footers API Endpoint">
-                    <Button
-                      icon={<CopyOutlined />}
-                      className="mavebutton"
-                      onClick={() => {
-                        navigator.clipboard.writeText(
-                          `${process.env.NEXT_PUBLIC_API_BASE_URL}/pages?type=Footer`
-                        );
-                        message.success("API Endpoint copied to clipboard");
-                      }}
-                    ></Button>
-                  </Tooltip>
-                </>
-              )}
-
               <Button
                 icon={<PlusCircleOutlined />}
                 className="mavebutton"
