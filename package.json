@@ -41,6 +41,7 @@
     "formidable": "^3.5.2",
     "froala-editor": "^4.2.0",
     "http-proxy-middleware": "^3.0.0",
+    "idb": "^8.0.0",
     "imagemin": "^8.0.1",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",

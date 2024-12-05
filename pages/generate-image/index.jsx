@@ -1,12 +1,15 @@
-import React, { useState } from "react";
-import { Input, Button, Spin, Alert, Image, Select } from "antd";
-import { SendOutlined } from "@ant-design/icons";
+import React, { useState, useEffect } from "react";
+import { Input, Button, Spin, Alert, Image, Select, Modal } from "antd";
+import { InfoCircleOutlined, SendOutlined } from "@ant-design/icons";
 import axios from "axios";
+import { useRouter } from "next/router";
+import { openDB } from "idb";
 
 const { TextArea } = Input;
 const { Option } = Select;
 
 const GenerateImagePage = () => {
+  const router = useRouter();
   const [prompt, setPrompt] = useState("");
   const [model, setModel] = useState("dall-e-2");
   const [size, setSize] = useState("1024x1024");
@@ -15,6 +18,8 @@ const GenerateImagePage = () => {
   const [imageUrls, setImageUrls] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [limitOver, setLimitOver] = useState(false);
+  const [user, setUser] = useState(null);
 
   const modelOptions = [
     { label: "DALL·E 2", value: "dall-e-2" },
@@ -29,14 +34,87 @@ const GenerateImagePage = () => {
   const qualityOptions = ["standard", "hd"];
   const styleOptions = ["vivid", "natural"];
 
+  const initDB = async () => {
+    return await openDB("GenerateImageDB", 5, {
+      upgrade(db) {
+        if (!db.objectStoreNames.contains("usage")) {
+          db.createObjectStore("usage");
+        }
+      },
+    });
+  };
+
+  const requestPersistentStorage = async () => {
+    if (navigator.storage && navigator.storage.persist) {
+      const isPersisted = await navigator.storage.persisted();
+      if (!isPersisted) {
+        await navigator.storage.persist();
+      }
+    }
+  };
+
+  useEffect(() => {
+    requestPersistentStorage();
+
+    // Fetch user data on mount
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser);
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log("User object:", user); // Debugging
+    if (user?.email === "atiqisrak@niloy.com") {
+      setLimitOver(false);
+    } else {
+      const hasGenerated = localStorage.getItem("hasGenerated");
+      if (hasGenerated) {
+        setLimitOver(true);
+      } else {
+        setLimitOver(false);
+      }
+    }
+  }, [user]);
+
   const handleGenerate = async () => {
+    const db = await initDB();
+
+    let currentUser = user;
+    if (!currentUser) {
+      const userData = localStorage.getItem("user");
+      if (userData) {
+        currentUser = JSON.parse(userData);
+        setUser(currentUser);
+      }
+    }
+
+    console.log("User in handleGenerate:", currentUser); // Debugging
+
+    // Check limit only if user is not the test user
+    if (currentUser?.email !== "atiqisrak@niloy.com") {
+      const hasGeneratedDB = await db.get("usage", "hasGenerated");
+      const hasGeneratedLS = localStorage.getItem("hasGenerated");
+      const hasGeneratedCookie = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("hasGenerated="));
+
+      if (hasGeneratedDB || hasGeneratedLS || hasGeneratedCookie) {
+        setLimitOver(true);
+        return;
+      }
+    }
+
     if (!prompt) {
       setError("Please enter a prompt.");
       return;
     }
+
     setLoading(true);
     setError("");
     setImageUrls([]);
+
     try {
       const response = await axios.post("/api/generate-image", {
         prompt,
@@ -44,8 +122,20 @@ const GenerateImagePage = () => {
         size,
         ...(model === "dall-e-3" ? { quality, style } : {}),
       });
+
       if (response.status === 200) {
         setImageUrls(response.data.imageUrls);
+
+        if (currentUser?.email !== "atiqisrak@niloy.com") {
+          // Set the flag in IndexedDB
+          await db.put("usage", true, "hasGenerated");
+
+          // Also set in localStorage
+          localStorage.setItem("hasGenerated", "true");
+
+          // Also set a cookie (expires in 1 year)
+          document.cookie = "hasGenerated=true; max-age=" + 60 * 60 * 24 * 365;
+        }
       } else {
         setError(response.data.message || "Something went wrong.");
       }
@@ -61,6 +151,10 @@ const GenerateImagePage = () => {
       <h1 className="text-3xl font-bold mb-6 text-center">
         Generate Image from Prompt
       </h1>
+      <p className="text-center mb-4">
+        You can generate one image for free. Upgrade to premium for unlimited
+        access.
+      </p>
       <div className="flex flex-col items-center">
         <TextArea
           rows={4}
@@ -163,6 +257,40 @@ const GenerateImagePage = () => {
             ))}
           </div>
         )}
+        <Modal
+          title={
+            <div className="flex items-center gap-2">
+              <InfoCircleOutlined
+                style={{
+                  color: "var(--theme)",
+                  fontSize: "24px",
+                }}
+              />
+              <h2 className="text-2xl font-semibold">
+                You have reached the limit
+              </h2>
+            </div>
+          }
+          visible={limitOver}
+          footer={null}
+          onCancel={() => setLimitOver(false)}
+        >
+          <div className="flex flex-col items-center">
+            <p className="text-start">
+              You have reached the limit of free image generation. Upgrade to
+              premium for unlimited access.
+            </p>
+            <Button
+              target="_blank"
+              className="mavebutton mt-4"
+              onClick={() => {
+                window.open("https://www.ethertech.ltd/contact-us", "_blank");
+              }}
+            >
+              Upgrade to Premium
+            </Button>
+          </div>
+        </Modal>
       </div>
     </div>
   );
