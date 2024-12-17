@@ -24,6 +24,7 @@ const MenuItems = () => {
   const [sortType, setSortType] = useState("desc");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItemIds, setSelectedItemIds] = useState([]);
+  const [allMenuItems, setAllMenuItems] = useState([]);
 
   // Pagination States
   const [currentPage, setCurrentPage] = useState(1);
@@ -45,6 +46,7 @@ const MenuItems = () => {
           sortType === "asc" ? a.id - b.id : b.id - a.id
         );
         setMenuItems(sortedData);
+        setAllMenuItems(response.data);
         setInitialMenuItems(sortedData);
         setTotalMenuItems(sortedData.length);
         setLoading(false);
@@ -213,6 +215,7 @@ const MenuItems = () => {
             menuItems={paginatedMenuItems}
             pages={pages}
             setMenuItems={setMenuItems}
+            allMenuItems={allMenuItems}
             editingItemId={editingItemId}
             setEditingItemId={setEditingItemId}
             selectedItemIds={selectedItemIds}

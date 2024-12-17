@@ -26,6 +26,7 @@ const { Option } = Select;
 const MenuItemRow = ({
   menuItem,
   menuItems,
+  allMenuItems,
   pages,
   setMenuItems,
   editingItemId,
@@ -67,13 +68,13 @@ const MenuItemRow = ({
 
     // Build the parent path slugs
     while (currentParentId) {
-      const parentMenuItem = menuItems.find(
-        (item) => item.id === currentParentId
+      const parentMenuItem = allMenuItems?.find(
+        (item) => item.id === parseInt(currentParentId)
       );
       if (parentMenuItem) {
         const slug = generateSlug(parentMenuItem.title);
         parentPaths.unshift(slug);
-        currentParentId = parentMenuItem.parent_id;
+        currentParentId = parseInt(parentMenuItem.parent_id);
       } else {
         break;
       }
@@ -163,8 +164,10 @@ const MenuItemRow = ({
   const isSelected = selectedItemIds.includes(menuItem.id);
 
   const getParentTitle = (parentId) => {
-    const parent = menuItems.find((item) => item.id === parentId);
-    return parent ? parent.title : "No Parent";
+    // parentId is string. Convert it to number
+    parentId = parseInt(parentId);
+    const parentMenuItem = allMenuItems.find((item) => item.id === parentId);
+    return parentMenuItem ? parentMenuItem.title : "No Parent";
   };
 
   return (
@@ -197,7 +200,7 @@ const MenuItemRow = ({
         )}
       </Col>
       <Col xs={8} md={4}>
-        {isEditing ? (
+        {isEditing && allMenuItems ? (
           <Select
             showSearch
             placeholder="Select a Parent Menu"
@@ -205,10 +208,11 @@ const MenuItemRow = ({
             onChange={(value) => setEditedParentId(value)}
             className="w-11/12"
             allowClear
-            value={editedParentId || undefined}
+            // value={editedParentId || undefined}
+            value={getParentTitle(editedParentId)}
           >
             <Option value={null}>No Parent</Option>
-            {menuItems
+            {allMenuItems
               .filter((item) => item.id !== menuItem.id)
               .map((item) => (
                 <Option key={item.id} value={item.id}>

@@ -7,6 +7,7 @@ import MenuItemRow from "./MenuItemRow";
 const MenuItemsList = ({
   menuItems,
   pages,
+  allMenuItems,
   setMenuItems,
   editingItemId,
   setEditingItemId,
@@ -55,6 +56,7 @@ const MenuItemsList = ({
             key={menuItem.id}
             menuItem={menuItem}
             menuItems={menuItems}
+            allMenuItems={allMenuItems}
             pages={pages}
             setMenuItems={setMenuItems}
             editingItemId={editingItemId}
