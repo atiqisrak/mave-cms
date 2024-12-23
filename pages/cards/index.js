@@ -23,11 +23,18 @@ const CardsPage = () => {
   const [selectedCard, setSelectedCard] = useState(null);
   const [isPreviewModalVisible, setIsPreviewModalVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+
+  // Page filter
   const [selectedPageFilter, setSelectedPageFilter] = useState(null);
+  // Tag filter
+  const [selectedTag, setSelectedTag] = useState(null);
+  const [uniqueTags, setUniqueTags] = useState([]);
 
   const [form] = Form.useForm();
 
-  // Fetch data
+  // -------------------------
+  //     Fetch Data
+  // -------------------------
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -59,7 +66,74 @@ const CardsPage = () => {
     fetchData();
   }, []);
 
-  // Handlers for header
+  // -------------------------
+  //   Collect Unique Tags
+  // -------------------------
+  useEffect(() => {
+    // Gather all tags from cardsData
+    const tagSet = new Set();
+    cardsData.forEach((card) => {
+      const tags = card?.additional?.tags || [];
+      tags.forEach((t) => tagSet.add(t));
+    });
+    setUniqueTags([...tagSet]);
+  }, [cardsData]);
+
+  // -------------------------
+  //  Filter & Search & Sort
+  // -------------------------
+  useEffect(() => {
+    let tempCards = [...cardsData];
+
+    // Filter by search
+    if (searchTerm.trim()) {
+      tempCards = tempCards.filter((card) =>
+        card?.title_en?.toLowerCase()?.includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Filter by page
+    if (selectedPageFilter) {
+      tempCards = tempCards.filter(
+        (card) => card.page_name === selectedPageFilter
+      );
+    }
+
+    // Filter by tag
+    if (selectedTag) {
+      tempCards = tempCards.filter((card) =>
+        card.additional?.tags?.includes(selectedTag)
+      );
+    }
+
+    // Sorting
+    tempCards.sort((a, b) => {
+      if (sortType === "asc") {
+        return new Date(a.created_at) - new Date(b.created_at);
+      } else {
+        return new Date(b.created_at) - new Date(a.created_at);
+      }
+    });
+
+    setFilteredCards(tempCards);
+    setCurrentPage(1);
+  }, [cardsData, searchTerm, sortType, selectedPageFilter, selectedTag]);
+
+  // -------------------------
+  //     Pagination
+  // -------------------------
+  const indexOfLastCard = currentPage * itemsPerPage;
+  const indexOfFirstCard = indexOfLastCard - itemsPerPage;
+  const currentCards = filteredCards.slice(indexOfFirstCard, indexOfLastCard);
+
+  const handlePageChange = (page, pageSize) => {
+    setCurrentPage(page);
+    setItemsPerPage(pageSize);
+  };
+
+  // -------------------------
+  //   Handlers
+  // -------------------------
   const handleAddCard = () => {
     setIsCreateCardFormVisible(true);
   };
@@ -77,56 +151,22 @@ const CardsPage = () => {
     setSelectedPageFilter(value);
   };
 
-  // Handle search, sorting, and filtering
-  useEffect(() => {
-    let tempCards = [...cardsData];
-
-    if (searchTerm) {
-      tempCards = tempCards.filter((card) =>
-        card?.title_en?.toLowerCase()?.includes(searchTerm?.toLowerCase())
-      );
-    }
-
-    if (selectedPageFilter) {
-      tempCards = tempCards.filter(
-        (card) => card.page_name === selectedPageFilter
-      );
-    }
-
-    tempCards.sort((a, b) => {
-      if (sortType === "asc") {
-        return new Date(a.created_at) - new Date(b.created_at);
-      } else {
-        return new Date(b.created_at) - new Date(a.created_at);
-      }
-    });
-
-    setFilteredCards(tempCards);
-    setCurrentPage(1);
-  }, [cardsData, searchTerm, sortType, selectedPageFilter]);
-
-  // Pagination
-  const indexOfLastCard = currentPage * itemsPerPage;
-  const indexOfFirstCard = indexOfLastCard - itemsPerPage;
-  const currentCards = filteredCards.slice(indexOfFirstCard, indexOfLastCard);
-
-  const handlePageChange = (page, pageSize) => {
-    setCurrentPage(page);
-    setItemsPerPage(pageSize);
+  const handleTagFilterChange = (tagValue) => {
+    setSelectedTag(tagValue);
   };
 
-  // Handle delete
+  // Delete
   const handleDeleteCard = async (cardId) => {
     try {
       await instance.delete(`/cards/${cardId}`);
       message.success("Card deleted successfully.");
       fetchData();
-    } catch (error) {
+    } catch {
       message.error("Failed to delete card.");
     }
   };
 
-  // Handle preview and edit
+  // Preview/Edit
   const handlePreviewCard = (card) => {
     setSelectedCard(card);
     setIsPreviewModalVisible(true);
@@ -135,7 +175,6 @@ const CardsPage = () => {
 
   const handleEditCard = () => {
     setIsEditing(true);
-
     // Determine link type based on link_url
     const linkType =
       selectedCard.link_url &&
@@ -143,8 +182,7 @@ const CardsPage = () => {
         selectedCard.link_url.includes("pageName"))
         ? "page"
         : "independent";
-
-    // If link type is page, extract link_page_id from link_url
+    // Parse link_page_id if page
     let linkPageId = null;
     if (linkType === "page") {
       const urlParams = new URLSearchParams(
@@ -152,14 +190,13 @@ const CardsPage = () => {
       );
       linkPageId = urlParams.get("page_id");
     }
-
     form.setFieldsValue({
       ...selectedCard,
       status: selectedCard.status === 1,
-      page_name: selectedCard.page_name || undefined, // Always present page field
+      page_name: selectedCard.page_name || undefined,
       media_ids: selectedCard.media_ids,
       link_type: linkType,
-      link_page_id: linkPageId ? Number(linkPageId) : undefined, // Conditional link page field
+      link_page_id: linkPageId ? Number(linkPageId) : undefined,
       link_url: linkType === "independent" ? selectedCard.link_url : undefined,
     });
   };
@@ -172,14 +209,11 @@ const CardsPage = () => {
   const handleSaveEdit = async () => {
     try {
       const values = await form.validateFields();
-
       let link_url = values.link_url;
       let link_page_id = null;
 
       if (values.link_type === "page" && values.link_page_id) {
-        const selectedPage = pages.find(
-          (page) => page.id === values.link_page_id
-        );
+        const selectedPage = pages.find((p) => p.id === values.link_page_id);
         if (selectedPage) {
           link_url = `/${selectedPage.slug}?page_id=${selectedPage.id}&pageName=${selectedPage.page_name_en}`;
           link_page_id = selectedPage.id;
@@ -188,16 +222,14 @@ const CardsPage = () => {
           return;
         }
       }
-
-      // Exclude 'link_page_id' from payload
+      // Omit 'link_page_id'
       const { link_page_id: _, ...restValues } = values;
 
       const payload = {
         ...restValues,
         media_ids: values.media_ids,
         status: values.status ? 1 : 0,
-        link_url: link_url,
-        // page_name is the always present field
+        link_url,
         page_name: values.page_name,
       };
 
@@ -206,7 +238,7 @@ const CardsPage = () => {
       setIsEditing(false);
       setIsPreviewModalVisible(false);
       fetchData();
-    } catch (error) {
+    } catch {
       message.error("Failed to update card.");
     }
   };
@@ -223,6 +255,10 @@ const CardsPage = () => {
         pages={pages}
         selectedPageFilter={selectedPageFilter}
         handlePageFilterChange={handlePageFilterChange}
+        // Add new props for tags
+        uniqueTags={uniqueTags}
+        selectedTag={selectedTag}
+        handleTagFilterChange={handleTagFilterChange}
       />
 
       {isCreateCardFormVisible && (

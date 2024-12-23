@@ -1,23 +1,13 @@
 // components/cards/CardsHeader.jsx
 
 import React from "react";
+import { Button, Input, message, Select, Switch, Tooltip } from "antd";
 import {
-  Breadcrumb,
-  Button,
-  Input,
-  message,
-  Select,
-  Switch,
-  Tooltip,
-} from "antd";
-import {
-  HomeFilled,
   PlusCircleOutlined,
   FilterOutlined,
   SearchOutlined,
   CopyOutlined,
 } from "@ant-design/icons";
-import router from "next/router";
 import Image from "next/image";
 
 const { Option } = Select;
@@ -28,11 +18,14 @@ const CardsHeader = ({
   setSortType,
   itemsPerPage,
   onItemsPerPageChange,
-  handleFilter,
   onSearch,
+  uniqueTags,
+  selectedTag,
+  handleTagFilterChange,
 }) => {
   return (
     <>
+      {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-4 border-b-4 border-gray-300 px-6 pt-8 pb-4">
         <div className="flex items-center gap-4">
           <div className="border-2 border-gray-300 bg-white rounded-md py-2 px-3">
@@ -64,11 +57,14 @@ const CardsHeader = ({
                 );
                 message.success("API Endpoint copied to clipboard");
               }}
-            ></Button>
+            />
           </Tooltip>
         </div>
       </div>
-      <div className="flex items-center justify-between gap-4 mb-4 px-3 py-1">
+
+      {/* Sort / Filter / Search Row */}
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-4 px-3 py-1">
+        {/* Sort */}
         <div className="flex items-center gap-4">
           <h2 className="text-lg font-semibold text-gray-500">Sort By:</h2>
           <Switch
@@ -78,7 +74,9 @@ const CardsHeader = ({
             onChange={(checked) => setSortType(checked ? "asc" : "desc")}
           />
         </div>
-        <div className="flex justify-end items-center gap-5">
+
+        {/* Right side */}
+        <div className="flex flex-wrap items-center gap-5">
           <label>Items per page:</label>
           <Select
             defaultValue={itemsPerPage}
@@ -91,13 +89,32 @@ const CardsHeader = ({
             <Option value={48}>48</Option>
             <Option value={100}>100</Option>
           </Select>
-          <Button
+
+          {/* <Button
             icon={<FilterOutlined />}
             className="bg-white text-gray-500 font-semibold text-lg py-5 shadow-md border-2 border-gray-300 w-fit"
-            onClick={handleFilter}
+            onClick={() => message.info("Filter by Page currently in parent.")}
           >
             Filter
-          </Button>
+          </Button> */}
+
+          {/* Tag Filter */}
+          <Select
+            placeholder="Filter by tag"
+            allowClear
+            showSearch
+            style={{ width: 180 }}
+            value={selectedTag}
+            onChange={handleTagFilterChange}
+          >
+            {uniqueTags.map((tag) => (
+              <Option key={tag} value={tag}>
+                {tag}
+              </Option>
+            ))}
+          </Select>
+
+          {/* Search */}
           <Input
             placeholder="Search cards by title..."
             prefix={<SearchOutlined />}

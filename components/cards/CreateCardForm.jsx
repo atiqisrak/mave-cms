@@ -28,7 +28,24 @@ const CreateCardForm = ({ onSuccess, onCancel, pages, media }) => {
   // Placeholder image path
   const PLACEHOLDER_IMAGE = "/images/Image_Placeholder.png";
 
-  // Handle form submission
+  // Media selection
+  const handleMediaSelect = (mediaItem) => {
+    setSelectedMedia(mediaItem);
+    form.setFieldsValue({ media_ids: mediaItem.id });
+    setIsMediaModalVisible(false);
+  };
+
+  // Link type change
+  const handleLinkTypeChange = (e) => {
+    setLinkType(e.target.value);
+    if (e.target.value === "independent") {
+      form.setFieldsValue({ link_page_id: undefined });
+    } else {
+      form.setFieldsValue({ link_url: undefined });
+    }
+  };
+
+  // Submit
   const handleSubmit = async (values) => {
     if (!selectedMedia) {
       message.error("Please select a media item.");
@@ -36,29 +53,35 @@ const CreateCardForm = ({ onSuccess, onCancel, pages, media }) => {
     }
     setSubmitting(true);
 
+    // Build link if page
     let link_url = values.link_url;
     if (values.link_type === "page" && values.link_page_id) {
-      const selectedPage = pages.find(
-        (page) => page.id === values.link_page_id
-      );
-      if (selectedPage) {
-        link_url = `/${selectedPage.slug}?page_id=${selectedPage.id}&pageName=${selectedPage.page_name_en}`;
-      } else {
+      const selectedPage = pages.find((p) => p.id === values.link_page_id);
+      if (!selectedPage) {
         message.error("Selected page not found.");
         setSubmitting(false);
         return;
       }
+      link_url = `/${selectedPage.slug}?page_id=${selectedPage.id}&pageName=${selectedPage.page_name_en}`;
     }
 
-    try {
-      // Exclude 'link_page_id' from payload
-      const { link_page_id, ...restValues } = values;
+    // Prepare additional object
+    const additional = {
+      tags: values.tags || [], // The new tags array
+    };
 
+    try {
       const payload = {
-        ...restValues,
-        media_ids: selectedMedia.id, // Single media ID
-        link_url: link_url,
+        title_en: values.title_en,
+        title_bn: values.title_bn,
+        description_en: values.description_en,
+        description_bn: values.description_bn,
+        page_name: values.page_name,
+        media_ids: selectedMedia.id,
+        link_url,
+        link_type: values.link_type,
         status: values.status ? 1 : 0,
+        additional: additional, // Store here
       };
 
       await instance.post("/cards", payload);
@@ -70,24 +93,8 @@ const CreateCardForm = ({ onSuccess, onCancel, pages, media }) => {
     } catch (error) {
       console.error("Create Card Error:", error);
       message.error("Failed to create card.");
-    }
-    setSubmitting(false);
-  };
-
-  // Handle media selection
-  const handleMediaSelect = (mediaItem) => {
-    setSelectedMedia(mediaItem);
-    form.setFieldsValue({ media_ids: mediaItem.id });
-    setIsMediaModalVisible(false);
-  };
-
-  // Handle link type change
-  const handleLinkTypeChange = (e) => {
-    setLinkType(e.target.value);
-    if (e.target.value === "independent") {
-      form.setFieldsValue({ link_page_id: undefined });
-    } else {
-      form.setFieldsValue({ link_url: undefined });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -274,6 +281,15 @@ const CreateCardForm = ({ onSuccess, onCancel, pages, media }) => {
             <Input placeholder="Enter independent link URL" />
           </Form.Item>
         )}
+
+        {/* Tags in 'additional' */}
+        <Form.Item label="Tags" name="tags">
+          <Select
+            mode="tags"
+            placeholder="Add or select tags"
+            style={{ width: "100%" }}
+          />
+        </Form.Item>
 
         {/* Status Switch */}
         <Form.Item
