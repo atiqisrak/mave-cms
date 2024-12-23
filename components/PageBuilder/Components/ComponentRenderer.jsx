@@ -17,10 +17,12 @@ import GalleryComponent from "./GalleryComponent";
 import GoogleMapComponent from "./GoogleMapComponent";
 import IconListComponent from "./IconListComponent/IconListComponent";
 import TestimonialComponent from "./TestimonialComponent/TestimonialComponent";
+import TitleDescriptionComponent from "./TitleDescriptionComponent";
 
 const COMPONENT_MAP = {
   title: TextComponent,
   description: ParagraphComponent,
+  titledescription: TitleDescriptionComponent,
   media: MediaComponent,
   menu: MenuComponent,
   navbar: NavbarComponent,

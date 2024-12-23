@@ -9,9 +9,12 @@ import MenuItemsHeader from "../../components/MenuItems/MenuItemsHeader";
 import AddMenuItemForm from "../../components/MenuItems/AddMenuItemForm";
 import MenuItemsList from "../../components/MenuItems/MenuItemsList";
 
+const LOCAL_KEY_ITEMS = "mave_menuItems";
+const LOCAL_KEY_PAGES = "mave_pages";
+
 const MenuItems = () => {
+  // Page Title
   useEffect(() => {
-    // Set the dynamic page title for the Home page
     setPageTitle("Menu Items");
   }, []);
 
@@ -20,149 +23,233 @@ const MenuItems = () => {
   const [editingItemId, setEditingItemId] = useState(null);
   const [isAddMenuItemOpen, setIsAddMenuItemOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  // We store pages and menuItems in local state & localStorage
   const [pages, setPages] = useState([]);
   const [sortType, setSortType] = useState("desc");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItemIds, setSelectedItemIds] = useState([]);
   const [allMenuItems, setAllMenuItems] = useState([]);
 
-  // Pagination States
+  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalMenuItems, setTotalMenuItems] = useState(0);
 
-  // Filter States
-  const [filters, setFilters] = useState({
-    parent_id: undefined,
-    // Add more filter fields if needed
-  });
+  // Filters
+  const [filters, setFilters] = useState({ parent_id: undefined });
 
-  const fetchMenuItems = async () => {
+  // ------------------------------
+  //   Load from LocalStorage
+  // ------------------------------
+  const loadFromLocalStorage = () => {
     try {
-      setLoading(true);
+      const storedItems =
+        JSON.parse(localStorage.getItem(LOCAL_KEY_ITEMS)) || [];
+      const storedPages =
+        JSON.parse(localStorage.getItem(LOCAL_KEY_PAGES)) || [];
+      if (storedItems.length > 0) {
+        setAllMenuItems(storedItems);
+        setInitialMenuItems(storedItems);
+      }
+      if (storedPages.length > 0) {
+        setPages(storedPages);
+      }
+    } catch (err) {
+      // Ignore parse errors
+    }
+  };
+
+  // ------------------------------
+  //   Fetch from server
+  // ------------------------------
+  const fetchMenuItems = async () => {
+    setLoading(true);
+    try {
       const response = await instance("/menuitems");
       if (response.data) {
-        let sortedData = response.data.sort((a, b) =>
+        const data = response.data;
+        // Sort once (asc or desc by id)
+        const sortedData = data.sort((a, b) =>
           sortType === "asc" ? a.id - b.id : b.id - a.id
         );
+
         setMenuItems(sortedData);
-        setAllMenuItems(response.data);
+        setAllMenuItems(data);
         setInitialMenuItems(sortedData);
-        setTotalMenuItems(sortedData.length);
-        setLoading(false);
+        setTotalMenuItems(data.length);
+
+        // Save to localStorage
+        localStorage.setItem(LOCAL_KEY_ITEMS, JSON.stringify(data));
       } else {
         message.error("Menu items couldn't be fetched");
-        setLoading(false);
       }
     } catch (error) {
       message.error("Menu items couldn't be fetched");
+    } finally {
       setLoading(false);
     }
   };
 
   const fetchPages = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       const response = await instance("/pages");
       if (response.data) {
         setPages(response.data);
-        setLoading(false);
+        localStorage.setItem(LOCAL_KEY_PAGES, JSON.stringify(response.data));
       } else {
         message.error("Pages couldn't be fetched");
-        setLoading(false);
       }
     } catch (error) {
       message.error("Pages couldn't be fetched");
+    } finally {
       setLoading(false);
     }
   };
 
+  // ------------------------------
+  //   Effects
+  // ------------------------------
   useEffect(() => {
+    // First, try loading from localStorage
+    loadFromLocalStorage();
+    // Then fetch fresh data (only once on mount)
     fetchMenuItems();
     fetchPages();
-  }, [sortType]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  // Whenever sortType changes, re-sort local data (avoid extra server calls)
   useEffect(() => {
-    // Handle search and filter
-    let filteredItems = [...initialMenuItems];
+    const sorted = [...allMenuItems].sort((a, b) =>
+      sortType === "asc" ? a.id - b.id : b.id - a.id
+    );
+    setMenuItems(sorted);
+    setInitialMenuItems(sorted);
+  }, [sortType, allMenuItems]);
 
-    if (searchTerm) {
-      filteredItems = filteredItems.filter((menuItem) =>
-        menuItem.title.toLowerCase().includes(searchTerm.toLowerCase())
+  // Handle search & filter
+  useEffect(() => {
+    let filtered = [...initialMenuItems];
+
+    // Search
+    if (searchTerm.trim()) {
+      filtered = filtered.filter((item) =>
+        item.title?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-
+    // Filter by parent
     if (filters.parent_id) {
-      filteredItems = filteredItems.filter(
-        (menuItem) => menuItem.parent_id === filters.parent_id
+      filtered = filtered.filter(
+        (item) => item.parent_id === filters.parent_id
       );
     }
 
-    setMenuItems(filteredItems);
-    setTotalMenuItems(filteredItems.length);
-    setCurrentPage(1); // Reset to first page when filters change
+    setMenuItems(filtered);
+    setTotalMenuItems(filtered.length);
+    setCurrentPage(1);
   }, [searchTerm, filters, initialMenuItems]);
 
-  const handleAddMenuItem = () => {
-    setIsAddMenuItemOpen(true);
-  };
-
-  const handleCancelAddMenuItem = () => {
-    setIsAddMenuItemOpen(false);
-  };
+  // ------------------------------
+  //   Handlers
+  // ------------------------------
+  const handleAddMenuItem = () => setIsAddMenuItemOpen(true);
+  const handleCancelAddMenuItem = () => setIsAddMenuItemOpen(false);
 
   const handleReset = () => {
     setSearchTerm("");
     setSortType("asc");
-    setFilters({
-      parent_id: undefined,
-    });
-    fetchMenuItems();
+    setFilters({ parent_id: undefined });
+    setSelectedItemIds([]);
+    // If you want to re-fetch from server for a true reset:
+    // fetchMenuItems();
+    // Otherwise, you can just rely on initialMenuItems
+    const sorted = [...allMenuItems].sort((a, b) => a.id - b.id);
+    setMenuItems(sorted);
+    setInitialMenuItems(sorted);
   };
 
   const handleFilter = () => {
-    // The filter modal is handled within MenuItemsHeader
+    // The filter modal is handled in MenuItemsHeader (openFilterModal)
   };
 
   const onShowChange = (value) => {
-    // show number of items
     setItemsPerPage(parseInt(value, 10));
-    setCurrentPage(1); // Reset to first page when items per page change
+    setCurrentPage(1);
   };
 
   const handleSelectAll = () => {
     if (selectedItemIds.length === menuItems.length) {
       setSelectedItemIds([]);
     } else {
-      setSelectedItemIds(menuItems?.map((item) => item.id));
+      setSelectedItemIds(menuItems.map((item) => item.id));
     }
   };
 
-  const applyFilters = (filterValues) => {
-    setFilters(filterValues);
-  };
-
-  const resetFilters = () => {
-    setFilters({
-      parent_id: undefined,
-    });
-  };
+  const applyFilters = (filterValues) => setFilters(filterValues);
+  const resetFilters = () => setFilters({ parent_id: undefined });
 
   const handlePaginationChange = (page) => {
     setCurrentPage(page);
   };
 
-  // Calculate items for the current page
+  // ------------------------------
+  //   Derived Data
+  // ------------------------------
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedMenuItems = menuItems.slice(
     startIndex,
     startIndex + itemsPerPage
   );
 
-  // return loading if menuItems length is less than or equal to 0
-  if (menuItems.length <= 0) {
-    return <Loader />;
-  }
+  // ------------------------------
+  //   Render
+  // ------------------------------
+  // Loader or "No Items"?
+  const renderContent = () => {
+    // If still loading, show loader
+    if (loading) {
+      return (
+        <div className="flex justify-center items-center h-64">
+          <Loader />
+        </div>
+      );
+    }
+    // If not loading and no items
+    if (!loading && menuItems.length === 0) {
+      return (
+        <div className="text-center py-8">
+          <h2>No Menu Items Found</h2>
+        </div>
+      );
+    }
+
+    // Else show list + pagination
+    return (
+      <>
+        <MenuItemsList
+          menuItems={paginatedMenuItems}
+          pages={pages}
+          allMenuItems={allMenuItems}
+          setMenuItems={setMenuItems}
+          editingItemId={editingItemId}
+          setEditingItemId={setEditingItemId}
+          selectedItemIds={selectedItemIds}
+          setSelectedItemIds={setSelectedItemIds}
+        />
+        <div className="flex justify-end mt-4">
+          <Pagination
+            current={currentPage}
+            pageSize={itemsPerPage}
+            total={totalMenuItems}
+            onChange={handlePaginationChange}
+            showSizeChanger={false}
+          />
+        </div>
+      </>
+    );
+  };
 
   return (
     <div className="mavecontainer bg-gray-50 rounded-xl">
@@ -175,19 +262,23 @@ const MenuItems = () => {
         handleFilter={handleFilter}
         onShowChange={onShowChange}
         handleSelectAll={handleSelectAll}
-        allSelected={selectedItemIds.length === menuItems.length}
+        allSelected={
+          selectedItemIds.length === menuItems.length && menuItems.length > 0
+        }
         filterOptions={{
-          parentMenus: pages, // Assuming pages are used as parent menus
+          parentMenus: pages,
         }}
         applyFilters={applyFilters}
         resetFilters={resetFilters}
       />
+
+      {/* Add Menu Item Modal */}
       <Modal
         open={isAddMenuItemOpen}
         onCancel={handleCancelAddMenuItem}
         footer={null}
         title={
-          <div className="flex items-center gap-2 pb-5 border border-b-2 border-gray-200 border-t-transparent border-l-transparent border-r-transparent">
+          <div className="flex items-center gap-2 pb-5 border-b-2 border-gray-200">
             <img
               src="/icons/mave/menuitems.svg"
               alt="Menu Items"
@@ -205,33 +296,9 @@ const MenuItems = () => {
           fetchMenuItems={fetchMenuItems}
         />
       </Modal>
-      {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <Loader />
-        </div>
-      ) : (
-        <>
-          <MenuItemsList
-            menuItems={paginatedMenuItems}
-            pages={pages}
-            setMenuItems={setMenuItems}
-            allMenuItems={allMenuItems}
-            editingItemId={editingItemId}
-            setEditingItemId={setEditingItemId}
-            selectedItemIds={selectedItemIds}
-            setSelectedItemIds={setSelectedItemIds}
-          />
-          <div className="flex justify-end mt-4">
-            <Pagination
-              current={currentPage}
-              pageSize={itemsPerPage}
-              total={totalMenuItems}
-              onChange={handlePaginationChange}
-              showSizeChanger={false}
-            />
-          </div>
-        </>
-      )}
+
+      {/* Main Content */}
+      {renderContent()}
     </div>
   );
 };

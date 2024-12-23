@@ -1,5 +1,3 @@
-// components/MenuItems/MenuItemsList.js
-
 import React from "react";
 import { Row, Col, Checkbox } from "antd";
 import MenuItemRow from "./MenuItemRow";
@@ -14,6 +12,7 @@ const MenuItemsList = ({
   selectedItemIds,
   setSelectedItemIds,
 }) => {
+  // Toggles all items on current page
   const handleSelectAll = (e) => {
     if (e.target.checked) {
       setSelectedItemIds(menuItems.map((item) => item.id));
@@ -50,6 +49,7 @@ const MenuItemsList = ({
           Actions
         </Col>
       </Row>
+
       {menuItems.length > 0 ? (
         menuItems.map((menuItem) => (
           <MenuItemRow

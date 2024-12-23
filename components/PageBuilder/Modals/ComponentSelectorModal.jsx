@@ -18,6 +18,12 @@ const componentOptions = [
     premium: false,
   },
   {
+    type: "titledescription",
+    name: "Title & Desc.",
+    icon: "/icons/mave/textdescription.svg",
+    premium: false,
+  },
+  {
     type: "media",
     name: "Media",
     icon: "/icons/mave/media.svg",

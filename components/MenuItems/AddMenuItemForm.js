@@ -1,5 +1,3 @@
-// components/MenuItems/AddMenuItemForm.js
-
 import React, { useState } from "react";
 import {
   Row,
@@ -23,95 +21,69 @@ const AddMenuItemForm = ({ pages, menuItems, onCancel, fetchMenuItems }) => {
   const [linkType, setLinkType] = useState("independent");
   const [newParentId, setNewParentId] = useState(null);
 
-  const generateSlug = (text) => {
-    return text
+  const generateSlug = (text) =>
+    text
       .toLowerCase()
       .trim()
       .replace(/\s+/g, "-")
-      .replace(/[^\w\-]+/g, "");
-  };
+      .replace(/[^\w-]+/g, "");
 
-  const generateFullLink = (page) => {
-    const parentPaths = [];
-    let currentParentId = newParentId;
-
-    // Build the parent path slugs
-    while (currentParentId) {
-      const parentMenuItem = menuItems.find(
-        (item) => item.id === currentParentId
-      );
-      if (parentMenuItem) {
-        const slug = generateSlug(parentMenuItem.title);
-        parentPaths.unshift(slug);
-        currentParentId = parentMenuItem.parent_id;
-      } else {
-        break;
-      }
+  // Build parent paths recursively
+  const buildParentPath = (parentId) => {
+    const slugs = [];
+    let currentId = parentId;
+    while (currentId) {
+      const parent = menuItems.find((item) => item.id === currentId);
+      if (!parent) break;
+      slugs.unshift(generateSlug(parent.title));
+      currentId = parent.parent_id;
     }
-
-    // Get the current menu item's slug
-    const currentMenuItemSlug = generateSlug(newMenuItemTitle);
-
-    // Build the full path
-    const fullPath = `/${[...parentPaths, currentMenuItemSlug].join("/")}`;
-
-    // Build the query parameters
-    const pageId = page ? page.id : "";
-    const pageName = page ? generateSlug(page.page_name_en) : "";
-
-    const queryParams = page ? `?pageId=${pageId}&pageName=${pageName}` : "";
-
-    return fullPath + queryParams;
+    return slugs;
   };
 
   const handleAddMenuItem = async () => {
-    try {
-      let fullLink = newMenuItemLink ? newMenuItemLink : "/";
+    if (!newMenuItemTitle.trim()) {
+      message.error("Please provide a valid Menu Item Title.");
+      return;
+    }
+    // Decide how to build the link
+    let fullLink = "/";
+    if (linkType === "page") {
+      const selectedPage = pages.find((p) => p.slug === newMenuItemLink);
+      // Build path + query
+      const slugs = buildParentPath(newParentId);
+      slugs.push(generateSlug(newMenuItemTitle));
+      const pageId = selectedPage ? selectedPage.id : "";
+      const pageName = selectedPage
+        ? generateSlug(selectedPage.page_name_en)
+        : "";
+      fullLink = `/${slugs.join("/")}${pageId ? `?pageId=${pageId}&pageName=${pageName}` : ""}`;
+    } else {
+      // Independent link
+      const slugs = buildParentPath(newParentId);
+      slugs.push(generateSlug(newMenuItemTitle));
+      fullLink = `/${slugs.join("/")}`;
+    }
 
-      if (linkType === "page") {
-        const selectedPage = pages.find(
-          (page) => page.slug === newMenuItemLink
-        );
-        fullLink = generateFullLink(selectedPage);
-      } else if (linkType === "independent") {
-        // For independent links, include parent paths if any
-        const parentPaths = [];
-        let currentParentId = newParentId;
-
-        while (currentParentId) {
-          const parentMenuItem = menuItems.find(
-            (item) => item.id === currentParentId
-          );
-          if (parentMenuItem) {
-            const slug = generateSlug(parentMenuItem.title);
-            parentPaths.unshift(slug);
-            currentParentId = parentMenuItem.parent_id;
-          } else {
-            break;
-          }
-        }
-
-        const currentMenuItemSlug = generateSlug(newMenuItemTitle);
-        fullLink = `/${[...parentPaths, currentMenuItemSlug].join("/")}`;
-      }
-
-      const newMenuItem = {
+    const payload = [
+      {
         title: newMenuItemTitle || "N/A",
         title_bn: newMenuItemTitleBn || "N/A",
         parent_id: newParentId || null,
-        link: fullLink,
-      };
+        link: newMenuItemLink?.trim() ? fullLink : "/",
+      },
+    ];
 
-      const response = await instance.post("/menuitems", [newMenuItem]);
-
-      if (response.status === 201) {
+    try {
+      const res = await instance.post("/menuitems", payload);
+      if (res.status === 201) {
         message.success("Menu item added successfully");
         fetchMenuItems();
         onCancel();
       } else {
         message.error("Error adding menu item");
       }
-    } catch (error) {
+    } catch {
       message.error("Error adding menu item");
     }
   };
@@ -135,6 +107,7 @@ const AddMenuItemForm = ({ pages, menuItems, onCancel, fetchMenuItems }) => {
             onChange={(e) => setNewMenuItemTitleBn(e.target.value)}
           />
         </Col>
+
         <Col xs={24} md={12}>
           <Typography.Title level={5}>Parent Menu</Typography.Title>
           <Select
@@ -146,19 +119,20 @@ const AddMenuItemForm = ({ pages, menuItems, onCancel, fetchMenuItems }) => {
             allowClear
           >
             <Option value={null}>No Parent</Option>
-            {menuItems?.map((menuItem) => (
-              <Option key={menuItem.id} value={menuItem.id}>
-                {menuItem.title}
+            {menuItems.map((m) => (
+              <Option key={m.id} value={m.id}>
+                {m.title}
               </Option>
             ))}
           </Select>
         </Col>
+
         <Col xs={24} md={12}>
           <div className="flex justify-between">
             <Typography.Title level={5}>Item Link</Typography.Title>
             <Radio.Group
-              onChange={(e) => setLinkType(e.target.value)}
               value={linkType}
+              onChange={(e) => setLinkType(e.target.value)}
             >
               <Radio value="independent">Independent</Radio>
               <Radio value="page">Page</Radio>
@@ -172,15 +146,15 @@ const AddMenuItemForm = ({ pages, menuItems, onCancel, fetchMenuItems }) => {
               onChange={(value) => setNewMenuItemLink(value)}
               className="w-full mt-2"
             >
-              {pages?.map((page) => (
-                <Option key={page.id} value={page.slug}>
-                  {page.page_name_en}
+              {pages.map((p) => (
+                <Option key={p.id} value={p.slug}>
+                  {p.page_name_en}
                 </Option>
               ))}
             </Select>
           ) : (
             <Input
-              placeholder="Menu Item Link"
+              placeholder="Menu Item Link (leave empty to auto-generate)"
               value={newMenuItemLink}
               onChange={(e) => setNewMenuItemLink(e.target.value)}
               className="mt-2"
@@ -188,6 +162,7 @@ const AddMenuItemForm = ({ pages, menuItems, onCancel, fetchMenuItems }) => {
           )}
         </Col>
       </Row>
+
       <div className="flex justify-end mt-4 gap-5">
         <Button
           icon={<PlusCircleOutlined />}
