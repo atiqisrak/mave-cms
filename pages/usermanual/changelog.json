@@ -1,6 +1,23 @@
 [
     {
-        "version": "v 0.3.49",
+        "version": "3.0.12",
+        "date": "2024-12-23",
+        "changes": {
+            "Feature": [
+                "Introduced a whole new look for the CMS",
+                "Menu item link is rich with query params and parent page and id",
+                "Media and cards can be searched in page builder",
+                "User gets whole new footer builder alike page builder",
+                "Mave AI is now more intelligent and user friendly with conversational experience to build pages smartly"
+            ],
+            "BugFix": [
+                "Menu items parent issue fixed.",
+                "Query params issue fixed in media and cards search"
+            ]
+        }
+    },
+    {
+        "version": "3.0",
         "date": "2024-10-30",
         "changes": {
             "Feature": [
@@ -18,7 +35,7 @@
         }
     },
     {
-        "version": "v 0.3.21",
+        "version": "2.3.21",
         "date": "2024-09-22",
         "changes": {
             "Feature": [
@@ -31,7 +48,7 @@
         }
     },
     {
-        "version": "v 0.3.19",
+        "version": "2.3.19",
         "date": "2024-08-11",
         "changes": {
             "Feature": [
@@ -48,7 +65,7 @@
         }
     },
     {
-        "version": "v 0.3.1",
+        "version": "2.3.1",
         "date": "2024-05-21",
         "changes": {
             "Feature": [
@@ -57,7 +74,7 @@
         }
     },
     {
-        "version": "v 0.2.62",
+        "version": "2.2.62",
         "date": "2024-06-03",
         "changes": {
             "Feature": [
@@ -67,7 +84,7 @@
         }
     },
     {
-        "version": "v 0.2.57",
+        "version": "2.2.57",
         "date": "2024-05-26",
         "changes": {
             "Feature": [
@@ -79,7 +96,7 @@
         }
     },
     {
-        "version": "v 0.2.56",
+        "version": "2.2.56",
         "date": "2024-05-20",
         "changes": {
             "Feature": [
@@ -91,7 +108,7 @@
         }
     },
     {
-        "version": "v 0.2.52",
+        "version": "2.2.52",
         "date": "2024-05-15",
         "changes": {
             "Feature": [
@@ -106,7 +123,7 @@
         }
     },
     {
-        "version": "v 0.2.48",
+        "version": "2.2.48",
         "date": "2024-05-09",
         "changes": {
             "Feature": [
@@ -120,7 +137,7 @@
         }
     },
     {
-        "version": "v 0.2.42",
+        "version": "2.2.42",
         "date": "2024-04-25",
         "changes": {
             "Feature": [
@@ -135,7 +152,7 @@
         }
     },
     {
-        "version": "v 0.2.43",
+        "version": "2.2.43",
         "date": "2024-05-06",
         "changes": {
             "BugFix": [
@@ -147,7 +164,7 @@
         }
     },
     {
-        "version": "v 0.2.40",
+        "version": "2.2.40",
         "date": "2024-04-24",
         "changes": {
             "Feature": [
@@ -156,7 +173,7 @@
         }
     },
     {
-        "version": "v 0.2.38",
+        "version": "2.2.38",
         "date": "2024-04-22",
         "changes": {
             "Feature": [
@@ -165,7 +182,7 @@
         }
     },
     {
-        "version": "v 0.2.36",
+        "version": "2.2.36",
         "date": "2024-04-02",
         "changes": {
             "Feature": [
@@ -174,7 +191,7 @@
         }
     },
     {
-        "version": "v 0.2.35",
+        "version": "2.2.35",
         "date": "2024-03-27",
         "changes": {
             "Feature": [
@@ -184,7 +201,7 @@
         }
     },
     {
-        "version": "v 0.2.34",
+        "version": "2.2.34",
         "date": "2024-03-23",
         "changes": {
             "Feature": [
@@ -195,7 +212,7 @@
         }
     },
     {
-        "version": "v 0.2.26",
+        "version": "2.2.26",
         "date": "2024-03-19",
         "changes": {
             "Feature": [
@@ -208,7 +225,7 @@
         }
     },
     {
-        "version": "v 0.2.11",
+        "version": "2.2.11",
         "date": "2024-03-15",
         "changes": {
             "Feature": [
@@ -221,7 +238,7 @@
         }
     },
     {
-        "version": "v 0.2.9",
+        "version": "2.2.9",
         "date": "2024-03-13",
         "changes": {
             "Feature": [
@@ -234,7 +251,7 @@
         }
     },
     {
-        "version": "v 0.2.7",
+        "version": "2.2.7",
         "date": "2024-03-08",
         "changes": {
             "Feature": [
@@ -247,7 +264,7 @@
         }
     },
     {
-        "version": "v 0.2.5",
+        "version": "2.2.5",
         "date": "2024-03-06",
         "changes": {
             "Feature": [
@@ -264,7 +281,7 @@
         }
     },
     {
-        "version": "v 0.2.3",
+        "version": "1.2.3",
         "date": "2024-03-04",
         "changes": {
             "BugFix": [

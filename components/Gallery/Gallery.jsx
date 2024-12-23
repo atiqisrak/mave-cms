@@ -1,183 +1,246 @@
 // pages/gallery.jsx
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Modal, Spin, message } from "antd";
 import instance from "../../axios";
 import { setPageTitle } from "../../global/constants/pageTitle";
 import GalleryHeader from "./GalleryHeader";
 import MediaTabs from "./MediaTabs";
 import PaginationComponent from "./PaginationComponent";
-import UploadMedia from "./UploadMedia";
 import PreviewModal from "./PreviewModal";
 import UploadMediaTabs from "./UploadMediaTabs";
 
 const Gallery = () => {
-  useEffect(() => {
-    setPageTitle("Media Library");
-  }, []);
-
-  const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-  const [isUploadModalVisible, setIsUploadModalVisible] = useState(false);
+  // For server pagination
+  const [cachedPages, setCachedPages] = useState({}); // { pageNumber: [media array] }
   const [mediaAssets, setMediaAssets] = useState([]);
+  const [totalMediaAssets, setTotalMediaAssets] = useState(0);
+
+  // For local search
+  const [allMedia, setAllMedia] = useState([]);
+
+  // UI states
+  const [searchText, setSearchText] = useState("");
+  const [sortBy, setSortBy] = useState("desc"); // or "asc"
   const [isLoading, setIsLoading] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [isPreviewModalVisible, setIsPreviewModalVisible] = useState(false);
+  const [isUploadModalVisible, setIsUploadModalVisible] = useState(false);
 
-  // Pagination States
+  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
-  const [totalMediaAssets, setTotalMediaAssets] = useState(0);
-
-  // Filter & Sort States
-  const [sortBy, setSortBy] = useState("desc");
-  const [filterSettings, setFilterSettings] = useState({
-    // Add any filter parameters you need
-  });
-
-  // Fetch Media Assets Function
-  const fetchMediaAssets = async (page, count) => {
-    setIsLoading(true);
-    try {
-      const orderType = sortBy === "asc" ? "ASC" : "DESC";
-      // Adjust the API endpoint and query parameters as needed
-      const response = await instance.get(
-        `/media/pageview?page=${page}&count=${count}&order_type=${orderType}`,
-        {
-          params: filterSettings, // Include any filter parameters
-        }
-      );
-
-      if (response?.data && Array.isArray(response.data.data)) {
-        setMediaAssets(response.data.data);
-        setTotalMediaAssets(response.data.total || 0);
-      } else {
-        message.error("Failed to fetch media assets.");
-      }
-    } catch (error) {
-      console.error("Error fetching media assets:", error);
-      message.error("An error occurred while fetching media assets.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   useEffect(() => {
-    fetchMediaAssets(currentPage, itemsPerPage);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, itemsPerPage, sortBy, filterSettings]);
+    setPageTitle("Media Library");
+    loadAllMediaFromLocalStorage(); // Attempt to load from localStorage
+    fetchAllMedia(); // For local search
+    fetchOrGetCachedPage(currentPage, itemsPerPage, sortBy);
+  }, []);
 
-  // Handle Page Change
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+  // ------------------
+  //  Fetch / Caching
+  // ------------------
+
+  // 1) For local search: fetch full data once
+  const fetchAllMedia = async () => {
+    try {
+      const res = await instance.get("/media");
+      const all = res.data?.data || [];
+      setAllMedia(all);
+      localStorage.setItem("allMedia", JSON.stringify(all));
+    } catch {
+      message.error("Error fetching all media.");
+    }
   };
 
-  // Handle Items Per Page Change
-  const handleItemsPerPageChange = (value) => {
-    setItemsPerPage(value);
-    setCurrentPage(1); // Reset to first page when items per page change
-  };
-
-  // Handle Search
-  const handleSearch = async (searchText) => {
-    if (searchText?.trim() === "") {
-      // Reset filters if search text is empty
-      setFilterSettings({});
-      fetchMediaAssets(currentPage, itemsPerPage);
+  // 2) Either return cached page or fetch from server
+  const fetchOrGetCachedPage = async (page, pageSize, order) => {
+    // If we have it cached, skip the API call
+    const cacheKey = `${page}-${order}-${pageSize}`;
+    if (cachedPages[cacheKey]) {
+      setMediaAssets(cachedPages[cacheKey].data);
+      setTotalMediaAssets(cachedPages[cacheKey].total);
       return;
     }
-
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      const response = await instance.get(`/media/search`, {
-        params: { query: searchText, page: currentPage, count: itemsPerPage },
-      });
+      const orderType = order === "asc" ? "ASC" : "DESC";
+      const res = await instance.get(
+        `/media/pageview?page=${page}&count=${pageSize}&order_type=${orderType}`
+      );
+      const pageData = res.data?.data || [];
+      const total = res.data?.total || 0;
 
-      if (response?.data && Array.isArray(response?.data?.data)) {
-        setMediaAssets(response?.data?.data);
-        setTotalMediaAssets(response?.data?.total || 0);
-      } else {
-        message.error("No media found for the search query.");
-        setMediaAssets([]);
-        setTotalMediaAssets(0);
-      }
-    } catch (error) {
-      console.error("Error searching media:", error);
-      message.error("An error occurred while searching for media.");
+      // Cache it
+      setCachedPages((prev) => ({
+        ...prev,
+        [cacheKey]: { data: pageData, total },
+      }));
+
+      setMediaAssets(pageData);
+      setTotalMediaAssets(total);
+    } catch {
+      message.error("Error fetching paginated media.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Handle Filter
-  const handleFilter = () => {
-    // Implement your filter logic here
-    // For example, open a filter modal or update filterSettings state
-    message.info("Filter functionality is not implemented yet.");
+  // Attempt to load full media from local storage on mount
+  const loadAllMediaFromLocalStorage = () => {
+    try {
+      const stored = JSON.parse(localStorage.getItem("allMedia")) || [];
+      setAllMedia(stored);
+    } catch {
+      // ignore JSON parse errors
+    }
   };
 
-  // Handle Copy API Endpoint
-  const copyApiEndpoint = () => {
-    navigator?.clipboard?.writeText(`${API_BASE_URL}/media`);
-    message.success("API Endpoint Copied to Clipboard");
+  // ------------------
+  //    Display Data
+  // ------------------
+
+  // If searching, we filter & (optionally) sort `allMedia` client-side
+  // else we show the server-paginated `mediaAssets`.
+  const displayedMedia = useMemo(() => {
+    if (!searchText.trim()) return mediaAssets;
+
+    let filtered = allMedia.filter(
+      (m) =>
+        m.title?.toLowerCase().includes(searchText.toLowerCase()) ||
+        m.file_name?.toLowerCase().includes(searchText.toLowerCase())
+    );
+
+    // Optional local sort on search
+    filtered = filtered.sort((a, b) => {
+      // Check both title and file_name
+      const aTitle = a.title || a.file_name;
+      const bTitle = b.title || b.file_name;
+      if (sortBy === "asc") return aTitle.localeCompare(bTitle);
+      return bTitle.localeCompare(aTitle);
+    });
+
+    const start = (currentPage - 1) * itemsPerPage;
+    return filtered.slice(start, start + itemsPerPage);
+  }, [mediaAssets, allMedia, searchText, currentPage, itemsPerPage, sortBy]);
+
+  // Correct total for search vs normal view
+  const displayedTotal = useMemo(() => {
+    if (!searchText.trim()) return totalMediaAssets;
+    return allMedia.filter(
+      (m) =>
+        // m.title?.toLowerCase().includes(searchText.toLowerCase())
+        m.title?.toLowerCase().includes(searchText.toLowerCase()) ||
+        m.file_name?.toLowerCase().includes(searchText.toLowerCase())
+    ).length;
+  }, [searchText, allMedia, totalMediaAssets]);
+
+  // ------------------
+  //     Handlers
+  // ------------------
+  const handleSearch = (text) => {
+    setSearchText(text);
+    setCurrentPage(1);
   };
 
-  // Handle Add Media (Open Upload Modal)
-  const handleAddMedia = () => {
-    setIsUploadModalVisible(true);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    if (!searchText.trim()) {
+      fetchOrGetCachedPage(page, itemsPerPage, sortBy);
+    }
   };
 
-  // Handle Upload Modal Close
+  const handleItemsPerPageChange = (size) => {
+    setItemsPerPage(size);
+    setCurrentPage(1);
+    if (!searchText.trim()) {
+      fetchOrGetCachedPage(1, size, sortBy);
+    }
+  };
+
+  const handleSortChange = (newSort) => {
+    setSortBy(newSort);
+    setCurrentPage(1);
+    if (!searchText.trim()) {
+      fetchOrGetCachedPage(1, itemsPerPage, newSort);
+    }
+  };
+
+  const handleAddMedia = () => setIsUploadModalVisible(true);
+
   const handleUploadModalClose = () => {
     setIsUploadModalVisible(false);
-    // Optionally, refresh media assets after upload
-    fetchMediaAssets(currentPage, itemsPerPage);
+    // Refresh current page + fetchAllMedia to keep local search updated
+    fetchOrGetCachedPage(currentPage, itemsPerPage, sortBy);
+    fetchAllMedia();
   };
 
-  // Handle Preview Media
   const handlePreview = (media) => {
     setSelectedMedia(media);
     setIsPreviewModalVisible(true);
   };
 
-  // Handle Edit Media from PreviewModal
+  // Update both local search data & cached page data if something changes
   const handleEdit = (updatedMedia) => {
-    const updatedMediaAssets = mediaAssets?.map((media) =>
-      media?.id === updatedMedia?.id ? updatedMedia : media
+    // Update in allMedia
+    setAllMedia((prev) =>
+      prev.map((m) => (m.id === updatedMedia.id ? updatedMedia : m))
     );
-    setMediaAssets(updatedMediaAssets);
-    message.success("Media updated successfully.");
+
+    // Update in cached pages
+    setCachedPages((prev) => {
+      const updated = { ...prev };
+      for (const key in updated) {
+        updated[key].data = updated[key].data.map((item) =>
+          item.id === updatedMedia.id ? updatedMedia : item
+        );
+      }
+      return updated;
+    });
+    message.success("Updated successfully.");
   };
 
-  // Handle Delete Media
-  const handleDelete = async (mediaId) => {
-    try {
-      Modal.confirm({
-        title: "Delete Media",
-        content: "Are you sure you want to delete this media?",
-        okText: "Yes",
-        cancelText: "No",
-        onOk: async () => {
-          try {
-            await instance.delete(`/media/${mediaId}`);
-            message.success("Media deleted successfully.");
-            // Refresh media assets after deletion
-            fetchMediaAssets(currentPage, itemsPerPage);
-          } catch (error) {
-            console.error("Error deleting media:", error);
-            message.error("An error occurred while deleting the media.");
-          }
-        },
-      });
-    } catch (error) {
-      console.error("Error opening delete confirmation:", error);
-    }
+  const handleDelete = (mediaId) => {
+    Modal.confirm({
+      title: "Delete Media",
+      content: "Are you sure?",
+      onOk: async () => {
+        try {
+          await instance.delete(`/media/${mediaId}`);
+          message.success("Deleted successfully.");
+          fetchAllMedia();
+          // Remove from cached pages
+          setCachedPages((prev) => {
+            const updated = { ...prev };
+            for (const key in updated) {
+              updated[key].data = updated[key].data.filter(
+                (i) => i.id !== mediaId
+              );
+              updated[key].total = updated[key].total - 1;
+            }
+            return updated;
+          });
+          // If current page data changed, update the displayed array
+          fetchOrGetCachedPage(currentPage, itemsPerPage, sortBy);
+        } catch {
+          message.error("Delete error.");
+        }
+      },
+    });
+  };
+
+  const handleFilter = () => message.info("Filter not implemented.");
+  const copyApiEndpoint = () => {
+    navigator?.clipboard?.writeText(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/media`
+    );
+    message.success("Endpoint copied.");
   };
 
   return (
     <div className="gallery-page">
-      {/* Upload Media Modal */}
+      {/* Upload Modal */}
       <Modal
         title="Upload Media"
         open={isUploadModalVisible}
@@ -185,14 +248,13 @@ const Gallery = () => {
         footer={null}
         width={800}
       >
-        {/* <UploadMedia onUploadSuccess={handleUploadModalClose} /> */}
         <UploadMediaTabs
           onUploadSuccess={handleUploadModalClose}
           onSelectMedia={setSelectedMedia}
         />
       </Modal>
 
-      {/* Preview/Edit Media Modal */}
+      {/* Preview Modal */}
       {selectedMedia && (
         <PreviewModal
           visible={isPreviewModalVisible}
@@ -202,8 +264,8 @@ const Gallery = () => {
             selectedMedia?.file_type?.startsWith("image/")
               ? "image"
               : selectedMedia?.file_type?.startsWith("video/")
-              ? "video"
-              : "document"
+                ? "video"
+                : "document"
           }
           handleEdit={handleEdit}
         />
@@ -217,24 +279,24 @@ const Gallery = () => {
         onItemsPerPageChange={handleItemsPerPageChange}
         itemsPerPage={itemsPerPage}
         copyApiEndpoint={copyApiEndpoint}
+        // Suppose there's a dropdown for sort in your Header
+        onSortChange={handleSortChange}
       />
 
-      {/* Loading Spinner */}
+      {/* Content */}
       {isLoading ? (
         <div className="flex justify-center items-center my-10">
           <Spin size="large" />
         </div>
       ) : (
         <MediaTabs
-          images={mediaAssets?.filter((asset) =>
-            asset?.file_type?.startsWith("image/")
+          images={displayedMedia.filter((m) =>
+            m.file_type?.startsWith("image/")
           )}
-          videos={mediaAssets?.filter((asset) =>
-            asset?.file_type?.startsWith("video/")
+          videos={displayedMedia.filter((m) =>
+            m.file_type?.startsWith("video/")
           )}
-          docs={mediaAssets?.filter(
-            (asset) => asset?.file_type === "application/pdf"
-          )}
+          docs={displayedMedia.filter((m) => m.file_type === "application/pdf")}
           handleEdit={handleEdit}
           handleDelete={handleDelete}
           handlePreview={handlePreview}
@@ -246,7 +308,7 @@ const Gallery = () => {
         <PaginationComponent
           current={currentPage}
           pageSize={itemsPerPage}
-          total={totalMediaAssets}
+          total={displayedTotal}
           onChange={handlePageChange}
         />
       )}

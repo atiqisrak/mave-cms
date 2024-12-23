@@ -49,7 +49,7 @@ const Changelog = () => {
                 }}
               >
                 <h3 className="text-2xl font-semibold text-theme mb-10">
-                  Version {log.version}
+                  v {log.version}
                 </h3>
                 <>
                   {Object.entries(log.changes)?.map(([type, changeList]) =>
