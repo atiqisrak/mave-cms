@@ -1,5 +1,3 @@
-// pages/gallery.jsx
-
 import React, { useEffect, useState, useMemo } from "react";
 import { Modal, Spin, message } from "antd";
 import instance from "../../axios";
@@ -11,56 +9,86 @@ import PreviewModal from "./PreviewModal";
 import UploadMediaTabs from "./UploadMediaTabs";
 
 const Gallery = () => {
-  // For server pagination
-  const [cachedPages, setCachedPages] = useState({}); // { pageNumber: [media array] }
-  const [mediaAssets, setMediaAssets] = useState([]);
+  // -------------------
+  //   Server Caching
+  // -------------------
+  // Cache structure: { "page-sortType-pageSize": { data: [], total: number } }
+  const [cachedPages, setCachedPages] = useState({});
+
+  // -------------------
+  //   Display States
+  // -------------------
+  const [mediaAssets, setMediaAssets] = useState([]); // Server-based listing
   const [totalMediaAssets, setTotalMediaAssets] = useState(0);
 
-  // For local search
+  // For full media (local search)
   const [allMedia, setAllMedia] = useState([]);
-
-  // UI states
   const [searchText, setSearchText] = useState("");
-  const [sortBy, setSortBy] = useState("desc"); // or "asc"
+  const [sortType, setSortType] = useState("desc"); // "asc" or "desc"
+
+  // -------------------
+  //   UI States
+  // -------------------
   const [isLoading, setIsLoading] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [isPreviewModalVisible, setIsPreviewModalVisible] = useState(false);
   const [isUploadModalVisible, setIsUploadModalVisible] = useState(false);
 
-  // Pagination
+  // -------------------
+  //  Pagination
+  // -------------------
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
 
+  // -------------------
+  //  Lifecycle
+  // -------------------
   useEffect(() => {
     setPageTitle("Media Library");
-    loadAllMediaFromLocalStorage(); // Attempt to load from localStorage
-    fetchAllMedia(); // For local search
-    fetchOrGetCachedPage(currentPage, itemsPerPage, sortBy);
+    loadAllMediaFromLocalStorage(); // Try loading from storage
+    fetchAllMedia(); // Always fetch once for local search
+    fetchOrGetCachedPage(currentPage, itemsPerPage, sortType);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ------------------
-  //  Fetch / Caching
-  // ------------------
+  // If sort changes and there's no search, re-fetch or use cache
+  useEffect(() => {
+    if (!searchText.trim()) {
+      setCurrentPage(1);
+      fetchOrGetCachedPage(1, itemsPerPage, sortType);
+    }
+  }, [sortType]);
 
-  // 1) For local search: fetch full data once
-  const fetchAllMedia = async () => {
+  // -------------------
+  //  Fetch & Caching
+  // -------------------
+  const loadAllMediaFromLocalStorage = () => {
     try {
-      const res = await instance.get("/media");
-      const all = res.data?.data || [];
-      setAllMedia(all);
-      localStorage.setItem("allMedia", JSON.stringify(all));
+      const stored = JSON.parse(localStorage.getItem("allMedia")) || [];
+      setAllMedia(stored);
     } catch {
-      message.error("Error fetching all media.");
+      // ignore parse error
     }
   };
 
-  // 2) Either return cached page or fetch from server
+  const fetchAllMedia = async () => {
+    try {
+      const res = await instance.get("/media");
+      const data = res?.data || [];
+      setAllMedia(data);
+      localStorage.setItem("allMedia", JSON.stringify(data));
+    } catch {
+      message.error("Error fetching full media for search.");
+    }
+  };
+
+  // Server-based fetch or from cache
   const fetchOrGetCachedPage = async (page, pageSize, order) => {
-    // If we have it cached, skip the API call
     const cacheKey = `${page}-${order}-${pageSize}`;
-    if (cachedPages[cacheKey]) {
-      setMediaAssets(cachedPages[cacheKey].data);
-      setTotalMediaAssets(cachedPages[cacheKey].total);
+    const cached = cachedPages[cacheKey];
+    if (cached) {
+      setMediaAssets(cached.data);
+      setTotalMediaAssets(cached.total);
       return;
     }
     setIsLoading(true);
@@ -69,17 +97,15 @@ const Gallery = () => {
       const res = await instance.get(
         `/media/pageview?page=${page}&count=${pageSize}&order_type=${orderType}`
       );
-      const pageData = res.data?.data || [];
-      const total = res.data?.total || 0;
-
-      // Cache it
+      const fetchedData = res.data?.data || [];
+      const fetchedTotal = res.data?.total || 0;
+      // Save to cache
       setCachedPages((prev) => ({
         ...prev,
-        [cacheKey]: { data: pageData, total },
+        [cacheKey]: { data: fetchedData, total: fetchedTotal },
       }));
-
-      setMediaAssets(pageData);
-      setTotalMediaAssets(total);
+      setMediaAssets(fetchedData);
+      setTotalMediaAssets(fetchedTotal);
     } catch {
       message.error("Error fetching paginated media.");
     } finally {
@@ -87,58 +113,47 @@ const Gallery = () => {
     }
   };
 
-  // Attempt to load full media from local storage on mount
-  const loadAllMediaFromLocalStorage = () => {
-    try {
-      const stored = JSON.parse(localStorage.getItem("allMedia")) || [];
-      setAllMedia(stored);
-    } catch {
-      // ignore JSON parse errors
-    }
-  };
-
-  // ------------------
-  //    Display Data
-  // ------------------
-
-  // If searching, we filter & (optionally) sort `allMedia` client-side
-  // else we show the server-paginated `mediaAssets`.
+  // -------------------
+  //   Display Logic
+  // -------------------
+  // If user is searching, filter + local sort + local pagination
+  // Otherwise, display server data (mediaAssets) + server-based total
   const displayedMedia = useMemo(() => {
     if (!searchText.trim()) return mediaAssets;
 
+    // Filter by title or file_name
     let filtered = allMedia.filter(
       (m) =>
         m.title?.toLowerCase().includes(searchText.toLowerCase()) ||
         m.file_name?.toLowerCase().includes(searchText.toLowerCase())
     );
 
-    // Optional local sort on search
-    filtered = filtered.sort((a, b) => {
-      // Check both title and file_name
-      const aTitle = a.title || a.file_name;
-      const bTitle = b.title || b.file_name;
-      if (sortBy === "asc") return aTitle.localeCompare(bTitle);
-      return bTitle.localeCompare(aTitle);
+    // Local sort when searching
+    filtered.sort((a, b) => {
+      const aTitle = (a.title || a.file_name).toLowerCase();
+      const bTitle = (b.title || b.file_name).toLowerCase();
+      return sortType === "asc"
+        ? aTitle.localeCompare(bTitle)
+        : bTitle.localeCompare(aTitle);
     });
 
+    // Local pagination
     const start = (currentPage - 1) * itemsPerPage;
     return filtered.slice(start, start + itemsPerPage);
-  }, [mediaAssets, allMedia, searchText, currentPage, itemsPerPage, sortBy]);
+  }, [searchText, mediaAssets, allMedia, currentPage, itemsPerPage, sortType]);
 
-  // Correct total for search vs normal view
   const displayedTotal = useMemo(() => {
     if (!searchText.trim()) return totalMediaAssets;
     return allMedia.filter(
       (m) =>
-        // m.title?.toLowerCase().includes(searchText.toLowerCase())
         m.title?.toLowerCase().includes(searchText.toLowerCase()) ||
         m.file_name?.toLowerCase().includes(searchText.toLowerCase())
     ).length;
   }, [searchText, allMedia, totalMediaAssets]);
 
-  // ------------------
-  //     Handlers
-  // ------------------
+  // -------------------
+  //   Handlers
+  // -------------------
   const handleSearch = (text) => {
     setSearchText(text);
     setCurrentPage(1);
@@ -146,34 +161,32 @@ const Gallery = () => {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+    // If no search, get from server or cache
     if (!searchText.trim()) {
-      fetchOrGetCachedPage(page, itemsPerPage, sortBy);
+      fetchOrGetCachedPage(page, itemsPerPage, sortType);
     }
   };
 
-  const handleItemsPerPageChange = (size) => {
-    setItemsPerPage(size);
+  const handleItemsPerPageChange = (value) => {
+    setItemsPerPage(value);
     setCurrentPage(1);
+    // If no search, re-fetch server
     if (!searchText.trim()) {
-      fetchOrGetCachedPage(1, size, sortBy);
+      fetchOrGetCachedPage(1, value, sortType);
     }
   };
 
-  const handleSortChange = (newSort) => {
-    setSortBy(newSort);
-    setCurrentPage(1);
-    if (!searchText.trim()) {
-      fetchOrGetCachedPage(1, itemsPerPage, newSort);
-    }
+  const handleSortTypeChange = (newSort) => {
+    setSortType(newSort);
   };
 
   const handleAddMedia = () => setIsUploadModalVisible(true);
 
   const handleUploadModalClose = () => {
     setIsUploadModalVisible(false);
-    // Refresh current page + fetchAllMedia to keep local search updated
-    fetchOrGetCachedPage(currentPage, itemsPerPage, sortBy);
+    // Refresh both local & server data
     fetchAllMedia();
+    fetchOrGetCachedPage(currentPage, itemsPerPage, sortType);
   };
 
   const handlePreview = (media) => {
@@ -181,24 +194,21 @@ const Gallery = () => {
     setIsPreviewModalVisible(true);
   };
 
-  // Update both local search data & cached page data if something changes
+  // Update in allMedia + cached pages
   const handleEdit = (updatedMedia) => {
-    // Update in allMedia
     setAllMedia((prev) =>
       prev.map((m) => (m.id === updatedMedia.id ? updatedMedia : m))
     );
-
-    // Update in cached pages
     setCachedPages((prev) => {
       const updated = { ...prev };
-      for (const key in updated) {
+      Object.keys(updated).forEach((key) => {
         updated[key].data = updated[key].data.map((item) =>
           item.id === updatedMedia.id ? updatedMedia : item
         );
-      }
+      });
       return updated;
     });
-    message.success("Updated successfully.");
+    message.success("Media updated successfully.");
   };
 
   const handleDelete = (mediaId) => {
@@ -209,28 +219,31 @@ const Gallery = () => {
         try {
           await instance.delete(`/media/${mediaId}`);
           message.success("Deleted successfully.");
-          fetchAllMedia();
-          // Remove from cached pages
+          // Remove from allMedia
+          setAllMedia((prev) => prev.filter((m) => m.id !== mediaId));
+          // Update caches
           setCachedPages((prev) => {
             const updated = { ...prev };
-            for (const key in updated) {
+            Object.keys(updated).forEach((key) => {
               updated[key].data = updated[key].data.filter(
                 (i) => i.id !== mediaId
               );
-              updated[key].total = updated[key].total - 1;
-            }
+              updated[key].total -= 1;
+            });
             return updated;
           });
-          // If current page data changed, update the displayed array
-          fetchOrGetCachedPage(currentPage, itemsPerPage, sortBy);
+          // Re-fetch current page if needed
+          if (!searchText.trim()) {
+            fetchOrGetCachedPage(currentPage, itemsPerPage, sortType);
+          }
         } catch {
-          message.error("Delete error.");
+          message.error("Error deleting media.");
         }
       },
     });
   };
 
-  const handleFilter = () => message.info("Filter not implemented.");
+  const handleFilter = () => message.info("Filter is not implemented yet.");
   const copyApiEndpoint = () => {
     navigator?.clipboard?.writeText(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/media`
@@ -238,6 +251,9 @@ const Gallery = () => {
     message.success("Endpoint copied.");
   };
 
+  // -------------------
+  //   Render
+  // -------------------
   return (
     <div className="gallery-page">
       {/* Upload Modal */}
@@ -278,12 +294,10 @@ const Gallery = () => {
         onSearch={handleSearch}
         onItemsPerPageChange={handleItemsPerPageChange}
         itemsPerPage={itemsPerPage}
-        copyApiEndpoint={copyApiEndpoint}
-        // Suppose there's a dropdown for sort in your Header
-        onSortChange={handleSortChange}
+        sortType={sortType}
+        setSortType={handleSortTypeChange}
       />
 
-      {/* Content */}
       {isLoading ? (
         <div className="flex justify-center items-center my-10">
           <Spin size="large" />
@@ -303,7 +317,6 @@ const Gallery = () => {
         />
       )}
 
-      {/* Pagination */}
       {!isLoading && (
         <PaginationComponent
           current={currentPage}

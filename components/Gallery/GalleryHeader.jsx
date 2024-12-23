@@ -1,7 +1,5 @@
-// components/Gallery/GalleryHeader.jsx
-
 import React from "react";
-import { Button, Input, message, Select, Space, Switch, Tooltip } from "antd";
+import { Button, Input, message, Select, Switch, Tooltip } from "antd";
 import {
   PlusCircleOutlined,
   FilterOutlined,
@@ -19,17 +17,17 @@ const GalleryHeader = ({
   onSearch,
   onItemsPerPageChange,
   itemsPerPage,
-  handleFilter,
   sortType,
   setSortType,
 }) => {
   const router = useRouter();
+
   return (
     <>
       <div className="flex flex-col md:flex-row justify-between items-center mb-4 border-b-4 border-gray-300 px-6 pt-8 pb-4">
         <div className="flex items-center gap-4">
           <div
-            className=" border-2 border-gray-300 bg-white rounded-md py-2 px-3 hover:bg-theme cursor-pointer"
+            className="border-2 border-gray-300 bg-white rounded-md py-2 px-3 hover:bg-theme cursor-pointer"
             onClick={() => router.push("/generate-image")}
           >
             <Image
@@ -42,7 +40,6 @@ const GalleryHeader = ({
           </div>
           <h2 className="text-2xl font-semibold">Gallery</h2>
         </div>
-
         <div className="flex items-center gap-2 mt-4 md:mt-0">
           <Button
             icon={<PlusCircleOutlined />}
@@ -61,16 +58,18 @@ const GalleryHeader = ({
                 );
                 message.success("API Endpoint copied to clipboard");
               }}
-            ></Button>
+            />
           </Tooltip>
         </div>
       </div>
+
+      {/* Sort / Search / Filter */}
       <div className="flex items-center justify-between gap-4 mb-4 px-3 py-1">
         <div className="flex items-center gap-4">
           <h2 className="text-lg font-semibold text-gray-500">Sort By:</h2>
           <Switch
-            checkedChildren="Last"
-            unCheckedChildren="First"
+            checkedChildren="ASC"
+            unCheckedChildren="DESC"
             checked={sortType === "asc"}
             onChange={(checked) => setSortType(checked ? "asc" : "desc")}
           />
@@ -91,13 +90,12 @@ const GalleryHeader = ({
           <Button
             icon={<FilterOutlined />}
             className="bg-white text-gray-500 font-semibold text-lg py-5 shadow-md border-2 border-gray-300 w-fit"
-            onClick={handleFilter}
+            onClick={onFilter}
           >
             Filter
           </Button>
-
           <Input
-            placeholder="Search media by title..."
+            placeholder="Search media..."
             prefix={<SearchOutlined />}
             allowClear
             onChange={(e) => onSearch(e.target.value)}
