@@ -34,6 +34,7 @@
     "cloudinary": "^2.5.1",
     "croppie": "^2.6.5",
     "dayjs": "^1.11.13",
+    "dexie": "^4.0.10",
     "dompurify": "^3.2.0",
     "dotenv": "^16.3.1",
     "event-source-polyfill": "^1.0.31",

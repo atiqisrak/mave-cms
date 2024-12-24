@@ -1,4 +1,6 @@
-import React from "react";
+// components/Gallery/GalleryHeader.jsx
+
+import React, { useState, useEffect } from "react";
 import { Button, Input, message, Select, Switch, Tooltip } from "antd";
 import {
   PlusCircleOutlined,
@@ -15,12 +17,25 @@ const GalleryHeader = ({
   onCreate,
   onFilter,
   onSearch,
+  onTagFilterChange, // new
   onItemsPerPageChange,
   itemsPerPage,
   sortType,
   setSortType,
 }) => {
   const router = useRouter();
+
+  // Suppose you have an API or cache that holds all unique tags.
+  // For simplicity, let's just do a local state of known tags.
+  // You might fetch real tags from an endpoint or from your Media data
+  const [allTags, setAllTags] = useState([]);
+
+  const [tagValue, setTagValue] = useState(null);
+
+  const handleTagSelect = (value) => {
+    setTagValue(value || null);
+    onTagFilterChange(value || null);
+  };
 
   return (
     <>
@@ -64,7 +79,7 @@ const GalleryHeader = ({
       </div>
 
       {/* Sort / Search / Filter */}
-      <div className="flex items-center justify-between gap-4 mb-4 px-3 py-1">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-4 px-3 py-1">
         <div className="flex items-center gap-4">
           <h2 className="text-lg font-semibold text-gray-500">Sort By:</h2>
           <Switch
@@ -74,7 +89,9 @@ const GalleryHeader = ({
             onChange={(checked) => setSortType(checked ? "asc" : "desc")}
           />
         </div>
-        <div className="flex justify-end items-center gap-5">
+
+        <div className="flex flex-wrap items-center gap-5">
+          {/* Items per page */}
           <label>Items per page:</label>
           <Select
             defaultValue={itemsPerPage}
@@ -87,6 +104,8 @@ const GalleryHeader = ({
             <Option value={48}>48</Option>
             <Option value={100}>100</Option>
           </Select>
+
+          {/* Filter button (optional) */}
           <Button
             icon={<FilterOutlined />}
             className="bg-white text-gray-500 font-semibold text-lg py-5 shadow-md border-2 border-gray-300 w-fit"
@@ -94,6 +113,24 @@ const GalleryHeader = ({
           >
             Filter
           </Button>
+
+          {/* Tag Filter */}
+          <Select
+            placeholder="Filter by tag"
+            allowClear
+            style={{ width: 150 }}
+            showSearch
+            value={tagValue}
+            onChange={handleTagSelect}
+          >
+            {allTags.map((tag) => (
+              <Option key={tag} value={tag}>
+                {tag}
+              </Option>
+            ))}
+          </Select>
+
+          {/* Search */}
           <Input
             placeholder="Search media..."
             prefix={<SearchOutlined />}

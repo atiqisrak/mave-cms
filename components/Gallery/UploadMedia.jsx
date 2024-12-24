@@ -10,6 +10,7 @@ import {
 import axios from "axios"; // Use axios directly for Cloudinary
 import instance from "../../axios"; // Existing axios instance for your backend
 import Image from "next/image";
+import { addMediaToDB } from "../../utils/indexedDB";
 
 const { Dragger } = Upload;
 
@@ -43,7 +44,6 @@ const UploadMedia = ({
     }
     return isValidSize && isValidType;
   };
-
   const handleChange = ({ file, fileList: newFileList }) => {
     // Update the fileList with progress and status
     setFileList(
