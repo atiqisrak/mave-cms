@@ -1,6 +1,6 @@
 // components/Gallery/GalleryHeader.jsx
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Button, Input, message, Select, Switch, Tooltip } from "antd";
 import {
   PlusCircleOutlined,
@@ -17,20 +17,16 @@ const GalleryHeader = ({
   onCreate,
   onFilter,
   onSearch,
-  onTagFilterChange, // new
+  onTagFilterChange,
   onItemsPerPageChange,
   itemsPerPage,
   sortType,
   setSortType,
+  availableTags, // New prop for available tags
 }) => {
   const router = useRouter();
 
-  // Suppose you have an API or cache that holds all unique tags.
-  // For simplicity, let's just do a local state of known tags.
-  // You might fetch real tags from an endpoint or from your Media data
-  const [allTags, setAllTags] = useState([]);
-
-  const [tagValue, setTagValue] = useState(null);
+  const [tagValue, setTagValue] = React.useState(null);
 
   const handleTagSelect = (value) => {
     setTagValue(value || null);
@@ -94,7 +90,7 @@ const GalleryHeader = ({
           {/* Items per page */}
           <label>Items per page:</label>
           <Select
-            defaultValue={itemsPerPage}
+            value={itemsPerPage}
             onChange={onItemsPerPageChange}
             style={{ width: 120 }}
             showSearch
@@ -106,13 +102,13 @@ const GalleryHeader = ({
           </Select>
 
           {/* Filter button (optional) */}
-          <Button
+          {/* <Button
             icon={<FilterOutlined />}
             className="bg-white text-gray-500 font-semibold text-lg py-5 shadow-md border-2 border-gray-300 w-fit"
             onClick={onFilter}
           >
             Filter
-          </Button>
+          </Button> */}
 
           {/* Tag Filter */}
           <Select
@@ -123,7 +119,7 @@ const GalleryHeader = ({
             value={tagValue}
             onChange={handleTagSelect}
           >
-            {allTags.map((tag) => (
+            {availableTags.map((tag) => (
               <Option key={tag} value={tag}>
                 {tag}
               </Option>

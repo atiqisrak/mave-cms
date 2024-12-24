@@ -91,7 +91,7 @@ const useMediaData = () => {
       console.log("Starting to populate IndexedDB with all media...");
 
       while (keepFetching) {
-        const url = `/media/pageview?page=${page}&count=${pageSize}&order_type=ASC`;
+        const url = `/media/pageview?page=${page}&count=${pageSize}`;
         console.log(`Fetching page ${page} from API: ${url}`);
         const res = await instance.get(url);
         const data = res.data?.data || [];
@@ -114,7 +114,7 @@ const useMediaData = () => {
       if (allMedia.length > 0) {
         await addMediaToDB(allMedia);
         setIsIndexedDBLoaded(true);
-        message.success("All media loaded into IndexedDB for offline access.");
+        // message.success("All media loaded into IndexedDB for offline access.");
         console.log("All media successfully added to IndexedDB.");
       } else {
         console.warn("No media fetched to add to IndexedDB.");
@@ -129,7 +129,7 @@ const useMediaData = () => {
   useEffect(() => {
     const initialize = async () => {
       try {
-        const allMedia = await getPaginatedMediaFromDB(1, 1, "asc", "", "");
+        const allMedia = await getPaginatedMediaFromDB(1, 1, "desc", "", "");
         if (allMedia.total > 0) {
           setIsIndexedDBLoaded(true);
         }
@@ -201,9 +201,18 @@ const useMediaData = () => {
   // Add Media
   const addMedia = useCallback(async (media) => {
     try {
-      await addMediaToDB([media]);
-      setMediaAssets((prev) => [media, ...prev]);
-      setTotalMediaAssets((prev) => prev + 1);
+      await addMediaToDB(Array.isArray(media) ? media : [media]);
+      //   setMediaAssets((prev) =>
+      //     Array.isArray(media) ? [...media, ...prev] : [media, ...prev]
+      //   );
+
+      setMediaAssets((prev) =>
+        Array.isArray(media) ? [...prev, ...media] : [...prev, media]
+      );
+
+      setTotalMediaAssets((prev) =>
+        Array.isArray(media) ? prev + media.length : prev + 1
+      );
       message.success("Media added successfully.");
     } catch (error) {
       console.error("Error adding media:", error);
@@ -245,7 +254,11 @@ const useMediaData = () => {
   const handleItemsPerPageChange = (size) => setItemsPerPage(size);
   const handleSortTypeChange = (type) => setSortType(type);
   const handleSearch = (text) => setSearchText(text);
-  const handleTagFilterChange = (tag) => setSelectedTag(tag);
+  //   const handleTagFilterChange = (tag) => setSelectedTag(tag);
+  const handleTagFilterChange = (tag) => {
+    setSelectedTag(tag);
+    setCurrentPage(1); // Reset to first page on tag change
+  };
 
   return {
     mediaAssets,

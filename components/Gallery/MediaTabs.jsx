@@ -14,39 +14,44 @@ const MediaTabs = ({
   handleEdit,
   handleDelete,
   handlePreview,
+  availableTags, // New prop for available tags
 }) => {
   return (
     <Tabs defaultActiveKey="1" centered animated type="card">
-      <TabPane tab="Images" key="1">
+      <TabPane tab={`Images (${images.length})`} key="1">
         <MediaGrid
           mediaItems={images}
           mediaType="image"
           handleEdit={handleEdit}
           handleDelete={handleDelete}
           handlePreview={handlePreview}
+          availableTags={availableTags} // Pass availableTags
         />
       </TabPane>
-      <TabPane tab="Videos" key="2">
+      <TabPane tab={`Videos (${videos.length})`} key="2">
         <MediaGrid
           mediaItems={videos}
           mediaType="video"
           handleEdit={handleEdit}
           handleDelete={handleDelete}
           handlePreview={handlePreview}
+          availableTags={availableTags} // Pass availableTags
         />
       </TabPane>
-      <TabPane tab="Docs" key="3">
+      <TabPane tab={`Docs (${docs.length})`} key="3">
         <MediaGrid
           mediaItems={docs}
           mediaType="document"
           handleEdit={handleEdit}
           handleDelete={handleDelete}
           handlePreview={handlePreview}
+          availableTags={availableTags} // Pass availableTags
         />
       </TabPane>
 
       <TabPane tab="Cloudinary" key="4">
-        <Cloudinary />
+        <Cloudinary availableTags={availableTags} />{" "}
+        {/* Pass availableTags if needed */}
       </TabPane>
     </Tabs>
   );

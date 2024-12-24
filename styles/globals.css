@@ -484,7 +484,9 @@ a:hover {
   border-radius: 25px;
   border: 2px solid #f0f0f0;
   background-color: white;
-  transition: background-color 0.3s, box-shadow 0.3s;
+  transition:
+    background-color 0.3s,
+    box-shadow 0.3s;
 }
 
 .support-card:hover {
@@ -632,4 +634,14 @@ a:hover {
 
 .masonry-item:hover {
   transform: scale(1.05);
+}
+
+/* globals.css */
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }

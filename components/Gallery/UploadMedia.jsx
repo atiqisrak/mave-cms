@@ -19,6 +19,7 @@ const UploadMedia = ({
   selectionMode = "single",
   onSelectMedia,
   uploadDestination = "backend", // New prop with default value
+  addMediaToDB, // New prop for adding media to IndexedDB
 }) => {
   const [fileList, setFileList] = useState([]);
   const [uploading, setUploading] = useState(false);
@@ -114,6 +115,10 @@ const UploadMedia = ({
         onSuccess(response.data, file);
         message.success(`${file.name} uploaded successfully.`);
         onUploadSuccess();
+
+        // Add media to IndexedDB
+        const uploadedMediaArray = response.data.data || [];
+        await addMedia(uploadedMediaArray);
 
         // Handle selection after upload
         if (selectionMode === "single") {

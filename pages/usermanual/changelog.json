@@ -1,5 +1,18 @@
 [
     {
+        "version": "3.0.14",
+        "date": "2024-12-24",
+        "changes": {
+            "Feature": [
+                "Gallery and Cards got advanced searching and filtering options",
+                "Card and Image got new feature \"tag\" which can be used to filter and categorize"
+            ],
+            "BugFix": [
+                "Sorting issue in Gallery is fixed"
+            ]
+        }
+    },
+    {
         "version": "3.0.12",
         "date": "2024-12-23",
         "changes": {

@@ -37,10 +37,24 @@ const Gallery = () => {
   const [selectedMedia, setSelectedMedia] = React.useState(null);
   const [isUploadModalVisible, setIsUploadModalVisible] = React.useState(false);
 
+  // State for Unique Tags
+  const [uniqueTags, setUniqueTags] = useState([]);
+
   // Set the page title
   useEffect(() => {
     setPageTitle("Media Library");
   }, []);
+
+  // Extract unique tags from mediaAssets
+  useEffect(() => {
+    const tagsSet = new Set();
+    mediaAssets.forEach((media) => {
+      if (Array.isArray(media.tags)) {
+        media.tags.forEach((tag) => tagsSet.add(tag));
+      }
+    });
+    setUniqueTags([...tagsSet]);
+  }, [mediaAssets]);
 
   // Handlers for opening and closing modals
   const handleAddMedia = () => setIsUploadModalVisible(true);
@@ -61,7 +75,7 @@ const Gallery = () => {
       {/* Upload Modal */}
       <Modal
         title="Upload Media"
-        visible={isUploadModalVisible}
+        open={isUploadModalVisible}
         onCancel={handleUploadModalClose}
         footer={null}
         width={800}
@@ -86,6 +100,7 @@ const Gallery = () => {
                 : "document"
           }
           handleEdit={editMedia}
+          availableTags={uniqueTags} // Pass uniqueTags to PreviewModal
         />
       )}
 
@@ -101,6 +116,7 @@ const Gallery = () => {
         itemsPerPage={itemsPerPage}
         sortType={sortType}
         setSortType={handleSortTypeChange}
+        availableTags={uniqueTags} // Pass uniqueTags to GalleryHeader
       />
 
       {/* Media Grid or Loading Spinner */}

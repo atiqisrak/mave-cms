@@ -1,14 +1,26 @@
 // components/Gallery/PreviewModal.jsx
 
 import React, { useState, useEffect } from "react";
-import { Button, Form, Input, message, Modal, Select, Table, Tag } from "antd";
-import { CopyOutlined, EditOutlined } from "@ant-design/icons";
+import { Button, Form, Input, message, Modal, Select, Tag, Space } from "antd";
+import {
+  CloseOutlined,
+  CloudOutlined,
+  CopyOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 import instance from "../../axios";
 import Image from "next/image";
 
 const { Option } = Select;
 
-const PreviewModal = ({ visible, onClose, media, mediaType, handleEdit }) => {
+const PreviewModal = ({
+  visible,
+  onClose,
+  media,
+  mediaType,
+  handleEdit,
+  availableTags, // New prop for available tags
+}) => {
   const [editMode, setEditMode] = useState(false);
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -19,7 +31,9 @@ const PreviewModal = ({ visible, onClose, media, mediaType, handleEdit }) => {
     {
       key: "size",
       label: "Size",
-      value: media.file_size || "Size not available",
+      value: media.file_size
+        ? `${(media.file_size / (1024 * 1024)).toFixed(2)} MB`
+        : "Size not available",
     },
     { key: "type", label: "Type", value: media.file_type },
     {
@@ -45,7 +59,7 @@ const PreviewModal = ({ visible, onClose, media, mediaType, handleEdit }) => {
     if (editMode) {
       form.setFieldsValue({
         title: media.title || "",
-        tags: media.tags || [],
+        tags: Array.isArray(media.tags) ? media.tags : [],
       });
     }
   }, [editMode, media, form]);
@@ -53,13 +67,16 @@ const PreviewModal = ({ visible, onClose, media, mediaType, handleEdit }) => {
   const handleFormSubmit = async (values) => {
     setIsSubmitting(true);
     try {
-      const response = await instance.put(`/media/${media.id}`, {
+      const updatedMedia = {
+        ...media,
         title: values.title,
-        tags: values.tags || [],
-      });
+        tags: Array.isArray(values.tags) ? values.tags : [],
+        updated_at: new Date().toISOString(),
+      };
+      const response = await instance.put(`/media/${media.id}`, updatedMedia);
       if (response.status === 200) {
         message.success("Media updated successfully.");
-        handleEdit(response.data); // parent updates cache
+        handleEdit(updatedMedia); // parent updates cache and IndexedDB
         setEditMode(false);
         onClose();
       } else {
@@ -82,7 +99,8 @@ const PreviewModal = ({ visible, onClose, media, mediaType, handleEdit }) => {
           alt={media.file_name}
           width={700}
           height={400}
-          style={{ objectFit: "cover" }}
+          objectFit="contain"
+          objectPosition="center"
           className="rounded-md"
         />
       )}
@@ -104,21 +122,14 @@ const PreviewModal = ({ visible, onClose, media, mediaType, handleEdit }) => {
         />
       )}
 
-      <Table
-        dataSource={infoRows}
-        columns={[
-          {
-            title: "Attribute",
-            dataIndex: "label",
-            key: "label",
-            width: "30%",
-          },
-          { title: "Value", dataIndex: "value", key: "value" },
-        ]}
-        pagination={false}
-        rowKey="key"
-        className="my-4"
-      />
+      <div className="my-4">
+        {infoRows.map((row) => (
+          <div key={row.key} className="mb-2">
+            <strong>{row.label}:</strong>{" "}
+            {Array.isArray(row.value) ? row.value : row.value}
+          </div>
+        ))}
+      </div>
 
       <div className="flex justify-between">
         <Button
@@ -128,28 +139,30 @@ const PreviewModal = ({ visible, onClose, media, mediaType, handleEdit }) => {
         >
           Edit
         </Button>
-        <Button
-          className="mavebutton"
-          onClick={() => {
-            navigator.clipboard.writeText(`/${media.file_path}`);
-            message.success("Relative Path copied to clipboard.");
-          }}
-          icon={<CopyOutlined />}
-        >
-          Copy Path
-        </Button>
-        <Button
-          className="mavebutton"
-          onClick={() => {
-            navigator.clipboard.writeText(
-              `${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`
-            );
-            message.success("Full Link copied to clipboard.");
-          }}
-          icon={<CopyOutlined />}
-        >
-          Copy Link
-        </Button>
+        <Space>
+          <Button
+            className="mavebutton"
+            onClick={() => {
+              navigator.clipboard.writeText(`/${media.file_path}`);
+              message.success("Relative Path copied to clipboard.");
+            }}
+            icon={<CopyOutlined />}
+          >
+            Copy Path
+          </Button>
+          <Button
+            className="mavebutton"
+            onClick={() => {
+              navigator.clipboard.writeText(
+                `${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`
+              );
+              message.success("Full Link copied to clipboard.");
+            }}
+            icon={<CopyOutlined />}
+          >
+            Copy Link
+          </Button>
+        </Space>
       </div>
     </>
   );
@@ -164,15 +177,18 @@ const PreviewModal = ({ visible, onClose, media, mediaType, handleEdit }) => {
         <Input />
       </Form.Item>
       <Form.Item label="Tags" name="tags">
-        {/* mode="tags" so user can add new or pick existing from media.tags */}
-        <Select mode="tags" placeholder="Enter tags" style={{ width: "100%" }}>
-          {/* Optionally map existing tags if you want suggestions */}
-          {media.tags &&
-            media.tags.map((tag) => (
-              <Option key={tag} value={tag}>
-                {tag}
-              </Option>
-            ))}
+        {/* mode="tags" so user can add new or pick existing from availableTags */}
+        <Select
+          mode="tags"
+          placeholder="Enter tags"
+          style={{ width: "100%" }}
+          tokenSeparators={[","]}
+        >
+          {availableTags.map((tag) => (
+            <Option key={tag} value={tag}>
+              {tag}
+            </Option>
+          ))}
         </Select>
       </Form.Item>
 
@@ -180,7 +196,7 @@ const PreviewModal = ({ visible, onClose, media, mediaType, handleEdit }) => {
         <Button
           type="primary"
           htmlType="submit"
-          icon={<EditOutlined />}
+          icon={<CloudOutlined />}
           loading={isSubmitting}
           className="mavebutton"
         >
@@ -188,7 +204,7 @@ const PreviewModal = ({ visible, onClose, media, mediaType, handleEdit }) => {
         </Button>
         <Button
           onClick={() => setEditMode(false)}
-          icon={<CopyOutlined />}
+          icon={<CloseOutlined />}
           className="mavecancelbutton"
         >
           Cancel
@@ -202,7 +218,7 @@ const PreviewModal = ({ visible, onClose, media, mediaType, handleEdit }) => {
       open={visible}
       onCancel={onClose}
       footer={null}
-      width={700}
+      width={900}
       centered
       title={media.title || media.file_name}
     >
