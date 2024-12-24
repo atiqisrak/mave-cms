@@ -62,6 +62,19 @@ const CardsPage = () => {
     setLoading(false);
   };
 
+  const fetchCards = async () => {
+    try {
+      const response = await instance.get("/cards");
+      if (response.status === 200) {
+        setCardsData(response.data);
+      } else {
+        message.error("Failed to fetch cards.");
+      }
+    } catch {
+      message.error("Failed to fetch cards.");
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -270,6 +283,7 @@ const CardsPage = () => {
           onCancel={() => setIsCreateCardFormVisible(false)}
           pages={pages}
           media={media}
+          uniqueTags={uniqueTags}
         />
       )}
 
@@ -321,6 +335,8 @@ const CardsPage = () => {
         handleCancelEdit={handleCancelEdit}
         pages={pages}
         media={media}
+        uniqueTags={uniqueTags}
+        fetchCards={fetchCards}
       />
     </div>
   );

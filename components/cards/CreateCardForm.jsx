@@ -18,7 +18,7 @@ import Image from "next/image";
 
 const { Option } = Select;
 
-const CreateCardForm = ({ onSuccess, onCancel, pages, media }) => {
+const CreateCardForm = ({ onSuccess, onCancel, pages, media, uniqueTags }) => {
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
   const [isMediaModalVisible, setIsMediaModalVisible] = useState(false);
@@ -288,6 +288,7 @@ const CreateCardForm = ({ onSuccess, onCancel, pages, media }) => {
             mode="tags"
             placeholder="Add or select tags"
             style={{ width: "100%" }}
+            options={uniqueTags.map((tag) => ({ label: tag, value: tag }))}
           />
         </Form.Item>
 
