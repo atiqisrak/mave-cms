@@ -2,12 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { Drawer, Form, Button, Typography, Select, message } from "antd";
-import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
-
 import CSVImportSection from "./CSVImportSection";
 import HeadersSection from "./HeadersSection";
 import RowsSection from "./RowsSection";
-// import StylingSection from "./StylingSection"; // REMOVE or comment out
 import PreviewTable from "./PreviewTable";
 
 const { Title } = Typography;
@@ -21,36 +18,39 @@ const TableSelectionDrawer = ({
 }) => {
   const [form] = Form.useForm();
 
-  // 1) Basic table data states
+  // 1) Table Data
+  // headers = array of { id, name }
   const [headers, setHeaders] = useState(
-    initialTable?.headers || ["Column 1 Heading"]
+    initialTable?.headers || [{ id: "default-1", name: "Column 1 Heading" }]
   );
+  // rows = array of arrays, e.g. [["foo","bar"], ["baz","qux"]]
   const [rows, setRows] = useState(
-    initialTable?.rows || [Array(initialTable?.headers?.length || 1).fill("")]
+    initialTable?.rows || [
+      [""], // match initial # of headers
+    ]
   );
 
-  // 2) Visibility array for toggling columns
+  // 2) Column Visibility
+  // parallel array to headers; visibleColumns[i] belongs to headers[i]
   const [visibleColumns, setVisibleColumns] = useState(
     initialTable?.visibleColumns ||
       Array(initialTable?.headers?.length || 1).fill(true)
   );
 
-  // 3) filterColumns: which columns to have filters
+  // 3) filterColumns: array of header names that are filterable
   const [filterColumns, setFilterColumns] = useState(
     initialTable?.filterColumns || []
   );
 
-  // Lifecycle
   useEffect(() => {
     if (isVisible) {
-      // If initialTable is provided, reset to that
       if (initialTable) {
-        setHeaders(initialTable.headers || ["Column 1 Heading"]);
-        setRows(
-          initialTable.rows || [
-            Array(initialTable?.headers?.length || 1).fill(""),
-          ]
+        setHeaders(
+          initialTable.headers?.length
+            ? initialTable.headers
+            : [{ id: "default-1", name: "Column 1 Heading" }]
         );
+        setRows(initialTable.rows || [[""]]);
         setVisibleColumns(
           initialTable.visibleColumns ||
             Array(initialTable?.headers?.length || 1).fill(true)
@@ -62,44 +62,42 @@ const TableSelectionDrawer = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible, initialTable]);
 
-  // If user changes number of headers, keep rows synced in length
+  // Keep each row length matched to # of headers
   useEffect(() => {
     setRows((prevRows) =>
       prevRows.map((r) => {
-        const newRow = [...r];
-        if (newRow.length < headers.length) {
-          return [...newRow, ...Array(headers.length - newRow.length).fill("")];
-        } else if (newRow.length > headers.length) {
-          return newRow.slice(0, headers.length);
+        if (r.length < headers.length) {
+          // add empty cells if needed
+          return [...r, ...Array(headers.length - r.length).fill("")];
+        } else if (r.length > headers.length) {
+          // remove extras
+          return r.slice(0, headers.length);
         }
-        return newRow;
+        return r;
       })
     );
   }, [headers]);
 
-  // If user changes number of headers, keep visibleColumns in sync
+  // Keep visibleColumns in sync if # of headers changes
   useEffect(() => {
     if (visibleColumns.length < headers.length) {
-      // add "true" for newly added columns
       setVisibleColumns([
         ...visibleColumns,
         ...Array(headers.length - visibleColumns.length).fill(true),
       ]);
     } else if (visibleColumns.length > headers.length) {
-      // remove extra
       setVisibleColumns(visibleColumns.slice(0, headers.length));
     }
   }, [headers, visibleColumns]);
 
-  // Keep the form in sync (minus styling)
+  // Keep form fields in sync
   useEffect(() => {
     form.setFieldsValue({
-      headers,
+      headers: headers.map((h) => h.name),
       rows,
     });
   }, [headers, rows, form]);
 
-  // Handle Save
   const handleSave = () => {
     form
       .validateFields()
@@ -107,16 +105,16 @@ const TableSelectionDrawer = ({
         // Validate row lengths
         for (let i = 0; i < rows.length; i++) {
           if (rows[i].length !== headers.length) {
-            message.error(`Row ${i + 1} does not match the number of headers.`);
+            message.error(`Row ${i + 1} does not match the number of columns.`);
             return;
           }
         }
 
         onSelectTable({
-          headers,
-          rows,
-          visibleColumns,
-          filterColumns,
+          headers: headers?.map((h) => h.name), // array of strings
+          rows, // array of arrays
+          visibleColumns, // array of booleans
+          filterColumns, // array of header names
         });
         message.success("Table saved successfully.");
         onClose();
@@ -141,10 +139,14 @@ const TableSelectionDrawer = ({
       width="70vw"
       footer={
         <div style={{ textAlign: "right" }}>
-          <Button onClick={handleCancel} style={{ marginRight: 8 }}>
+          <Button
+            onClick={handleCancel}
+            style={{ marginRight: 8 }}
+            className="mavecancelbutton"
+          >
             Cancel
           </Button>
-          <Button onClick={handleSave} type="primary">
+          <Button onClick={handleSave} className="mavebutton">
             Save Table
           </Button>
         </div>
@@ -154,7 +156,7 @@ const TableSelectionDrawer = ({
         {/* 1) CSV Import */}
         <CSVImportSection setHeaders={setHeaders} setRows={setRows} />
 
-        {/* 2) Headers + toggling + reordering actual table columns */}
+        {/* 2) Column Headers + Visibility + Reordering */}
         <HeadersSection
           headers={headers}
           setHeaders={setHeaders}
@@ -162,23 +164,25 @@ const TableSelectionDrawer = ({
           setVisibleColumns={setVisibleColumns}
           rows={rows}
           setRows={setRows}
+          filterColumns={filterColumns}
+          setFilterColumns={setFilterColumns}
         />
 
         {/* 3) Rows */}
         <RowsSection headers={headers} rows={rows} setRows={setRows} />
 
-        {/* 4) Multi-select to pick which columns get filter dropdowns */}
+        {/* 4) Filterable Columns */}
         <Title level={4}>Filterable Columns</Title>
         <Select
           mode="multiple"
           style={{ width: "100%", marginBottom: 16 }}
-          placeholder="Select columns to enable text filtering"
+          placeholder="Select which columns can be filtered"
           value={filterColumns}
           onChange={setFilterColumns}
         >
-          {headers.map((h, idx) => (
-            <Option key={`filtercol-${idx}`} value={h}>
-              {h}
+          {headers.map((colObj) => (
+            <Option key={colObj.id} value={colObj.name}>
+              {colObj.name}
             </Option>
           ))}
         </Select>

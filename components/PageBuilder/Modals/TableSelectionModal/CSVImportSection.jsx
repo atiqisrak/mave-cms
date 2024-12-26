@@ -4,6 +4,7 @@ import React from "react";
 import { Upload, Button, message, Typography } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import Papa from "papaparse";
+import { v4 as uuidv4 } from "uuid";
 
 const { Title } = Typography;
 
@@ -14,12 +15,18 @@ const CSVImportSection = ({ setHeaders, setRows }) => {
       complete: (result) => {
         const { data } = result;
         if (data && data.length > 0) {
-          // data[0] -> array of column names
-          const csvHeaders = data[0].map((h) => h.trim());
-          // data.slice(1) -> subsequent rows
+          // First row = CSV column names
+          const csvHeaderStrings = data[0].map((h) => h.trim());
+          // Convert each to { id, name }
+          const csvHeaders = csvHeaderStrings.map((colName) => ({
+            id: uuidv4(),
+            name: colName,
+          }));
+
+          // Next rows = actual data
           const csvRows = data.slice(1);
 
-          // Overwrite your existing headers/rows with the CSV
+          // Overwrite existing table data with CSV
           setHeaders(csvHeaders);
           setRows(csvRows);
 
@@ -32,7 +39,7 @@ const CSVImportSection = ({ setHeaders, setRows }) => {
         message.error("Failed to parse CSV file.");
       },
     });
-    return false;
+    return false; // Prevent default upload
   };
 
   return (

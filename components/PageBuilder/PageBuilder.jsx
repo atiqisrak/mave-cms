@@ -134,14 +134,16 @@ const PageBuilder = ({ pageId }) => {
       <Button
         icon={<SaveOutlined style={{ fontSize: "1.5rem" }} />}
         onClick={savePageData}
-        className="text-lg font-bold fixed bottom-20 right-10 bg-theme hover:bg-theme text-black p-4 rounded-full shadow-lg z-50 h-16 w-16 flex justify-center items-center border-2 border-themedark"
-      />
+        className="text-lg font-bold fixed bottom-16 right-10 bg-theme hover:bg-theme text-black px-4 py-6 rounded-full shadow-lg z-50  border-2 border-themedark"
+      >
+        Save
+      </Button>
 
       {/* Floating Preview Button */}
       <Button
         icon={<EyeOutlined style={{ fontSize: "1.5rem" }} />}
         onClick={() => setPreview(true)}
-        className="text-lg font-bold fixed bottom-20 right-24 bg-theme hover:bg-theme text-black p-4 rounded-full shadow-lg z-50 h-16 w-16 flex justify-center items-center border-2 border-themedark"
+        className="text-lg font-bold fixed bottom-16 right-40 bg-theme hover:bg-theme text-black p-4 rounded-full shadow-lg z-50 h-16 w-16 flex justify-center items-center border-2 border-themedark"
       />
 
       {/* Page Preview Modal */}

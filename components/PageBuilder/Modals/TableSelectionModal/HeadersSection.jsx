@@ -2,12 +2,13 @@
 
 import React from "react";
 import { Form, Input, Button, Typography, Checkbox } from "antd";
-import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
+import { PlusOutlined, MinusOutlined, DragOutlined } from "@ant-design/icons";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { v4 as uuidv4 } from "uuid";
 
 const { Title } = Typography;
 
-/** Reorders a generic array by dragging from one index to another. */
+/** Helper to reorder an array by dragging an item from one index to another. */
 const reorderArray = (array, startIndex, endIndex) => {
   const result = Array.from(array);
   const [removed] = result.splice(startIndex, 1);
@@ -15,41 +16,51 @@ const reorderArray = (array, startIndex, endIndex) => {
   return result;
 };
 
-/** Reorder the columns in each row's data. */
-const reorderColumnsInRows = (rows, sourceIndex, destinationIndex) => {
+/** Reorder columns in each row of the table data. */
+const reorderColumnsInRows = (rows, sourceIndex, destIndex) => {
   return rows.map((row) => {
-    const newRow = Array.from(row);
+    const newRow = [...row];
     const [removed] = newRow.splice(sourceIndex, 1);
-    newRow.splice(destinationIndex, 0, removed);
+    newRow.splice(destIndex, 0, removed);
     return newRow;
   });
 };
 
 const HeadersSection = ({
-  headers,
+  headers, // array of { id, name }
   setHeaders,
-  visibleColumns,
+  visibleColumns, // array of booleans
   setVisibleColumns,
-  rows,
+  rows, // array of arrays
   setRows,
+  filterColumns, // array of header names
+  setFilterColumns,
 }) => {
-  // Add a new header and a parallel visibility flag
+  // Add a new column
   const addHeader = () => {
-    setHeaders([...headers, `Column ${headers.length + 1} Heading`]);
+    // 1) Add a new header object
+    const newHeader = { id: uuidv4(), name: `Column ${headers.length + 1}` };
+    setHeaders([...headers, newHeader]);
+
+    // 2) Make it visible by default
     setVisibleColumns([...visibleColumns, true]);
-    // Also add an empty cell to each row
-    setRows(rows.map((r) => [...r, ""]));
+
+    // 3) Also append an empty cell to every row
+    const updatedRows = rows.map((r) => [...r, ""]);
+    setRows(updatedRows);
   };
 
-  // Remove a header & its visibility
+  // Remove a column at index
   const removeHeader = (index) => {
+    // 1) Remove from headers
     const newHeaders = headers.filter((_, i) => i !== index);
+    // 2) Remove from visibleColumns
     const newVisible = visibleColumns.filter((_, i) => i !== index);
-    // Also remove that column from each row
+    // 3) Remove that column from each row
     const newRows = rows.map((r) => {
-      const newRow = [...r];
-      newRow.splice(index, 1);
-      return newRow;
+      const rowCopy = [...r];
+      rowCopy.splice(index, 1);
+      return rowCopy;
     });
 
     setHeaders(newHeaders);
@@ -58,35 +69,51 @@ const HeadersSection = ({
   };
 
   // Update the header text
-  const updateHeader = (value, index) => {
-    const newHeaders = [...headers];
-    newHeaders[index] = value;
-    setHeaders(newHeaders);
+  const updateHeaderName = (value, index) => {
+    const oldName = headers[index].name;
+    const updated = [...headers];
+    updated[index] = { ...updated[index], name: value };
+    setHeaders(updated);
+
+    if (filterColumns.includes(oldName)) {
+      const newFilterColumns = filterColumns.map((fc) =>
+        fc === oldName ? value : fc
+      );
+      setFilterColumns(newFilterColumns);
+    }
   };
 
-  // Toggle a column's visibility
-  const toggleVisibility = (index, checked) => {
-    const updatedVisible = [...visibleColumns];
-    updatedVisible[index] = checked;
-    setVisibleColumns(updatedVisible);
+  // Toggle a column’s visibility
+  const toggleColumnVisibility = (index, checked) => {
+    const updatedVis = [...visibleColumns];
+    updatedVis[index] = checked;
+    setVisibleColumns(updatedVis);
   };
 
-  // Handle drag-and-drop reordering
+  // Reorder columns when user drags
   const onDragEnd = (result) => {
     if (!result.destination) return;
-    const sourceIndex = result.source.index;
-    const destIndex = result.destination.index;
-    if (sourceIndex === destIndex) return;
+    const { source, destination } = result;
+    if (source.index === destination.index) return;
 
-    // Reorder the headers & the visibility array
-    const reorderedHeaders = reorderArray(headers, sourceIndex, destIndex);
+    // Reorder the headers
+    const reorderedHeaders = reorderArray(
+      headers,
+      source.index,
+      destination.index
+    );
+    // Reorder the visibility array
     const reorderedVisible = reorderArray(
       visibleColumns,
-      sourceIndex,
-      destIndex
+      source.index,
+      destination.index
     );
-    // Also reorder columns in each row
-    const reorderedRows = reorderColumnsInRows(rows, sourceIndex, destIndex);
+    // Reorder the columns in rows
+    const reorderedRows = reorderColumnsInRows(
+      rows,
+      source.index,
+      destination.index
+    );
 
     setHeaders(reorderedHeaders);
     setVisibleColumns(reorderedVisible);
@@ -99,30 +126,32 @@ const HeadersSection = ({
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable-headers">
           {(provided) => (
-            <div className="flex flex-row">
-              <div ref={provided.innerRef} {...provided.droppableProps}>
-                {headers.map((header, index) => (
-                  <Draggable
-                    key={`header-${index}`}
-                    draggableId={`header-${index}`}
-                    index={index}
-                  >
-                    {(providedDraggable) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className="bg-gray-200 p-4 rounded-lg flex flex-row flex-wrap gap-4"
+            >
+              {headers.map((colObj, index) => (
+                <Draggable
+                  key={colObj.id} // stable unique key
+                  draggableId={colObj.id}
+                  index={index}
+                >
+                  {(providedDraggable) => (
+                    <div className="flex justify-between items-center bg-white my-2 rounded-lg py-2 px-4 gap-2">
                       <div
                         ref={providedDraggable.innerRef}
                         {...providedDraggable.draggableProps}
                         {...providedDraggable.dragHandleProps}
                         style={{
-                          display: "flex",
-                          alignItems: "center",
-                          marginBottom: 8,
                           ...providedDraggable.draggableProps.style,
                         }}
+                        className="flex items-center gap-2"
                       >
-                        {/* Header Text */}
+                        {/* Header text input */}
                         <Form.Item
                           name={`header_${index}`}
-                          initialValue={header}
+                          initialValue={colObj.name}
                           rules={[
                             {
                               required: true,
@@ -133,45 +162,48 @@ const HeadersSection = ({
                         >
                           <Input
                             style={{ width: 180, marginRight: 8 }}
-                            placeholder={`Column ${index + 1} Heading`}
+                            placeholder={`Column ${index + 1}`}
                             onChange={(e) =>
-                              updateHeader(e.target.value, index)
+                              updateHeaderName(e.target.value, index)
                             }
                           />
                         </Form.Item>
 
-                        {/* Visibility */}
+                        {/* Visibility checkbox */}
                         <Checkbox
                           checked={visibleColumns[index]}
                           onChange={(e) =>
-                            toggleVisibility(index, e.target.checked)
+                            toggleColumnVisibility(index, e.target.checked)
                           }
                           style={{ marginRight: 8 }}
                         >
                           Visible
                         </Checkbox>
 
-                        {/* Remove Button */}
+                        {/* Remove button */}
                         {headers.length > 1 && (
                           <Button
                             icon={<MinusOutlined />}
                             danger
-                            type="text"
                             onClick={() => removeHeader(index)}
                           />
                         )}
                       </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
+                      <Button
+                        icon={<DragOutlined />}
+                        style={{ cursor: "grab" }}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
             </div>
           )}
         </Droppable>
       </DragDropContext>
 
-      <Button type="dashed" icon={<PlusOutlined />} onClick={addHeader}>
+      <Button type="dashed" onClick={addHeader} icon={<PlusOutlined />}>
         Add Column
       </Button>
     </>

@@ -21,23 +21,23 @@ const PreviewTable = ({ headers, visibleColumns, rows, filterColumns }) => {
     setSearchedColIndex(null);
   };
 
-  // Build columns for antd <Table>
+  // Build columns for <Table>
   const columns = useMemo(() => {
     return headers
-      .map((colHeader, colIndex) => {
+      .map((colObj, colIndex) => {
         // Hide if not visible
         if (!visibleColumns[colIndex]) return null;
 
-        // Basic column object
-        const colObj = {
-          title: colHeader,
-          dataIndex: String(colIndex), // We'll transform row arrays into objects
-          key: `col-${colIndex}`,
+        // Base column config
+        const colDef = {
+          title: colObj.name,
+          dataIndex: String(colIndex), // We'll map row arrays to an object
+          key: colObj.id, // stable key
         };
 
-        // If this column is in filterColumns, add a filter dropdown
-        if (filterColumns.includes(colHeader)) {
-          colObj.filterDropdown = ({
+        // If this header is in filterColumns, we add the text filter dropdown
+        if (filterColumns.includes(colObj.name)) {
+          colDef.filterDropdown = ({
             setSelectedKeys,
             selectedKeys,
             confirm,
@@ -45,7 +45,7 @@ const PreviewTable = ({ headers, visibleColumns, rows, filterColumns }) => {
           }) => (
             <div style={{ padding: 8 }}>
               <Input
-                placeholder={`Search ${colHeader}`}
+                placeholder={`Search ${colObj.name}`}
                 value={selectedKeys[0]}
                 onChange={(e) =>
                   setSelectedKeys(e.target.value ? [e.target.value] : [])
@@ -58,10 +58,10 @@ const PreviewTable = ({ headers, visibleColumns, rows, filterColumns }) => {
               <Space>
                 <Button
                   type="primary"
-                  onClick={() => handleSearch(selectedKeys, confirm, colIndex)}
                   icon={<SearchOutlined />}
                   size="small"
                   style={{ width: 90 }}
+                  onClick={() => handleSearch(selectedKeys, confirm, colIndex)}
                 >
                   Search
                 </Button>
@@ -79,42 +79,35 @@ const PreviewTable = ({ headers, visibleColumns, rows, filterColumns }) => {
             </div>
           );
 
-          colObj.onFilter = (value, record) => {
+          colDef.onFilter = (value, record) => {
             const cellVal = (record[String(colIndex)] || "").toLowerCase();
             return cellVal.includes(value.toLowerCase());
           };
 
-          // Show current filtered value if this is the column being searched
           if (searchedColIndex === colIndex && searchText) {
-            colObj.filteredValue = [searchText];
+            colDef.filteredValue = [searchText];
           } else {
-            colObj.filteredValue = null;
+            colDef.filteredValue = null;
           }
         }
 
-        return colObj;
+        return colDef;
       })
-      .filter(Boolean); // Remove null columns
+      .filter(Boolean); // remove hidden columns
   }, [headers, visibleColumns, filterColumns, searchedColIndex, searchText]);
 
-  // Build the data for <Table>
+  // Convert row arrays to object for antd
   const dataSource = useMemo(() => {
-    return rows.map((rowArray, rowIndex) => {
+    return rows.map((row, rowIndex) => {
       const rowObj = { key: `row-${rowIndex}` };
-      rowArray.forEach((cellVal, colIdx) => {
-        rowObj[String(colIdx)] = cellVal;
+      row.forEach((cellVal, colIndex) => {
+        rowObj[String(colIndex)] = cellVal;
       });
       return rowObj;
     });
   }, [rows]);
 
-  return (
-    <Table
-      columns={columns}
-      dataSource={dataSource}
-      // You can add pagination or sorting props here if you want
-    />
-  );
+  return <Table columns={columns} dataSource={dataSource} />;
 };
 
 export default PreviewTable;

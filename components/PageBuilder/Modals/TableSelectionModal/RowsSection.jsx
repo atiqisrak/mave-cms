@@ -8,20 +8,20 @@ const { Title } = Typography;
 
 const RowsSection = ({ headers, rows, setRows }) => {
   const addRow = () => {
-    // Create a new row with empty strings matching the number of headers
+    // create a new row with empty cells matching # of headers
     const newRow = Array(headers.length).fill("");
     setRows([...rows, newRow]);
   };
 
   const removeRow = (index) => {
-    const newRows = rows.filter((_, i) => i !== index);
-    setRows(newRows);
+    const updated = rows.filter((_, i) => i !== index);
+    setRows(updated);
   };
 
   const updateCell = (value, rowIndex, colIndex) => {
-    const newRows = [...rows];
-    newRows[rowIndex][colIndex] = value;
-    setRows(newRows);
+    const updated = [...rows];
+    updated[rowIndex][colIndex] = value;
+    setRows(updated);
   };
 
   return (
@@ -35,15 +35,16 @@ const RowsSection = ({ headers, rows, setRows }) => {
       >
         Add Row
       </Button>
+
       {rows.map((row, rowIndex) => (
         <div key={rowIndex} style={{ display: "flex", marginBottom: 8 }}>
-          {headers.map((_, colIndex) => (
+          {headers.map((colObj, colIndex) => (
             <Form.Item
               key={`${rowIndex}_${colIndex}`}
               style={{ marginRight: 8 }}
             >
               <Input
-                placeholder={`Row ${rowIndex + 1}, Col ${colIndex + 1}`}
+                placeholder={`Row ${rowIndex + 1} / ${colObj.name}`}
                 value={row[colIndex]}
                 onChange={(e) => updateCell(e.target.value, rowIndex, colIndex)}
                 style={{ width: 120 }}
