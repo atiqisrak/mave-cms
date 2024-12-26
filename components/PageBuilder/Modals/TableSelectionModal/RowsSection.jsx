@@ -1,4 +1,4 @@
-// components/PageBuilder/Modals/TableSelectionModal/RowsSection.jsx
+// TableSelectionModal/RowsSection.jsx
 
 import React from "react";
 import { Form, Input, Button, Typography } from "antd";
@@ -8,6 +8,7 @@ const { Title } = Typography;
 
 const RowsSection = ({ headers, rows, setRows }) => {
   const addRow = () => {
+    // Create a new row with empty strings matching the number of headers
     const newRow = Array(headers.length).fill("");
     setRows([...rows, newRow]);
   };
@@ -25,12 +26,9 @@ const RowsSection = ({ headers, rows, setRows }) => {
 
   return (
     <>
-      <Title level={4} className="mt-5">
-        Rows
-      </Title>
+      <Title level={4}>Rows</Title>
       <Button
         type="dashed"
-        className="mavebutton"
         onClick={addRow}
         icon={<PlusOutlined />}
         style={{ marginBottom: 16 }}
@@ -38,45 +36,30 @@ const RowsSection = ({ headers, rows, setRows }) => {
         Add Row
       </Button>
       {rows.map((row, rowIndex) => (
-        <div key={rowIndex} className="mb-4 flex items-center">
+        <div key={rowIndex} style={{ display: "flex", marginBottom: 8 }}>
           {headers.map((_, colIndex) => (
             <Form.Item
               key={`${rowIndex}_${colIndex}`}
-              name={`row_${rowIndex}_col_${colIndex}`}
-              initialValue={row[colIndex]}
-              rules={[{ required: false }]}
-              style={{
-                display: "inline-block",
-                width: `calc(100% / ${headers.length})`,
-                marginRight: 8,
-              }}
+              style={{ marginRight: 8 }}
             >
               <Input
-                placeholder={`Row ${rowIndex + 1} Column ${colIndex + 1}`}
+                placeholder={`Row ${rowIndex + 1}, Col ${colIndex + 1}`}
+                value={row[colIndex]}
                 onChange={(e) => updateCell(e.target.value, rowIndex, colIndex)}
+                style={{ width: 120 }}
               />
             </Form.Item>
           ))}
           {rows.length > 1 && (
             <Button
               icon={<MinusOutlined />}
-              onClick={() => removeRow(rowIndex)}
               danger
               type="text"
-              style={{ marginTop: 8 }}
+              onClick={() => removeRow(rowIndex)}
             />
           )}
         </div>
       ))}
-      <Button
-        type="dashed"
-        onClick={addRow}
-        block
-        icon={<PlusOutlined />}
-        className="mb-4"
-      >
-        Add Row
-      </Button>
     </>
   );
 };

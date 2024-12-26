@@ -1,13 +1,14 @@
-// components/PageBuilder/Modals/TableSelectionModal/TableSelectionDrawer.jsx
+// TableSelectionModal/TableSelectionDrawer.jsx
 
 import React, { useState, useEffect } from "react";
-import { Drawer, Form, Button, Typography, message, Select } from "antd";
+import { Drawer, Form, Button, Typography, Select, message } from "antd";
 import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
 
+import CSVImportSection from "./CSVImportSection";
 import HeadersSection from "./HeadersSection";
 import RowsSection from "./RowsSection";
-import StylingSection from "./StylingSection";
-import CSVImportSection from "./CSVImportSection";
+// import StylingSection from "./StylingSection"; // REMOVE or comment out
+import PreviewTable from "./PreviewTable";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -20,79 +21,85 @@ const TableSelectionDrawer = ({
 }) => {
   const [form] = Form.useForm();
 
-  // 1) Keep existing state shape
+  // 1) Basic table data states
   const [headers, setHeaders] = useState(
     initialTable?.headers || ["Column 1 Heading"]
   );
   const [rows, setRows] = useState(
     initialTable?.rows || [Array(initialTable?.headers?.length || 1).fill("")]
   );
-  const [styles, setStyles] = useState(
-    initialTable?.styles || {
-      borderStyle: "none",
-      cellColor: "#ffffff",
-      textAlign: "left",
-    }
+
+  // 2) Visibility array for toggling columns
+  const [visibleColumns, setVisibleColumns] = useState(
+    initialTable?.visibleColumns ||
+      Array(initialTable?.headers?.length || 1).fill(true)
   );
 
-  // 2) New: user-selected filter columns
-  //    If you want to pass them back after re-opening the drawer,
-  //    you can store them in initialTable?.filterColumns as well.
+  // 3) filterColumns: which columns to have filters
   const [filterColumns, setFilterColumns] = useState(
     initialTable?.filterColumns || []
   );
 
+  // Lifecycle
   useEffect(() => {
     if (isVisible) {
-      setHeaders(initialTable?.headers || ["Column 1 Heading"]);
-      setRows(
-        initialTable?.rows || [
-          Array(initialTable?.headers?.length || 1).fill(""),
-        ]
-      );
-      setStyles(
-        initialTable?.styles || {
-          borderStyle: "none",
-          cellColor: "#ffffff",
-          textAlign: "left",
-        }
-      );
-      setFilterColumns(initialTable?.filterColumns || []);
+      // If initialTable is provided, reset to that
+      if (initialTable) {
+        setHeaders(initialTable.headers || ["Column 1 Heading"]);
+        setRows(
+          initialTable.rows || [
+            Array(initialTable?.headers?.length || 1).fill(""),
+          ]
+        );
+        setVisibleColumns(
+          initialTable.visibleColumns ||
+            Array(initialTable?.headers?.length || 1).fill(true)
+        );
+        setFilterColumns(initialTable.filterColumns || []);
+      }
       form.resetFields();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible, initialTable]);
 
-  // Keep row length in sync with headers
+  // If user changes number of headers, keep rows synced in length
   useEffect(() => {
-    setRows((prevRows) => {
-      return prevRows.map((row) => {
-        const newRow = [...row];
-        if (newRow.length > headers.length) {
-          return newRow.slice(0, headers.length);
-        } else if (newRow.length < headers.length) {
+    setRows((prevRows) =>
+      prevRows.map((r) => {
+        const newRow = [...r];
+        if (newRow.length < headers.length) {
           return [...newRow, ...Array(headers.length - newRow.length).fill("")];
+        } else if (newRow.length > headers.length) {
+          return newRow.slice(0, headers.length);
         }
         return newRow;
-      });
-    });
+      })
+    );
   }, [headers]);
 
-  // Set form fields (still storing headers/rows to show them in the form—your original approach)
+  // If user changes number of headers, keep visibleColumns in sync
+  useEffect(() => {
+    if (visibleColumns.length < headers.length) {
+      // add "true" for newly added columns
+      setVisibleColumns([
+        ...visibleColumns,
+        ...Array(headers.length - visibleColumns.length).fill(true),
+      ]);
+    } else if (visibleColumns.length > headers.length) {
+      // remove extra
+      setVisibleColumns(visibleColumns.slice(0, headers.length));
+    }
+  }, [headers, visibleColumns]);
+
+  // Keep the form in sync (minus styling)
   useEffect(() => {
     form.setFieldsValue({
       headers,
       rows,
-      borderStyle: styles.borderStyle,
-      cellColor: styles.cellColor,
-      textAlign: styles.textAlign,
-      // We don't store filterColumns in the form, but you could if you want
     });
-  }, [headers, rows, styles, form]);
+  }, [headers, rows, form]);
 
-  // ----------------
-  // Save & Cancel
-  // ----------------
+  // Handle Save
   const handleSave = () => {
     form
       .validateFields()
@@ -105,8 +112,12 @@ const TableSelectionDrawer = ({
           }
         }
 
-        // 3) Include filterColumns in the final payload
-        onSelectTable({ headers, rows, styles, filterColumns });
+        onSelectTable({
+          headers,
+          rows,
+          visibleColumns,
+          filterColumns,
+        });
         message.success("Table saved successfully.");
         onClose();
       })
@@ -117,18 +128,6 @@ const TableSelectionDrawer = ({
 
   const handleCancel = () => {
     form.resetFields();
-    setHeaders(initialTable?.headers || ["Column 1 Heading"]);
-    setRows(
-      initialTable?.rows || [Array(initialTable?.headers?.length || 1).fill("")]
-    );
-    setStyles(
-      initialTable?.styles || {
-        borderStyle: "none",
-        cellColor: "#ffffff",
-        textAlign: "left",
-      }
-    );
-    setFilterColumns(initialTable?.filterColumns || []);
     onClose();
   };
 
@@ -141,44 +140,57 @@ const TableSelectionDrawer = ({
       open={isVisible}
       width="70vw"
       footer={
-        <div className="flex justify-end">
-          <Button
-            onClick={handleCancel}
-            className="mavecancelbutton"
-            style={{ marginRight: 8 }}
-          >
+        <div style={{ textAlign: "right" }}>
+          <Button onClick={handleCancel} style={{ marginRight: 8 }}>
             Cancel
           </Button>
-          <Button onClick={handleSave} type="primary" className="mavebutton">
+          <Button onClick={handleSave} type="primary">
             Save Table
           </Button>
         </div>
       }
     >
       <Form form={form} layout="vertical">
-        {/* Existing sections */}
-        <HeadersSection headers={headers} setHeaders={setHeaders} />
+        {/* 1) CSV Import */}
         <CSVImportSection setHeaders={setHeaders} setRows={setRows} />
-        <RowsSection headers={headers} rows={rows} setRows={setRows} />
-        <StylingSection styles={styles} setStyles={setStyles} />
 
-        {/* New: multiple column selection for filter */}
-        <Title level={4} style={{ marginTop: 24 }}>
-          Choose Columns to Filter
-        </Title>
+        {/* 2) Headers + toggling + reordering actual table columns */}
+        <HeadersSection
+          headers={headers}
+          setHeaders={setHeaders}
+          visibleColumns={visibleColumns}
+          setVisibleColumns={setVisibleColumns}
+          rows={rows}
+          setRows={setRows}
+        />
+
+        {/* 3) Rows */}
+        <RowsSection headers={headers} rows={rows} setRows={setRows} />
+
+        {/* 4) Multi-select to pick which columns get filter dropdowns */}
+        <Title level={4}>Filterable Columns</Title>
         <Select
           mode="multiple"
           style={{ width: "100%", marginBottom: 16 }}
-          placeholder="Select which columns to filter"
+          placeholder="Select columns to enable text filtering"
           value={filterColumns}
           onChange={setFilterColumns}
         >
-          {headers.map((colHeader, idx) => (
-            <Option key={`${colHeader}-${idx}`} value={colHeader}>
-              {colHeader}
+          {headers.map((h, idx) => (
+            <Option key={`filtercol-${idx}`} value={h}>
+              {h}
             </Option>
           ))}
         </Select>
+
+        {/* 5) Preview */}
+        <Title level={4}>Preview</Title>
+        <PreviewTable
+          headers={headers}
+          rows={rows}
+          visibleColumns={visibleColumns}
+          filterColumns={filterColumns}
+        />
       </Form>
     </Drawer>
   );
