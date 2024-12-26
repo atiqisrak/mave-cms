@@ -1,14 +1,16 @@
 // components/PageBuilder/Modals/TableSelectionModal/TableSelectionDrawer.jsx
 
 import React, { useState, useEffect } from "react";
-import { Drawer, Form, Button, Typography, message } from "antd";
+import { Drawer, Form, Button, Typography, message, Select } from "antd";
 import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
+
 import HeadersSection from "./HeadersSection";
 import RowsSection from "./RowsSection";
 import StylingSection from "./StylingSection";
 import CSVImportSection from "./CSVImportSection";
 
 const { Title } = Typography;
+const { Option } = Select;
 
 const TableSelectionDrawer = ({
   isVisible,
@@ -17,6 +19,8 @@ const TableSelectionDrawer = ({
   initialTable,
 }) => {
   const [form] = Form.useForm();
+
+  // 1) Keep existing state shape
   const [headers, setHeaders] = useState(
     initialTable?.headers || ["Column 1 Heading"]
   );
@@ -29,6 +33,13 @@ const TableSelectionDrawer = ({
       cellColor: "#ffffff",
       textAlign: "left",
     }
+  );
+
+  // 2) New: user-selected filter columns
+  //    If you want to pass them back after re-opening the drawer,
+  //    you can store them in initialTable?.filterColumns as well.
+  const [filterColumns, setFilterColumns] = useState(
+    initialTable?.filterColumns || []
   );
 
   useEffect(() => {
@@ -46,21 +57,20 @@ const TableSelectionDrawer = ({
           textAlign: "left",
         }
       );
+      setFilterColumns(initialTable?.filterColumns || []);
       form.resetFields();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible, initialTable]);
 
+  // Keep row length in sync with headers
   useEffect(() => {
-    // Ensure that each row has the same number of cells as headers
     setRows((prevRows) => {
       return prevRows.map((row) => {
         const newRow = [...row];
         if (newRow.length > headers.length) {
-          // Remove extra cells
           return newRow.slice(0, headers.length);
         } else if (newRow.length < headers.length) {
-          // Add empty cells
           return [...newRow, ...Array(headers.length - newRow.length).fill("")];
         }
         return newRow;
@@ -68,21 +78,26 @@ const TableSelectionDrawer = ({
     });
   }, [headers]);
 
+  // Set form fields (still storing headers/rows to show them in the form—your original approach)
   useEffect(() => {
     form.setFieldsValue({
-      headers: headers,
-      rows: rows,
+      headers,
+      rows,
       borderStyle: styles.borderStyle,
       cellColor: styles.cellColor,
       textAlign: styles.textAlign,
+      // We don't store filterColumns in the form, but you could if you want
     });
   }, [headers, rows, styles, form]);
 
+  // ----------------
+  // Save & Cancel
+  // ----------------
   const handleSave = () => {
     form
       .validateFields()
       .then(() => {
-        // Validate that all rows have the correct number of columns
+        // Validate row lengths
         for (let i = 0; i < rows.length; i++) {
           if (rows[i].length !== headers.length) {
             message.error(`Row ${i + 1} does not match the number of headers.`);
@@ -90,7 +105,8 @@ const TableSelectionDrawer = ({
           }
         }
 
-        onSelectTable({ headers, rows, styles });
+        // 3) Include filterColumns in the final payload
+        onSelectTable({ headers, rows, styles, filterColumns });
         message.success("Table saved successfully.");
         onClose();
       })
@@ -112,6 +128,7 @@ const TableSelectionDrawer = ({
         textAlign: "left",
       }
     );
+    setFilterColumns(initialTable?.filterColumns || []);
     onClose();
   };
 
@@ -122,7 +139,7 @@ const TableSelectionDrawer = ({
       closable
       onClose={handleCancel}
       open={isVisible}
-      width={`70vw`}
+      width="70vw"
       footer={
         <div className="flex justify-end">
           <Button
@@ -139,10 +156,29 @@ const TableSelectionDrawer = ({
       }
     >
       <Form form={form} layout="vertical">
+        {/* Existing sections */}
         <HeadersSection headers={headers} setHeaders={setHeaders} />
         <CSVImportSection setHeaders={setHeaders} setRows={setRows} />
         <RowsSection headers={headers} rows={rows} setRows={setRows} />
         <StylingSection styles={styles} setStyles={setStyles} />
+
+        {/* New: multiple column selection for filter */}
+        <Title level={4} style={{ marginTop: 24 }}>
+          Choose Columns to Filter
+        </Title>
+        <Select
+          mode="multiple"
+          style={{ width: "100%", marginBottom: 16 }}
+          placeholder="Select which columns to filter"
+          value={filterColumns}
+          onChange={setFilterColumns}
+        >
+          {headers.map((colHeader, idx) => (
+            <Option key={`${colHeader}-${idx}`} value={colHeader}>
+              {colHeader}
+            </Option>
+          ))}
+        </Select>
       </Form>
     </Drawer>
   );

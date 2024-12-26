@@ -10,12 +10,15 @@ const { Title } = Typography;
 const CSVImportSection = ({ setHeaders, setRows }) => {
   const handleCSVUpload = (file) => {
     Papa.parse(file, {
+      skipEmptyLines: true, // helps ignore blank rows
       complete: (result) => {
-        const { data } = result;
-        if (data.length > 0) {
-          const headers = data[0];
+        let { data } = result;
+        if (data && data.length > 0) {
+          // Clean/trims each header in the first row
+          const rawHeaders = data[0].map((col) => col.trim());
           const rows = data.slice(1).map((row) => row);
-          setHeaders(headers);
+
+          setHeaders(rawHeaders); // e.g. ["Sl.", "PROFILE_IMAGE", ...]
           setRows(rows);
           message.success("CSV imported successfully.");
         } else {
@@ -26,7 +29,7 @@ const CSVImportSection = ({ setHeaders, setRows }) => {
         message.error("Failed to parse CSV file.");
       },
     });
-    return false; // Prevent upload
+    return false; // Prevent default upload
   };
 
   return (
