@@ -129,7 +129,7 @@ const HeadersSection = ({
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}
-              className="bg-gray-200 p-4 rounded-lg flex flex-row flex-wrap gap-4"
+              className="bg-orange-100 p-4 rounded-lg flex flex-row flex-wrap gap-4 border-2 border-gray-400"
             >
               {headers.map((colObj, index) => (
                 <Draggable
@@ -138,7 +138,10 @@ const HeadersSection = ({
                   index={index}
                 >
                   {(providedDraggable) => (
-                    <div className="flex justify-between items-center bg-white my-2 rounded-lg py-2 px-4 gap-2">
+                    <div
+                      className="flex justify-between items-center bg-white my-2 rounded-lg py-2 px-4 gap-2
+                    border-2 border-gray-300 shadow-md"
+                    >
                       <div
                         ref={providedDraggable.innerRef}
                         {...providedDraggable.draggableProps}
@@ -203,9 +206,15 @@ const HeadersSection = ({
         </Droppable>
       </DragDropContext>
 
-      <Button type="dashed" onClick={addHeader} icon={<PlusOutlined />}>
-        Add Column
-      </Button>
+      <center>
+        <Button
+          onClick={addHeader}
+          icon={<PlusOutlined />}
+          className="mavebutton mt-4"
+        >
+          Add Column
+        </Button>
+      </center>
     </>
   );
 };

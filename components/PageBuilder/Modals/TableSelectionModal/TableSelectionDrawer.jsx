@@ -6,6 +6,7 @@ import CSVImportSection from "./CSVImportSection";
 import HeadersSection from "./HeadersSection";
 import RowsSection from "./RowsSection";
 import PreviewTable from "./PreviewTable";
+import FilterableColumns from "./FilterableColumns";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -171,24 +172,22 @@ const TableSelectionDrawer = ({
         {/* 3) Rows */}
         <RowsSection headers={headers} rows={rows} setRows={setRows} />
 
-        {/* 4) Filterable Columns */}
-        <Title level={4}>Filterable Columns</Title>
-        <Select
-          mode="multiple"
-          style={{ width: "100%", marginBottom: 16 }}
-          placeholder="Select which columns can be filtered"
-          value={filterColumns}
-          onChange={setFilterColumns}
-        >
-          {headers.map((colObj) => (
-            <Option key={colObj.id} value={colObj.name}>
-              {colObj.name}
-            </Option>
-          ))}
-        </Select>
+        <div className="grid grid-cols-10 items-center">
+          <Title level={4} className="col-span-7">
+            Preview
+          </Title>
+          <div className="col-span-3">
+            {/* 4) Filterable Columns */}
+            <Title level={4}>Filterable Columns</Title>
+            <FilterableColumns
+              headers={headers}
+              filterColumns={filterColumns}
+              setFilterColumns={setFilterColumns}
+            />
+          </div>
+        </div>
 
         {/* 5) Preview */}
-        <Title level={4}>Preview</Title>
         <PreviewTable
           headers={headers}
           rows={rows}
