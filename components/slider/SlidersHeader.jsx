@@ -1,7 +1,5 @@
-// components/slider/SlidersHeader.jsx
-
 import React from "react";
-import { Input, Button, Tooltip, message } from "antd";
+import { Input, Button, Tooltip, message, Select } from "antd";
 import {
   CopyOutlined,
   PlusCircleOutlined,
@@ -9,12 +7,18 @@ import {
 } from "@ant-design/icons";
 import Image from "next/image";
 
+const { Option } = Select;
+
 const SlidersHeader = ({
   onAddSlider,
   searchTerm,
   onSearchChange,
   sortType,
   setSortType,
+  // NEW PROPS for tag filtering
+  allTags,
+  selectedTag,
+  setSelectedTag,
 }) => {
   return (
     <>
@@ -50,7 +54,7 @@ const SlidersHeader = ({
                 );
                 message.success("API Endpoint copied to clipboard");
               }}
-            ></Button>
+            />
           </Tooltip>
         </div>
       </div>
@@ -62,22 +66,33 @@ const SlidersHeader = ({
           <h2 className="text-lg font-semibold text-gray-500">Sort By:</h2>
           <Button
             onClick={() => setSortType("asc")}
-            className={`${
-              sortType === "asc" ? "mavebutton" : "mavecancelbutton"
-            }`}
+            className={`${sortType === "asc" ? "mavebutton" : "mavecancelbutton"}`}
           >
             Newest
           </Button>
           <Button
             onClick={() => setSortType("desc")}
-            className={`${
-              sortType === "desc" ? "mavebutton" : "mavecancelbutton"
-            }`}
+            className={`${sortType === "desc" ? "mavebutton" : "mavecancelbutton"}`}
           >
             Oldest
           </Button>
         </div>
-        <div className="flex justify-end items-center gap-5 mt-4 md:mt-0">
+        <div className="flex flex-col md:flex-row items-center gap-5 mt-4 md:mt-0">
+          {/* NEW: Filter by Tags */}
+          <Select
+            allowClear
+            placeholder="Filter by Tag"
+            style={{ width: 200 }}
+            value={selectedTag || undefined}
+            onChange={(value) => setSelectedTag(value || "")}
+          >
+            {allTags.map((tag) => (
+              <Option key={tag} value={tag}>
+                {tag}
+              </Option>
+            ))}
+          </Select>
+
           {/* Search Input */}
           <Input
             placeholder="Search Sliders"

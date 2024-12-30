@@ -1,7 +1,13 @@
-// components/slider/CardSlider.jsx
-
 import React from "react";
-import { Carousel, Button, Popconfirm, Space, Typography, Card } from "antd";
+import {
+  Carousel,
+  Button,
+  Popconfirm,
+  Space,
+  Typography,
+  Card,
+  Tag,
+} from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import Image from "next/image";
 import { capitalize } from "lodash";
@@ -16,10 +22,8 @@ const CardSlider = ({
   handleEditClick,
   handleDeleteSlider,
 }) => {
-  // Placeholder image path
   const cardPlaceholder = "/images/Image_Placeholder.png";
 
-  // Actions for the slider card
   const actions = [
     <Button
       key="edit"
@@ -42,7 +46,6 @@ const CardSlider = ({
     </Popconfirm>,
   ];
 
-  // Check if cards exist
   const hasCards = Array.isArray(slider.cards) && slider.cards.length > 0;
 
   return (
@@ -51,9 +54,12 @@ const CardSlider = ({
       cover={
         hasCards ? (
           <Carousel autoplay className="mb-4">
-            {slider?.cards?.map((card) => (
+            {slider.cards.map((card) => (
               <div key={card.id}>
-                <div className="flex flex-col items-center justify-center h-64 bg-gray-200 pt-6">
+                <div
+                  className="flex flex-col items-center justify-center bg-gray-200 pt-6"
+                  style={{ height: "250px" }}
+                >
                   <Title level={5}>
                     {card.title_en || "Title Unavailable"}
                   </Title>
@@ -68,8 +74,19 @@ const CardSlider = ({
                     height={200}
                     objectFit="cover"
                     className="rounded-md"
-                    fallback={cardPlaceholder}
                   />
+
+                  {/* NEW: Show each card’s own tags (if any) */}
+                  {/* {Array.isArray(card.additional?.tags) &&
+                    card.additional.tags.length > 0 && (
+                      <div className="mt-2 text-center">
+                        {card.additional.tags.map((t) => (
+                          <Tag key={t} color="green" className="mx-1">
+                            {t}
+                          </Tag>
+                        ))}
+                      </div>
+                    )} */}
                 </div>
               </div>
             ))}
@@ -101,6 +118,18 @@ const CardSlider = ({
           {capitalize(slider.type) || "Type Unavailable"}
         </h5>
       </Space>
+
+      {/* NEW: Show the slider’s own tags (top-level) */}
+      {Array.isArray(slider.additional?.tags) &&
+        slider.additional.tags.length > 0 && (
+          <div className="mt-3">
+            {slider.additional.tags.map((tagItem) => (
+              <Tag key={tagItem} color="blue" className="mb-1">
+                {tagItem}
+              </Tag>
+            ))}
+          </div>
+        )}
     </Card>
   );
 };

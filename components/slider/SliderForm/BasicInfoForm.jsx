@@ -1,10 +1,10 @@
 // components/slider/SliderForm/BasicInfoForm.jsx
 
 import React from "react";
-import { Form, Input } from "antd";
+import { Form, Input, Select } from "antd";
 import RichTextEditor from "../../RichTextEditor";
 
-const BasicInfoForm = () => (
+const BasicInfoForm = ({ allTags }) => (
   <>
     {/* Title in English */}
     <Form.Item
@@ -52,6 +52,21 @@ const BasicInfoForm = () => (
       ]}
     >
       <RichTextEditor editMode={true} />
+    </Form.Item>
+
+    {/* Tags */}
+    <Form.Item label="Tags" name="tags">
+      <Select
+        mode="tags"
+        placeholder="Select or add tags"
+        style={{ width: "100%" }}
+      >
+        {allTags.map((tag) => (
+          <Select.Option key={tag.id} value={tag.name}>
+            {tag.name}
+          </Select.Option>
+        ))}
+      </Select>
     </Form.Item>
   </>
 );

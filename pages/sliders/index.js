@@ -1,5 +1,3 @@
-// pages/sliders.jsx
-
 import React, { useEffect, useState } from "react";
 import { message, Spin, Form } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
@@ -22,6 +20,11 @@ const Sliders = () => {
   const [type, setType] = useState("image");
   const [searchTerm, setSearchTerm] = useState("");
   const [sortType, setSortType] = useState("asc");
+
+  // NEW: We’ll collect all unique tags here
+  const [allTags, setAllTags] = useState([]);
+  // NEW: The currently selected tag filter
+  const [selectedTag, setSelectedTag] = useState("");
 
   const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL;
 
@@ -52,6 +55,25 @@ const Sliders = () => {
       const response = await instance.get("/sliders");
       if (response.data && Array.isArray(response.data)) {
         setAllSliders(response.data);
+
+        // NEW: Gather all unique tags from 'additional.tags' and from each slider's cards
+        const tempTagSet = new Set();
+        response.data.forEach((slider) => {
+          // Slider-level tags
+          if (Array.isArray(slider.additional?.tags)) {
+            slider.additional.tags.forEach((tag) => tempTagSet.add(tag));
+          }
+          // Card-level tags
+          if (Array.isArray(slider.cards)) {
+            slider.cards.forEach((card) => {
+              if (Array.isArray(card.additional?.tags)) {
+                card.additional.tags.forEach((cTag) => tempTagSet.add(cTag));
+              }
+            });
+          }
+        });
+
+        setAllTags([...tempTagSet]); // Convert to array
       } else {
         message.error("Failed to fetch sliders. Invalid data format.");
       }
@@ -71,7 +93,7 @@ const Sliders = () => {
     setSearchTerm(e.target.value);
   };
 
-  // Update displayedSliders based on searchTerm and sortType
+  // Update displayedSliders based on searchTerm, sortType, and tag
   useEffect(() => {
     let filteredSliders = [...allSliders];
 
@@ -100,25 +122,49 @@ const Sliders = () => {
       );
     }
 
-    setDisplayedSliders(filteredSliders);
-  }, [allSliders, searchTerm, sortType]);
+    // NEW: Filter by selected tag if any
+    if (selectedTag) {
+      filteredSliders = filteredSliders.filter((slider) => {
+        let matchTag = false;
 
-  // Update imageSliders and cardSliders based on displayedSliders
+        // Check slider's own tags
+        if (Array.isArray(slider.additional?.tags)) {
+          if (slider.additional.tags.includes(selectedTag)) {
+            matchTag = true;
+          }
+        }
+
+        // If not found yet, check each card's tags
+        if (!matchTag && Array.isArray(slider.cards)) {
+          slider.cards.forEach((card) => {
+            if (Array.isArray(card.additional?.tags)) {
+              if (card.additional.tags.includes(selectedTag)) {
+                matchTag = true;
+              }
+            }
+          });
+        }
+
+        return matchTag;
+      });
+    }
+
+    setDisplayedSliders(filteredSliders);
+  }, [allSliders, searchTerm, sortType, selectedTag]);
+
+  // Update imageSliders and cardSliders from displayedSliders
   useEffect(() => {
     const images = displayedSliders.filter(
-      // (slider) => slider.type && slider.type.toLowerCase() === "image"
-      // slider type image or no slider type
       (slider) => !slider.type || slider.type.toLowerCase() === "image"
     );
     const cards = displayedSliders.filter(
       (slider) => slider.type && slider.type.toLowerCase() === "card"
     );
-
     setImageSliders(images);
     setCardSliders(cards);
   }, [displayedSliders]);
 
-  // Handle adding a new slider
+  // Handle add/edit/cancel
   const handleAddSlider = () => {
     setIsFormVisible(true);
     setEditingItemId(null);
@@ -128,7 +174,6 @@ const Sliders = () => {
     setType("image");
   };
 
-  // Handle cancelling the form
   const handleCancelForm = () => {
     setIsFormVisible(false);
     setEditingItemId(null);
@@ -138,7 +183,6 @@ const Sliders = () => {
     setType("image");
   };
 
-  // Handle editing a slider
   const handleEditClick = async (id) => {
     setEditingItemId(id);
     setIsFormVisible(true);
@@ -165,7 +209,6 @@ const Sliders = () => {
     }
   };
 
-  // Handle deleting a slider
   const handleDeleteSlider = async (id) => {
     try {
       setLoading(true);
@@ -179,35 +222,23 @@ const Sliders = () => {
     setLoading(false);
   };
 
-  // Handle sort type change
   const handleSortTypeChange = (type) => {
     setSortType(type);
   };
 
-  // Handle applying filters (if any additional filters are implemented)
-  const applyFilters = (filters) => {
-    // Implement your filter logic based on the filters received
-    // This example assumes filters are already handled in the useEffect for search and sort
-    // Add more filter conditions as needed
-    message.success("Filters applied successfully.");
-  };
-
-  // Handle resetting filters
-  const resetFilters = () => {
-    setSearchTerm("");
-    setSortType("asc");
-    message.success("Filters reset successfully.");
-  };
-
   return (
     <div className="mavecontainer bg-gray-50 rounded-xl p-4">
-      {/* Header Section */}
+      {/* Header Section: add new props for tag filtering */}
       <SlidersHeader
         onAddSlider={handleAddSlider}
         searchTerm={searchTerm}
         onSearchChange={handleSearchChange}
         sortType={sortType}
         setSortType={handleSortTypeChange}
+        // NEW: Pass these down so we can filter by tags
+        allTags={allTags}
+        selectedTag={selectedTag}
+        setSelectedTag={setSelectedTag}
       />
 
       {/* Slider Form Modal */}
@@ -224,6 +255,7 @@ const Sliders = () => {
         onCancelEdit={handleCancelForm}
         isFormVisible={isFormVisible}
         setIsFormVisible={setIsFormVisible}
+        allTags={allTags}
       />
 
       {/* Slider List Section */}
@@ -240,7 +272,7 @@ const Sliders = () => {
           MEDIA_URL={MEDIA_URL}
           handleEditClick={handleEditClick}
           handleDeleteSlider={handleDeleteSlider}
-          itemsPerPage={6} // Set default items per page
+          itemsPerPage={6}
         />
       )}
     </div>

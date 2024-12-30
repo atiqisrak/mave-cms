@@ -1,7 +1,5 @@
-// components/slider/ImageSlider.jsx
-
 import React from "react";
-import { Carousel, Button, Popconfirm, Space, Card } from "antd";
+import { Carousel, Button, Popconfirm, Space, Card, Tag } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import Image from "next/image";
 import { capitalize } from "lodash";
@@ -17,7 +15,6 @@ const ImageSlider = ({
   // Placeholder image path
   const imagePlaceholder = "/images/Image_Placeholder.png";
 
-  // Actions for the slider card
   const actions = [
     <Button
       key="edit"
@@ -40,7 +37,6 @@ const ImageSlider = ({
     </Popconfirm>,
   ];
 
-  // Check if media exists
   const hasMedia = Array.isArray(slider.medias) && slider.medias.length > 0;
 
   return (
@@ -55,7 +51,7 @@ const ImageSlider = ({
             nextArrow={<CustomNextArrow />}
             className="mb-4"
           >
-            {slider.medias?.map((media) => (
+            {slider.medias.map((media) => (
               <div key={media.id}>
                 <Image
                   src={
@@ -68,7 +64,6 @@ const ImageSlider = ({
                   height={400}
                   objectFit="cover"
                   className="rounded-md"
-                  fallback={imagePlaceholder}
                 />
               </div>
             ))}
@@ -100,6 +95,18 @@ const ImageSlider = ({
           {capitalize(slider.type) || "Type Unavailable"}
         </h5>
       </Space>
+
+      {/* NEW: Show slider tags if any */}
+      {Array.isArray(slider.additional?.tags) &&
+        slider.additional.tags.length > 0 && (
+          <div className="mt-3">
+            {slider.additional.tags.map((tagItem) => (
+              <Tag key={tagItem} color="blue" className="mb-1">
+                {tagItem}
+              </Tag>
+            ))}
+          </div>
+        )}
     </Card>
   );
 };

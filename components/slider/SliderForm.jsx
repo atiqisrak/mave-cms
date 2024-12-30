@@ -1,7 +1,7 @@
 // components/slider/SliderForm.jsx
 
 import React, { useEffect, useState } from "react";
-import { Form, Modal, message } from "antd";
+import { Drawer, Form, Modal, message } from "antd";
 import MediaSelectionModal from "../PageBuilder/Modals/MediaSelectionModal";
 import instance from "../../axios";
 import BasicInfoForm from "./SliderForm/BasicInfoForm";
@@ -23,6 +23,7 @@ const SliderForm = ({
   onCancelEdit,
   isFormVisible,
   setIsFormVisible,
+  allTags,
 }) => {
   const [isMediaModalVisible, setIsMediaModalVisible] = useState(false);
   const [cards, setCards] = useState([]);
@@ -149,10 +150,10 @@ const SliderForm = ({
   const cardPlaceholder = "/images/Card_Placeholder.png";
 
   return (
-    <Modal
+    <Drawer
       title={editingItemId ? "Edit Slider" : "Add Slider"}
       open={isFormVisible}
-      onCancel={onCancelEdit}
+      onClose={onCancelEdit}
       footer={null}
       width={800}
       destroyOnClose
@@ -165,7 +166,12 @@ const SliderForm = ({
         className="bg-white p-6 rounded-lg shadow-md"
       >
         {/* Basic Information */}
-        <BasicInfoForm />
+        <BasicInfoForm
+          allTags={allTags}
+          form={form}
+          imagePlaceholder={imagePlaceholder}
+          cardPlaceholder={cardPlaceholder}
+        />
 
         {/* Slider Type Selection */}
         <Form.Item
@@ -215,7 +221,7 @@ const SliderForm = ({
         }}
         selectionMode={selectionMode}
       />
-    </Modal>
+    </Drawer>
   );
 };
 
