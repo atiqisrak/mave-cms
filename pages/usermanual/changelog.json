@@ -1,5 +1,18 @@
 [
     {
+        "version": "3.0.17",
+        "date": "2024-12-31",
+        "changes": {
+            "Feature": [
+                "Added tags to the Gallery, Cards and Sliders with advanced functionalities",
+                "User can search and filter the sliders by tags"
+            ],
+            "BugFix": [
+                "Tags field is fixed in slider creation drawer"
+            ]
+        }
+    },
+    {
         "version": "3.0.14",
         "date": "2024-12-24",
         "changes": {

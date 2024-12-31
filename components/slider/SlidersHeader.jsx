@@ -81,6 +81,7 @@ const SlidersHeader = ({
           {/* NEW: Filter by Tags */}
           <Select
             allowClear
+            showSearch
             placeholder="Filter by Tag"
             style={{ width: 200 }}
             value={selectedTag || undefined}

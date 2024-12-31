@@ -15,6 +15,7 @@ import Head from "next/head";
 import { AuthProvider } from "../src/context/AuthContext";
 import { MenuRefreshProvider } from "../src/context/MenuRefreshContext";
 import { ThemeProvider } from "../src/context/ThemeContext";
+import PromoPopup from "../components/promotional/PromoPopup";
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -28,6 +29,7 @@ function MyApp({ Component, pageProps }) {
             {" "}
             {/* Wrap with ThemeProvider */}
             <Site>
+              <PromoPopup />
               <Component {...pageProps} />
             </Site>
           </ThemeProvider>
