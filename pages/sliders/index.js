@@ -183,29 +183,28 @@ const Sliders = () => {
     setType("image");
   };
 
-  const handleEditClick = async (id) => {
+  // In Sliders.jsx
+  const handleEditClick = (id) => {
     setEditingItemId(id);
     setIsFormVisible(true);
-    try {
-      const response = await instance.get(`/sliders/${id}`);
-      const slider = response.data;
-      if (slider) {
-        form.setFieldsValue({
-          title_en: slider.title_en,
-          title_bn: slider.title_bn,
-          description_en: slider.description_en,
-          description_bn: slider.description_bn,
-          type: slider.type,
-        });
-        setSelectedMedia(slider.medias || []);
-        setSelectedCards(slider.card_ids || []);
-        setType(slider.type);
-      }
-    } catch (error) {
-      console.error("Error fetching slider details:", error);
-      message.error("Failed to fetch slider details.");
-      setIsFormVisible(false);
-      setEditingItemId(null);
+
+    // Find the slider in local state
+    const foundSlider = allSliders.find((s) => s.id === id);
+    if (foundSlider) {
+      // Populate the AntD form directly
+      form.setFieldsValue({
+        title_en: foundSlider.title_en,
+        title_bn: foundSlider.title_bn,
+        description_en: foundSlider.description_en,
+        description_bn: foundSlider.description_bn,
+        type: foundSlider.type,
+        tags: foundSlider.additional?.tags || [],
+      });
+
+      // Update media/cards in local state
+      setSelectedMedia(foundSlider.medias || []);
+      setSelectedCards(foundSlider.card_ids || []);
+      setType(foundSlider.type);
     }
   };
 

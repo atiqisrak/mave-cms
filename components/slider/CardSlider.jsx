@@ -107,29 +107,34 @@ const CardSlider = ({
       actions={actions}
       className="slider-card shadow-md rounded-md"
     >
-      <Space
-        className="media-card-meta flex flex-col sm:flex-row justify-between items-start sm:items-center"
-        direction="vertical"
-      >
-        <h3 className="text-lg font-semibold truncate max-w-xs">
-          {slider.title_en || "Title Unavailable"}
-        </h3>
-        <h5 className="text-md text-gray-400 font-bold">
-          {capitalize(slider.type) || "Type Unavailable"}
-        </h5>
-      </Space>
-
-      {/* NEW: Show the slider’s own tags (top-level) */}
-      {Array.isArray(slider.additional?.tags) &&
-        slider.additional.tags.length > 0 && (
-          <div className="mt-3">
-            {slider.additional.tags.map((tagItem) => (
-              <Tag key={tagItem} color="blue" className="mb-1">
-                {tagItem}
-              </Tag>
-            ))}
-          </div>
-        )}
+      <div className="min-h-16">
+        <Space
+          className="media-card-meta flex flex-col sm:flex-row justify-between items-start sm:items-center"
+          direction="vertical"
+        >
+          <h3 className="text-lg font-semibold truncate max-w-xs">
+            {slider.title_en || "Title Unavailable"}
+          </h3>
+          <h5 className="text-md text-gray-400 font-bold">
+            {capitalize(slider.type) || "Type Unavailable"}
+          </h5>
+        </Space>
+        {Array.isArray(slider.additional?.tags) &&
+          slider.additional.tags.length > 0 && (
+            <div className="mt-3">
+              {slider.additional.tags.slice(0, 6).map((tagItem) => (
+                <Tag key={tagItem} color="blue" className="mb-1">
+                  {tagItem}
+                </Tag>
+              ))}
+              {slider.additional.tags.length > 6 && (
+                <Tag key="more" color="green" className="mb-1">
+                  ...
+                </Tag>
+              )}
+            </div>
+          )}
+      </div>
     </Card>
   );
 };

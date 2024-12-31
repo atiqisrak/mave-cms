@@ -4,7 +4,7 @@ import React from "react";
 import { Form, Input, Select } from "antd";
 import RichTextEditor from "../../RichTextEditor";
 
-const BasicInfoForm = ({ allTags }) => (
+const BasicInfoForm = ({ allTags, form }) => (
   <>
     {/* Title in English */}
     <Form.Item
@@ -37,7 +37,10 @@ const BasicInfoForm = ({ allTags }) => (
         },
       ]}
     >
-      <RichTextEditor editMode={true} />
+      <RichTextEditor
+        editMode={true}
+        defaultValue={form.getFieldValue("description_en") || ""}
+      />
     </Form.Item>
 
     {/* Description in Bangla */}
@@ -51,7 +54,10 @@ const BasicInfoForm = ({ allTags }) => (
         },
       ]}
     >
-      <RichTextEditor editMode={true} />
+      <RichTextEditor
+        editMode={true}
+        defaultValue={form.getFieldValue("description_bn") || ""}
+      />
     </Form.Item>
 
     {/* Tags */}
@@ -62,8 +68,8 @@ const BasicInfoForm = ({ allTags }) => (
         style={{ width: "100%" }}
       >
         {allTags.map((tag) => (
-          <Select.Option key={tag.id} value={tag.name}>
-            {tag.name}
+          <Select.Option key={tag} value={tag}>
+            {tag}
           </Select.Option>
         ))}
       </Select>

@@ -66,6 +66,7 @@ const SliderForm = ({
               description_en: slider.description_en,
               description_bn: slider.description_bn,
               type: slider.type,
+              tags: slider.additional?.tags || [],
             });
             setSelectedMedia(slider.medias || []);
             setSelectedCards(slider.card_ids || []);
@@ -104,6 +105,13 @@ const SliderForm = ({
       description_bn: values.description_bn,
       type: values.type,
     };
+
+    if (values.tags) {
+      payload.additional = {
+        ...(payload.additional || {}),
+        tags: values.tags,
+      };
+    }
 
     if (values.type === "image") {
       payload.media_ids = selectedMedia?.map((media) => media.id);
@@ -155,7 +163,7 @@ const SliderForm = ({
       open={isFormVisible}
       onClose={onCancelEdit}
       footer={null}
-      width={800}
+      width={`calc(100% - 40vw)`}
       destroyOnClose
     >
       <Form
