@@ -7,6 +7,7 @@ import HeadersSection from "./HeadersSection";
 import RowsSection from "./RowsSection";
 import PreviewTable from "./PreviewTable";
 import FilterableColumns from "./FilterableColumns";
+import { v4 as uuidv4 } from "uuid";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -48,7 +49,7 @@ const TableSelectionDrawer = ({
       if (initialTable) {
         setHeaders(
           initialTable.headers?.length
-            ? initialTable.headers
+            ? initialTable.headers.map((name) => ({ id: uuidv4(), name }))
             : [{ id: "default-1", name: "Column 1 Heading" }]
         );
         setRows(initialTable?.rows || [[""]]);

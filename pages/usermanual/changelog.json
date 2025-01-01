@@ -8,7 +8,8 @@
                 "User can search and filter the sliders by tags"
             ],
             "BugFix": [
-                "Tags field is fixed in slider creation drawer"
+                "Tags field is fixed in slider creation drawer",
+                "Fixed critical issue in dynamic complex table in page builder"
             ]
         }
     },

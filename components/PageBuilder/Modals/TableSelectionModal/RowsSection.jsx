@@ -157,11 +157,7 @@ const RowsSection = ({ headers, rows, setRows }) => {
       </div>
 
       <div className="flex justify-center">
-        <Button
-          onClick={addRow}
-          icon={<PlusOutlined />}
-          className="bg-blue-500 text-white hover:bg-blue-600"
-        >
+        <Button onClick={addRow} icon={<PlusOutlined />} className="mavebutton">
           Add Row
         </Button>
       </div>
