@@ -51,14 +51,14 @@ const TableSelectionDrawer = ({
             ? initialTable.headers
             : [{ id: "default-1", name: "Column 1 Heading" }]
         );
-        setRows(initialTable.rows || [[""]]);
+        setRows(initialTable?.rows || [[""]]);
         setVisibleColumns(
-          initialTable.visibleColumns ||
+          initialTable?.visibleColumns ||
             Array(initialTable?.headers?.length || 1).fill(true)
         );
-        setFilterColumns(initialTable.filterColumns || []);
+        setFilterColumns(initialTable?.filterColumns || []);
       }
-      form.resetFields();
+      form?.resetFields();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible, initialTable]);
@@ -66,13 +66,13 @@ const TableSelectionDrawer = ({
   // Keep each row length matched to # of headers
   useEffect(() => {
     setRows((prevRows) =>
-      prevRows.map((r) => {
-        if (r.length < headers.length) {
+      prevRows?.map((r) => {
+        if (r?.length < headers?.length) {
           // add empty cells if needed
-          return [...r, ...Array(headers.length - r.length).fill("")];
-        } else if (r.length > headers.length) {
+          return [...r, ...Array(headers?.length - r?.length).fill("")];
+        } else if (r?.length > headers?.length) {
           // remove extras
-          return r.slice(0, headers.length);
+          return r?.slice(0, headers?.length);
         }
         return r;
       })
@@ -81,20 +81,20 @@ const TableSelectionDrawer = ({
 
   // Keep visibleColumns in sync if # of headers changes
   useEffect(() => {
-    if (visibleColumns.length < headers.length) {
+    if (visibleColumns?.length < headers?.length) {
       setVisibleColumns([
         ...visibleColumns,
-        ...Array(headers.length - visibleColumns.length).fill(true),
+        ...Array(headers?.length - visibleColumns?.length).fill(true),
       ]);
-    } else if (visibleColumns.length > headers.length) {
-      setVisibleColumns(visibleColumns.slice(0, headers.length));
+    } else if (visibleColumns?.length > headers?.length) {
+      setVisibleColumns(visibleColumns?.slice(0, headers?.length));
     }
   }, [headers, visibleColumns]);
 
   // Keep form fields in sync
   useEffect(() => {
     form.setFieldsValue({
-      headers: headers.map((h) => h.name),
+      headers: headers?.map((h) => h?.name),
       rows,
     });
   }, [headers, rows, form]);
@@ -105,7 +105,7 @@ const TableSelectionDrawer = ({
       .then(() => {
         // Validate row lengths
         for (let i = 0; i < rows.length; i++) {
-          if (rows[i].length !== headers.length) {
+          if (rows[i]?.length !== headers?.length) {
             message.error(`Row ${i + 1} does not match the number of columns.`);
             return;
           }
@@ -126,7 +126,7 @@ const TableSelectionDrawer = ({
   };
 
   const handleCancel = () => {
-    form.resetFields();
+    form?.resetFields();
     onClose();
   };
 
