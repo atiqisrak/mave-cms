@@ -94,13 +94,32 @@ const SliderComponent = ({
   if (preview) {
     return (
       <div className="preview-slider-component p-4 bg-gray-100 rounded-md flex justify-center">
-        {sliderData?.medias && sliderData.medias.length > 0 ? (
+        {/* {sliderData?.medias && sliderData.medias.length > 0 ? (
           <div className="w-full">
-            {/* <h2 className="text-xl font-bold text-theme pb-4">
-              {sliderData.title_en || "Slider Title"}
-            </h2> */}
             <Carousel autoplay dots={false}>
               {renderSliderImages(sliderData.medias)}
+            </Carousel>
+          </div>
+        ) : (
+          <p className="text-gray-500">No slider selected.</p>
+        )} */}
+        {sliderData?.type === "image" && sliderData?.medias?.length > 0 ? (
+          <div className="w-full">
+            <Carousel autoplay dots={false}>
+              {renderSliderImages(sliderData.medias)}
+            </Carousel>
+          </div>
+        ) : sliderData?.type === "card" && sliderData?.cards?.length > 0 ? (
+          <div className="w-full">
+            <Carousel autoplay dots={false}>
+              {sliderData.cards.map((card) => (
+                <div key={card.id} className="p-4 bg-white rounded-lg">
+                  <h3>{card.title_en}</h3>
+                  <div
+                    dangerouslySetInnerHTML={{ __html: card.description_en }}
+                  />
+                </div>
+              ))}
             </Carousel>
           </div>
         ) : (
@@ -167,13 +186,49 @@ const SliderComponent = ({
           {sliderData && (
             <h4 className="mb-2 text-md font-semibold">Current Slider</h4>
           )}
-          {sliderData?.medias && sliderData.medias.length > 0 ? (
+          {/* {sliderData?.medias && sliderData.medias.length > 0 ? (
             <div className="w-full">
               <h2 className="text-xl font-bold text-theme pb-4">
                 {sliderData.title_en || "Slider Title"}
               </h2>
               <Carousel autoplay>
                 {renderSliderImages(sliderData.medias)}
+              </Carousel>
+            </div>
+          ) : (
+            <>
+              <Button
+                icon={<EditOutlined />}
+                onClick={() => setIsModalVisible(true)}
+                className="mavebutton w-fit"
+              >
+                Select Slider
+              </Button>
+            </>
+          )} */}
+          {sliderData?.type === "image" && sliderData?.medias?.length > 0 ? (
+            <div className="w-full">
+              <h2 className="text-xl font-bold text-theme pb-4">
+                {sliderData.title_en || "Slider Title"}
+              </h2>
+              <Carousel autoplay>
+                {renderSliderImages(sliderData.medias)}
+              </Carousel>
+            </div>
+          ) : sliderData?.type === "card" && sliderData?.cards?.length > 0 ? (
+            <div className="w-full">
+              <h2 className="text-xl font-bold text-theme pb-4">
+                {sliderData.title_en || "Slider Title"}
+              </h2>
+              <Carousel autoplay>
+                {sliderData.cards.map((card) => (
+                  <div key={card.id} className="p-4 bg-white rounded-lg">
+                    <h3>{card.title_en}</h3>
+                    <div
+                      dangerouslySetInnerHTML={{ __html: card.description_en }}
+                    />
+                  </div>
+                ))}
               </Carousel>
             </div>
           ) : (
@@ -193,7 +248,7 @@ const SliderComponent = ({
         {isEditing && selectedSliderData && (
           <div className="flex flex-col w-full md:w-1/2">
             <h4 className="mb-2 text-md font-medium">Selected Slider</h4>
-            {selectedSliderData?.medias &&
+            {/* {selectedSliderData?.medias &&
             selectedSliderData.medias.length > 0 ? (
               <div className="w-full">
                 <h2 className="text-xl font-bold text-theme pb-4">
@@ -205,6 +260,38 @@ const SliderComponent = ({
               </div>
             ) : (
               <Paragraph>No media in selected slider.</Paragraph>
+            )} */}
+            {selectedSliderData?.type === "image" &&
+            selectedSliderData?.medias?.length > 0 ? (
+              <div className="w-full">
+                <h2 className="text-xl font-bold text-theme pb-4">
+                  {selectedSliderData.title_en || "Slider Title"}
+                </h2>
+                <Carousel autoplay>
+                  {renderSliderImages(selectedSliderData.medias)}
+                </Carousel>
+              </div>
+            ) : selectedSliderData?.type === "card" &&
+              selectedSliderData?.cards?.length > 0 ? (
+              <div className="w-full">
+                <h2 className="text-xl font-bold text-theme pb-4">
+                  {selectedSliderData.title_en || "Slider Title"}
+                </h2>
+                <Carousel autoplay>
+                  {selectedSliderData.cards.map((card) => (
+                    <div key={card.id} className="p-4 bg-white rounded-lg">
+                      <h3>{card.title_en}</h3>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: card.description_en,
+                        }}
+                      />
+                    </div>
+                  ))}
+                </Carousel>
+              </div>
+            ) : (
+              <Paragraph>No media/cards in selected slider.</Paragraph>
             )}
           </div>
         )}
