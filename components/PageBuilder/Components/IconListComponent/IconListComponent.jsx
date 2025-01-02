@@ -1,11 +1,11 @@
 // components/PageBuilder/Components/IconListComponent/IconListComponent.jsx
 
 import React, { useState, useEffect } from "react";
-import { Button, Popconfirm, Select, Space, message } from "antd";
+import { Button, Popconfirm, Select, Space, message, Typography } from "antd";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import IconListItem from "./IconListItem";
 import IconListSelectionModal from "../../Modals/IconListSelectionModal/IconListSelectionModal";
-
+const { Paragraph } = Typography;
 const { Option } = Select;
 
 const IconListComponent = ({

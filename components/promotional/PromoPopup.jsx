@@ -10,14 +10,11 @@ export default function PromoPopup() {
   const [user, setUser] = useState();
 
   useEffect(() => {
-    const shown = localStorage.getItem("promoPopupShown");
+    const shown = sessionStorage.getItem("promoPopupShown");
     if (!shown) {
       setShowPopup(true);
-      localStorage.setItem("promoPopupShown", "true");
+      sessionStorage.setItem("promoPopupShown", "true");
     }
-    const onUnload = () => localStorage.removeItem("promoPopupShown");
-    window.addEventListener("beforeunload", onUnload);
-    return () => window.removeEventListener("beforeunload", onUnload);
   }, []);
 
   useEffect(() => {
@@ -70,8 +67,9 @@ export default function PromoPopup() {
           </Button>
 
           <Title level={3} className="mb-2">
-            Welcome back, {user.name}
+            Welcome back, {user?.name || "Guest"}
           </Title>
+
           <Paragraph className="text-sm text-gray-500">
             Here's what we added while you were away:
           </Paragraph>
