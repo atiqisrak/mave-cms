@@ -12,6 +12,10 @@ const FormPreview = ({
   formElements,
   loading,
 }) => {
+  // Safely handle description to avoid .replace() crash
+  const safeDescription =
+    typeof formMeta.description === "string" ? formMeta.description : "";
+
   return (
     <Drawer
       title="Draft Form Preview"
@@ -34,10 +38,12 @@ const FormPreview = ({
       }
     >
       <div className="mb-4">
-        <h3 className="text-xl font-bold">{formMeta.title}</h3>
+        <h3 className="text-xl font-bold">
+          {formMeta.title || "Untitled Form"}
+        </h3>
         <div
           className="text-gray-700"
-          dangerouslySetInnerHTML={{ __html: formMeta.description }}
+          dangerouslySetInnerHTML={{ __html: safeDescription }}
         />
       </div>
       <div className="border border-dashed p-4">
@@ -46,9 +52,9 @@ const FormPreview = ({
             key={element.updated_on}
             element={element}
             index={idx}
-            totalElements={formElements.length}
-            onUpdate={() => {}}
-            onMove={() => {}}
+            // We disable reordering in preview, so pass no-ops:
+            moveElement={() => {}}
+            onUpdateElement={() => {}}
           />
         ))}
       </div>

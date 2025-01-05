@@ -1,6 +1,6 @@
 // components/formbuilder/builder/ElementConfig.js
 import React, { useEffect, useState } from "react";
-import { Button } from "antd";
+import { Button, Input } from "antd";
 
 const ElementConfig = ({ element, onUpdate }) => {
   const [label, setLabel] = useState(element.label);
@@ -13,6 +13,7 @@ const ElementConfig = ({ element, onUpdate }) => {
     element.districtLabel || "Select District"
   );
 
+  // Send updated props to the parent whenever local states change
   useEffect(() => {
     onUpdate({
       ...element,
@@ -27,54 +28,54 @@ const ElementConfig = ({ element, onUpdate }) => {
 
   const addOption = () => {
     const newOption = { _id: Date.now().toString(), title: "", value: "" };
-    setOptions([...options, newOption]);
+    setOptions((prev) => [...prev, newOption]);
   };
 
-  const updateOption = (index, field, value) => {
-    const newOptions = [...options];
-    newOptions[index][field] = value;
-    setOptions(newOptions);
+  const updateOption = (idx, field, value) => {
+    setOptions((prev) => {
+      const updated = [...prev];
+      updated[idx][field] = value;
+      return updated;
+    });
   };
 
-  const removeOption = (index) => {
-    const newOptions = options.filter((_, i) => i !== index);
-    setOptions(newOptions);
+  const removeOption = (idx) => {
+    setOptions((prev) => prev.filter((_, i) => i !== idx));
   };
 
   return (
     <div className="bg-gray-100 p-4 rounded mb-4">
       <label className="block font-semibold mb-1">Label</label>
-      <input
-        className="border rounded w-full p-2 mb-4"
+      <Input
+        className="mb-4"
         value={label}
         onChange={(e) => setLabel(e.target.value)}
       />
 
       <label className="block font-semibold mb-1">Placeholder</label>
-      <input
-        className="border rounded w-full p-2 mb-4"
+      <Input
+        className="mb-4"
         value={placeholder}
         onChange={(e) => setPlaceholder(e.target.value)}
       />
 
+      {/* If it's a radio or select, manage 'options' */}
       {element.element_type === "input" && element.input_type === "radio" && (
         <div className="mb-4">
           <label className="block font-semibold mb-1">Radio Options</label>
-          {options.map((option, index) => (
-            <div key={option._id} className="flex items-center mb-2 gap-2">
-              <input
-                className="border rounded p-2"
+          {options.map((opt, idx) => (
+            <div key={opt._id} className="flex items-center mb-2 gap-2">
+              <Input
                 placeholder="Title"
-                value={option.title}
-                onChange={(e) => updateOption(index, "title", e.target.value)}
+                value={opt.title}
+                onChange={(e) => updateOption(idx, "title", e.target.value)}
               />
-              <input
-                className="border rounded p-2"
+              <Input
                 placeholder="Value"
-                value={option.value}
-                onChange={(e) => updateOption(index, "value", e.target.value)}
+                value={opt.value}
+                onChange={(e) => updateOption(idx, "value", e.target.value)}
               />
-              <Button danger onClick={() => removeOption(index)}>
+              <Button danger onClick={() => removeOption(idx)}>
                 Remove
               </Button>
             </div>
@@ -86,21 +87,19 @@ const ElementConfig = ({ element, onUpdate }) => {
       {element.element_type === "select" && (
         <div className="mb-4">
           <label className="block font-semibold mb-1">Select Options</label>
-          {options.map((option, index) => (
-            <div key={option._id} className="flex items-center mb-2 gap-2">
-              <input
-                className="border rounded p-2"
+          {options.map((opt, idx) => (
+            <div key={opt._id} className="flex items-center mb-2 gap-2">
+              <Input
                 placeholder="Title"
-                value={option.title}
-                onChange={(e) => updateOption(index, "title", e.target.value)}
+                value={opt.title}
+                onChange={(e) => updateOption(idx, "title", e.target.value)}
               />
-              <input
-                className="border rounded p-2"
+              <Input
                 placeholder="Value"
-                value={option.value}
-                onChange={(e) => updateOption(index, "value", e.target.value)}
+                value={opt.value}
+                onChange={(e) => updateOption(idx, "value", e.target.value)}
               />
-              <Button danger onClick={() => removeOption(index)}>
+              <Button danger onClick={() => removeOption(idx)}>
                 Remove
               </Button>
             </div>
@@ -109,17 +108,18 @@ const ElementConfig = ({ element, onUpdate }) => {
         </div>
       )}
 
+      {/* If it's a location element, manage labels for division/district */}
       {element.element_type === "location" && (
         <>
           <label className="block font-semibold mb-1">Division Label</label>
-          <input
-            className="border rounded w-full p-2 mb-4"
+          <Input
+            className="mb-4"
             value={divisionLabel}
             onChange={(e) => setDivisionLabel(e.target.value)}
           />
           <label className="block font-semibold mb-1">District Label</label>
-          <input
-            className="border rounded w-full p-2 mb-4"
+          <Input
+            className="mb-4"
             value={districtLabel}
             onChange={(e) => setDistrictLabel(e.target.value)}
           />

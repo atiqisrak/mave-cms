@@ -1,6 +1,6 @@
 // components/formbuilder/builder/FormElement.js
 import React, { useRef, useState } from "react";
-import { Button, Radio, Select, Input, Popconfirm } from "antd";
+import { Button, Radio, Select, Input, Popconfirm, Upload } from "antd";
 import { useDrag, useDrop } from "react-dnd";
 import ElementConfig from "./ElementConfig";
 import LocationFetcher from "../LocationFetcher";
@@ -8,11 +8,16 @@ import LocationFetcher from "../LocationFetcher";
 const { TextArea } = Input;
 const { Option } = Select;
 
-const FormElement = ({ element, index, moveElement, onUpdateElement }) => {
+const FormElement = ({
+  element,
+  index,
+  moveElement = () => {},
+  onUpdateElement = () => {},
+}) => {
   const ref = useRef(null);
   const [configVisible, setConfigVisible] = useState(false);
 
-  // DRAG - for reordering existing elements
+  // DRAG - for reordering existing elements (in edit mode)
   const [{ isDragging }, dragRef] = useDrag({
     type: "formElement",
     item: { index },
@@ -21,7 +26,7 @@ const FormElement = ({ element, index, moveElement, onUpdateElement }) => {
     }),
   });
 
-  // DROP - accept "formElement" for reordering
+  // DROP - accept "formElement" for reordering (in edit mode)
   const [, dropRef] = useDrop({
     accept: "formElement",
     hover: (draggedItem) => {
@@ -30,11 +35,11 @@ const FormElement = ({ element, index, moveElement, onUpdateElement }) => {
       const hoverIndex = index;
       if (dragIndex === hoverIndex) return;
       moveElement(dragIndex, hoverIndex);
-      // Update the dragged item's index so it doesn't keep reordering
       draggedItem.index = hoverIndex;
     },
   });
 
+  // If this is the preview drawer, moveElement may be no-op
   dragRef(dropRef(ref));
 
   const handleRemove = () => onUpdateElement(null, index);
@@ -43,13 +48,13 @@ const FormElement = ({ element, index, moveElement, onUpdateElement }) => {
     onUpdateElement(updatedElement, index);
   };
 
-  // Display a simple preview
+  // Render a read-only field using Ant Design
   const renderPreview = () => {
     switch (element.element_type) {
-      case "input":
+      case "input": {
         if (element.input_type === "radio") {
           return (
-            <Radio.Group>
+            <Radio.Group disabled>
               {element.options?.map((opt) => (
                 <Radio key={opt._id} value={opt.value}>
                   {opt.title}
@@ -58,11 +63,22 @@ const FormElement = ({ element, index, moveElement, onUpdateElement }) => {
             </Radio.Group>
           );
         }
-        if (["submit", "save", "reset"].includes(element.input_type)) {
+        if (element.input_type === "file") {
+          // For preview only, we can show a disabled Upload or Input
           return (
-            <Button disabled>{element.placeholder || element.label}</Button>
+            <Upload disabled>
+              <Button>Upload (Disabled Preview)</Button>
+            </Upload>
           );
         }
+        if (["submit", "save", "reset"].includes(element.input_type)) {
+          return (
+            <Button disabled>
+              {element.placeholder || element.label || "Button"}
+            </Button>
+          );
+        }
+        // else text, email, number, password, tel, date
         return (
           <Input
             type={element.input_type}
@@ -70,14 +86,18 @@ const FormElement = ({ element, index, moveElement, onUpdateElement }) => {
             disabled
           />
         );
+      }
+
       case "textarea":
         return <TextArea placeholder={element.placeholder} rows={3} disabled />;
+
       case "select":
         return (
           <Select
             placeholder={element.placeholder}
             disabled
             style={{ width: "100%" }}
+            // For preview, we don't handle onChange
           >
             {element.options?.map((opt) => (
               <Option key={opt._id} value={opt.value}>
@@ -86,15 +106,26 @@ const FormElement = ({ element, index, moveElement, onUpdateElement }) => {
             ))}
           </Select>
         );
+
       case "location":
+        // Show disabled location fetcher or a read-only representation
         return (
           <LocationFetcher
             divisionLabel={element.divisionLabel}
             districtLabel={element.districtLabel}
           />
         );
+
+      case "button":
+        // Some forms store button as separate element_type
+        return (
+          <Button disabled>
+            {element.placeholder || element.label || "Button"}
+          </Button>
+        );
+
       default:
-        return null;
+        return <p className="text-gray-500 italic">Unknown element type</p>;
     }
   };
 
@@ -132,8 +163,10 @@ const FormElement = ({ element, index, moveElement, onUpdateElement }) => {
           </Popconfirm>
         </div>
       </div>
+
       <div className="my-2">{renderPreview()}</div>
 
+      {/* Config panel for editing element metadata */}
       {configVisible && (
         <ElementConfig element={element} onUpdate={handleConfigChange} />
       )}

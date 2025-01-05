@@ -8,6 +8,7 @@ import { message } from "antd";
 import instance from "../../../axios";
 import FormPreview from "./FormPreview";
 import { useRouter } from "next/router";
+import RichTextEditor from "../../RichTextEditor";
 
 const { TabPane } = Tabs;
 
@@ -146,7 +147,7 @@ const FormEditor = ({ formId }) => {
               <label className="block text-gray-700 font-bold mb-2">
                 Form Description
               </label>
-              <textarea
+              {/* <textarea
                 className="border rounded w-full p-2 mb-4"
                 rows="4"
                 value={formMeta.description.replace(/<[^>]+>/g, "")}
@@ -155,6 +156,14 @@ const FormEditor = ({ formId }) => {
                     ...formMeta,
                     description: `<p>${e.target.value}</p>`,
                   })
+                }
+              /> */}
+              <RichTextEditor
+                editMode={true}
+                defaultValue={formMeta.description}
+                value={formMeta.description}
+                onChange={(value) =>
+                  setFormMeta({ ...formMeta, description: value })
                 }
               />
               <label className="block text-gray-700 font-bold mb-2">
