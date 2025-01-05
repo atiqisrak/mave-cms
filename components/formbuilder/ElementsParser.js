@@ -62,7 +62,7 @@ export default function ElementsParser({ form, setDrawerVisible }) {
       className="text-2xl font-semibold text-gray-800"
       onFinish={handleSubmit} // Trigger handleSubmit on form submission
     >
-      {form.elements.map((element) => {
+      {form?.elements?.map((element) => {
         // Handle Submit Button Separately
         if (
           element.element_type === "input" &&
