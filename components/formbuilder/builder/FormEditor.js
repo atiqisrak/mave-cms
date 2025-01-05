@@ -1,118 +1,118 @@
-import React, { useState, useEffect } from "react";
-import ElementPanel from "./ElementPanel";
+// components/formbuilder/builder/FormEditor.js
+import React, { useEffect, useState, useContext } from "react";
+import { Tabs, Card, Button, Popconfirm } from "antd";
 import BuilderPanel from "./BuilderPanel";
+import ElementPanel from "./ElementPanel";
+import { FormBuilderContext } from "../../../src/context/FormBuilderContext";
+import { message } from "antd";
 import instance from "../../../axios";
-import {
-  Button,
-  Card,
-  Form,
-  Input,
-  message,
-  Popconfirm,
-  Select,
-  Switch,
-  Tabs,
-} from "antd";
-import RichTextEditor from "../../RichTextEditor";
+import FormPreview from "./FormPreview";
+import { useRouter } from "next/router";
+
+const { TabPane } = Tabs;
 
 const FormEditor = ({ formId }) => {
   const [formElements, setFormElements] = useState([]);
   const [formAttributes, setFormAttributes] = useState({});
   const [formMeta, setFormMeta] = useState({});
+  const [preview, setPreview] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const { reset } = useContext(FormBuilderContext);
+  const router = useRouter();
+
+  const loadForm = async () => {
+    if (!formId) return;
+    try {
+      const response = await instance.get(`/form_builder/${formId}`);
+      const form = response.data;
+      setFormAttributes(form.attributes);
+      setFormMeta({
+        title: form.title,
+        description: form.description,
+        status: form.status,
+      });
+      setFormElements(form.elements);
+    } catch (error) {
+      console.error("Error loading form:", error);
+    }
+  };
 
   useEffect(() => {
-    const loadForm = async () => {
-      if (formId) {
-        try {
-          const response = await instance.get(`/form_builder/${formId}`);
-          const form = response.data;
-          setFormAttributes(form.attributes);
-          setFormMeta({
-            title: form.title,
-            description: form.description,
-            status: form.status,
-          });
-          setFormElements(form.elements);
-        } catch (error) {
-          console.error("Error loading form:", error);
-        }
-      } else {
-        setFormAttributes({
-          component_id: "dummy_form",
-          component_class: "form, bg-light",
-          method: "POST",
-          action_url: "https://example.com",
-          enctype: "multipart/form-data",
-        });
-        setFormMeta({
-          title: "Demo Form",
-          description: "This is a demo form.",
-          status: 1,
-        });
-      }
-    };
-
-    loadForm();
+    if (formId) {
+      loadForm();
+    } else {
+      setFormAttributes({
+        component_id: "dummy_form",
+        component_class: "form bg-white p-6 rounded shadow-md",
+        method: "POST",
+        action_url: "https://example.com",
+        enctype: "multipart/form-data",
+      });
+      setFormMeta({
+        title: "Demo Form",
+        description: "<p>This is a demo form.</p>",
+        status: 1,
+      });
+    }
   }, [formId]);
 
   const addElement = (element) => {
-    setFormElements([
-      ...formElements,
-      { ...element, _id: new Date().getTime().toString() },
+    setFormElements((prev) => [
+      ...prev,
+      { ...element, updated_on: new Date().getTime().toString() },
     ]);
   };
 
-  const updateElement = (newElements) => {
-    setFormElements(newElements);
+  const updateElement = (elements) => {
+    setFormElements(elements);
   };
 
   const saveForm = async () => {
     try {
-      const response = await instance.put(`/form_builder/${formId || ""}`, {
+      setLoading(true);
+      const data = {
         title: formMeta.title,
         description: formMeta.description,
         attributes: formAttributes,
         elements: formElements,
-      });
-      if (response.status === 200) {
+      };
+      const url = formId ? `/form_builder/${formId}` : "/form_builder";
+      const method = formId ? "put" : "post";
+
+      const response = await instance[method](url, data);
+      if (response.status === 200 || response.status === 201) {
         message.success("Form saved successfully!");
+        setPreview(false);
+        reset();
+        router.push("/formbuilder");
       } else {
         message.error("Failed to save form.");
       }
     } catch (error) {
       console.error("Error saving form:", error);
       message.error("Error saving form.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div
-      className="form-builder"
-      style={{ display: "grid", gridTemplateColumns: "4fr 1fr", gap: "2rem" }}
-    >
-      <div className="panel">
-        <Tabs
-          defaultActiveKey="1"
-          style={{ marginBottom: "1rem" }}
-          type="card"
-          size="large"
-          centered
-        >
-          <Tabs.TabPane tab="Elements" key="1">
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+      <div className="lg:col-span-4">
+        <Tabs defaultActiveKey="1" type="card" size="large" centered>
+          <TabPane tab="Builder" key="1">
             <BuilderPanel
               formElements={formElements}
               addElement={addElement}
               updateElement={updateElement}
             />
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                margin: "1rem 0 5rem",
-              }}
-            >
-              <Button className="mavebutton" onClick={saveForm}>
-                Save Form
+            <div className="flex justify-between mt-4">
+              <Button
+                className="bg-theme text-white"
+                onClick={() => setPreview(true)}
+              >
+                Preview
               </Button>
               <Popconfirm
                 title="Are you sure you want to clear the form?"
@@ -120,99 +120,76 @@ const FormEditor = ({ formId }) => {
                 okText="Yes"
                 cancelText="No"
               >
-                <Button className="mavecancelbutton">Clear Form</Button>
+                <Button danger>Clear Form</Button>
               </Popconfirm>
             </div>
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Attributes" key="2">
-            <Card
-              title="Form Attributes"
-              style={{
-                marginBottom: "1rem",
-                borderRadius: "5px",
-                height: "70vh",
-                overflowY: "auto",
-              }}
-            >
-              <Form layout="vertical" style={{ marginBottom: "1rem" }}>
-                <Form.Item label="Form Title">
-                  <Input
-                    placeholder="Form Title"
-                    value={formMeta.title}
-                    onChange={(e) => {
-                      setFormMeta({ ...formMeta, title: e.target.value });
-                      setFormAttributes({
-                        ...formAttributes,
-                        component_id: e.target.value
-                          .toLowerCase()
-                          .replace(/\s/g, "_"),
-                      });
-                    }}
-                  />
-                </Form.Item>
-                <Form.Item label="Form Description">
-                  <RichTextEditor
-                    value={formMeta.description}
-                    onChange={(value) =>
-                      setFormMeta({ ...formMeta, description: value })
-                    }
-                    editMode={true}
-                  />
-                </Form.Item>
-                <Form.Item label="Method">
-                  <Switch
-                    checkedChildren="POST"
-                    unCheckedChildren="GET"
-                    checked={formAttributes.method === "POST"}
-                    onChange={(checked) =>
-                      setFormAttributes({
-                        ...formAttributes,
-                        method: checked ? "POST" : "GET",
-                      })
-                    }
-                  />
-                </Form.Item>
-                <Form.Item label="Action URL">
-                  <Input
-                    label="Action URL"
-                    type="url"
-                    placeholder="Action URL"
-                    value={formAttributes.action_url}
-                    onChange={(e) =>
-                      setFormAttributes({
-                        ...formAttributes,
-                        action_url: e.target.value,
-                      })
-                    }
-                  />
-                </Form.Item>
-                <Form.Item label="Enctype">
-                  <Select
-                    placeholder="Enctype"
-                    value={formAttributes.enctype}
-                    onChange={(value) =>
-                      setFormAttributes({ ...formAttributes, enctype: value })
-                    }
-                    style={{ width: "100%" }}
-                    showSearch
-                  >
-                    <Select.Option value="application/x-www-form-urlencoded">
-                      application/x-www-form-urlencoded
-                    </Select.Option>
-                    <Select.Option value="multipart/form-data">
-                      multipart/form-data
-                    </Select.Option>
-                    <Select.Option value="text/plain">text/plain</Select.Option>
-                  </Select>
-                </Form.Item>
-              </Form>
+          </TabPane>
+          <TabPane tab="Attributes" key="2">
+            <Card className="mb-4">
+              <label className="block text-gray-700 font-bold mb-2">
+                Form Title
+              </label>
+              <input
+                className="border rounded w-full p-2 mb-4"
+                placeholder="Form Title"
+                value={formMeta.title}
+                onChange={(e) => {
+                  setFormMeta({ ...formMeta, title: e.target.value });
+                  setFormAttributes({
+                    ...formAttributes,
+                    component_id: e.target.value
+                      .toLowerCase()
+                      .replace(/\s/g, "_"),
+                  });
+                }}
+              />
+              <label className="block text-gray-700 font-bold mb-2">
+                Form Description
+              </label>
+              <textarea
+                className="border rounded w-full p-2 mb-4"
+                rows="4"
+                value={formMeta.description.replace(/<[^>]+>/g, "")}
+                onChange={(e) =>
+                  setFormMeta({
+                    ...formMeta,
+                    description: `<p>${e.target.value}</p>`,
+                  })
+                }
+              />
+              <label className="block text-gray-700 font-bold mb-2">
+                Action URL
+              </label>
+              <input
+                className="border rounded w-full p-2 mb-4"
+                type="url"
+                placeholder="https://example.com"
+                value={formAttributes.action_url}
+                onChange={(e) =>
+                  setFormAttributes({
+                    ...formAttributes,
+                    action_url: e.target.value,
+                  })
+                }
+              />
             </Card>
-          </Tabs.TabPane>
+          </TabPane>
         </Tabs>
       </div>
-      <div className="panel">
+      <div className="lg:col-span-1">
         <ElementPanel />
       </div>
+      {preview && (
+        <FormPreview
+          visible={preview}
+          onCancel={() => setPreview(false)}
+          onSave={saveForm}
+          formMeta={formMeta}
+          formAttributes={formAttributes}
+          formElements={formElements}
+          loading={loading}
+        />
+      )}
     </div>
   );
 };

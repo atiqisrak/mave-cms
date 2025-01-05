@@ -1,57 +1,56 @@
+// components/formbuilder/builder/BuilderPanel.js
 import React from "react";
+import { Card } from "antd";
 import { useDrop } from "react-dnd";
 import FormElement from "./FormElement";
-import { Card } from "antd";
 
 const BuilderPanel = ({ formElements, addElement, updateElement }) => {
-  const [, drop] = useDrop({
-    accept: "element",
-    drop: (item) => addElement(item.element),
+  // Accept BOTH new items ("element") and reorder items ("formElement")
+  const [, dropRef] = useDrop({
+    accept: ["element", "formElement"],
+    drop: (item, monitor) => {
+      if (monitor.getItemType() === "element") {
+        // If it's a new element from ElementPanel
+        addElement(item.element);
+      }
+      // If it's "formElement", the reorder logic happens in FormElement itself
+    },
   });
 
+  // Reorder existing elements in state
+  const moveElement = (dragIndex, hoverIndex) => {
+    const updated = [...formElements];
+    const [dragged] = updated.splice(dragIndex, 1);
+    updated.splice(hoverIndex, 0, dragged);
+    updateElement(updated);
+  };
+
+  // Update or remove single element
   const handleUpdateElement = (updatedElement, index) => {
     const newElements = [...formElements];
     if (updatedElement === null) {
-      // Remove element
       newElements.splice(index, 1);
     } else {
-      // Update element
       newElements[index] = updatedElement;
     }
     updateElement(newElements);
   };
 
-  const handleMoveElement = (fromIndex, toIndex) => {
-    const newElements = [...formElements];
-    const [movedElement] = newElements.splice(fromIndex, 1);
-    newElements.splice(toIndex, 0, movedElement);
-    updateElement(newElements);
-  };
-
   return (
     <Card
-      className="builder-panel"
-      ref={drop}
-      style={{
-        padding: "1rem",
-        borderRadius: "5px",
-        minHeight: "50vh",
-        border: "2px dashed var(--themes)",
-      }}
+      ref={dropRef}
+      className="border-2 border-dashed border-theme h-[60vh] overflow-auto p-4"
     >
-      <center>
-        <h3 className="text-3xl font-bold text-black mb-10">
-          Form Builder Canvas
-        </h3>
-      </center>
+      <h3 className="text-xl font-bold text-center mb-4">
+        Form Builder Canvas
+      </h3>
       {formElements?.map((element, index) => (
         <FormElement
-          key={element._id}
+          key={element.updated_on}
           element={element}
           index={index}
-          totalElements={formElements.length}
-          onUpdate={handleUpdateElement}
-          onMove={handleMoveElement}
+          moveElement={moveElement}
+          onUpdateElement={handleUpdateElement}
         />
       ))}
     </Card>

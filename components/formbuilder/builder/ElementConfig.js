@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Input, Select, Button, Form } from "antd";
-
-const { Option } = Select;
+// components/formbuilder/builder/ElementConfig.js
+import React, { useEffect, useState } from "react";
+import { Button } from "antd";
 
 const ElementConfig = ({ element, onUpdate }) => {
   const [label, setLabel] = useState(element.label);
-  const [placeholder, setPlaceholder] = useState(element.placeholder);
-  const [inputType, setInputType] = useState(element.input_type || "text");
+  const [placeholder, setPlaceholder] = useState(element.placeholder || "");
   const [options, setOptions] = useState(element.options || []);
   const [divisionLabel, setDivisionLabel] = useState(
     element.divisionLabel || "Select Division"
@@ -15,16 +13,17 @@ const ElementConfig = ({ element, onUpdate }) => {
     element.districtLabel || "Select District"
   );
 
-  const handleUpdate = () => {
+  useEffect(() => {
     onUpdate({
       ...element,
       label,
       placeholder,
-      input_type: inputType,
       options,
-      selectedValue: element.selectedValue || "",
+      divisionLabel,
+      districtLabel,
     });
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [label, placeholder, options, divisionLabel, districtLabel]);
 
   const addOption = () => {
     const newOption = { _id: Date.now().toString(), title: "", value: "" };
@@ -42,122 +41,90 @@ const ElementConfig = ({ element, onUpdate }) => {
     setOptions(newOptions);
   };
 
-  useEffect(() => {
-    handleUpdate();
-  }, [label, placeholder, inputType, options]);
-
-  useEffect(() => {
-    onUpdate({
-      ...element,
-      divisionLabel,
-      districtLabel,
-    });
-  }, [divisionLabel, districtLabel]);
-
   return (
-    <div className="element-config">
-      {/* Title, Paragraph */}
-      <Form
-        layout="vertical"
-        className="element-config-form p-4 border-2 border-gray-400 rounded-lg mt-5"
-      >
-        <Form.Item label="Label" className="text-2xl font-semibold">
-          <Input
-            value={label}
-            onChange={(e) => setLabel(e.target.value)}
-            onBlur={handleUpdate}
-          />
-        </Form.Item>
-        <Form.Item label="Placeholder" className="text-2xl font-semibold">
-          <Input
-            value={placeholder}
-            onChange={(e) => setPlaceholder(e.target.value)}
-            onBlur={handleUpdate}
-          />
-        </Form.Item>
-        {element.element_type === "input" && element.input_type === "radio" && (
-          <Form.Item label="Radio Options" className="text-2xl font-semibold">
-            {options?.map((option, index) => (
-              <div
-                key={option._id}
-                style={{ display: "flex", marginBottom: "8px" }}
-              >
-                <Input
-                  placeholder="Title"
-                  value={option.title}
-                  onChange={(e) => updateOption(index, "title", e.target.value)}
-                  style={{ marginRight: "8px" }}
-                />
-                <Input
-                  placeholder="Value"
-                  value={option.value}
-                  onChange={(e) => updateOption(index, "value", e.target.value)}
-                />
-                <Button
-                  type="danger"
-                  onClick={() => removeOption(index)}
-                  style={{ marginLeft: "8px" }}
-                >
-                  Remove
-                </Button>
-              </div>
-            ))}
-            <Button onClick={addOption}>Add Option</Button>
-          </Form.Item>
-        )}
-        {element.element_type === "select" && (
-          <Form.Item label="Options" className="text-2xl font-semibold">
-            {options?.map((option, index) => (
-              <div
-                key={option._id}
-                style={{ display: "flex", marginBottom: "8px" }}
-              >
-                <Input
-                  placeholder="Title"
-                  value={option.title}
-                  onChange={(e) => updateOption(index, "title", e.target.value)}
-                  style={{ marginRight: "8px" }}
-                />
-                <Input
-                  placeholder="Value"
-                  value={option.value}
-                  onChange={(e) => updateOption(index, "value", e.target.value)}
-                />
-                <Button
-                  type="danger"
-                  onClick={() => removeOption(index)}
-                  style={{ marginLeft: "8px" }}
-                >
-                  Remove
-                </Button>
-              </div>
-            ))}
-            <Button onClick={addOption}>Add Option</Button>
-          </Form.Item>
-        )}
-        {element.element_type === "location" && (
-          <>
-            <Form.Item
-              label="Division Label"
-              className="text-2xl font-semibold"
-            >
-              <Input
-                value={divisionLabel}
-                onChange={(e) => setDivisionLabel(e.target.value)}
+    <div className="bg-gray-100 p-4 rounded mb-4">
+      <label className="block font-semibold mb-1">Label</label>
+      <input
+        className="border rounded w-full p-2 mb-4"
+        value={label}
+        onChange={(e) => setLabel(e.target.value)}
+      />
+
+      <label className="block font-semibold mb-1">Placeholder</label>
+      <input
+        className="border rounded w-full p-2 mb-4"
+        value={placeholder}
+        onChange={(e) => setPlaceholder(e.target.value)}
+      />
+
+      {element.element_type === "input" && element.input_type === "radio" && (
+        <div className="mb-4">
+          <label className="block font-semibold mb-1">Radio Options</label>
+          {options.map((option, index) => (
+            <div key={option._id} className="flex items-center mb-2 gap-2">
+              <input
+                className="border rounded p-2"
+                placeholder="Title"
+                value={option.title}
+                onChange={(e) => updateOption(index, "title", e.target.value)}
               />
-            </Form.Item>
-            <Form.Item
-              label="District Label"
-              className="text-2xl font-semibold"
-            >
-              <Input
-                value={districtLabel}
-                onChange={(e) => setDistrictLabel(e.target.value)}
+              <input
+                className="border rounded p-2"
+                placeholder="Value"
+                value={option.value}
+                onChange={(e) => updateOption(index, "value", e.target.value)}
               />
-            </Form.Item>
-          </>
-        )}
-      </Form>
+              <Button danger onClick={() => removeOption(index)}>
+                Remove
+              </Button>
+            </div>
+          ))}
+          <Button onClick={addOption}>Add Option</Button>
+        </div>
+      )}
+
+      {element.element_type === "select" && (
+        <div className="mb-4">
+          <label className="block font-semibold mb-1">Select Options</label>
+          {options.map((option, index) => (
+            <div key={option._id} className="flex items-center mb-2 gap-2">
+              <input
+                className="border rounded p-2"
+                placeholder="Title"
+                value={option.title}
+                onChange={(e) => updateOption(index, "title", e.target.value)}
+              />
+              <input
+                className="border rounded p-2"
+                placeholder="Value"
+                value={option.value}
+                onChange={(e) => updateOption(index, "value", e.target.value)}
+              />
+              <Button danger onClick={() => removeOption(index)}>
+                Remove
+              </Button>
+            </div>
+          ))}
+          <Button onClick={addOption}>Add Option</Button>
+        </div>
+      )}
+
+      {element.element_type === "location" && (
+        <>
+          <label className="block font-semibold mb-1">Division Label</label>
+          <input
+            className="border rounded w-full p-2 mb-4"
+            value={divisionLabel}
+            onChange={(e) => setDivisionLabel(e.target.value)}
+          />
+          <label className="block font-semibold mb-1">District Label</label>
+          <input
+            className="border rounded w-full p-2 mb-4"
+            value={districtLabel}
+            onChange={(e) => setDistrictLabel(e.target.value)}
+          />
+        </>
+      )}
     </div>
   );
 };

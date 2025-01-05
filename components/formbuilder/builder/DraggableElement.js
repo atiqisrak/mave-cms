@@ -1,3 +1,4 @@
+// components/formbuilder/builder/DraggableElement.js
 import React from "react";
 import { useDrag } from "react-dnd";
 
@@ -13,14 +14,12 @@ const DraggableElement = ({ element }) => {
   return (
     <div
       ref={drag}
-      className={`p-4 mb-2 text-black font-bold text-lg flex items-center gap-4 rounded transition-opacity duration-200 ${
+      className={`bg-white border border-gray-200 shadow-sm rounded-md flex flex-col items-center gap-2 p-4 cursor-move transition ${
         isDragging ? "opacity-50" : "opacity-100"
-      } bg-theme cursor-grab`}
+      }`}
     >
-      <div className="flex items-center gap-4 pl-10">
-        {element.icon}
-        {element.label}
-      </div>
+      <div className="text-theme text-2xl">{element.icon}</div>
+      <div className="font-semibold text-gray-700">{element.label}</div>
     </div>
   );
 };

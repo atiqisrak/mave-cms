@@ -1,44 +1,28 @@
 // components/formbuilder/MaveFormsList.jsx
-
-import React, { useEffect, useState } from "react";
-import instance from "../../axios";
+import React, { useState, useEffect, useContext } from "react";
+import { Drawer, Popconfirm, Input, Switch, Spin, Button } from "antd";
 import {
-  Breadcrumb,
-  Button,
-  Input,
-  Drawer,
-  Popconfirm,
-  Spin,
-  Switch,
-  Tooltip,
-} from "antd";
-import {
-  CloudSyncOutlined,
-  DeleteOutlined,
-  DockerOutlined,
-  EyeOutlined,
-  HomeOutlined,
   SearchOutlined,
+  EyeOutlined,
+  DockerOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
-import MaveFormElements from "./MaveFormElements";
 import { useRouter } from "next/router";
+import instance from "../../axios";
+import MaveFormElements from "./MaveFormElements";
+import { FormBuilderContext } from "../../src/context/FormBuilderContext";
 
 const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
   const [forms, setForms] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [changeFormsView, setChangeFormsView] = useState(false);
-  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [error, setError] = useState(null);
   const router = useRouter();
+  const { reset } = useContext(FormBuilderContext);
+
+  const [drawerVisible, setDrawerVisible] = useState(false);
 
   useEffect(() => {
-    const fetchForms = async () => {
-      try {
-        const response = await instance.get("/form_builder");
-        setForms(response.data);
-      } catch (error) {
-        console.error("Error fetching forms:", error);
-      }
-    };
-
     fetchForms();
   }, []);
 
@@ -50,94 +34,98 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
     }
   }, [selectedFormId]);
 
+  const fetchForms = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await instance.get("/form_builder");
+      if (response.status === 200) {
+        setForms(response.data);
+      } else {
+        setError("Failed to fetch forms");
+      }
+    } catch (err) {
+      setError("An error occurred while fetching forms");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleDeleteForm = async (formId) => {
     try {
       await instance.delete(`/form_builder/${formId}`);
-      setForms(forms.filter((form) => form.id !== formId));
+      setForms((prev) => prev.filter((f) => f.id !== formId));
       if (selectedFormId === formId) {
         onSelectForm(null);
+        reset();
       }
     } catch (error) {
       console.error("Error deleting form:", error);
     }
   };
 
-  // Spinner
-  if (!forms.length) {
+  if (loading) {
     return (
-      <div className="flex justify-center items-center mt-10">
+      <div className="flex justify-center items-center">
         <Spin size="large" />
       </div>
     );
   }
 
-  return (
-    <div>
-      <Breadcrumb
-        className="mb-4"
-        items={[
-          { title: <HomeOutlined />, href: "/" },
-          { title: "Form Builder", href: "/formbuilder" },
-          { title: "Mave Forms" },
-        ]}
-      />
+  if (error) {
+    return <div className="p-4 text-red-600 text-center">{error}</div>;
+  }
 
-      {/* Search and View Switch */}
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
+  if (!forms.length) {
+    return <div className="p-4 text-center text-gray-600">No forms found.</div>;
+  }
+
+  return (
+    <div className="w-full">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-2">
         <Input
           placeholder="Search for forms"
           suffix={<SearchOutlined />}
-          className="w-full sm:w-1/2 mb-4 sm:mb-0"
+          className="w-full sm:w-1/2"
         />
         <div className="flex items-center space-x-2">
-          <span className="mr-2">View:</span>
+          <span className="text-sm">View:</span>
           <Switch
             checkedChildren="List"
             unCheckedChildren="Groups"
             checked={changeFormsView}
-            onChange={() => {
-              setChangeFormsView(!changeFormsView);
-            }}
+            onChange={() => setChangeFormsView(!changeFormsView)}
           />
         </div>
       </div>
 
-      {/* Forms Display */}
       {changeFormsView ? (
-        // List View
         <div className="flex flex-col space-y-4">
           {forms.map((form) => (
             <div
               key={form.id}
-              className="border-2 border-gray-300 rounded-lg shadow-lg p-4 bg-white hover:shadow-xl transition-shadow duration-300 cursor-pointer flex flex-col"
+              className="border border-gray-200 rounded-lg shadow p-4 bg-white hover:shadow-md transition-shadow"
             >
-              {/* Form Header */}
-              <div className="flex flex-col items-center justify-center bg-theme text-white p-4 rounded-t-lg mb-4">
+              <div className="bg-theme text-white p-4 rounded mb-4 text-center">
                 <h3 className="text-lg font-bold">Form ID: {form.id}</h3>
-                <h3 className="text-lg font-bold">{form.title}</h3>
+                <h4 className="text-md font-semibold">{form.title}</h4>
               </div>
-
-              {/* Form Description */}
               <p
                 className="text-gray-600 mb-4"
                 dangerouslySetInnerHTML={{
                   __html:
-                    form.description.length > 100
+                    form.description?.length > 100
                       ? `${form.description.substring(0, 100)}...`
                       : form.description,
                 }}
               />
-
-              {/* Action Buttons */}
               <div className="flex justify-end space-x-2">
                 <Button
                   icon={<EyeOutlined className="text-theme" />}
                   onClick={() => onSelectForm(form.id)}
-                  className="flex items-center"
                 />
                 <Button
                   icon={<DockerOutlined className="text-theme" />}
-                  className="flex items-center"
                   onClick={() =>
                     router.push(`/formbuilder/form-responses/${form.id}`)
                   }
@@ -151,7 +139,6 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
                   <Button
                     danger
                     icon={<DeleteOutlined className="text-red-500" />}
-                    className="flex items-center"
                   />
                 </Popconfirm>
               </div>
@@ -159,21 +146,17 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
           ))}
         </div>
       ) : (
-        // Groups View (Grid)
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {forms.map((form) => (
             <div
               key={form.id}
-              className=" flex flex-col justify-between border-2 border-gray-300 rounded-lg shadow-lg p-4 bg-white hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+              className="border border-gray-200 rounded-lg shadow p-4 bg-white hover:shadow-md transition-shadow flex flex-col justify-between"
             >
               <div>
-                {/* Form Header */}
-                <div className="flex flex-col items-center justify-center bg-theme text-white p-4 rounded-t-lg mb-4">
+                <div className="bg-theme text-white p-4 rounded mb-4 text-center">
                   <h3 className="text-lg font-bold">Form ID: {form.id}</h3>
-                  <h3 className="text-lg font-bold">{form.title}</h3>
+                  <h4 className="text-md font-semibold">{form.title}</h4>
                 </div>
-
-                {/* Form Description */}
                 <p
                   className="text-gray-600 mb-4"
                   dangerouslySetInnerHTML={{
@@ -184,16 +167,13 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
                   }}
                 />
               </div>
-              {/* Action Buttons */}
-              <div className="flex justify-between">
+              <div className="flex justify-end space-x-2">
                 <Button
                   icon={<EyeOutlined className="text-theme" />}
                   onClick={() => onSelectForm(form.id)}
-                  className="flex items-center"
                 />
                 <Button
                   icon={<DockerOutlined className="text-theme" />}
-                  className="flex items-center"
                   onClick={() =>
                     router.push(`/formbuilder/form-responses/${form.id}`)
                   }
@@ -207,7 +187,6 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
                   <Button
                     danger
                     icon={<DeleteOutlined className="text-red-500" />}
-                    className="flex items-center"
                   />
                 </Popconfirm>
               </div>
@@ -216,17 +195,16 @@ const MaveFormsList = ({ onSelectForm, selectedFormId }) => {
         </div>
       )}
 
-      {/* Drawer for Form Elements */}
       <Drawer
         title={`Form ${selectedFormId} Elements`}
         placement="right"
         onClose={() => onSelectForm(null)}
         open={drawerVisible}
-        width={`60vw`}
+        width="60vw"
       >
-        <div className="mt-4 flex justify-end">
+        <div className="flex justify-end mb-4">
           <Button
-            className="mavebutton"
+            className="bg-theme text-white"
             onClick={() => {
               router.push(`/formbuilder/edit-form?id=${selectedFormId}`);
               onSelectForm(null);

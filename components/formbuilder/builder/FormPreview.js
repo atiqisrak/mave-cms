@@ -1,29 +1,58 @@
+// components/formbuilder/builder/FormPreview.js
 import React from "react";
-import { Form, Input, Select, DatePicker, Button, Radio } from "antd";
-import ElementsParser from "../ElementsParser";
+import { Drawer, Button } from "antd";
+import FormElement from "./FormElement";
 
-const { Option } = Select;
-
-const FormPreview = ({ formMeta, formAttributes, formElements }) => {
+const FormPreview = ({
+  visible,
+  onCancel,
+  onSave,
+  formMeta,
+  formAttributes,
+  formElements,
+  loading,
+}) => {
   return (
-    <Form
-      id={formAttributes.component_id}
-      className={formAttributes.component_class}
-      method={formAttributes.method}
-      action={formAttributes.action_url}
-      encType={formAttributes.enctype}
-      layout="vertical"
+    <Drawer
+      title="Draft Form Preview"
+      open={visible}
+      onClose={onCancel}
+      width="60%"
+      footer={
+        <div className="flex justify-end">
+          <Button onClick={onCancel} className="mr-2">
+            Discard
+          </Button>
+          <Button
+            onClick={onSave}
+            className="bg-theme text-white"
+            loading={loading}
+          >
+            Publish Form
+          </Button>
+        </div>
+      }
     >
-      <h3 className="text-2xl font-bold">{formMeta.title}</h3>
-      <div
-        dangerouslySetInnerHTML={{
-          __html: formMeta.description,
-        }}
-      ></div>
-      {formElements?.map((element, index) => (
-        <ElementsParser key={index} element={element} />
-      ))}
-    </Form>
+      <div className="mb-4">
+        <h3 className="text-xl font-bold">{formMeta.title}</h3>
+        <div
+          className="text-gray-700"
+          dangerouslySetInnerHTML={{ __html: formMeta.description }}
+        />
+      </div>
+      <div className="border border-dashed p-4">
+        {formElements.map((element, idx) => (
+          <FormElement
+            key={element.updated_on}
+            element={element}
+            index={idx}
+            totalElements={formElements.length}
+            onUpdate={() => {}}
+            onMove={() => {}}
+          />
+        ))}
+      </div>
+    </Drawer>
   );
 };
 

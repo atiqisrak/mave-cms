@@ -1,4 +1,6 @@
+// components/formbuilder/builder/ElementPanel.js
 import React from "react";
+import { Card } from "antd";
 import DraggableElement from "./DraggableElement";
 import {
   EditOutlined,
@@ -12,9 +14,9 @@ import {
   AlignLeftOutlined,
   UploadOutlined,
   EnvironmentOutlined,
+  SaveOutlined,
+  ReloadOutlined,
 } from "@ant-design/icons";
-
-import { Card } from "antd";
 
 const elements = [
   {
@@ -54,7 +56,7 @@ const elements = [
     label: "Phone",
     icon: <PhoneOutlined />,
     element_type: "input",
-    input_type: "phone",
+    input_type: "tel",
     placeholder: "Enter a phone number",
   },
   {
@@ -72,10 +74,7 @@ const elements = [
     element_type: "input",
     input_type: "radio",
     placeholder: null,
-    options: [
-      // { _id: "option1", title: "Option 1", value: "option_1" },
-      // { _id: "option2", title: "Option 2", value: "option_2" },
-    ],
+    options: [],
   },
   {
     type: "select",
@@ -83,10 +82,7 @@ const elements = [
     icon: <SwapOutlined />,
     element_type: "select",
     placeholder: "Select an option",
-    options: [
-      // { _id: "option1", title: "Option 1", value: "option_1" },
-      // { _id: "option2", title: "Option 2", value: "option_2" },
-    ],
+    options: [],
   },
   {
     type: "location",
@@ -110,30 +106,44 @@ const elements = [
     placeholder: "Upload a file",
   },
   {
-    type: "input",
+    type: "button",
     label: "Submit",
     icon: <CheckOutlined />,
-    element_type: "input",
+    element_type: "button",
     input_type: "submit",
-    placeholder: null,
-    default_value: "Submit",
+    placeholder: "Submit",
+  },
+  {
+    type: "button",
+    label: "Save Draft",
+    icon: <SaveOutlined />,
+    element_type: "button",
+    input_type: "save",
+    placeholder: "Save Draft",
+  },
+  {
+    type: "button",
+    label: "Reset",
+    icon: <ReloadOutlined />,
+    element_type: "button",
+    input_type: "reset",
+    placeholder: "Reset",
   },
 ];
 
 const ElementPanel = () => {
   return (
-    <Card
-      className="element-panel bg-themetransparent py-4 
-      rounded-md h-5/6 border-2 border-theme border-l-2 
-      border-t-2 border-b-2 overflow-y-auto"
-    >
-      <center>
-        <h3 className="text-black text-2xl font-bold mb-5">Elements</h3>
-      </center>
-      {elements?.map((element, index) => (
-        <DraggableElement key={index} element={element} />
-      ))}
-    </Card>
+    <>
+      <h3 className="text-center text-xl font-bold">Elements</h3>
+      <Card className="border-2 border-theme p-4 h-[65vh] overflow-auto mt-10">
+        {/* Two-column "Elementor-style" grid */}
+        <div className="grid grid-cols-2 gap-4">
+          {elements.map((element, index) => (
+            <DraggableElement key={index} element={element} />
+          ))}
+        </div>
+      </Card>
+    </>
   );
 };
 

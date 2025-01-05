@@ -72,6 +72,7 @@
     "react-froala-wysiwyg": "^4.2.0",
     "react-google-charts": "^4.0.1",
     "react-helmet": "^6.1.0",
+    "react-hook-form": "^7.54.2",
     "react-lazyload": "^3.2.1",
     "react-markdown": "^9.0.1",
     "react-pdf": "^7.7.1",

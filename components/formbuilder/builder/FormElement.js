@@ -1,100 +1,87 @@
-import React, { useState } from "react";
-import { Input, Select, DatePicker, Button, Radio, Popconfirm } from "antd";
+// components/formbuilder/builder/FormElement.js
+import React, { useRef, useState } from "react";
+import { Button, Radio, Select, Input, Popconfirm } from "antd";
+import { useDrag, useDrop } from "react-dnd";
 import ElementConfig from "./ElementConfig";
-import RichTextEditor from "../../RichTextEditor";
-import { DownOutlined, UpOutlined } from "@ant-design/icons";
 import LocationFetcher from "../LocationFetcher";
 
+const { TextArea } = Input;
 const { Option } = Select;
 
-const FormElement = ({ element, index, totalElements, onUpdate, onMove }) => {
+const FormElement = ({ element, index, moveElement, onUpdateElement }) => {
+  const ref = useRef(null);
   const [configVisible, setConfigVisible] = useState(false);
 
+  // DRAG - for reordering existing elements
+  const [{ isDragging }, dragRef] = useDrag({
+    type: "formElement",
+    item: { index },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  // DROP - accept "formElement" for reordering
+  const [, dropRef] = useDrop({
+    accept: "formElement",
+    hover: (draggedItem) => {
+      if (!ref.current) return;
+      const dragIndex = draggedItem.index;
+      const hoverIndex = index;
+      if (dragIndex === hoverIndex) return;
+      moveElement(dragIndex, hoverIndex);
+      // Update the dragged item's index so it doesn't keep reordering
+      draggedItem.index = hoverIndex;
+    },
+  });
+
+  dragRef(dropRef(ref));
+
+  const handleRemove = () => onUpdateElement(null, index);
+
   const handleConfigChange = (updatedElement) => {
-    onUpdate(updatedElement, index);
+    onUpdateElement(updatedElement, index);
   };
 
-  const handleRemove = () => {
-    onUpdate(null, index);
-  };
-
-  const handleMoveUp = () => {
-    if (index > 0) {
-      onMove(index, index - 1);
-    }
-  };
-
-  const handleMoveDown = () => {
-    if (index < totalElements - 1) {
-      onMove(index, index + 1);
-    }
-  };
-
-  const renderElement = () => {
+  // Display a simple preview
+  const renderPreview = () => {
     switch (element.element_type) {
       case "input":
-        switch (element.input_type) {
-          case "text":
-          case "email":
-          case "number":
-          case "password":
-          case "phone":
-            return (
-              <Input
-                type={element.input_type}
-                placeholder={element.placeholder}
-              />
-            );
-          case "date":
-            return <DatePicker placeholder={element.placeholder} />;
-          case "radio":
-            return (
-              <Radio.Group>
-                {element.options?.map((option) => (
-                  <Radio key={option._id} value={option.value}>
-                    {option.title}
-                  </Radio>
-                ))}
-              </Radio.Group>
-            );
-          case "submit":
-            return (
-              <Button className="mavebutton">
-                {element.placeholder || "Submit"}
-              </Button>
-            );
-          default:
-            return <Input placeholder={element.placeholder} />;
+        if (element.input_type === "radio") {
+          return (
+            <Radio.Group>
+              {element.options?.map((opt) => (
+                <Radio key={opt._id} value={opt.value}>
+                  {opt.title}
+                </Radio>
+              ))}
+            </Radio.Group>
+          );
         }
-      case "textarea":
-        // return <RichTextEditor editMode={false} />;
+        if (["submit", "save", "reset"].includes(element.input_type)) {
+          return (
+            <Button disabled>{element.placeholder || element.label}</Button>
+          );
+        }
         return (
-          <Input.TextArea
-            autoSize={{ minRows: 3, maxRows: 5 }}
-            style={{
-              resize: "none",
-              borderRadius: "5px",
-              border: "1px solid var(--theme)",
-              marginBottom: "1rem",
-            }}
+          <Input
+            type={element.input_type}
             placeholder={element.placeholder}
+            disabled
           />
         );
+      case "textarea":
+        return <TextArea placeholder={element.placeholder} rows={3} disabled />;
       case "select":
         return (
           <Select
-            showSearch
-            allowClear
-            mode="multiple"
             placeholder={element.placeholder}
-            value={element.selectedValue || undefined} // Ensure individual select state
-            onChange={(value) =>
-              onUpdate({ ...element, selectedValue: value }, index)
-            }
+            disabled
+            style={{ width: "100%" }}
           >
-            {element.options?.map((option) => (
-              <Option key={option._id} value={option.value}>
-                {option.title}
+            {element.options?.map((opt) => (
+              <Option key={opt._id} value={opt.value}>
+                {opt.title}
               </Option>
             ))}
           </Select>
@@ -102,12 +89,8 @@ const FormElement = ({ element, index, totalElements, onUpdate, onMove }) => {
       case "location":
         return (
           <LocationFetcher
-            onDivisionChange={(value) =>
-              onUpdate({ ...element, selectedDivision: value }, index)
-            }
-            onDistrictChange={(value) =>
-              onUpdate({ ...element, selectedDistrict: value }, index)
-            }
+            divisionLabel={element.divisionLabel}
+            districtLabel={element.districtLabel}
           />
         );
       default:
@@ -117,57 +100,25 @@ const FormElement = ({ element, index, totalElements, onUpdate, onMove }) => {
 
   return (
     <div
-      className="form-element"
-      style={{
-        padding: "1rem",
-        borderRadius: "5px",
-        border: "1px solid var(--theme)",
-        marginBottom: "10px",
-      }}
+      ref={ref}
+      className={`border rounded p-4 mb-2 bg-white transition-shadow cursor-move ${
+        isDragging ? "opacity-50" : "opacity-100"
+      }`}
     >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          cursor: "pointer",
-          paddingBottom: "1rem",
-        }}
-      >
-        <h4 className="text-lg font-semibold">
-          {element.label}
-          {element.help_text && (
-            <span style={{ marginLeft: "10px" }} title={element.help_text}>
-              <i className="fas fa-info-circle"></i>
-            </span>
-          )}
-        </h4>
-        <div
-          style={{
-            display: "flex",
-            gap: "10px",
-          }}
-        >
+      <div className="flex justify-between items-center mb-2">
+        <h4 className="font-semibold text-lg">{element.label}</h4>
+        <div className="flex items-center gap-2">
           <Button
+            size="small"
             onClick={(e) => {
               e.stopPropagation();
               setConfigVisible(!configVisible);
             }}
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "var(--themes)",
-              color: "white",
-              borderRadius: "5px",
-              fontWeight: "bold",
-            }}
           >
             {configVisible ? "Hide Config" : "Show Config"}
           </Button>
-
           <Popconfirm
-            title="Are you sure you want to remove this item?"
+            title="Remove this item?"
             onConfirm={(e) => {
               e.stopPropagation();
               handleRemove();
@@ -175,53 +126,14 @@ const FormElement = ({ element, index, totalElements, onUpdate, onMove }) => {
             okText="Yes"
             cancelText="No"
           >
-            <Button
-              style={{
-                backgroundColor: "red",
-                color: "white",
-                borderRadius: "5px",
-                fontWeight: "bold",
-              }}
-            >
-              Remove Item
+            <Button size="small" danger>
+              Remove
             </Button>
           </Popconfirm>
-          <div
-            style={{
-              display: "flex",
-              gap: "10px",
-            }}
-          >
-            <Button
-              style={{
-                backgroundColor: "var(--theme-transparent)",
-                color: "var(--theme)",
-                fontWeight: "bold",
-              }}
-              icon={<UpOutlined />}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleMoveUp();
-              }}
-              disabled={index === 0}
-            />
-            <Button
-              style={{
-                backgroundColor: "var(--theme-transparent)",
-                fontWeight: "bold",
-                color: "var(--theme)",
-              }}
-              icon={<DownOutlined />}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleMoveDown();
-              }}
-              disabled={index === totalElements - 1}
-            />
-          </div>
         </div>
       </div>
-      {renderElement()}
+      <div className="my-2">{renderPreview()}</div>
+
       {configVisible && (
         <ElementConfig element={element} onUpdate={handleConfigChange} />
       )}
