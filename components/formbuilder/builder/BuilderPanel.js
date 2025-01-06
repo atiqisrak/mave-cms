@@ -51,6 +51,7 @@ const BuilderPanel = ({ formElements, addElement, updateElement }) => {
           index={index}
           moveElement={moveElement}
           onUpdateElement={handleUpdateElement}
+          previewMode={false}
         />
       ))}
     </Card>

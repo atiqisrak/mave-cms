@@ -1,4 +1,5 @@
 // components/formbuilder/builder/ElementPanel.js
+
 import React from "react";
 import { Card } from "antd";
 import DraggableElement from "./DraggableElement";
@@ -16,6 +17,8 @@ import {
   EnvironmentOutlined,
   SaveOutlined,
   ReloadOutlined,
+  FileTextOutlined,
+  PictureOutlined,
 } from "@ant-design/icons";
 
 const elements = [
@@ -129,6 +132,24 @@ const elements = [
     input_type: "reset",
     placeholder: "Reset",
   },
+
+  // 1) New "Guideline" element
+  {
+    type: "guideline",
+    label: "Guideline",
+    icon: <FileTextOutlined />,
+    element_type: "guideline",
+    content: "This is a paragraph or guideline text.",
+  },
+
+  // 2) New "Media" element
+  {
+    type: "media",
+    label: "Media",
+    icon: <PictureOutlined />,
+    element_type: "media",
+    mediaId: null, // or "placeholder-id"
+  },
 ];
 
 const ElementPanel = () => {
@@ -136,7 +157,6 @@ const ElementPanel = () => {
     <>
       <h3 className="text-center text-xl font-bold">Elements</h3>
       <Card className="border-2 border-theme p-4 h-[65vh] overflow-auto mt-10">
-        {/* Two-column "Elementor-style" grid */}
         <div className="grid grid-cols-2 gap-4">
           {elements.map((element, index) => (
             <DraggableElement key={index} element={element} />

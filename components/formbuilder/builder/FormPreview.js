@@ -12,7 +12,6 @@ const FormPreview = ({
   formElements,
   loading,
 }) => {
-  // Safely handle description to avoid .replace() crash
   const safeDescription =
     typeof formMeta.description === "string" ? formMeta.description : "";
 
@@ -52,9 +51,10 @@ const FormPreview = ({
             key={element.updated_on}
             element={element}
             index={idx}
-            // We disable reordering in preview, so pass no-ops:
+            // We disable reordering & editing in preview
             moveElement={() => {}}
             onUpdateElement={() => {}}
+            isPreview={true}
           />
         ))}
       </div>

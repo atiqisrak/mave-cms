@@ -1,9 +1,13 @@
 // components/formbuilder/builder/ElementConfig.js
+
 import React, { useEffect, useState } from "react";
-import { Button, Input } from "antd";
+import { Button, Input, Switch, Modal } from "antd";
+import MediaSelectionModal from "../../PageBuilder/Modals/MediaSelectionModal";
+
+const { TextArea } = Input;
 
 const ElementConfig = ({ element, onUpdate }) => {
-  const [label, setLabel] = useState(element.label);
+  const [label, setLabel] = useState(element.label || "");
   const [placeholder, setPlaceholder] = useState(element.placeholder || "");
   const [options, setOptions] = useState(element.options || []);
   const [divisionLabel, setDivisionLabel] = useState(
@@ -12,8 +16,16 @@ const ElementConfig = ({ element, onUpdate }) => {
   const [districtLabel, setDistrictLabel] = useState(
     element.districtLabel || "Select District"
   );
+  const [required, setRequired] = useState(!!element.required);
 
-  // Send updated props to the parent whenever local states change
+  // For "guideline"
+  const [content, setContent] = useState(element.content || "");
+
+  // For "media"
+  const [mediaId, setMediaId] = useState(element.mediaId || null);
+  const [isMediaModalVisible, setIsMediaModalVisible] = useState(false);
+
+  // Update parent any time local state changes
   useEffect(() => {
     onUpdate({
       ...element,
@@ -22,44 +34,80 @@ const ElementConfig = ({ element, onUpdate }) => {
       options,
       divisionLabel,
       districtLabel,
+      required,
+      content,
+      mediaId,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [label, placeholder, options, divisionLabel, districtLabel]);
+  }, [
+    label,
+    placeholder,
+    options,
+    divisionLabel,
+    districtLabel,
+    required,
+    content,
+    mediaId,
+  ]);
 
+  // Options handlers (for radio/select)
   const addOption = () => {
     const newOption = { _id: Date.now().toString(), title: "", value: "" };
     setOptions((prev) => [...prev, newOption]);
   };
 
-  const updateOption = (idx, field, value) => {
+  const updateOption = (index, field, value) => {
     setOptions((prev) => {
       const updated = [...prev];
-      updated[idx][field] = value;
+      updated[index][field] = value;
       return updated;
     });
   };
 
-  const removeOption = (idx) => {
-    setOptions((prev) => prev.filter((_, i) => i !== idx));
+  const removeOption = (index) => {
+    setOptions((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // Media selection
+  const handleSelectMedia = (selectedMedia) => {
+    // If single, we get the item directly
+    setMediaId(selectedMedia?.id || null);
   };
 
   return (
     <div className="bg-gray-100 p-4 rounded mb-4">
-      <label className="block font-semibold mb-1">Label</label>
-      <Input
+      {/* REQUIRED TOGGLE */}
+      <label className="block font-semibold mb-1">Required Field?</label>
+      <Switch
+        checked={required}
+        onChange={(checked) => setRequired(checked)}
         className="mb-4"
-        value={label}
-        onChange={(e) => setLabel(e.target.value)}
+        checkedChildren="Yes"
+        unCheckedChildren="No"
       />
 
-      <label className="block font-semibold mb-1">Placeholder</label>
-      <Input
-        className="mb-4"
-        value={placeholder}
-        onChange={(e) => setPlaceholder(e.target.value)}
-      />
+      {/* Only show label/placeholder for "input", "textarea", etc. */}
+      {(element.element_type === "input" ||
+        element.element_type === "textarea" ||
+        element.element_type === "select" ||
+        element.element_type === "button") && (
+        <>
+          <label className="block font-semibold mb-1">Label</label>
+          <Input
+            className="mb-4"
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
+          />
 
-      {/* If it's a radio or select, manage 'options' */}
+          <label className="block font-semibold mb-1">Placeholder</label>
+          <Input
+            className="mb-4"
+            value={placeholder}
+            onChange={(e) => setPlaceholder(e.target.value)}
+          />
+        </>
+      )}
+
       {element.element_type === "input" && element.input_type === "radio" && (
         <div className="mb-4">
           <label className="block font-semibold mb-1">Radio Options</label>
@@ -108,7 +156,6 @@ const ElementConfig = ({ element, onUpdate }) => {
         </div>
       )}
 
-      {/* If it's a location element, manage labels for division/district */}
       {element.element_type === "location" && (
         <>
           <label className="block font-semibold mb-1">Division Label</label>
@@ -117,11 +164,47 @@ const ElementConfig = ({ element, onUpdate }) => {
             value={divisionLabel}
             onChange={(e) => setDivisionLabel(e.target.value)}
           />
+
           <label className="block font-semibold mb-1">District Label</label>
           <Input
             className="mb-4"
             value={districtLabel}
             onChange={(e) => setDistrictLabel(e.target.value)}
+          />
+        </>
+      )}
+
+      {/* GUIDELINE element */}
+      {element.element_type === "guideline" && (
+        <>
+          <label className="block font-semibold mb-1">Guideline Text</label>
+          <TextArea
+            rows={4}
+            className="mb-4"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+        </>
+      )}
+
+      {/* MEDIA element */}
+      {element.element_type === "media" && (
+        <>
+          <label className="block font-semibold mb-1">Media ID</label>
+          <Input
+            className="mb-2"
+            value={mediaId || ""}
+            placeholder="Selected Media ID"
+            readOnly
+          />
+          <Button onClick={() => setIsMediaModalVisible(true)}>
+            Select Media
+          </Button>
+          <MediaSelectionModal
+            isVisible={isMediaModalVisible}
+            onClose={() => setIsMediaModalVisible(false)}
+            onSelectMedia={handleSelectMedia}
+            selectionMode="single"
           />
         </>
       )}
