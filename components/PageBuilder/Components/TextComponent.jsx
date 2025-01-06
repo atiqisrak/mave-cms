@@ -1,7 +1,5 @@
-// components/PageBuilder/Components/TextComponent.jsx
-
 import React, { useState } from "react";
-import { Input, Button, Modal, Popconfirm } from "antd";
+import { Input, Button, Modal, Popconfirm, Typography } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -9,16 +7,19 @@ import {
   CloseOutlined,
   PlusOutlined,
   ExportOutlined,
+  CopyFilled,
 } from "@ant-design/icons";
 
 const TextComponent = ({
   component,
   updateComponent,
   deleteComponent,
-  preview = false, // New prop with default value
+  preview = false,
+  onDuplicateElement,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempValue, setTempValue] = useState(component.value || "");
+  const { Title } = Typography;
 
   const handleSubmit = () => {
     if (tempValue.trim() === "") {
@@ -83,6 +84,17 @@ const TextComponent = ({
                   Change
                 </Button>
               )}
+
+              {/* Duplicate Component Button */}
+              <Button
+                icon={<CopyFilled />}
+                className="mavebutton"
+                onClick={onDuplicateElement}
+                hidden
+              >
+                Duplicate
+              </Button>
+
               <Popconfirm
                 title="Are you sure you want to delete this component?"
                 onConfirm={deleteComponent}
@@ -103,9 +115,11 @@ const TextComponent = ({
           value={tempValue}
           onChange={(e) => setTempValue(e.target.value)}
           placeholder="Enter text..."
+          onPressEnter={handleSubmit} // <-- Added this line
         />
       ) : component.value ? (
-        <p>{component.value}</p>
+        // <p>{component.value}</p>
+        <Title level={3}>{component.value}</Title>
       ) : (
         <Button
           icon={<PlusOutlined />}
