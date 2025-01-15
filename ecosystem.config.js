@@ -7,7 +7,7 @@ module.exports = {
       cwd: "/var/www/mave-cms",
       env: {
         NODE_ENV: "production",
-        PORT: 3000,
+        PORT: 3005,
       },
       log_date_format: "YYYY-MM-DD HH:mm:ss",
       error_file: "/var/www/mave-cms/logs/pm2-error.log",

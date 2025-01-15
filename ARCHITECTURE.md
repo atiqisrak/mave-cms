@@ -200,7 +200,7 @@ mutation AddPage($input: PageInput!) {
 
 ### **Local Development**
 
-- **Frontend**: Runs on `http://localhost:3000` using `npm run dev`.
+- **Frontend**: Runs on `http://localhost:3005` using `npm run dev`.
 - **Backend**: Runs on `http://127.0.0.1:8000` using `php artisan serve`.
 
 ### **Production**
