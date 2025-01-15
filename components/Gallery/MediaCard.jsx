@@ -1,5 +1,3 @@
-// components/Gallery/MediaCard.jsx
-
 import React from "react";
 import { Card, Button, Tag, Popconfirm } from "antd";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
@@ -33,14 +31,6 @@ const MediaCard = ({ media, mediaType, handleDelete, handlePreview }) => {
       key="preview"
       className="hover:text-green-500"
     />,
-    // <Button
-    //   type="link"
-    //   icon={<DeleteOutlined />}
-    //   onClick={() => handleDelete(media.id)}
-    //   key="delete"
-    //   danger
-    //   className="hover:text-red-500"
-    // />,
     <Popconfirm
       title="Are you sure you want to delete this media?"
       onConfirm={() => handleDelete(media.id)}
@@ -57,23 +47,69 @@ const MediaCard = ({ media, mediaType, handleDelete, handlePreview }) => {
     </Popconfirm>,
   ];
 
-  // Responsive media container
+  // Check if the media is an image and has a supported format
+  const isSupportedImageFormat = () => {
+    const supportedFormats = [
+      "image/png",
+      "image/jpg",
+      "image/jpeg",
+      "image/svg+xml",
+    ];
+    return supportedFormats.includes(media.file_type);
+  };
+
+  // Render media content based on type
   const renderMedia = () => {
     if (mediaType === "image") {
-      return (
-        <div className="relative w-full h-48 sm:h-56 md:h-64 lg:h-64">
-          <Image
-            src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}
-            alt={media.file_name}
-            layout="fill"
-            objectFit="cover"
-            objectPosition={
-              media.file_type.startsWith("image/") ? "left" : "top"
-            }
-            className="rounded-t-md"
-          />
-        </div>
-      );
+      if (isSupportedImageFormat()) {
+        return (
+          <div className="relative w-full h-48 sm:h-56 md:h-64 lg:h-64">
+            <Image
+              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}
+              alt={media.file_name}
+              width={300}
+              height={200}
+              sizes="(max-width: 768px) 100vw, 33vw"
+              quality={80}
+              loading="lazy"
+              placeholder="blur"
+              blurDataURL="/images/Image_Placeholder.png"
+              style={{
+                objectFit: "cover",
+                objectPosition: media.file_type.startsWith("image/")
+                  ? "left"
+                  : "top",
+                width: "100%",
+                height: "100%",
+              }}
+              className="rounded-t-md"
+            />
+          </div>
+        );
+      } else {
+        // Explicitly handle unsupported formats (e.g., .tif)
+        return (
+          <div className="relative w-full h-48 sm:h-56 md:h-64 lg:h-64">
+            <Image
+              src="/images/Image_Placeholder.png"
+              alt="Unsupported Image Format"
+              width={300}
+              height={200}
+              sizes="(max-width: 768px) 100vw, 33vw"
+              quality={80}
+              loading="lazy"
+              placeholder="blur"
+              blurDataURL="/images/Image_Placeholder.png"
+              style={{
+                objectFit: "cover",
+                width: "100%",
+                height: "100%",
+              }}
+              className="rounded-t-md"
+            />
+          </div>
+        );
+      }
     } else if (mediaType === "video") {
       return (
         <div className="relative w-full h-48 sm:h-56 md:h-64 lg:h-72">

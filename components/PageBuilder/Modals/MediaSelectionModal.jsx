@@ -325,19 +325,15 @@ const MediaSelectionModal = (props) => {
             </TabPane>
           </Tabs>
         </TabPane>
-
-        <TabPane tab="Upload Media" key="2">
-          {/* <UploadMedia
-            onUploadSuccess={handleUploadSuccess}
-            selectionMode={selectionMode}
-            onSelectMedia={handleUploadSuccess}
-          /> */}
-          <UploadMediaTabs
-            onUploadSuccess={handleUploadSuccess}
-            onSelectMedia={handleUploadSuccess}
-            selectionMode={selectionMode}
-          />
-        </TabPane>
+        {process.env.NEXT_PUBLIC_CLOUDINARY_STATUS === "activated" && (
+          <TabPane tab="Upload Media" key="2">
+            <UploadMediaTabs
+              onUploadSuccess={handleUploadSuccess}
+              onSelectMedia={handleUploadSuccess}
+              selectionMode={selectionMode}
+            />
+          </TabPane>
+        )}
       </Tabs>
     </Modal>
   );

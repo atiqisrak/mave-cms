@@ -1,5 +1,3 @@
-// pages/gallery.jsx
-
 import React, { useEffect, useState } from "react";
 import { Modal, Spin } from "antd";
 import GalleryHeader from "./GalleryHeader";
@@ -26,7 +24,7 @@ const Gallery = () => {
     handleSortTypeChange,
     handleSearch,
     handleTagFilterChange,
-    addMedia,
+    addMedia, // This function adds media to the state and IndexedDB
     editMedia,
     deleteMedia,
     isIndexedDBLoaded,
@@ -70,6 +68,12 @@ const Gallery = () => {
     setSelectedMedia(null);
   };
 
+  // Callback function to update mediaAssets after upload
+  const handleMediaUploadSuccess = (newMedia) => {
+    addMedia(newMedia); // Add the new media to the state and IndexedDB
+    handleUploadModalClose(); // Close the upload modal
+  };
+
   return (
     <div className="gallery-page">
       {/* Upload Modal */}
@@ -81,7 +85,7 @@ const Gallery = () => {
         width={800}
       >
         <UploadMediaTabs
-          onUploadSuccess={handleUploadModalClose}
+          onUploadSuccess={handleMediaUploadSuccess} // Pass the callback
           addMedia={addMedia}
         />
       </Modal>

@@ -24,6 +24,20 @@ const useMediaData = () => {
   const [searchText, setSearchText] = useState("");
   const [selectedTag, setSelectedTag] = useState(null);
 
+  const checkIndexedDbQuota = async () => {
+    try {
+      const quota = await navigator.storage.estimate();
+      // console.log("Usage:", quota.usage);
+      // console.log("Quota:", quota.quota);
+    } catch (error) {
+      console.error("Error checking indexedDB quota:", error);
+    }
+  };
+
+  useEffect(() => {
+    checkIndexedDbQuota();
+  }, []);
+
   // Function to fetch data from API for a specific page
   const fetchFromAPI = useCallback(
     async (page, pageSize, order, keyword, tagFilter) => {
@@ -87,11 +101,12 @@ const useMediaData = () => {
       let totalFetched = 0;
       let totalAvailable = 0;
       let keepFetching = true;
+      let sortType = "desc";
 
       console.log("Starting to populate IndexedDB with all media...");
 
       while (keepFetching) {
-        const url = `/media/pageview?page=${page}&count=${pageSize}`;
+        const url = `/media/pageview?page=${page}&count=${pageSize}&order_type=${sortType.toUpperCase()}`;
         console.log(`Fetching page ${page} from API: ${url}`);
         const res = await instance.get(url);
         const data = res.data?.data || [];
@@ -213,7 +228,7 @@ const useMediaData = () => {
       setTotalMediaAssets((prev) =>
         Array.isArray(media) ? prev + media.length : prev + 1
       );
-      message.success("Media added successfully.");
+      // message.success("Media added successfully.");
     } catch (error) {
       console.error("Error adding media:", error);
       message.error("Error adding media.");

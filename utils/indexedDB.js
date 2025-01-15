@@ -12,9 +12,9 @@ db.version(1).stores({
 // Add media items to IndexedDB
 export const addMediaToDB = async (media) => {
   try {
-    console.log("Adding media to IndexedDB:", media);
+    // console.log("Adding media to IndexedDB:", media);
     await db.media.bulkPut(media);
-    console.log("Media successfully added to IndexedDB.");
+    // console.log("Media successfully added to IndexedDB.");
   } catch (error) {
     console.error("Error adding media to IndexedDB:", error);
   }
@@ -24,7 +24,7 @@ export const addMediaToDB = async (media) => {
 export const getAllMediaFromDB = async () => {
   try {
     const allMedia = await db.media.toArray();
-    console.log("Fetched all media from IndexedDB:", allMedia);
+    // console.log("Fetched all media from IndexedDB:", allMedia);
     return allMedia;
   } catch (error) {
     console.error("Error fetching media from IndexedDB:", error);
@@ -35,9 +35,9 @@ export const getAllMediaFromDB = async () => {
 // Delete media from IndexedDB by ID
 export const deleteMediaFromDB = async (id) => {
   try {
-    console.log(`Deleting media with ID ${id} from IndexedDB.`);
+    // console.log(`Deleting media with ID ${id} from IndexedDB.`);
     await db.media.delete(id);
-    console.log("Media successfully deleted from IndexedDB.");
+    // console.log("Media successfully deleted from IndexedDB.");
   } catch (error) {
     console.error("Error deleting media from IndexedDB:", error);
   }
@@ -63,9 +63,9 @@ export const getPaginatedMediaFromDB = async (
   tagFilter
 ) => {
   try {
-    console.log(
-      `Fetching paginated media from IndexedDB - Page: ${page}, Page Size: ${pageSize}, Sort: ${sortType}, Search: ${searchText}, Tag: ${tagFilter}`
-    );
+    // console.log(
+    //   `Fetching paginated media from IndexedDB - Page: ${page}, Page Size: ${pageSize}, Sort: ${sortType}, Search: ${searchText}, Tag: ${tagFilter}`
+    // );
     let collection = db.media.toCollection();
 
     // Apply search filter

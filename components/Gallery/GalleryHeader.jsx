@@ -7,6 +7,7 @@ import {
   FilterOutlined,
   CopyOutlined,
   SearchOutlined,
+  CloudSyncOutlined,
 } from "@ant-design/icons";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -52,6 +53,11 @@ const GalleryHeader = ({
           <h2 className="text-2xl font-semibold">Gallery</h2>
         </div>
         <div className="flex items-center gap-2 mt-4 md:mt-0">
+          <Button
+            icon={<CloudSyncOutlined />}
+            className="mavebutton"
+            onClick={() => window.location.reload()}
+          />
           <Button
             icon={<PlusCircleOutlined />}
             onClick={onCreate}

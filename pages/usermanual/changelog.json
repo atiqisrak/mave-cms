@@ -1,5 +1,18 @@
 [
     {
+        "version": "3.1.1",
+        "date": "2024-01-15",
+        "changes": {
+            "Feature": [
+                "Added new feature to the Gallery, user can refresh the gallery to see the updated media",
+                "Cloudinary tab is now available only if registered"
+            ],
+            "BugFix": [
+                "Gallery file format issue fixed"
+            ]
+        }
+    },
+    {
         "version": "3.0.17",
         "date": "2024-12-31",
         "changes": {

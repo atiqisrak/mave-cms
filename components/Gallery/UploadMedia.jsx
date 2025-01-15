@@ -1,5 +1,3 @@
-// components/UploadMedia.jsx
-
 import React, { useState } from "react";
 import { Upload, Button, message, Progress, Tag } from "antd";
 import {
@@ -10,7 +8,6 @@ import {
 import axios from "axios"; // Use axios directly for Cloudinary
 import instance from "../../axios"; // Existing axios instance for your backend
 import Image from "next/image";
-import { addMediaToDB } from "../../utils/indexedDB";
 
 const { Dragger } = Upload;
 
@@ -45,12 +42,14 @@ const UploadMedia = ({
     }
     return isValidSize && isValidType;
   };
+
   const handleChange = ({ file, fileList: newFileList }) => {
     // Update the fileList with progress and status
     setFileList(
-      newFileList?.map((f) => {
+      newFileList.map((f) => {
         if (f.response) {
           f.status = "done";
+          f.thumbUrl = f.response.secure_url || f.response.url; // Set thumbUrl for images
         }
         return f;
       })
@@ -63,7 +62,6 @@ const UploadMedia = ({
 
   const customUpload = async ({ onSuccess, onError, file, onProgress }) => {
     const formData = new FormData();
-
     let response;
 
     try {
@@ -71,7 +69,7 @@ const UploadMedia = ({
       if (uploadDestination === "cloudinary") {
         // Cloudinary Upload
         formData.append("file", file);
-        formData.append("upload_preset", "mave_cms_preset"); // Ensure this preset exists in your Cloudinary account
+        formData.append("upload_preset", "mave_cms_preset");
 
         response = await axios.post(
           `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`,
@@ -86,16 +84,13 @@ const UploadMedia = ({
           }
         );
 
+        // Simulate a delay for testing purposes
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        // Call onSuccess with the response data
         onSuccess(response.data, file);
         message.success(`${file.name} uploaded successfully to Cloudinary.`);
-        onUploadSuccess();
-
-        // Handle selection after upload
-        if (selectionMode === "single") {
-          onSelectMedia([response.data]);
-        } else {
-          onSelectMedia(response.data);
-        }
+        onUploadSuccess([response.data]); // Pass the new media to the callback
       } else {
         // Backend Upload
         formData.append("file[]", file);
@@ -112,25 +107,13 @@ const UploadMedia = ({
           },
         });
 
+        // Simulate a delay for testing purposes
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        // Call onSuccess with the response data
         onSuccess(response.data, file);
         message.success(`${file.name} uploaded successfully.`);
-        onUploadSuccess();
-
-        // Add media to IndexedDB
-        const uploadedMediaArray = response.data.data || [];
-        await addMedia(uploadedMediaArray);
-
-        // Handle selection after upload
-        if (selectionMode === "single") {
-          // Assuming response.data is an array of uploaded media
-          if (Array.isArray(response.data) && response.data.length > 0) {
-            onSelectMedia([response.data[0]]);
-          }
-        } else {
-          if (Array.isArray(response.data) && response.data.length > 0) {
-            onSelectMedia(response.data);
-          }
-        }
+        onUploadSuccess(response.data.data || []); // Pass the new media to the callback
       }
 
       setUploading(false);
@@ -167,7 +150,7 @@ const UploadMedia = ({
       </Dragger>
       {fileList.length > 0 && (
         <div className="mt-4">
-          {fileList?.map((file) => (
+          {fileList.map((file) => (
             <div
               key={file.uid}
               className="flex items-center justify-between p-2 mb-2 bg-gray-100 rounded-md"
