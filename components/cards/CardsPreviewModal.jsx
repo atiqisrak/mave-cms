@@ -337,7 +337,7 @@ const CardsPreviewModal = ({
                   onChange={(val) =>
                     form.setFieldsValue({ description_en: val })
                   }
-                  defaultValue={selectedCard.description_en}
+                  defaultValue={selectedCard?.description_en}
                 />
               </Form.Item>
 
@@ -357,7 +357,7 @@ const CardsPreviewModal = ({
                   onChange={(val) =>
                     form.setFieldsValue({ description_bn: val })
                   }
-                  defaultValue={selectedCard.description_bn}
+                  defaultValue={selectedCard?.description_bn}
                 />
               </Form.Item>
 

@@ -2,13 +2,16 @@
 
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import Loader from "./Loader";
+import DOMPurify from "dompurify";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const RichTextEditor = ({ defaultValue, onChange, editMode }) => {
-  const [editorHtml, setEditorHtml] = useState(defaultValue || "");
+  const [editorHtml, setEditorHtml] = useState(
+    DOMPurify.sanitize(defaultValue || "")
+  );
   const [isLoaded, setIsLoaded] = useState(false);
+  const [wordCount, setWordCount] = useState(0);
 
   const modules = {
     toolbar: [
@@ -37,8 +40,7 @@ const RichTextEditor = ({ defaultValue, onChange, editMode }) => {
   };
 
   useEffect(() => {
-    // Update editorHtml when defaultValue changes
-    setEditorHtml(defaultValue || "");
+    setEditorHtml(DOMPurify.sanitize(defaultValue || ""));
   }, [defaultValue]);
 
   useEffect(() => {
