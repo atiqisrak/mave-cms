@@ -19,8 +19,8 @@ const tagColors = [
   "pink",
 ];
 
-// Helper to get short description
 function getExcerpt(html = "", length = 30) {
+  if (!html || html.trim() === "") return "Not Available";
   if (html.length <= length) return html;
   return html.slice(0, length) + "...";
 }
@@ -94,11 +94,11 @@ const CardItem = ({ card, viewType, onDeleteCard, onPreviewCard }) => {
           title={card?.title_en || "Title Unavailable"}
           description={
             <>
-              <div
+              {/* <div
                 dangerouslySetInnerHTML={{
                   __html: getExcerpt(card?.description_en || "", 30),
                 }}
-              />
+              /> */}
               <div className="mt-4 min-h-[24px] flex flex-wrap gap-2">
                 {renderTags(card)}
               </div>

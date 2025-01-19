@@ -1,13 +1,12 @@
-// components/SiteContent.jsx
-
 import React, { useEffect, useState } from "react";
-import { Image, Layout, Button, Modal } from "antd";
+import { Image, Layout, Button, Modal, message } from "antd";
 import { useRouter } from "next/router";
 import NavItems from "./ui/NavItems";
 import SideMenuItems from "./ui/SideMenuItems";
 import Loader from "./Loader";
 import { useAuth } from "../src/context/AuthContext";
 import { useMenuRefresh } from "../src/context/MenuRefreshContext";
+import { publicPages, allowSignup, isProtectedPage } from "../config/routes";
 
 const { Sider, Content, Header } = Layout;
 
@@ -19,23 +18,16 @@ const SiteContent = ({ children }) => {
   const currentRoute = router.pathname;
   const { refreshMenu } = useMenuRefresh();
 
-  // Define page categories
-  const publicPages = [
-    "/login",
-    "/signup",
-    "/forgot-password",
-    "/reset-password",
-  ];
-
-  const publicWithLayoutPages = ["/usermanual/changelog"];
-
   // State for login modal (optional, can be removed if not needed)
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Determine if the current page is public, public with layout, or protected
+  // Determine if the current page is public or protected
   const isPublicPage = publicPages.includes(currentRoute);
-  const isPublicWithLayoutPage = publicWithLayoutPages.includes(currentRoute);
-  const isProtectedPage = !isPublicPage && !isPublicWithLayoutPage;
+  const isProtected = isProtectedPage(currentRoute);
+
+  useEffect(() => {
+    console.log("Allow Signup:", allowSignup); // Debugging
+  }, [allowSignup]);
 
   useEffect(() => {
     // Theme initialization
@@ -65,28 +57,28 @@ const SiteContent = ({ children }) => {
 
   useEffect(() => {
     if (loading) {
-      // Do nothing while loading
       return;
     }
 
-    if (isProtectedPage) {
-      if (!token) {
-        // If user is not authenticated and trying to access a protected page, redirect to login
-        router.push("/login");
-      }
+    if (isProtected && !token) {
+      // Redirect to login if the page is protected and the user is not authenticated
+      router.push("/login");
     } else if (isPublicPage && token) {
-      // If authenticated user tries to access a public page, redirect to home
+      // Redirect to home if the user is authenticated and tries to access a public page
       router.push("/");
+    } else if (currentRoute === "/signup" && !allowSignup) {
+      // Redirect to login if signup is not allowed
+      router.push("/login");
+      message.info("Signup is not allowed at this time.");
     }
-    // No action needed for publicWithLayoutPages
   }, [
     token,
     loading,
     currentRoute,
     router,
-    isProtectedPage,
+    isProtected,
     isPublicPage,
-    isPublicWithLayoutPage,
+    allowSignup,
   ]);
 
   const handleCollapse = () => {
@@ -101,8 +93,7 @@ const SiteContent = ({ children }) => {
   }
 
   // Determine if the sidebar should be displayed
-  const shouldShowSidebar =
-    token && (isProtectedPage || isPublicWithLayoutPage);
+  const shouldShowSidebar = token && isProtected;
 
   return (
     <Layout className="min-h-screen">
