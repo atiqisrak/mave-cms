@@ -13,6 +13,15 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
+    // Get token from localStorage
+    const token = localStorage.getItem("token");
+
+    // If token exists, add it to the headers
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    // Handle custom base URL if needed
     if (config.flyURL) {
       config.baseURL = config.flyURL;
       delete config.flyURL;
@@ -20,6 +29,27 @@ instance.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor to handle unauthorized responses
+instance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Clear localStorage on unauthorized
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+      // Only redirect if we're not already on the login page
+      if (
+        typeof window !== "undefined" &&
+        !window.location.pathname.includes("/login")
+      ) {
+        window.location.href = "/login";
+      }
+    }
     return Promise.reject(error);
   }
 );
