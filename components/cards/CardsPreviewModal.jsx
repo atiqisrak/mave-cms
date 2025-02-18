@@ -162,29 +162,61 @@ const CardsPreviewModal = ({
           key: "5",
           infoType: "Media",
           details: selectedMedia ? (
-            <Image
-              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedMedia.file_path}`}
-              alt="Card Media"
-              width={200}
-              height={150}
-              objectFit="cover"
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = PLACEHOLDER_IMAGE;
-              }}
-            />
+            selectedMedia.file_type?.startsWith("video/") ? (
+              <video
+                width="200"
+                height="150"
+                controls
+                className="rounded-lg"
+                style={{ objectFit: "cover" }}
+              >
+                <source
+                  src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedMedia.file_path}`}
+                  type={selectedMedia.file_type}
+                />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <Image
+                src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedMedia.file_path}`}
+                alt="Card Media"
+                width={200}
+                height={150}
+                objectFit="cover"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = PLACEHOLDER_IMAGE;
+                }}
+              />
+            )
           ) : selectedCard.media_files ? (
-            <Image
-              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedCard.media_files.file_path}`}
-              alt="Card Media"
-              width={200}
-              height={150}
-              objectFit="cover"
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = PLACEHOLDER_IMAGE;
-              }}
-            />
+            selectedCard.media_files.file_type?.startsWith("video/") ? (
+              <video
+                width="200"
+                height="150"
+                controls
+                className="rounded-lg"
+                style={{ objectFit: "cover" }}
+              >
+                <source
+                  src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedCard.media_files.file_path}`}
+                  type={selectedCard.media_files.file_type}
+                />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <Image
+                src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedCard.media_files.file_path}`}
+                alt="Card Media"
+                width={200}
+                height={150}
+                objectFit="cover"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = PLACEHOLDER_IMAGE;
+                }}
+              />
+            )
           ) : (
             <Image
               src={PLACEHOLDER_IMAGE}
@@ -374,30 +406,30 @@ const CardsPreviewModal = ({
                     {/* Current Media */}
                     <div className="flex flex-col items-center">
                       <h3 className="my-2 font-bold">Current Media</h3>
-                      <Image
-                        src={
-                          selectedCard.media_files
-                            ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedCard.media_files.file_path}`
-                            : PLACEHOLDER_IMAGE
-                        }
-                        alt="Current Media"
-                        width={200}
-                        height={150}
-                        objectFit="cover"
-                        className="rounded-lg"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = PLACEHOLDER_IMAGE;
-                        }}
-                      />
-                    </div>
-                    {/* Changed Media */}
-                    {selectedMedia && (
-                      <div className="flex flex-col items-center">
-                        <h3 className="my-2 font-bold">Changed Media</h3>
+                      {selectedCard.media_files?.file_type?.startsWith(
+                        "video/"
+                      ) ? (
+                        <video
+                          width="200"
+                          height="150"
+                          controls
+                          className="rounded-lg"
+                          style={{ objectFit: "cover" }}
+                        >
+                          <source
+                            src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedCard.media_files.file_path}`}
+                            type={selectedCard.media_files.file_type}
+                          />
+                          Your browser does not support the video tag.
+                        </video>
+                      ) : (
                         <Image
-                          src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedMedia.file_path}`}
-                          alt="Selected Media"
+                          src={
+                            selectedCard.media_files
+                              ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedCard.media_files.file_path}`
+                              : PLACEHOLDER_IMAGE
+                          }
+                          alt="Current Media"
                           width={200}
                           height={150}
                           objectFit="cover"
@@ -407,6 +439,40 @@ const CardsPreviewModal = ({
                             e.target.src = PLACEHOLDER_IMAGE;
                           }}
                         />
+                      )}
+                    </div>
+                    {/* Changed Media */}
+                    {selectedMedia && (
+                      <div className="flex flex-col items-center">
+                        <h3 className="my-2 font-bold">Changed Media</h3>
+                        {selectedMedia.file_type?.startsWith("video/") ? (
+                          <video
+                            width="200"
+                            height="150"
+                            controls
+                            className="rounded-lg"
+                            style={{ objectFit: "cover" }}
+                          >
+                            <source
+                              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedMedia.file_path}`}
+                              type={selectedMedia.file_type}
+                            />
+                            Your browser does not support the video tag.
+                          </video>
+                        ) : (
+                          <Image
+                            src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${selectedMedia.file_path}`}
+                            alt="Selected Media"
+                            width={200}
+                            height={150}
+                            objectFit="cover"
+                            className="rounded-lg"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = PLACEHOLDER_IMAGE;
+                            }}
+                          />
+                        )}
                       </div>
                     )}
                   </div>

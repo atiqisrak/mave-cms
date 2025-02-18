@@ -76,9 +76,7 @@ const MediaCard = ({ media, mediaType, handleDelete, handlePreview }) => {
               blurDataURL="/images/Image_Placeholder.png"
               style={{
                 objectFit: "cover",
-                objectPosition: media.file_type.startsWith("image/")
-                  ? "left"
-                  : "top",
+                objectPosition: "center",
                 width: "100%",
                 height: "100%",
               }}
@@ -87,7 +85,6 @@ const MediaCard = ({ media, mediaType, handleDelete, handlePreview }) => {
           </div>
         );
       } else {
-        // Explicitly handle unsupported formats (e.g., .tif)
         return (
           <div className="relative w-full h-48 sm:h-56 md:h-64 lg:h-64">
             <Image
@@ -112,19 +109,66 @@ const MediaCard = ({ media, mediaType, handleDelete, handlePreview }) => {
       }
     } else if (mediaType === "video") {
       return (
-        <div className="relative w-full h-48 sm:h-56 md:h-64 lg:h-72">
-          <video className="w-full h-full object-cover rounded-t-md" controls>
-            <source
-              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}
-              type={media.file_type}
+        <div className="relative w-full h-48 sm:h-56 md:h-64 lg:h-64">
+          <div className="absolute inset-0 bg-gray-900 rounded-t-md overflow-hidden">
+            <Image
+              src={media.thumbnail_url || "/images/Video_Placeholder.png"}
+              alt={media.file_name}
+              width={300}
+              height={200}
+              sizes="(max-width: 768px) 100vw, 33vw"
+              quality={80}
+              loading="lazy"
+              style={{
+                objectFit: "cover",
+                width: "100%",
+                height: "100%",
+              }}
+              className="rounded-t-md"
             />
-            Your browser does not support the video tag.
-          </video>
+            <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center group-hover:bg-opacity-50 transition-all duration-300">
+              <div className="w-12 h-12 rounded-full bg-black bg-opacity-50 flex items-center justify-center">
+                <svg
+                  className="w-6 h-6 text-white"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="absolute bottom-2 right-2 bg-black bg-opacity-75 px-2 py-1 rounded text-white text-xs">
+                <svg
+                  className="w-4 h-4 inline-block mr-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                Video
+              </div>
+            </div>
+          </div>
         </div>
       );
     } else {
       return (
-        <div className="flex items-center justify-center h-48 sm:h-56 md:h-64 lg:h-72 bg-gray-100 rounded-t-md">
+        <div className="flex items-center justify-center h-48 sm:h-56 md:h-64 lg:h-64 bg-gray-100 rounded-t-md">
           <iframe
             src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/${media.file_path}`}
             title={media.file_name}
