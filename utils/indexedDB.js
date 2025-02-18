@@ -63,36 +63,38 @@ export const getPaginatedMediaFromDB = async (
   tagFilter
 ) => {
   try {
-    // console.log(
-    //   `Fetching paginated media from IndexedDB - Page: ${page}, Page Size: ${pageSize}, Sort: ${sortType}, Search: ${searchText}, Tag: ${tagFilter}`
-    // );
     let collection = db.media.toCollection();
 
-    // Apply search filter
-    if (searchText) {
-      const lowerSearch = searchText.toLowerCase();
-      collection = collection.filter(
-        (m) =>
-          m.title.toLowerCase().includes(lowerSearch) ||
-          m.file_name.toLowerCase().includes(lowerSearch)
-      );
+    // Apply search filter with improved search criteria
+    if (searchText?.trim()) {
+      const searchTerms = searchText.toLowerCase().trim().split(/\s+/);
+      collection = collection.filter((m) => {
+        const searchableText = [
+          m.title || "",
+          m.file_name || "",
+          m.description || "",
+          ...(m.tags || []),
+        ]
+          .map((text) => text.toLowerCase())
+          .join(" ");
+
+        return searchTerms.every((term) => searchableText.includes(term));
+      });
     }
 
-    // Apply tag filter
+    // Apply tag filter with null check
     if (tagFilter) {
       collection = collection.filter(
-        // (m) => Array.isArray(m.tags) && m.tags.includes(tagFilter)
-        (m) => (m.tags || []).includes(tagFilter)
+        (m) => Array.isArray(m.tags) && m.tags.includes(tagFilter)
       );
     }
 
-    // Apply sorting
+    // Apply sorting with proper date comparison
     let sortedData;
     if (sortType === "asc") {
       sortedData = await collection.sortBy("created_at");
     } else {
-      sortedData = await collection.sortBy("created_at");
-      sortedData = sortedData.reverse();
+      sortedData = await collection.reverse().sortBy("created_at");
     }
 
     // Get total count after filters
@@ -100,11 +102,12 @@ export const getPaginatedMediaFromDB = async (
 
     // Apply pagination
     const start = (page - 1) * pageSize;
-    const end = page * pageSize;
-    const paginatedData = sortedData.slice(start, end);
+    const paginatedData = sortedData.slice(start, start + pageSize);
 
-    console.log(`Fetched ${paginatedData.length} media items from IndexedDB.`);
-    return { data: paginatedData, total };
+    return {
+      data: paginatedData,
+      total: total,
+    };
   } catch (error) {
     console.error("Error fetching paginated media from IndexedDB:", error);
     return { data: [], total: 0 };

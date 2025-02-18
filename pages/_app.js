@@ -37,7 +37,7 @@ function MyApp({ Component, pageProps }) {
       </AuthProvider>
       <footer className="mave-footer">
         <p>
-          © 2024{" "}
+          © {new Date().getFullYear()}{" "}
           <a
             href="https://www.linkedin.com/in/atiq-israk/"
             target="_blank"

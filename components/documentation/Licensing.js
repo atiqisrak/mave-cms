@@ -136,7 +136,9 @@ const Licensing = () => {
       </Title>
       <Divider />
       <Title level={2}>MIT License</Title>
-      <Paragraph>Copyright (c) 2024 Ether Technologies</Paragraph>
+      <Paragraph>
+        Copyright (c) {new Date().getFullYear()} Ether Technologies
+      </Paragraph>
       <Paragraph>
         Permission is hereby granted, free of charge, to any person obtaining a
         copy of this software and associated documentation files (the

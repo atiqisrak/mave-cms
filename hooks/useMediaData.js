@@ -1,6 +1,6 @@
 // hooks/useMediaData.js
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import {
   addMediaToDB,
   deleteMediaFromDB,
@@ -177,6 +177,31 @@ const useMediaData = () => {
     }
   }, [isIndexedDBLoaded, populateIndexedDB]);
 
+  // Debounced search handler
+  const debouncedSearch = useCallback(
+    (() => {
+      let timeoutId;
+      return (text) => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+        timeoutId = setTimeout(() => {
+          setSearchText(text);
+          setCurrentPage(1); // Reset to first page when searching
+        }, 300); // 300ms debounce delay
+      };
+    })(),
+    []
+  );
+
+  // Memoized search handler
+  const handleSearch = useCallback(
+    (text) => {
+      debouncedSearch(text);
+    },
+    [debouncedSearch]
+  );
+
   // Effect to handle data loading based on dependencies
   useEffect(() => {
     const loadData = async () => {
@@ -268,8 +293,6 @@ const useMediaData = () => {
   const handlePageChange = (page) => setCurrentPage(page);
   const handleItemsPerPageChange = (size) => setItemsPerPage(size);
   const handleSortTypeChange = (type) => setSortType(type);
-  const handleSearch = (text) => setSearchText(text);
-  //   const handleTagFilterChange = (tag) => setSelectedTag(tag);
   const handleTagFilterChange = (tag) => {
     setSelectedTag(tag);
     setCurrentPage(1); // Reset to first page on tag change

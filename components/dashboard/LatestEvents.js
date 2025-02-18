@@ -331,7 +331,7 @@ export const activityLog = [
     type: "New Blog Post",
     user: "Zoe Carter",
     description:
-      "A new blog post titled 'E-commerce Trends in 2024' has been published by Zoe Carter, analyzing upcoming market movements.",
+      "A new blog post titled 'E-commerce Trends in 2025' has been published by Zoe Carter, analyzing upcoming market movements.",
   },
   {
     categoryType: 2,
