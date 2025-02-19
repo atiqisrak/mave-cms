@@ -42,24 +42,42 @@ const CardsPreviewModal = ({
 
   useEffect(() => {
     if (selectedCard) {
-      // Determine link type
-      const computedLinkType =
-        selectedCard.link_url &&
-        (selectedCard.link_url.includes("page_id") ||
-          selectedCard.link_url.includes("pageName"))
-          ? "page"
-          : "independent";
+      // Determine link type and page_id from link_url
+      let computedLinkType = "independent";
+      let link_page_id;
+
+      if (selectedCard.link_url) {
+        try {
+          // Check if it's a media link first
+          if (
+            selectedCard.link_url.startsWith(process.env.NEXT_PUBLIC_MEDIA_URL)
+          ) {
+            computedLinkType = "media";
+            // Extract the media path from the full URL
+            const mediaPath = selectedCard.link_url.replace(
+              process.env.NEXT_PUBLIC_MEDIA_URL,
+              ""
+            );
+            form.setFieldsValue({ media_link_path: mediaPath });
+          } else {
+            const url = new URL(selectedCard.link_url, window.location.origin);
+            const params = new URLSearchParams(url.search);
+            const pageId = params.get("page_id");
+            if (pageId) {
+              computedLinkType = "page";
+              link_page_id = parseInt(pageId, 10);
+            }
+          }
+        } catch (e) {
+          console.warn("Invalid URL format:", selectedCard.link_url);
+        }
+      }
+
       setLinkType(computedLinkType);
 
       // Set selectedMedia
       const mediaItem = media.find((m) => m.id === selectedCard.media_ids);
       setSelectedMedia(mediaItem || null);
-
-      // Extract page_id if linkType = page
-      const link_page_id =
-        computedLinkType === "page"
-          ? extractPageId(selectedCard.link_url)
-          : undefined;
 
       // Extract tags from additional
       const tags = selectedCard?.additional?.tags || [];
@@ -79,26 +97,14 @@ const CardsPreviewModal = ({
             ? selectedCard.link_url
             : undefined,
         status: selectedCard.status === 1,
-        tags: tags, // Here we set the tags in the form
+        tags: tags,
       });
     } else {
-      // Reset if no card
       form.resetFields();
       setSelectedMedia(null);
       setLinkType("independent");
     }
   }, [selectedCard, media, form]);
-
-  // Helper: get page_id from link_url
-  const extractPageId = (url) => {
-    try {
-      const urlParams = new URLSearchParams(url.split("?")[1]);
-      return urlParams.get("page_id");
-    } catch (error) {
-      console.error("Error extracting page_id:", error);
-      return undefined;
-    }
-  };
 
   // Media selection
   const handleMediaSelect = (mediaItem) => {
@@ -111,9 +117,20 @@ const CardsPreviewModal = ({
   const handleLinkTypeChange = (e) => {
     setLinkType(e.target.value);
     if (e.target.value === "page") {
-      form.setFieldsValue({ link_url: undefined });
+      form.setFieldsValue({
+        link_url: undefined,
+        media_link_path: undefined,
+      });
+    } else if (e.target.value === "media") {
+      form.setFieldsValue({
+        link_url: undefined,
+        link_page_id: undefined,
+      });
     } else {
-      form.setFieldsValue({ link_page_id: undefined });
+      form.setFieldsValue({
+        link_page_id: undefined,
+        media_link_path: undefined,
+      });
     }
   };
 
@@ -269,24 +286,26 @@ const CardsPreviewModal = ({
 
   // Build final link
   const buildLink = (values, pages) => {
-    let finalLink = values.link_url;
     if (values.link_type === "page" && values.link_page_id) {
       const selectedPage = pages.find((p) => p.id === values.link_page_id);
       if (!selectedPage) {
         throw new Error("Selected page not found.");
-      } else {
-        finalLink = `/${selectedPage.slug}?page_id=${selectedPage.id}&pageName=${selectedPage.page_name_en}`;
       }
-
-      return finalLink;
+      return `/${selectedPage.slug}?page_id=${selectedPage.id}&pageName=${selectedPage.page_name_en}`;
+    } else if (values.link_type === "media" && values.media_link_path) {
+      // Ensure the path starts with a forward slash
+      const mediaPath = values.media_link_path.startsWith("/")
+        ? values.media_link_path
+        : `/${values.media_link_path}`;
+      return `${process.env.NEXT_PUBLIC_MEDIA_URL}${mediaPath}`;
     }
+    return values.link_url; // Return the independent link URL if not a page or media link
   };
 
   const onFinishEdit = async () => {
     try {
       const values = await form.validateFields();
-      // Build final link, etc.
-      let finalLink = buildLink(values, pages); // your custom link logic
+      const finalLink = buildLink(values, pages);
       const additional = { tags: values.tags || [] };
 
       const payload = {
@@ -295,9 +314,10 @@ const CardsPreviewModal = ({
         status: values.status ? 1 : 0,
         additional,
       };
-      delete payload.link_page_id; // Not needed on server
+      delete payload.link_page_id;
+      delete payload.link_type;
+      delete payload.media_link_path;
 
-      // Make the PUT call right here:
       await instance.put(`/cards/${selectedCard.id}`, payload);
       message.success("Card updated successfully.");
       setIsEditing(false);
@@ -501,6 +521,7 @@ const CardsPreviewModal = ({
                 <Radio.Group onChange={handleLinkTypeChange}>
                   <Radio value="page">Page Link</Radio>
                   <Radio value="independent">Independent Link</Radio>
+                  <Radio value="media">Link to a Media</Radio>
                 </Radio.Group>
               </Form.Item>
 
@@ -530,10 +551,47 @@ const CardsPreviewModal = ({
                   name="link_url"
                   rules={[
                     { required: true, message: "Please enter the link URL" },
-                    { type: "url", message: "Please enter a valid URL" },
+                    {
+                      validator: async (_, value) => {
+                        if (!value) return;
+                        if (
+                          value.startsWith("/") ||
+                          value.match(/^https?:\/\//)
+                        ) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(
+                          new Error("Please enter a valid URL or path")
+                        );
+                      },
+                    },
                   ]}
                 >
-                  <Input />
+                  <Input placeholder="Enter URL or path (e.g., /about or https://example.com)" />
+                </Form.Item>
+              )}
+              {linkType === "media" && (
+                <Form.Item
+                  label="Media Path"
+                  name="media_link_path"
+                  rules={[
+                    { required: true, message: "Please enter the media path" },
+                    {
+                      validator: async (_, value) => {
+                        if (!value) return;
+                        // Basic validation for media path
+                        if (value.includes("..") || value.includes("//")) {
+                          return Promise.reject(
+                            new Error("Invalid media path")
+                          );
+                        }
+                        return Promise.resolve();
+                      },
+                    },
+                  ]}
+                  extra={`The full URL will be: ${process.env.NEXT_PUBLIC_MEDIA_URL}/<your-path>`}
+                >
+                  <Input placeholder="Enter media path (e.g., media/example.pdf)" />
                 </Form.Item>
               )}
 
