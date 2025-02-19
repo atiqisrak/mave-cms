@@ -591,7 +591,10 @@ const CardsPreviewModal = ({
                   ]}
                   extra={`The full URL will be: ${process.env.NEXT_PUBLIC_MEDIA_URL}/<your-path>`}
                 >
-                  <Input placeholder="Enter media path (e.g., media/example.pdf)" />
+                  <Input
+                    addonBefore={process.env.NEXT_PUBLIC_MEDIA_URL}
+                    placeholder="Enter media path (e.g., media/example.pdf)"
+                  />
                 </Form.Item>
               )}
 
